@@ -8,6 +8,17 @@
     Author URI: http://oliverfriedmann.com
     */
 
+    
+    
+    
+    
+$ziggeo_api_token = "REPLACE_WITH_YOUR_API_TOKEN";
+    
+	
+	
+	
+	
+	
 function ziggeo_comment_template($comment_template) {
 	return dirname(__FILE__) . "/templates/comments_template.php";
 }
@@ -26,13 +37,8 @@ function ziggeo_enqueue_scripts() {
 add_action('wp_enqueue_scripts', "ziggeo_enqueue_scripts");	
 
 function ziggeo_script_header() {
-	// TODO: Replace token + Remove jQuery Update
-	echo "<script>window.$=jQuery; ZiggeoApi.token = 'REPLACE_WITH_YOUR_API_TOKEN';</script>\n";
+	global $ziggeo_api_token;
+	echo "<script>window.$=jQuery; ZiggeoApi.token = '" . $ziggeo_api_token . "';</script>\n";
 }
 
 add_action('wp_head', "ziggeo_script_header");
-
-
-// TODO: Admin Configuration
-// TODO: Secure Tokens
-// TODO: Onboarding
