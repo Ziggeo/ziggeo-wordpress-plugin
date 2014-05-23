@@ -61,13 +61,4 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 	ZiggeoApi.Events.on("submitted", function (data) {
 		jQuery("#comment").val("[ziggeo]" + data.video.token + "[/ziggeo]");
 	});
-	jQuery(".comment-content").each(function () {
-		var $comment = jQuery(this);
-		var content = $comment.find("p").get(0).innerText;
-		var matcher = content.match(/\[ziggeo\](.*)\[\/ziggeo\]/);
-		if (matcher) {
-			var video_token = matcher[1];
-			$comment.html("<ziggeo ziggeo-width=320 ziggeo-height=240 ziggeo-video='" + video_token + "'></ziggeo>");
-		}
-	});
 </script>
