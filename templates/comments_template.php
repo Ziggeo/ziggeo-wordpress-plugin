@@ -41,8 +41,10 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 
 <script>
 	jQuery("label[for='comment']").remove();
-	jQuery(".comment-form-comment").before(jQuery("#comment-ziggeo-template").html());
-	jQuery("#comments-text-container").append(jQuery(".comment-form-comment"));
+	jQuery("#comment").parent().parent().css("position", "inherit");
+	jQuery("#commentform").css("padding-top", "0px");
+	jQuery(jQuery("#comment").parent()).before(jQuery("#comment-ziggeo-template").html());
+	jQuery("#comments-text-container").append(jQuery(jQuery("#comment").parent()));
 	jQuery("#comments-text-container").append(jQuery(".form-allowed-tags"));
 	jQuery("#comments-text-link").on("click", function () {
 		jQuery("#comments-text-container").css("display", "");

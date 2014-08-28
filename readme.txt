@@ -27,6 +27,9 @@ two lines of code in your site, service or app.
 
 Upload the directory to the `/wp-content/plugins/` directory and click on `Ziggeo Video` in the settings menu.
 
+If you experience any issues with the plugin, please let us know at support@ziggeo.com
+
+
 == Changelog ==
 
 = 1.0 =
