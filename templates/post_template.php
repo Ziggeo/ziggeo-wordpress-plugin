@@ -22,6 +22,7 @@
 			ziggeo-height=360
 			ziggeo-limit=240
 			ziggeo-form_accept="#post"
+            ziggeo-perms="allowupload"
 			ziggeo-tags="wordpress,<?= $current_user->user_login ?>"
 		></ziggeo>
 	</div>
@@ -35,6 +36,7 @@
 			ziggeo-limit=240
 			ziggeo-video="VIDEOTOKEN"
 			ziggeo-modes="rerecorder"
+			ziggeo-perms="allowupload"
 			ziggeo-form_accept="#post"
 			ziggeo-tags="wordpress,<?= $current_user->user_login ?>"
 		></ziggeo>
