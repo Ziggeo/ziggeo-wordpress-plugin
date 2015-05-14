@@ -3,8 +3,8 @@ Contributors: oliverfriedmann
 Donate link: http://ziggeo.com/
 Tags: comments, posts, video
 Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 1.2
+Tested up to: 4.2.2
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,9 @@ If you experience any issues with the plugin, please let us know at support@zigg
 
 
 == Changelog ==
+
+= 1.3 =
+* Allow users to upload videos
 
 = 1.2 =
 * Allow to record multiple videos in a post
