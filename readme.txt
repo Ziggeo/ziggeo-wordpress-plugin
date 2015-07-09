@@ -4,7 +4,7 @@ Donate link: http://ziggeo.com/
 Tags: comments, posts, video
 Requires at least: 3.0.1
 Tested up to: 4.2.2
-Stable tag: 1.3
+Stable tag: 1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,9 @@ If you experience any issues with the plugin, please let us know at support@zigg
 
 
 == Changelog ==
+
+= 1.4 =
+* Allow admin to specify Ziggeo options
 
 = 1.3 =
 * Allow users to upload videos

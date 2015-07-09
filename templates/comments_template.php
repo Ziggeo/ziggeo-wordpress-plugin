@@ -29,11 +29,15 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 	<div id="comments-video-container"></div>
 </script>
 
+<?php
+	$options = get_option('ziggeo_video');
+	$default = 'ziggeo-width=480 ziggeo-height=360 ziggeo-limit=120';
+	$config = @$options["recorder_config"] ? $options["recorder_config"] : $default; 
+?>
+	
 <script type="text/template" id="ziggeo-recorder">
 	<ziggeo
-		ziggeo-width=480
-		ziggeo-height=360
-		ziggeo-limit=120
+		<?= $config ?>
 		ziggeo-form_accept="#commentform"
 		ziggeo-tags="wordpress,<?= $current_user->user_login ?>"
 	></ziggeo>

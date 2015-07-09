@@ -7,7 +7,10 @@ add_filter('the_excerpt', 'ziggeo_content_filter');
 add_filter('thesis_comment_text', 'ziggeo_content_filter');
 
 function ziggeo_content_replace($matches) {
-	return "<ziggeo ziggeo-width=320 ziggeo-height=240 ziggeo-video='" . $matches[1] . "'></ziggeo>";
+	$options = get_option('ziggeo_video');
+	$default = 'ziggeo-width=320 ziggeo-height=240';
+	$config = @$options["player_config"] ? $options["player_config"] : $default; 
+	return "<ziggeo " . $config . " ziggeo-video='" . $matches[1] . "'></ziggeo>";
 }
 
 function ziggeo_content_filter($content) {
