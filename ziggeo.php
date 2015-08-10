@@ -4,7 +4,7 @@
     Plugin URI: http://ziggeo.com
     Description: Plugin for adding video posts and video comments
     Author: Oliver Friedmann
-    Version: 1.5
+    Version: 1.6
     Author URI: http://ziggeo.com
     */
         

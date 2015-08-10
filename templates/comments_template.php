@@ -44,27 +44,35 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 </script>
 
 <script>
-	jQuery("label[for='comment']").remove();
-	jQuery("#comment").parent().parent().css("position", "inherit");
-	jQuery("#commentform").css("padding-top", "0px");
-	jQuery(jQuery("#comment").parent()).before(jQuery("#comment-ziggeo-template").html());
-	jQuery("#comments-text-container").append(jQuery(jQuery("#comment").parent()));
-	jQuery("#comments-text-container").append(jQuery(".form-allowed-tags"));
+	var elems = {};
+	elems.textarea = jQuery("[name='comment']");
+	elems.form = elems.textarea.closest("form");
+	elems.textarea_container = elems.textarea.closest("form>");
+	elems.moveover = [jQuery(".form-allowed-tags")];
+	elems.garbage = [jQuery("label[for='comment']")];
+	elems.form.css("position", "inherit");
+	elems.form.css("padding-top", "0px");
+	jQuery(elems.textarea_container).before(jQuery("#comment-ziggeo-template").html());
+	jQuery("#comments-text-container").append(elems.textarea_container);
+	BetaJS.Objs.iter(elems.garbage, function (elem) {
+		elem.remove();
+	});	
+	BetaJS.Objs.iter(elems.moveover, function (elem) {
+		jQuery("#comments-text-container").append(elem);
+	});	
 	jQuery("#comments-text-link").on("click", function () {
 		jQuery("#comments-text-container").css("display", "");
 		jQuery("#comments-video-container").css("display", "none");
 		jQuery("#comments-video-container").html("");
-		jQuery("#commenttype").val("text");
-		jQuery("#comment").val("");
+		elems.textarea.val("");
 	});
 	jQuery("#comments-video-link").on("click", function () {
 		jQuery("#comments-video-container").css("display", "");
 		jQuery("#comments-video-container").html(jQuery("#ziggeo-recorder").html());
 		jQuery("#comments-text-container").css("display", "none");
-		jQuery("#commenttype").val("video");
-		jQuery("#comment").val("");
+		elems.textarea.val("");
 	});
 	ZiggeoApi.Events.on("submitted", function (data) {
-		jQuery("#comment").val("[ziggeo]" + data.video.token + "[/ziggeo]");
+		elems.textarea.val("[ziggeo]" + data.video.token + "[/ziggeo]");
 	});
 </script>
