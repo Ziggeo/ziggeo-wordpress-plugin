@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: oliverfriedmann
 Donate link: http://ziggeo.com/
-Tags: comments, posts, video
+Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
-Tested up to: 4.3
-Stable tag: 1.6
+Tested up to: 4.3.1
+Stable tag: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,9 @@ If you experience any issues with the plugin, please let us know at support@zigg
 
 
 == Changelog ==
+
+= 1.7 =
+* Allows integration of recorder in blog posts by using [ziggeo][/ziggeo]
 
 = 1.6 =
 * Improved Compatability with different commenting systems

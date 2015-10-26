@@ -4,8 +4,8 @@ function ziggeo_admin_init() {
 	register_setting('ziggeo_video', 'ziggeo_video', 'ziggeo_video_validate');
 	add_settings_section('ziggeo_video_main', 'Settings', 'ziggeo_video_section_text', 'ziggeo_video');
 	add_settings_field('ziggeo_app_token', 'Ziggeo API Token', 'ziggeo_app_token_setting_string', 'ziggeo_video', 'ziggeo_video_main');
-	add_settings_field('ziggeo_recorder_config', 'Ziggeo Recorder Config', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
-	add_settings_field('ziggeo_player_config', 'Ziggeo Player Config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+	add_settings_field('ziggeo_recorder_config', 'Ziggeo Recorder Config (leave blank for default settings)', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+	add_settings_field('ziggeo_player_config', 'Ziggeo Player Config (leave blank for default settings)', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 }
 
 add_action('admin_init', 'ziggeo_admin_init');

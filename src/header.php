@@ -5,6 +5,7 @@ function ziggeo_script_header() {
 	echo "<script>ZiggeoApi.token = '" . (@$options && @$options["token"] ? $options["token"] : '') . "';</script>\n";
 	echo "<script>ZiggeoApi.Config.webrtc = true;</script>\n";
 	echo "<script>ZiggeoApi.Config.resumable = true;</script>\n";
+	echo "<script>ZiggeoApi.Config.cdn = true;</script>\n";
 }
 
 add_action('wp_head', "ziggeo_script_header");
