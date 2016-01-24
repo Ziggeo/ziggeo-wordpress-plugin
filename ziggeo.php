@@ -5,7 +5,7 @@
     Description: Plugin for adding video posts and video comments
     Author: Oliver Friedmann
     Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
-    Version: 1.8
+    Version: 1.9
     Author URI: http://ziggeo.com
     */
         

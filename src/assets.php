@@ -1,9 +1,9 @@
 <?php
 
 function ziggeo_enqueue_scripts() {
-    wp_register_script('ziggeo-js', "//assets-cdn.ziggeo.com/js/ziggeo-v1.js", array());
+    wp_register_script('ziggeo-js', "//assets-cdn.ziggeo.com/v1-stable/ziggeo.js", array());
     wp_enqueue_script('ziggeo-js');
-    wp_register_style('ziggeo-css', "//assets-cdn.ziggeo.com/css/ziggeo-v1.css", array());
+    wp_register_style('ziggeo-css', "//assets-cdn.ziggeo.com/v1-stable/ziggeo.css", array());
     wp_enqueue_style('ziggeo-css');
     wp_register_style('ziggeo-styles-css', plugins_url('../styles.css', __FILE__), array());	
     wp_enqueue_style('ziggeo-styles-css');

@@ -6,6 +6,7 @@ function ziggeo_admin_init() {
 	add_settings_field('ziggeo_app_token', 'Ziggeo API Token', 'ziggeo_app_token_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 	add_settings_field('ziggeo_recorder_config', 'Ziggeo Recorder Config (leave blank for default settings)', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 	add_settings_field('ziggeo_player_config', 'Ziggeo Player Config (leave blank for default settings)', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+	add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 }
 
 add_action('admin_init', 'ziggeo_admin_init');
@@ -29,6 +30,11 @@ function ziggeo_recorder_config_setting_string() {
 function ziggeo_player_config_setting_string() {
 	$options = get_option('ziggeo_video');
 	echo "<input id='ziggeo_player_config' name='ziggeo_video[player_config]' size='40' type='text' value='{$options['player_config']}' />";	
+}
+
+function ziggeo_beta_setting_string() {
+	$options = get_option('ziggeo_video');
+	echo "<input id='ziggeo_beta' name='ziggeo_video[beta]' type='checkbox' value='1' " . checked( 1, $options['beta'], false ) . " />";	
 }
 
 function ziggeo_video_validate($input) {

@@ -32,6 +32,9 @@ If you experience any issues with the plugin, please let us know at support@zigg
 
 == Changelog ==
 
+= 1.9 =
+* Use newest version of the Ziggeo assets
+
 = 1.8 =
 * Allow video posts from namespaced urls
 

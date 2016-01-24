@@ -10,12 +10,15 @@ function ziggeo_content_replace($matches) {
 	$options = get_option('ziggeo_video');
 	$default = 'ziggeo-width=320 ziggeo-height=240';
 	$video_token = trim($matches[1]);
+	$tagname = "ziggeo";
 	if (@$video_token) {
+		if (@$options["beta"])
+			$tagname = "ziggeoplayer";
 		$config = @$options["player_config"] ? $options["player_config"] : $default; 
-		return "<ziggeo " . $config . " ziggeo-video='" . $video_token . "'></ziggeo>";
+		return "<" . $tagname . " ba-theme='modern' " . $config . " ziggeo-video='" . $video_token . "'></" . $tagname . ">";
 	} else {
 		$config = @$options["recorder_config"] ? $options["recorder_config"] : $default;
-		return "<ziggeo " . $config . "'></ziggeo>";
+		return "<" . $tagname . " " . $config . "'></" . $tagname . ">";
 	}
 }
 
