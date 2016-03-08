@@ -8,15 +8,24 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 	$current_user = wp_get_current_user();
 ?>
 
+<?php
+	$options = get_option('ziggeo_video');
+	$default = 'ziggeo-width=480 ziggeo-height=360 ziggeo-limit=120';
+	$config = @$options["recorder_config"] ? $options["recorder_config"] : $default; 
+?>
+	
+<?php if (@$options["disable_video_comments"] !== '1') { ?>
 <script type="text/template" id="comment-ziggeo-template">
 	<div class="comment-navigation">
 		<ul class="comment-nav-menu">
+			<?php if (@$options["disable_text_comments"] !== '1') { ?>
 			<li>
 				<a id="comments-text-link">
 					<span class="dashicons dashicons-text"></span>
 					Text Comment
 				</a>
 			</li>
+			<?php } ?>
 			<li>
 				<a id="comments-video-link">
 					<span class="dashicons dashicons-video-alt"></span>
@@ -29,12 +38,6 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 	<div id="comments-video-container"></div>
 </script>
 
-<?php
-	$options = get_option('ziggeo_video');
-	$default = 'ziggeo-width=480 ziggeo-height=360 ziggeo-limit=120';
-	$config = @$options["recorder_config"] ? $options["recorder_config"] : $default; 
-?>
-	
 <script type="text/template" id="ziggeo-recorder">
 	<ziggeo
 		<?= $config ?>
@@ -75,4 +78,10 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 	ZiggeoApi.Events.on("submitted", function (data) {
 		elems.textarea.val("[ziggeo]" + data.video.token + "[/ziggeo]");
 	});
+	<?php if (@$options["disable_text_comments"] === '1') { ?>
+		setTimeout(function () {
+			jQuery("#comments-video-link").click();
+		});
+	<?php } ?>
 </script>
+<?php } ?>

@@ -7,6 +7,8 @@ function ziggeo_admin_init() {
 	add_settings_field('ziggeo_recorder_config', 'Ziggeo Recorder Config (leave blank for default settings)', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 	add_settings_field('ziggeo_player_config', 'Ziggeo Player Config (leave blank for default settings)', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 	add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+	add_settings_field('ziggeo_video_comments', 'Disable Video Comments', 'ziggeo_video_comments_string', 'ziggeo_video', 'ziggeo_video_main');
+	add_settings_field('ziggeo_text_comments', 'Disable Text Comments', 'ziggeo_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
 }
 
 add_action('admin_init', 'ziggeo_admin_init');
@@ -35,6 +37,16 @@ function ziggeo_player_config_setting_string() {
 function ziggeo_beta_setting_string() {
 	$options = get_option('ziggeo_video');
 	echo "<input id='ziggeo_beta' name='ziggeo_video[beta]' type='checkbox' value='1' " . checked( 1, $options['beta'], false ) . " />";	
+}
+
+function ziggeo_video_comments_string() {
+	$options = get_option('ziggeo_video');
+	echo "<input id='ziggeo_video_comments' name='ziggeo_video[disable_video_comments]' type='checkbox' value='1' " . checked( 1, $options['disable_video_comments'], false ) . " />";	
+}
+
+function ziggeo_text_comments_string() {
+	$options = get_option('ziggeo_video');
+	echo "<input id='ziggeo_text_comments' name='ziggeo_video[disable_text_comments]' type='checkbox' value='1' " . checked( 1, $options['disable_text_comments'], false ) . " />";	
 }
 
 function ziggeo_video_validate($input) {

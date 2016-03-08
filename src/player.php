@@ -18,6 +18,10 @@ function ziggeo_content_replace($matches) {
 		return "<" . $tagname . " ba-theme='modern' " . $config . " ziggeo-video='" . $video_token . "'></" . $tagname . ">";
 	} else {
 		$config = @$options["recorder_config"] ? $options["recorder_config"] : $default;
+		try {
+			$current_user = wp_get_current_user();
+			$config .= ' ziggeo-tags="' . $current_user->user_login . '"';
+		} catch (Exception $e) {}
 		return "<" . $tagname . " " . $config . "'></" . $tagname . ">";
 	}
 }
