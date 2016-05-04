@@ -1,8 +1,11 @@
 <?php
+//Checking if WP is running or if this is a direct call..
+defined('ABSPATH') or die();
 
 function ziggeo_token_notice() { ?>
     <div class="update-nag">
-        <p><?php _e('You need to <a href="/wp-admin/options-general.php?page=ziggeo_video">specify an API key</a> for the Ziggeo API to allow videos be functional.', 'my-text-domain'); ?></p>
+		<?php //Fixed to accomodate the customers having WP website within a folder - not directly on a domain name root like ziggeo.com/wp/ ?>
+        <p><?php _e('You need to <a href="' . site_url() . '/wp-admin/options-general.php?page=ziggeo_video">specify an API key</a> for the Ziggeo API to have videos as functional.', 'my-text-domain'); ?></p>
     </div>
 <?php }
 
