@@ -3,7 +3,7 @@ Contributors: oliverfriedmann
 Donate link: http://ziggeo.com/
 Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
-Tested up to: 4.4
+Tested up to: 4.5
 Stable tag: 1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,6 +31,9 @@ If you experience any issues with the plugin, please let us know at support@zigg
 
 
 == Changelog ==
+
+= 1.11 =
+* Adding tabs to the plugin to expand its possibilities/features
 
 = 1.10 =
 * Options to enable/disable video/text comments
