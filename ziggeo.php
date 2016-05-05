@@ -22,3 +22,4 @@ include_once(ZIGGEO_ROOT_PATH . "src/config_required_notice.php");
 include_once(ZIGGEO_ROOT_PATH . "src/settings.php");
 include_once(ZIGGEO_ROOT_PATH . "src/templates.php");
 include_once(ZIGGEO_ROOT_PATH . "src/file_parser.php");
+include_once(ZIGGEO_ROOT_PATH . "src/ziggeo_tinymce.php"); //to activate TinyMCE toolbar button

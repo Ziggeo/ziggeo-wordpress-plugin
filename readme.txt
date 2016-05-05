@@ -33,7 +33,7 @@ If you experience any issues with the plugin, please let us know at support@zigg
 == Changelog ==
 
 = 1.11 =
-* Adding tabs to the plugin to expand its possibilities/features
+* Templates tab added to the plugin to expand its possibilities/features
 
 = 1.10 =
 * Options to enable/disable video/text comments

@@ -81,16 +81,54 @@
 	border-radius: 10px;
 	box-shadow: 0 0 10px orangeRed;
 }
-@media screen and (max-width:1500px) {
-	/* Added a better supported fallback as well */
-	#ziggeo-tab_templates dl:nth-of-type(1), #ziggeo-tab_templates #ziggeo_templates_editor+dl {
-		margin-bottom: -200px;
-	}
-}
 
+#ziggeo-params-holder {
+    float: left;
+    padding-left: 10px;
+    width: 580px;
+}
 #ziggeo_templates_turn_to_new {
     background-image: linear-gradient(orange, yellow);
     border: 1px solid gold;
     border-radius: 9px;
 	padding: 4px 10px;
 }
+#ziggeo_turn_to_beta + label {
+    background-image: linear-gradient(white, transparent);
+    border: 1px solid lightgray;
+    border-radius: 9px;
+    padding: 4px 10px;
+}
+#ziggeo_turn_to_beta:checked + label {
+    background-image: linear-gradient(lightblue, transparent);
+    border: 1px solid lightblue;
+}
+
+.ziggeo-subframe {
+    border-bottom: 2px groove orange;
+    border-bottom-left-radius: 15px;
+    padding: 2px 10px;
+    transition-duration: 0.2s;
+    transition-property: padding-right;
+}
+#ziggeo-tab_general .form-table tr:hover .ziggeo-subframe {
+	padding-right: 200px;
+}
+.ziggeo_linespacer {
+    left: -150px;
+    position: relative;
+}
+
+#ziggeo-tab_general .form-table tr label {
+    opacity: 0;
+    transition-duration: 0.4s;
+    transition-property: opacity;
+}
+#ziggeo-tab_general .form-table tr:hover label {
+    opacity: 1;
+}
+
+/*
+#ziggeo-comments_video_checker
+This will allow us to hide video text
+*/
