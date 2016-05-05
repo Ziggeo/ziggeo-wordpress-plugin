@@ -17,13 +17,19 @@ function ziggeo_admin_init() {
 	//----------------------
 		//General section
 		add_settings_field('ziggeo_app_token', 'Ziggeo API Token', 'ziggeo_app_token_setting_string', 'ziggeo_video', 'ziggeo_video_main');
-		// We could use input placeholder instead of adding it into settings: 'Ziggeo Recorder Config (leave blank for default settings)' - check with Oliver
-		add_settings_field('ziggeo_recorder_config', 'Ziggeo recorder config', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
-		add_settings_field('ziggeo_player_config', 'Ziggeo player config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
-		add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
-		add_settings_field('ziggeo_video_comments', 'Disable Video Comments', 'ziggeo_video_comments_string', 'ziggeo_video', 'ziggeo_video_main');
-		add_settings_field('ziggeo_text_comments', 'Disable Text Comments', 'ziggeo_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
-		
+		add_settings_field('ziggeo_comments_html', '', 'ziggeo_comments_html', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_video_comments', 'Disable Video Comments', 'ziggeo_video_comments_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_video_comments_template_recorder', 'Video Comments recorder template', 'ziggeo_video_comments_template_recorder_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_video_comments_template_player', 'Video Comments player template', 'ziggeo_video_comments_template_player_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_text_comments', 'Disable Text Comments', 'ziggeo_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
+		add_settings_field('ziggeo_global_html', '', 'ziggeo_global_html', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_recorder_config', 'Ziggeo recorder config', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_player_config', 'Ziggeo player config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+
+
+
+
 		//Templates section
 		// @IMPORTANT - we must make it respect the previus tags as well
 		add_settings_field('ziggeo_templates_id', 'Template ID', 'ziggeo_templates_id_string', 'ziggeo_video', 'ziggeo_video_templates');
@@ -92,14 +98,17 @@ function ziggeo_video_templates_text() {
 	function ziggeo_templates_id_string() {
 		//On load, we do not need to load any data, just have the box empty. When we get back the response, that is when we need to capture the data..
 		?>
-		<input id="ziggeo_templates_id" name="ziggeo_video[templates_id]" size="50" type="text" placeholder="Give the temaplate any name you wish here" value="" />
+		<input id="ziggeo_templates_id" name="ziggeo_video[templates_id]" size="50" type="text" placeholder="Give the template any name you wish here" value="" />
 		<?php
 	}
 
 	//This shows textarea for templates editing, but also shows the available parameters / attributes that people can use on their template as well as the select field to select our starting template
 	function ziggeo_templates_editor_string() {
-		//When we load the page it should be empty, it should only have values once it is being saved (but does not need to)..
-		
+		//When we load the page the editor textarea should be empty, it should only have values once it is being saved (but does not need to)..
+
+		//We will need options for beta check
+		$options = get_option('ziggeo_video');
+
 		// We are showing the list of available templates to start from
 		?>
 		<label for="ziggeo_shorttags_list">Select the template base</label>
@@ -108,131 +117,140 @@ function ziggeo_video_templates_text() {
 			<option value="[ziggeoplayer">Ziggeo Player</option>
 			<option value="[ziggeorecorder">Ziggeo Recorder</option>
 			<option value="[ziggeorerecorder">Ziggeo ReRecorder</option>
-			<option value="[ziggeovideowall">Ziggeo VideoWall</option>
+			<?php // <option value="[ziggeovideowall">Ziggeo VideoWall</option> ?>
 			<option value="[ziggeouploader">Ziggeo Uploader</option>
-			<option value="[ziggeoform">Ziggeo Form</option>
+			<?php // <option value="[ziggeoform">Ziggeo Form</option> ?>
 		</select>
 		
 		<?php //button would make more sense, but it would submit the form on click (its default action) and that is not what we want.. ?>
 		<span id="ziggeo_templates_turn_to_new" style="display:none;"  onclick="ziggeo_templates_turn_into_new();">Turn into new</span>
-		
-		<?php //@TODO - transfer the option for beta here - so that if it is beta, we show the right attributes, otherwise hide the same ?>
+
+		<?php //Use beta option so that they can set up templates with and without being beta.. This is only shown if beta is disabled in global
+		if( isset($options['beta']) && $options['beta'] !== "1" ) {
+			?>
+			<input id="ziggeo_turn_to_beta" type="checkbox" style="display:none;" value="0">
+			<label for="ziggeo_turn_to_beta" onclick="ziggeo_templates_turn_into_beta();" title="Even if you have the default option turned off, you can enable each template into beta by itself">Turn into beta</label>
+			<?php
+		}
+
+		?>
 		<br><br>
 
 		<?php //The actual template body that we will save ?>
 		<textarea id="ziggeo_templates_editor" name="ziggeo_video[templates_editor]" rows="11" cols="50"></textarea>
 
 		<?php //The list of parameters to use in templates ?>
-		
-		<dl class="ziggeo-params">
-			<dt class="play record rerecord" data-equal="=">width</dt>
-				<dd>Integer value representing the width of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the width of recording, just of the video screen</dd>
-			<dt class="play record rerecord" data-equal="=">height</dt>
-				<dd>Integer value representing the height of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the height of recording, just of the video screen</dd>
-			<dt class="record rerecord" data-equal="=">recording_width</dt>
-				<dd>Integer representing the width of recording captured</dd>
-			<dt class="record rerecord" data-equal="=">recording_height</dt>
-				<dd>Integer representing the width of recording captured</dd>
-			<dt data-equal="">responsive</dt>
-				<dd>Boolean value that allows you to make embedding capture the full size of the bounding box (applyed on load only)</dd>
-			<dt data-equal="=">popup_width</dt>
-				<dd>Integer value setting up the width of the popup holding the embedding</dd>
-			<dt data-equal="=">popup height</dt>
-				<dd>Integer value setting up the height of the popup holding the embedding</dd>
-			<dt data-equal="=''">video</dt>
-				<dd>String representation of a video token or video key</dd>
-			<dt class="beta" data-equal="=''">ba-video</dt>
-				<dd>String representation of a video token or video key</dd>
-			<dt class="record rerecord" data-equal="">face_outline</dt>
-				<dd>Boolean value setting if face outline would be shown on the video or not</dd>
-			<dt data-equal="''">stream</dt>
-				<dd>String representing stream token or stream key</dd>
-			<dt class="default" data-equal="=''">modes</dt>
-				<dd>Array value determining how the embedding is used. Possible values are "recorder", "player", "rerecorder" For more modes, separate values with comma</dd>
-			<dt class="record rerecord" data-equal="=''">tags</dt>
-				<dd>Array holding the tags that the new video should be associated with. By default it will add "wordpress, {username}"</dd>
 
-			<dt class="play record rerecord" data-equal="=''">effect_profile</dt>
-				<dd>Array allowing you to select what effects to be applied to recorder, or which video stream to get when playing (the one with the same effects applied)</dd>
-			<dt class="record rerecord" data-equal="=''">data</dt>
-				<dd>JSON formatted data that you wish to pass with the video</dd>
-			<dt class="default" data-equal="=''">perms</dt>
-				<dd>Array value with video permissions that you could apply: "<span title="Enables uploading of videos for your customer">allowupload</span>", "<span title="Disables recoring of video">forbidrecord</span>", "<span title="Disables switching between uploading and recording">forbidswitch</span>", "<span title="Disables rerecording completely">forbidrerecord</span>", "<span title="Overwrites the video if a video with the same key already exists">forceoverwrite</span>"</dd>
-			<dt class="record rerecord" data-equal="">disable_first_screen</dt>
-				<dd>Boolean value to disable recorder's initial screen</dd>
-			<dt class="record rerecord" data-equal="">disable_device_test</dt>
-				<dd>Boolean value to disable the camera and microphone tests prior to recording</dd>
-			<dt class="record rerecord" data-equal="">disable_timer</dt>
-				<dd>Boolean value to hide the duration of recording on the recorder</dd>
-			<dt class="record rerecord" data-equal="">disable_snapshots</dt>
-				<dd>Disables the selection of snapshots after the recording</dd>
-			<dt class="record rerecord" data-equal="">hide_rerecord_on_snapshots</dt>
-				<dd>Boolean value to hide rerecord option while picking snapshots</dd>
-			<dt class="record rerecord" data-equal="">auto_crop</dt>
-				<dd>Boolean value to automatically crop videos to specific resolution (this cuts all the parts that are bigger than set resolution)</dd>
-			<dt class="record rerecord" data-equal="">auto_pad</dt>
-				<dd>Boolean value to automatically add black surface padding if video does not match set resolution</dd>
-			<dt class="play record rerecord" data-equal="=''">key</dt>
-				<dd>String that tells recorder under which key the video should be saved under</dd>
-			<dt class="play record rerecord" data-equal="=">limit</dt>
-				<dd>Integer value limiting the number of seconds that video / recording can be</dd>
-		</dl>
-		<dl class="ziggeo-params">
-			<dt data-equal="=">countdown</dt>
-				<dd>Integer value to set when the recording should start after selectig same. Defaults to 3 seconds. Use 0 to disable countdown</dd>
-			<dt data-equal="=''">input_bind</dt>
-				<dd>String value representing form field name to which video token would be passed over</dd>
-			<dt data-equal="=''">form_accept</dt>
-				<dd>String value holding jQuery selector to disable form submission until video is created</dd>
-			<dt data-equal="=''">id</dt>
-				<dd>String value representing desired ID of embedding element so that it can be looked up using JavaScript code</dd>
-			<dt data-equal="">immediate_playback</dt>
-				<dd>Boolean value to tell if the video should start playing right away after recording</dd>
-			<dt data-equal="">autoplay</dt>
-				<dd>Boolean value to indicate if the video should automatically play back in player</dd>
-			<dt data-equal="">loop</dt>
-				<dd>Boolean value to set if you wish for the player to play the video indefinitely</dd>
-			<dt data-equal="=''">server_auth</dt>
-				<dd>String representing authorization token retrieved from the server side</dd>
-			<dt data-equal="=''">client_auth</dt>
-				<dd>String representing authorization token for use on client side</dd>
-			<dt data-equal="=">rerecordings</dt>
-				<dd>Integer value indicating how many rerecordings you would allow to be made</dd>
-			<dt data-equal="=">expiration_days</dt>
-				<dd>Integer value to set after how many days you want to delete the recorded video (by defaul, never)</dd>
-			<dt data-equal="=''">video_profile</dt>
-				<dd>Strig value holding key or token of your video profile that you want to use</dd>
+		<div id="ziggeo-params-holder">
+			<b>Ziggeo parameters that you can use in templates (Pro tip: click to add ;) )</b>
+			<dl class="ziggeo-params">
+				<dt class="play record rerecord" data-equal="=">width</dt>
+					<dd>Integer value representing the width of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the width of recording, just of the video screen</dd>
+				<dt class="play record rerecord" data-equal="=">height</dt>
+					<dd>Integer value representing the height of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the height of recording, just of the video screen</dd>
+				<dt class="record rerecord" data-equal="=">recording_width</dt>
+					<dd>Integer representing the width of recording captured</dd>
+				<dt class="record rerecord" data-equal="=">recording_height</dt>
+					<dd>Integer representing the width of recording captured</dd>
+				<dt data-equal="">responsive</dt>
+					<dd>Boolean value that allows you to make embedding capture the full size of the bounding box (applyed on load only)</dd>
+				<dt data-equal="=">popup_width</dt>
+					<dd>Integer value setting up the width of the popup holding the embedding</dd>
+				<dt data-equal="=">popup height</dt>
+					<dd>Integer value setting up the height of the popup holding the embedding</dd>
+				<dt data-equal="=''">video</dt>
+					<dd>String representation of a video token or video key</dd>
+				<dt class="record rerecord" data-equal="">face_outline</dt>
+					<dd>Boolean value setting if face outline would be shown on the video or not</dd>
+				<dt data-equal="''">stream</dt>
+					<dd>String representing stream token or stream key</dd>
+				<dt class="default" data-equal="=''">modes</dt>
+					<dd>Array value determining how the embedding is used. Possible values are "recorder", "player", "rerecorder" For more modes, separate values with comma</dd>
+				<dt class="record rerecord" data-equal="=''">tags</dt>
+					<dd>Array holding the tags that the new video should be associated with. By default it will add "wordpress, {username}"</dd>
 
-			<dt data-equal="=''">meta_profile</dt>
-				<dd>Strig value holding key or token of your meta profile that you want to use</dd>
-			<dt data-equal="=">stream_width</dt>
-				<dd>Integer value setting the optimal width of the stream</dd>
-			<dt data-equal="=">stream_height</dt>
-				<dd>Integer value setting the optimal height of the stream</dd>
-			<dt data-equal="=''">title</dt>
-				<dd>String value to set title of the video being recorded</dd>
-			<dt data-equal="=''">description</dt>
-				<dd>String value to set the description of the video</dd>
-			<dt data-equal="=''">allowed_extensions</dt>
-				<dd>String value to limit the uploads to only specific extensions (all allowed by default)</dd>
-			<dt data-equal="=">default_image_selector</dt>
-				<dd>Float (integer with decimal point) value to indicate the default image selector</dd>
-			<dt data-equal="">enforce_duration</dt>
-				<dd>Boolean value to reject videos if they are too long.</dd>
-			<dt data-equal="=">limit_upload_size</dt>
-				<dd>Integer value to limit the size of videos being uploaded in bytes (no limit by default)</dd>
-			<dt data-equal="">performance_warning</dt>
-				<dd>Boolean value to set a warning to be shown if framerate is too low</dd>
-			<dt data-equal="">recover_streams</dt>
-				<dd>Boolean value to set the attempt to recover videos feature if your customers close their browser while recording</dd>
-			<dt data-equal="">nofullscreen</dt>
-				<dd>Boolean value to disable fullscreen option in player</dd>
-			<dt class="beta" data-equal="">stretch</dt>
-				<dd>Boolean value to set the beta player to be responsive (this happens in realtime)</dd>
-			<dt class="beta" data-equal="=''">ba-theme</dt>
-				<dd>String value of the name of the theme that you wish to have applied to your player</dd>
-		</dl>
-		<br><hr>
+				<dt class="play record rerecord" data-equal="=''">effect_profile</dt>
+					<dd>Array allowing you to select what effects to be applied to recorder, or which video stream to get when playing (the one with the same effects applied)</dd>
+				<dt class="record rerecord" data-equal="=''">data</dt>
+					<dd>JSON formatted data that you wish to pass with the video</dd>
+				<dt class="default" data-equal="=''">perms</dt>
+					<dd>Array value with video permissions that you could apply: "<span title="Enables uploading of videos for your customer">allowupload</span>", "<span title="Disables recoring of video">forbidrecord</span>", "<span title="Disables switching between uploading and recording">forbidswitch</span>", "<span title="Disables rerecording completely">forbidrerecord</span>", "<span title="Overwrites the video if a video with the same key already exists">forceoverwrite</span>"</dd>
+				<dt class="record rerecord" data-equal="">disable_first_screen</dt>
+					<dd>Boolean value to disable recorder's initial screen</dd>
+				<dt class="record rerecord" data-equal="">disable_device_test</dt>
+					<dd>Boolean value to disable the camera and microphone tests prior to recording</dd>
+				<dt class="record rerecord" data-equal="">disable_timer</dt>
+					<dd>Boolean value to hide the duration of recording on the recorder</dd>
+				<dt class="record rerecord" data-equal="">disable_snapshots</dt>
+					<dd>Disables the selection of snapshots after the recording</dd>
+				<dt class="record rerecord" data-equal="">hide_rerecord_on_snapshots</dt>
+					<dd>Boolean value to hide rerecord option while picking snapshots</dd>
+				<dt class="record rerecord" data-equal="">auto_crop</dt>
+					<dd>Boolean value to automatically crop videos to specific resolution (this cuts all the parts that are bigger than set resolution)</dd>
+				<dt class="record rerecord" data-equal="">auto_pad</dt>
+					<dd>Boolean value to automatically add black surface padding if video does not match set resolution</dd>
+				<dt class="play record rerecord" data-equal="=''">key</dt>
+					<dd>String that tells recorder under which key the video should be saved under</dd>
+				<dt class="play record rerecord" data-equal="=">limit</dt>
+					<dd>Integer value limiting the number of seconds that video / recording can be</dd>
+			</dl>
+			<dl class="ziggeo-params">
+				<dt data-equal="=">countdown</dt>
+					<dd>Integer value to set when the recording should start after selectig same. Defaults to 3 seconds. Use 0 to disable countdown</dd>
+				<dt data-equal="=''">input_bind</dt>
+					<dd>String value representing form field name to which video token would be passed over</dd>
+				<dt data-equal="=''">form_accept</dt>
+					<dd>String value holding jQuery selector to disable form submission until video is created</dd>
+				<dt data-equal="=''">id</dt>
+					<dd>String value representing desired ID of embedding element so that it can be looked up using JavaScript code</dd>
+				<dt data-equal="">immediate_playback</dt>
+					<dd>Boolean value to tell if the video should start playing right away after recording</dd>
+				<dt data-equal="">autoplay</dt>
+					<dd>Boolean value to indicate if the video should automatically play back in player</dd>
+				<dt data-equal="">loop</dt>
+					<dd>Boolean value to set if you wish for the player to play the video indefinitely</dd>
+				<dt data-equal="=''">server_auth</dt>
+					<dd>String representing authorization token retrieved from the server side</dd>
+				<dt data-equal="=''">client_auth</dt>
+					<dd>String representing authorization token for use on client side</dd>
+				<dt data-equal="=">rerecordings</dt>
+					<dd>Integer value indicating how many rerecordings you would allow to be made</dd>
+				<dt data-equal="=">expiration_days</dt>
+					<dd>Integer value to set after how many days you want to delete the recorded video (by defaul, never)</dd>
+				<dt data-equal="=''">video_profile</dt>
+					<dd>Strig value holding key or token of your video profile that you want to use</dd>
+
+				<dt data-equal="=''">meta_profile</dt>
+					<dd>Strig value holding key or token of your meta profile that you want to use</dd>
+				<dt data-equal="=">stream_width</dt>
+					<dd>Integer value setting the optimal width of the stream</dd>
+				<dt data-equal="=">stream_height</dt>
+					<dd>Integer value setting the optimal height of the stream</dd>
+				<dt data-equal="=''">title</dt>
+					<dd>String value to set title of the video being recorded</dd>
+				<dt data-equal="=''">description</dt>
+					<dd>String value to set the description of the video</dd>
+				<dt data-equal="=''">allowed_extensions</dt>
+					<dd>String value to limit the uploads to only specific extensions (all allowed by default)</dd>
+				<dt data-equal="=">default_image_selector</dt>
+					<dd>Float (integer with decimal point) value to indicate the default image selector</dd>
+				<dt data-equal="">enforce_duration</dt>
+					<dd>Boolean value to reject videos if they are too long.</dd>
+				<dt data-equal="=">limit_upload_size</dt>
+					<dd>Integer value to limit the size of videos being uploaded in bytes (no limit by default)</dd>
+				<dt data-equal="">performance_warning</dt>
+					<dd>Boolean value to set a warning to be shown if framerate is too low</dd>
+				<dt data-equal="">recover_streams</dt>
+					<dd>Boolean value to set the attempt to recover videos feature if your customers close their browser while recording</dd>
+				<dt data-equal="">nofullscreen</dt>
+					<dd>Boolean value to disable fullscreen option in player</dd>
+				<dt class="beta" data-equal="">stretch</dt>
+					<dd>Boolean value to set the beta player to be responsive (this happens in realtime)</dd>
+				<dt class="beta" data-equal="=''">theme</dt>
+					<dd>String value of the name of the theme that you wish to have applied to your player</dd>
+			</dl>
+		</div>
+		<br style="clear: both;">
 		<?php
 	}
 
@@ -246,12 +264,15 @@ function ziggeo_video_templates_text() {
 		<div>
 			<ul class="ziggeo-manage_list">
 				<?php
-					$file = ZIGGEO_ROOT_PATH . 'userData/custom_templates.php';
-
-					$list = ziggeo_file_read($file);
-					foreach($list as $template => $value)
-					{
-						?><li><?php echo $template; ?> <span class="delete">x</span><span class="edit" data-template="<?php echo $value; ?>">edit</span></li><?php
+					$list = ziggeo_templates_index();
+					if($list) {
+						foreach($list as $template => $value)
+						{
+							?><li><?php echo $template; ?> <span class="delete">x</span><span class="edit" data-template="<?php echo $value; ?>">edit</span></li><?php
+						}						
+					}
+					else {
+						?><li>No templates yet, so lets make some ( tools found above ;) )</li><?php
 					}
 				?>
 				<?php //Edit should do //document.location += "#ziggeo_editing" while edit should do confim() ?>
@@ -261,15 +282,6 @@ function ziggeo_video_templates_text() {
 		</div>
 		<?php
 	}
-	// Admin panel requirements
-	//+1. <p> description of what it is for
-	//+2. <select> list available shorttags (dropdown would be best for this) - values get inserted into textarea as they click on the same
-	//+3. <dl> list of parameters/attributes that they can use - clicking on the same adds them to textarea maybe?
-	//+4. <input> to capture the id of the template //ID and Name would be same, they can name it any way they wish, we just call it ID
-	//+5. <textarea> to capture the customized shortcode
-	//+6. <select> list of all existing templates.
-//7. <button> options to {edit}, {delete} and {create} templates * might add confusion as to what they do.. so I think that it might be better to stick with one save button.
-
 
 
 // - GENERAL - tab fields functions
@@ -308,28 +320,6 @@ function ziggeo_video_general_text() {
 		<?php
 	}
 
-	//@OLD - will be replaced with templates, but still should be respected. The values from here should be turned into the first RECORDER template!
-	function ziggeo_recorder_config_setting_string() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['recorder_config']) )	{ $options['recorder_config'] = ''; }
-
-		?>
-		<input id="ziggeo_recorder_config" name="ziggeo_video[recorder_config]" size="50" type="text" placeholder="Ziggeo Recorder Config (leave blank for default settings)" value="<?php echo $options['recorder_config']; ?>" />
-		<?php
-	}
-
-	//@OLD - will be replaced with templates, but still should be respected. The values from here should be turned into the first PLAYER template!
-	function ziggeo_player_config_setting_string() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['player_config']) )	{ $options['player_config'] = ''; }
-
-		?>
-		<input id="ziggeo_player_config" name="ziggeo_video[player_config]" size="50" type="text" placeholder="Ziggeo Player Config (leave blank for default settings)" value="<?php echo $options['player_config']; ?>" />
-		<?php
-	}
-
 	//beta is currently used to show beta player. We should make it possible to choose beta player and recorder at some point, and will need to capture this @OLD value
 	function ziggeo_beta_setting_string() {
 		$options = get_option('ziggeo_video');
@@ -338,6 +328,15 @@ function ziggeo_video_general_text() {
 
 		?>
 		<input id="ziggeo_beta" name="ziggeo_video[beta]" type="checkbox" value="1" <?php echo checked( 1, $options['beta'], false ); ?> />
+		<label for="ziggeo_beta">If you select this option, each template will try to use beta version ( you will still be able to make decisions per template )</label>
+		<?php
+	}
+
+	//Used for styling purposes only.
+	function ziggeo_comments_html() {
+		?>
+		<hr class="ziggeo_linespacer">
+		<span class="ziggeo-subframe">Comments options</span>
 		<?php
 	}
 
@@ -349,6 +348,7 @@ function ziggeo_video_general_text() {
 
 		?>
 		<input id="ziggeo_video_comments" name="ziggeo_video[disable_video_comments]" type="checkbox" value="1" <?php echo checked( 1, $options['disable_video_comments'], false ); ?> />
+		<label for="ziggeo_video_comments">By default the comments will get activated with the feature to add videos as comments :) (check this to disable it)</label>
 		<?php	
 	}
 
@@ -360,16 +360,84 @@ function ziggeo_video_general_text() {
 
 		?>
 		<input id="ziggeo_text_comments" name="ziggeo_video[disable_text_comments]" type="checkbox" value="1" <?php echo checked( 1, $options['disable_text_comments'], false ); ?> />
+		<label for="ziggeo_text_comments">Want to have video comments only? Check this to set it as such ( leave unchecked to allow<span id="ziggeo-comments_video_checker"> video and</span> text comments ).</label>
 		<?php
 	}
 
-//@TODO - we should change this to do some validation
+	//Player template option to be used in comments
+	function ziggeo_video_comments_template_player_string() {
+		?>
+		<select id="ziggeo_video_comments_template_player" name="ziggeo_video[coments_player_template]">
+			<option value="">Default</option>
+		<?php
+			$list = ziggeo_templates_index();
+			if($list) {
+				foreach($list as $template => $value)
+				{
+					?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
+				}				
+			}
+		?>
+		</select>
+		<label for="ziggeo_video_comments_template_player">This template will be applied to all comment players (player, rerecorder maybe? ... the choise is yours :) )</label>
+		<?php
+	}
+
+	//Recorder template option to be used in comments
+	function ziggeo_video_comments_template_recorder_string() {
+		?>
+		<select id="ziggeo_video_comments_template_recorder" name="ziggeo_video[coments_recorder_template]">
+			<option value="">Default</option>
+		<?php
+			$list = ziggeo_templates_index();
+			if($list) {
+				foreach($list as $template => $value)
+				{
+					?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
+				}				
+			}
+		?>
+		</select>
+		<label for="ziggeo_video_comments_template_recorder">This template will be applied to all comment recorders (it can be uploader template, recorder, ... the choice is yours)</label>
+		<?php
+	}
+
+	//Used for styling only
+	function ziggeo_global_html() {
+		?>
+		<hr class="ziggeo_linespacer">
+		<span class="ziggeo-subframe">Global & Default options</span>
+		<?php
+	}
+
+	//Used as defaults - fallbacks :)
+	function ziggeo_recorder_config_setting_string() {
+		$options = get_option('ziggeo_video');
+
+		if(!isset($options['recorder_config']) )	{ $options['recorder_config'] = ''; }
+
+		?>
+		<input id="ziggeo_recorder_config" name="ziggeo_video[recorder_config]" size="50" type="text" placeholder="Ziggeo Recorder Config (leave blank for default settings)" value="<?php echo $options['recorder_config']; ?>" />
+		<?php
+	}
+
+	//Used as defaults - fallbacks :)
+	function ziggeo_player_config_setting_string() {
+		$options = get_option('ziggeo_video');
+
+		if(!isset($options['player_config']) )	{ $options['player_config'] = ''; }
+
+		?>
+		<input id="ziggeo_player_config" name="ziggeo_video[player_config]" size="50" type="text" placeholder="Ziggeo Player Config (leave blank for default settings)" value="<?php echo $options['player_config']; ?>" />
+		<?php
+	}
+
+//Function to capture the values submitted by the customer
 function ziggeo_video_validate($input) {
-	$newInput = $input;
 
 	//We will first grab the old values, then add to them, or simply replace them where needed..
 	$options = get_option('ziggeo_video');
-	
+
 	//List of all options that we accept
 	$allowed_options = array(
 		//templates tab
@@ -379,12 +447,27 @@ function ziggeo_video_validate($input) {
 	);
 
 	//Going through all updated settings so that we can update all that need to be so
-	foreach($input as $option => $value)
+	foreach($options as $option => $value)
 	{
-		if(isset($allowed_options[$option]))
-		{	
-			$options[$option] = $value;
+		if(isset($input[$option])) {	
+			$options[$option] = $input[$option];
+			//We have used the option, now lets not have it available any more
+			unset($input[$option]);
 		}
+		else {
+			$options[$option] = '';
+		}
+	}
+
+	//Now we check if there are any new options that are passed to us and we allow them
+	if( !empty($input) ) {
+		foreach($input as $option => $value)
+		{
+			if(isset($allowed_options[$option]))
+			{	
+				$options[$option] = $value;
+			}
+		}	
 	}
 
 	if( isset($options['templates_editor']) && $options['templates_editor'] !== '' )
@@ -396,6 +479,11 @@ function ziggeo_video_validate($input) {
 		//add new
 		if( !isset($options['templates_manager']) || $options['templates_manager'] === '' )
 		{
+			//before adding template we need to know that the template name was added, if not, lets just name it for our customer :)
+			if( trim($options['templates_id']) === '' ) {
+				$options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
+			}
+
 			//Templates Editor value gets saved in a bit different manner, together with the ID.. We need to keep these two clean each time
 			// instead we save them into a new file as JSON, but we must make sure that such file does not exist currently.
 			ziggeo_templates_add( $options['templates_id'], $options['templates_editor']);
@@ -427,9 +515,7 @@ function ziggeo_video_validate($input) {
 		ziggeo_templates_remove($options['templates_manager']);
 	}
 
-	$newInput = $options;
-
-	return $newInput;
+	return $options;
 }
 
 function ziggeo_admin_add_page() {

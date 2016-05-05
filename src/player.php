@@ -35,7 +35,7 @@ function ziggeo_content_replace($matches) {
 function ziggeo_content_replace_templates($matches)
 {
 	$ret = '';
-	$beta_params = array('stretch' => true,  'ba-video' => true, 'ba-theme' => true, '_wpbeta_' => true); //the last one just to state if the template is beta or not..
+	$beta_params = array('stretch' => true, 'theme' => true, '_wpbeta_' => true); //the last one just to state if the template is beta or not..
 	$type = null; //the type of tag that we are using..
 
 	//So that we can fill out the tags as we did before.
@@ -238,7 +238,12 @@ function ziggeo_parameter_prep($data) {
 
 	foreach($tmp_str as $key => $value) {
 		if($value !== '') {
-			$tmp_str2 .= ' ziggeo-' . $value;
+			if( stripos('ziggeo-', $value) > -1 ) {
+				//seems that ziggeo- prefix is already present.. should we do something then, or just skip it?
+			}
+			else {
+				$tmp_str2 .= ' ziggeo-' . $value;
+			}
 		}
 	}
 
