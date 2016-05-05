@@ -11,8 +11,6 @@ elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 ?><?php
 	$options = get_option('ziggeo_video');
 	$default = 'ziggeo-width=480 ziggeo-height=360 ziggeo-limit=120';
-	// I am not a big fan of @ since it would hide all errors, so I would change this to isset instead
-	//$config = @$options["recorder_config"] ? $options["recorder_config"] : $default;
 	$config = isset($options["recorder_config"]) ? $options["recorder_config"] : $default;
 
 ?><?php
