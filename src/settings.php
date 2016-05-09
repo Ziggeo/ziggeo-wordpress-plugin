@@ -23,8 +23,8 @@ function ziggeo_admin_init() {
 			add_settings_field('ziggeo_video_comments_template_player', 'Video Comments player template', 'ziggeo_video_comments_template_player_string', 'ziggeo_video', 'ziggeo_video_main');
 			add_settings_field('ziggeo_text_comments', 'Disable Text Comments', 'ziggeo_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
 		add_settings_field('ziggeo_global_html', '', 'ziggeo_global_html', 'ziggeo_video', 'ziggeo_video_main');
-			add_settings_field('ziggeo_recorder_config', 'Ziggeo recorder config', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
-			add_settings_field('ziggeo_player_config', 'Ziggeo player config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_recorder_config', 'Ziggeo Recorder Config', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_player_config', 'Ziggeo Player Config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 			add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 
 
@@ -79,9 +79,9 @@ function ziggeo_video_templates_text() {
 	//We show description and the list in the select option, since both are used to help customers, not to capture and handle any values
 	?>
 	<div class="ziggeo-frame" style="display: none;" id="ziggeo-tab_templates">
-		<p>Welcome to templates - an easy way for you to set up the ziggeo codes which you can then call from any post or page with a simple shortcode with the template ID, while everything is saved and handled for you by Ziggeo plugin.</p>
-		<p>You can start from the default shortcode and work your way from it, or choose one that is pre-set with some specific options</p>
-		<p>There are few values that you will use:
+		<p>Welcome to templates - an easy way for you to set up the Ziggeo codes; you can call them from any post or page with a simple shortcode with the template ID, while everything is saved and handled for you by Ziggeo plugin.</p>
+		<p>You can start from the default shortcode and work your way from it, or choose one that is pre-set with some specific options.</p>
+		<p>The different parameters have the following value types:
 			<ol>
 				<li>Integer - after equal you simply add the number, no quotes</li>
 				<li>Boolean - you can just remove parameter (which equals to false) or add it and will be seen as true</li>
@@ -142,7 +142,7 @@ function ziggeo_video_templates_text() {
 		<?php //The list of parameters to use in templates ?>
 
 		<div id="ziggeo-params-holder">
-			<b>Ziggeo parameters that you can use in templates (Pro tip: click to add ;) )</b>
+			<b>Ziggeo parameters that you can use in templates (Click to add)</b>
 			<dl class="ziggeo-params">
 				<dt class="play record rerecord" data-equal="=">width</dt>
 					<dd>Integer value representing the width of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the width of recording, just of the video screen</dd>
@@ -272,7 +272,7 @@ function ziggeo_video_templates_text() {
 						}						
 					}
 					else {
-						?><li>No templates yet, so lets make some ( tools found above ;) )</li><?php
+						?><li>No templates yet, please create some</li><?php
 					}
 				?>
 				<?php //Edit should do //document.location += "#ziggeo_editing" while edit should do confim() ?>
@@ -348,7 +348,7 @@ function ziggeo_video_general_text() {
 
 		?>
 		<input id="ziggeo_video_comments" name="ziggeo_video[disable_video_comments]" type="checkbox" value="1" <?php echo checked( 1, $options['disable_video_comments'], false ); ?> />
-		<label for="ziggeo_video_comments">By default the comments will get activated with the feature to add videos as comments :) (check this to disable it)</label>
+		<label for="ziggeo_video_comments">By default the comments will get activated with the feature to add videos as comments (check this to disable it)</label>
 		<?php	
 	}
 
@@ -379,7 +379,7 @@ function ziggeo_video_general_text() {
 			}
 		?>
 		</select>
-		<label for="ziggeo_video_comments_template_player">This template will be applied to all comment players (player, rerecorder maybe? ... the choise is yours :) )</label>
+		<label for="ziggeo_video_comments_template_player">This template will be applied to all comment players (player, rerecorder maybe? ... the choice is yours )</label>
 		<?php
 	}
 

@@ -25,4 +25,3 @@ function ziggeo_mce_add_button($buttons) {
 }
 
 ?>
-
