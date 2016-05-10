@@ -4,12 +4,9 @@ defined('ABSPATH') or die();
 
 add_filter('the_content', 'ziggeo_content_filter');
 add_filter('comment_text', 'ziggeo_content_filter');
-add_filter('the_title', 'ziggeo_content_filter');
 add_filter('the_excerpt', 'ziggeo_content_filter');
 add_filter('thesis_comment_text', 'ziggeo_content_filter');
 
-// Probably best to create new function since this one depends on matches. Nice way of doing it, but better to do it over shorttags.
-// shortcode tags limits: 3.9.3 for HTML being passed over (but had errors at that time), from 4.0 it works OK. Was available prior to 2.5
 // -- Default values to use: 'ziggeo-width=320 ziggeo-height=240'
 function ziggeo_content_replace($matches) {
 	$options = get_option('ziggeo_video');
@@ -85,9 +82,17 @@ function ziggeo_content_replace_templates($matches)
 		'ziggeoform' => array () //!uses different parameters
 	);
 
+	//The new templates called the old way..[ziggeoplayer]TOKEN[/ziggeoplayer]
+	if(isset($matches, $matches[3]))
+	{
+		$tmp = ziggeo_content_replace_templates( array( substr( $matches[0], 0, strpos($matches[0], ']') ) . 'video="' . $matches[2] . '"]', $matches[2] ) );
+		//<ziggeoplayer ziggeo-theme="modern"  ziggeo-video="TOKEN" ziggeo-width=320 ziggeo-height=240></ziggeoplayer>
+		return $tmp;
+	}
+
+	//This should be active for new templates only
 	if(isset($matches, $matches[1]) )
 	{
-
 		//These are parameters sent to us through the [ziggeo] shortcode. It can be a raw setup like: " width=320 height=240 limit=4" or template ID/name
 		$parameters = trim($matches[1]);
 		$fullMatch = $matches[0];
@@ -96,6 +101,7 @@ function ziggeo_content_replace_templates($matches)
 		if($parameters === "") {
 			return '<ziggeo ziggeo-width=320 ziggeo-height=240 ziggeo-tags="' . implode(',', $presets['ziggeorecorder']['tags']) . '"></ziggeo>';
 		}
+
 		//There is something for us to do, so lets determine what is our starting tag at this stage since later we will use it if it is template and if it is not
 		else {
 			//Is it base?
@@ -106,7 +112,6 @@ function ziggeo_content_replace_templates($matches)
 			//Is it video player
 			if( stripos($fullMatch, 'ziggeoplayer') > -1 ) {
 				$parameters = substr($fullMatch, 13, -1);
-
 				$tag = 'ziggeoplayer';
 			}
 			//is it recorder
@@ -139,7 +144,6 @@ function ziggeo_content_replace_templates($matches)
 
 				$tag = 'ziggeoform';
 			}
-
 		}
 
 		//Lets determine if it is ID/name of a template and call it
@@ -182,8 +186,9 @@ function ziggeo_content_replace_templates($matches)
 			//one of the players/recorders/uploaders
 			else {
 				if( isset($options, $options['beta']) && $tag === 'ziggeoplayer' ) { 
-					$ret = '<ziggeoplayer ba-theme="modern" ' . $template . '></ziggeoplayer>';
+					$ret = '<ziggeoplayer ziggeo-theme="modern" ' . $template . '></ziggeoplayer>';
 					//<ziggeoplayer ba-theme="modern"  limit=6 width=320 height=240 face_outline immediate_playback video=""></ziggeoplayer>
+					// ziggeo-]bb9c5916d80277f7edba2d088c8c16a3[/ziggeoplayer ziggeo-video="" ziggeo-width=320 ziggeo-height=240
 				}
 				else {
 					$ret = '<ziggeo ' . $template . '></ziggeo>';
@@ -203,11 +208,16 @@ function ziggeo_content_filter($content) {
 
 	//@TODO if author admin/moderator - do it..
 
-	//Match the current setups
+	//Match the current setups - the ones done by previous versions
 	$content = preg_replace_callback("|\\[ziggeo\\](.*)\\[/ziggeo\\]|", 'ziggeo_content_replace', $content);
-	//Match the new setups - must be made after the above, since this one will match that one as well..
-	return preg_replace_callback("|\\[ziggeo(.*)\\]|", 'ziggeo_content_replace_templates', $content);
 
+	//Match the new setups - must be made after the above, since this one will match that one as well..
+
+	//matching new templates with old way of calling them in case someone does the same..
+	$content = preg_replace_callback("|\\[ziggeo(.*)\\](.*)\\[/ziggeo(.*)\\]|", 'ziggeo_content_replace_templates', $content);
+
+	//finally we do a check for the latest way of doing it only.
+	return preg_replace_callback("|\\[ziggeo(.*)\\]|", 'ziggeo_content_replace_templates', $content);
 }
 
 //Function to process parameters. We send it which ones have to be in and which one are currently set and it sends us back a string that we can use as a template
@@ -241,7 +251,7 @@ function ziggeo_parameter_prep($data) {
 	$tmp_str2 = '';
 
 	foreach($tmp_str as $key => $value) {
-		if($value !== '') {
+		if( trim($value) !== '') {
 
 			if( stripos($value, 'ziggeo-') > -1 ) {
 				//seems that ziggeo- prefix is already present.. should we do something then, or just skip it?
