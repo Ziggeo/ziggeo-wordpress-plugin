@@ -7,73 +7,80 @@ if (file_exists(TEMPLATEPATH . '/comments.php'))
 elseif(file_exists(TEMPLATEPATH . '/includes/comments.php'))
 	include_once TEMPLATEPATH . '/includes/comments.php';
 
-	//Lets get details of the current user to use them in tags
-	$current_user = wp_get_current_user();
+//Lets get details of the current user to use them in tags
+$current_user = wp_get_current_user();
 
-	//Getting our options
-	$options = get_option('ziggeo_video');
+//If a guest was to record a reply, we still want to add the comments tag, but it seems nice to indicate that that was done by some guest instead of not having that tag - which makes it look like it is missing.
+if(empty($current_user->user_login)) {
+	$curent_username = 'guest';
+}
+else {
+	$curent_username = $current_user->user_login;
+}
 
-	//Setting up defaults
+//Getting our options
+$options = get_option('ziggeo_video');
 
-	//Recorder defaults to be used in comments.
-	$default_recorder = ( isset($options["recorder_config"]) && !empty($options["recorder_config"]) ) ? $options["recorder_config"] : 'ziggeo-width=480 ziggeo-height=360 ziggeo-limit=120';
+//Setting up defaults
 
-	//Just so that we know if we are using template or not..
-	$template_recorder = ( isset($options['comments_recorder_template'])  && !empty($options["comments_recorder_template"]) );
+//Recorder defaults to be used in comments.
+$default_recorder = ( isset($options["recorder_config"]) && !empty($options["recorder_config"]) ) ? $options["recorder_config"] : 'ziggeo-width=480 ziggeo-height=360 ziggeo-limit=120';
 
-	//Final recorder template that we will be using
-	$default_recorder = ( $template_recorder ) ? $options['comments_recorder_template'] : $default_recorder;
+//Just so that we know if we are using template or not..
+$template_recorder = ( isset($options['comments_recorder_template'])  && !empty($options["comments_recorder_template"]) );
 
-	//Player defaults to be used in comments.
-	$default_player = ( isset($options["player_config"]) && !empty($options["player_config"]) ) ? $options["player_config"] : 'ziggeo-width=480 ziggeo-height=360';
+//Final recorder template that we will be using
+if($template_recorder) {
+	//DB holds the name of template, so we need to retrieve the parameters from the same based on the name.
+	$tempParams = ziggeo_template_params($options['comments_recorder_template']);
 
-	//Just so that we know if we are using template or not..
-	$template_player = ( isset($options['comments_recorder_template'])  && !empty($options["comments_recorder_template"]) );
+	//Just confirm it one more time which one we should use, in case template was removed and settings not updated.
+	//maybe change this to raise a notification if it happens to call deleted template.
+	$default_recorder = ( $tempParams ) ? $tempParams : $default_recorder;
+}
 
-	//Final player template that we will be using
-	$default_player = ( $template_player ) ? $options['comments_player_template'] : $default_player;
+//Player defaults to be used in comments.
+$default_player = ( isset($options["player_config"]) && !empty($options["player_config"]) ) ? $options["player_config"] : 'ziggeo-width=480 ziggeo-height=360';
 
+//Just so that we know if we are using template or not..
+$template_player = ( isset($options['comments_player_template'])  && !empty($options["comments_player_template"]) );
 
+//Final player template that we will be using
+if($template_player) {
+	//DB holds the name of template, so we need to retrieve the parameters from the same based on the name.
+	$tempParams = ziggeo_template_params($options['comments_player_template']);
 
-	//@TODO - remove, present for testing purposes only 
-	$default_recorder .= ' ziggeo-perms="allowupload, forbidrecord"';
-/* TODO
-
-	1. Play videos using the default template (the previous setup), or by using the selected template
-	2. Record videos using the default template (the previous setup), or by using the selected template
-	3. respect the options in the General tab:
-		3.1. Are video comments disabled?
-			- if this is checked (disable comment), it should uncheck the 3.3
-		3.2. Are text comments disabled?
-			- if this is checked (disable comment), it should uncheck the 3.3
-		3.3. Is video required and text optional?
-			- If this is selected, JS should uncheck the 3.1. and 3.2 (if they are checked)
-
-			Upon recording the [ziggeo]ea8b8fcb6ce027293d2e345607c9c502[/ziggeo] is added to the #comment textarea. If we switch to it, the same is deleted.
-			It might be good to not have the same shown to visitors, but to include the same within the comment upon posting of the form..
-			Solution for 3.3:
-			Show 2 different fields, one is required and only once it is filled out, will the comment2 field be combined with it and inserted into the comments textarea. This allows us to hide the key and to capture the comments input without any issue, regardless of the changes that they are making on the same..
-
-	4. Reorganize js codes..
-*/
+	//Just confirm it one more time which one we should use, in case template was removed and settings not updated.
+	//maybe change this to raise a notification if it happens to call deleted template.
+	$default_player = ( $tempParams ) ? $tempParams : $default_player;
+}
 
 
 //If video is set as required and text as optional..
 if( isset($options['video_and_text']) && $options['video_and_text'] === '1' ) {
+	
+	//Lets make sure that our settings in general tab are properly set.
+	if(isset($options['disable_video_comments'])) {
+		$options['disable_video_comments'] = '';
+	}
+	if(isset($options['disable_text_comments'])) {
+		$options['disable_text_comments'] = '';
+	}
+
 	?>
 	<script type="text/template" id="comment-ziggeo-template">
 		<div class="comment-navigation">
 			<span class="dashicons dashicons-video-alt"></span> Video Comments with optional text comment
 		</div>
 		<div id="comments-video-container">
-
+			<?php //We use this field to get the video token into it, allowing us more freedom with the overall comment manipulation ?>
 			<input type="hidden" id="ziggeo_video_token" value="">
 			<ziggeo
 				<?php echo $default_recorder; ?>
 				<?php //Do not allow the form to be submitted unless video is filled out ?>
 				ziggeo-form_accept="#commentform"
 				<?php //Capture "wordpress" and "username" as video tags. ?>
-				ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>,comment">
+				ziggeo-tags="wordpress,<?php echo $curent_username; ?>,comment">
 			</ziggeo>
 		</div>
 		<div id="comments-text-container"></div>
@@ -169,14 +176,6 @@ if( isset($options['video_and_text']) && $options['video_and_text'] === '1' ) {
 	<?php
 }
 
-
-
-
-
-
-
-
-
 //If video comments are not disabled...
 elseif( !isset($options["disable_video_comments"]) || (isset($options["disable_video_comments"]) && $options["disable_video_comments"] !== '1')) { ?>
 	<script type="text/template" id="comment-ziggeo-template">
@@ -212,7 +211,7 @@ elseif( !isset($options["disable_video_comments"]) || (isset($options["disable_v
 			<?php //Do not allow the form to be submitted unless video is filled out ?>
 			ziggeo-form_accept="#commentform"
 			<?php //Capture "wordpress" and "username" as video tags. ?>
-			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>,comment"
+			ziggeo-tags="wordpress,<?php echo $curent_username; ?>,comment"
 		></ziggeo>
 	</script>
 

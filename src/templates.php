@@ -129,3 +129,17 @@ function ziggeo_template_exists($id)
 	//if we did not find it, lets just return false..
 	return false;
 }
+
+//Retrieves tempalte parameters only based on template ID returns false if not available.
+function ziggeo_template_params($id) {
+
+	$rez = ziggeo_template_exists($id);
+
+	//OK, template exists, lets parse it
+	if($rez) {
+		$rez = substr($rez, stripos($rez, ' '), -1);
+		return $rez;
+	}
+
+	return false;
+}

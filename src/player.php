@@ -41,9 +41,28 @@ function ziggeo_content_replace_templates($matches)
 	//Lets check what we are filtering through at this time..
 	$filter = current_filter();
 
+	//We will need to check few options from the DB..
+	$options = get_option('ziggeo_video');
+
 	//Lets add a tag to the video, that the same is not only a wordpress video, but that it is also one made in comments ;)
 	if( $filter === 'comment_text' || $filter === 'thesis_comment_text' ) {
 		$locationTag = 'comment';
+
+		//1. Test if there is a specific template to use when playing comments
+		//2. if so get its parameters and combine them with video token and pass further.
+		$tmp = '[ziggeo ';
+
+		if( isset($options['comments_player_template']) && !empty($options['comments_player_template']) ) {
+			$commentTemplateID = $options['comments_player_template'];
+
+			$tmp .= ziggeo_template_params($commentTemplateID);
+		}
+
+		$index = stripos($matches[0], ' video=');
+		$tmp .=  substr($matches[0], $index, stripos($matches[0], ' ', $index+1) );
+
+		$matches[0] = $tmp;
+		$matches[1] = 'ignore';
 	}
 	//For now it is else, in future, we can expend this to include other filters.
 	else {
@@ -86,7 +105,6 @@ function ziggeo_content_replace_templates($matches)
 	if(isset($matches, $matches[3]))
 	{
 		$tmp = ziggeo_content_replace_templates( array( substr( $matches[0], 0, strpos($matches[0], ']') ) . 'video="' . $matches[2] . '"]', $matches[2] ) );
-		//<ziggeoplayer ziggeo-theme="modern"  ziggeo-video="TOKEN" ziggeo-width=320 ziggeo-height=240></ziggeoplayer>
 		return $tmp;
 	}
 
@@ -152,14 +170,9 @@ function ziggeo_content_replace_templates($matches)
 			//At this time the parameters holds the template ID not parameters and temaplte is having the the template loaded with tags and everything..
 			return ziggeo_content_replace_templates(array($template, $template));
 		}
-		//if it is not a template name, it is likely parameters list, so just post it as it is..
+		//if it is not a template name, it is likely parameters list, so just post it 'as is'..
 		else {
-
-
 			//This is the actual processing ;)
-			
-			//If it is the list of parameters, we need to check few options from the DB..
-			$options = get_option('ziggeo_video');
 
 			$template = ziggeo_parameter_processing($presets[$tag], $parameters);
 
@@ -187,8 +200,6 @@ function ziggeo_content_replace_templates($matches)
 			else {
 				if( isset($options, $options['beta']) && $tag === 'ziggeoplayer' ) { 
 					$ret = '<ziggeoplayer ziggeo-theme="modern" ' . $template . '></ziggeoplayer>';
-					//<ziggeoplayer ba-theme="modern"  limit=6 width=320 height=240 face_outline immediate_playback video=""></ziggeoplayer>
-					// ziggeo-]bb9c5916d80277f7edba2d088c8c16a3[/ziggeoplayer ziggeo-video="" ziggeo-width=320 ziggeo-height=240
 				}
 				else {
 					$ret = '<ziggeo ' . $template . '></ziggeo>';
@@ -239,7 +250,7 @@ function ziggeo_parameter_processing($requiredAtt, $process, $stripDuplicates = 
 	}
 
 	//Seems that if customers use "" within the visual editor, it will change quote to &#8221; and &#8243; so lets clean that up..
-	$processed = str_replace( array('&#8221;', '&#8243;'), '"', $processed); 
+	$processed = str_replace( array('&#8221;', '&#8243;'), '"', $processed);
 
 	return $processed;
 }
@@ -251,7 +262,8 @@ function ziggeo_parameter_prep($data) {
 	$tmp_str2 = '';
 
 	foreach($tmp_str as $key => $value) {
-		if( trim($value) !== '') {
+		$value = trim($value);
+		if( $value !== '' && $value !== ']' ) {
 
 			if( stripos($value, 'ziggeo-') > -1 ) {
 				//seems that ziggeo- prefix is already present.. should we do something then, or just skip it?

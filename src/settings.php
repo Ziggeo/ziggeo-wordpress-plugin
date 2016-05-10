@@ -500,6 +500,17 @@ function ziggeo_video_validate($input) {
 		}	
 	}
 
+	//Lets make sure that if video and text is selected, that video and comment options are not selected (no sense having them disabled and this enabled)
+	if( isset($input['video_and_text']) && !empty($input['video_and_text']) ) {
+		unset($options['disable_video_comments'], $options['disable_text_comments']);
+	}
+	elseif( ( isset($input['disable_video_comments']) && !empty($input['disable_video_comments']) ) || ( isset($input['disable_text_comments']) && !empty($input['disable_text_comments']) ) ) {
+		unset($options['video_and_text']);
+	}
+		
+
+	//From this point on, we should not use $input, only $options
+
 	if( isset($options['templates_editor']) && $options['templates_editor'] !== '' )
 	{
 		//Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
