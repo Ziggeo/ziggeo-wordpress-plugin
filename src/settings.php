@@ -19,6 +19,7 @@ function ziggeo_admin_init() {
 		add_settings_field('ziggeo_app_token', 'Ziggeo API Token', 'ziggeo_app_token_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 		add_settings_field('ziggeo_comments_html', '', 'ziggeo_comments_html', 'ziggeo_video', 'ziggeo_video_main');
 			add_settings_field('ziggeo_video_comments', 'Disable Video Comments', 'ziggeo_video_comments_string', 'ziggeo_video', 'ziggeo_video_main');
+			add_settings_field('ziggeo_video_and_text', 'Require Video and have text as optional', 'ziggeo_video_and_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
 			add_settings_field('ziggeo_video_comments_template_recorder', 'Video Comments recorder template', 'ziggeo_video_comments_template_recorder_string', 'ziggeo_video', 'ziggeo_video_main');
 			add_settings_field('ziggeo_video_comments_template_player', 'Video Comments player template', 'ziggeo_video_comments_template_player_string', 'ziggeo_video', 'ziggeo_video_main');
 			add_settings_field('ziggeo_text_comments', 'Disable Text Comments', 'ziggeo_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
@@ -80,7 +81,7 @@ function ziggeo_video_templates_text() {
 	?>
 	<div class="ziggeo-frame" style="display: none;" id="ziggeo-tab_templates">
 		<p>Welcome to templates - an easy way for you to set up the Ziggeo codes; you can call them from any post or page with a simple shortcode with the template ID, while everything is saved and handled for you by Ziggeo plugin.</p>
-		<p>You can start from the default shortcode and work your way from it, or choose one that is pre-set with some specific options.</p>
+		<p>You can start from the default shortcode and work your way from it, or choose one that is pre-set with some specific options</p>
 		<p>The different parameters have the following value types:
 			<ol>
 				<li>Integer - after equal you simply add the number, no quotes</li>
@@ -186,9 +187,9 @@ function ziggeo_video_templates_text() {
 				<dt class="record rerecord" data-equal="">hide_rerecord_on_snapshots</dt>
 					<dd>Boolean value to hide rerecord option while picking snapshots</dd>
 				<dt class="record rerecord" data-equal="">auto_crop</dt>
-					<dd>Boolean value to automatically crop videos to specific resolution (this cuts all the parts that are bigger than set resolution)</dd>
+					<dd>Boolean value to automatically crop videos to specific resolution (this cuts all the parts that are bigger than set resolution) - can only be applied to recorder</dd>
 				<dt class="record rerecord" data-equal="">auto_pad</dt>
-					<dd>Boolean value to automatically add black surface padding if video does not match set resolution</dd>
+					<dd>Boolean value to automatically add black surface padding if video does not match set resolution - can only be applied to recorder</dd>
 				<dt class="play record rerecord" data-equal="=''">key</dt>
 					<dd>String that tells recorder under which key the video should be saved under</dd>
 				<dt class="play record rerecord" data-equal="=">limit</dt>
@@ -272,7 +273,7 @@ function ziggeo_video_templates_text() {
 						}						
 					}
 					else {
-						?><li>No templates yet, please create some</li><?php
+						?><li>No templates yet, please create</li><?php
 					}
 				?>
 				<?php //Edit should do //document.location += "#ziggeo_editing" while edit should do confim() ?>
@@ -352,6 +353,72 @@ function ziggeo_video_general_text() {
 		<?php	
 	}
 
+	//Show video (and it is required) and the WordPress comment field next to it
+	function ziggeo_video_and_text_comments_string() {
+		$options = get_option('ziggeo_video');
+
+		if(!isset($options['video_and_text']) )	{ $options['video_and_text'] = ''; }
+
+		?>
+		<input id="ziggeo_video_and_text" name="ziggeo_video[video_and_text]" type="checkbox" value="1" <?php echo checked( 1, $options['video_and_text'], false ); ?> />
+		<label for="ziggeo_video_and_text">Set video comment to be required, but allow your visitors to leave some text for you as well (next to video)</label>
+		<?php	
+	}
+
+	//Recorder template option to be used in comments
+	function ziggeo_video_comments_template_recorder_string() {
+		$options = get_option('ziggeo_video');
+
+		if( !isset($options, $options['comments_recorder_template']) ) { $options['comments_recorder_template'] = false; }
+		?>
+		<select id="ziggeo_video_comments_template_recorder" name="ziggeo_video[comments_recorder_template]">
+			<option value="">Default</option>
+		<?php
+			$list = ziggeo_templates_index();
+			if($list) {
+				foreach($list as $template => $value)
+				{
+					if( $template === $options['comments_recorder_template'] ) {
+						?><option value="<?php echo $template; ?>" selected><?php echo $template; ?></option><?php
+					}
+					else{
+						?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
+					}
+				}				
+			}
+		?>
+		</select>
+		<label for="ziggeo_video_comments_template_recorder">This template will be applied to all comment recorders (it can be uploader template, recorder, ... the choice is yours)</label>
+		<?php
+	}
+
+	//Player template option to be used in comments
+	function ziggeo_video_comments_template_player_string() {
+		$options = get_option('ziggeo_video');
+		if( !isset($options, $options['comments_player_template']) ) { $options['comments_player_template'] = false; }
+
+		?>
+		<select id="ziggeo_video_comments_template_player" name="ziggeo_video[comments_player_template]">
+			<option value="">Default</option>
+		<?php
+			$list = ziggeo_templates_index();
+			if($list) {
+				foreach($list as $template => $value)
+				{
+					if( $template === $options['comments_player_template'] ) {
+						?><option value="<?php echo $template; ?>" selected><?php echo $template; ?></option><?php						
+					}
+					else {
+						?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php						
+					}
+				}				
+			}
+		?>
+		</select>
+		<label for="ziggeo_video_comments_template_player">This template will be applied to all comment players (player, rerecorder maybe? ... the choice  is yours )</label>
+		<?php
+	}
+
 	//Allows us to set so that text comments are available or disabled. Useful if one wants to have only video comments. Applied only if comments are enabled.
 	function ziggeo_text_comments_string() {
 		$options = get_option('ziggeo_video');
@@ -364,43 +431,6 @@ function ziggeo_video_general_text() {
 		<?php
 	}
 
-	//Player template option to be used in comments
-	function ziggeo_video_comments_template_player_string() {
-		?>
-		<select id="ziggeo_video_comments_template_player" name="ziggeo_video[coments_player_template]">
-			<option value="">Default</option>
-		<?php
-			$list = ziggeo_templates_index();
-			if($list) {
-				foreach($list as $template => $value)
-				{
-					?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
-				}				
-			}
-		?>
-		</select>
-		<label for="ziggeo_video_comments_template_player">This template will be applied to all comment players (player, rerecorder maybe? ... the choice is yours )</label>
-		<?php
-	}
-
-	//Recorder template option to be used in comments
-	function ziggeo_video_comments_template_recorder_string() {
-		?>
-		<select id="ziggeo_video_comments_template_recorder" name="ziggeo_video[coments_recorder_template]">
-			<option value="">Default</option>
-		<?php
-			$list = ziggeo_templates_index();
-			if($list) {
-				foreach($list as $template => $value)
-				{
-					?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
-				}				
-			}
-		?>
-		</select>
-		<label for="ziggeo_video_comments_template_recorder">This template will be applied to all comment recorders (it can be uploader template, recorder, ... the choice is yours)</label>
-		<?php
-	}
 
 	//Used for styling only
 	function ziggeo_global_html() {
@@ -443,7 +473,7 @@ function ziggeo_video_validate($input) {
 		//templates tab
 			'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true,
 		//general tab
-			'token' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true
+			'token' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, video_and_text => true
 	);
 
 	//Going through all updated settings so that we can update all that need to be so

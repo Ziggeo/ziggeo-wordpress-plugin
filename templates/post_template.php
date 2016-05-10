@@ -2,8 +2,16 @@
 //Checking if WP is running or if this is a direct call..
 defined('ABSPATH') or die();
 
-	global $current_user;
-	get_currentuserinfo();
+	global $wp_version;
+
+	//Since 
+	if( version_compare( $wp_version, '4.5') >= 0 ) {
+		$current_user = wp_get_current_user();
+	}
+	else {
+		global $current_user;
+		get_currentuserinfo();		
+	}
 ?>
 
 <script type="text/template" id="ziggeo-insert-button-template">
@@ -18,6 +26,12 @@ defined('ABSPATH') or die();
 	</a>
 </script>
 
+<?php
+	//Since we are already declaring templates within the post, do we need this?
+	//maybe to allow people to choose which template will be set for playing, which for recording and which for rerecording and have it set like that through one shortcode?
+	
+?>
+
 <script type="text/template" id="ziggeo-recorder-template">
 	<div id="ziggeo-recorder">
 		<ziggeo
@@ -26,7 +40,7 @@ defined('ABSPATH') or die();
 			ziggeo-limit=240
 			ziggeo-form_accept="#post"
             ziggeo-perms="allowupload"
-			ziggeo-tags="wordpress,<?= $current_user->user_login ?>"
+			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>"
 		></ziggeo>
 	</div>
 </script>
@@ -41,7 +55,7 @@ defined('ABSPATH') or die();
 			ziggeo-modes="rerecorder"
 			ziggeo-perms="allowupload"
 			ziggeo-form_accept="#post"
-			ziggeo-tags="wordpress,<?= $current_user->user_login ?>"
+			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>"
 		></ziggeo>
 	</div>
 </script>

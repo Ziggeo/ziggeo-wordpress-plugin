@@ -96,7 +96,7 @@ function ziggeo_parameters_quick_add(event) {
 	//Allows us to check the location of the parameter, if it is already added
 	var attrLoc = editor.value.indexOf( ' ' + current.innerHTML + '=' );
 
-	//Did we already add the same parameter? Might be good to check it out so that we do not add it again, just do custom cursor/carrot positioning
+	//Did we already add the same parameter? Might be good to check it out so that we do not add it again, just do custom cursor/caret positioning
 	if( attrLoc > -1 )
 	{
 		//current.getAttribute('data-equal') we can use it to see if it is string or something else.
@@ -147,7 +147,7 @@ function ziggeo_parameters_quick_add(event) {
 	//Set the focus to the editor
 	editor.focus();
 
-	//Lets find where we want the cursor / carrot to be positioned at
+	//Lets find where we want the cursor / caret to be positioned at
 	if(editor.value[editor.value.length-1] === "]") {
 		//Did we just add a string based parameter?
 		if(editor.value[editor.value.length-2] === "'") {
@@ -295,10 +295,11 @@ function ziggeo_templates_turn_into_beta(check) {
 		}
 		else {
 			if( editor.value[editor.value.length-1] === "]" ) {
-				editor.value = editor.value.substr(0, editor.value.length-1) + ' _wpbeta_]';
+				//Trim to avoid there being a lot of space characters when we remove / add the option several times..
+				editor.value = editor.value.substr(0, editor.value.length-1).trim() + ' _wpbeta_]';
 			}
 			else {
-				editor.value += ' _wpbeta_';
+				editor.value = editor.value.trim() + ' _wpbeta_';
 			}
 
 			betaOption.value = 1;

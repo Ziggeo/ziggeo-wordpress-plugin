@@ -60,7 +60,7 @@ function ziggeo_content_replace_templates($matches)
 						'height' => 240
 					),
 		'ziggeoplayer' => array (
-						'token' => '', //requires token to play video. If it is not added, we will pass empty token, so that they are shown the player error and know that they need to fix it.
+						'video' => '', //requires token to play video. If it is not added, we will pass empty token, so that they are shown the player error and know that they need to fix it.
 						'width' => 320,
 						'height' => 240
 					),
@@ -70,7 +70,7 @@ function ziggeo_content_replace_templates($matches)
 						'height' => 240
 					), //tags are pre-set
 		'ziggeorerecorder' => array (
-						'token' => '', //requires token to play video. If it is not added, we will pass empty token, so that they are shown the player error and know that they need to fix it.
+						'video' => '', //requires token to play video. If it is not added, we will pass empty token, so that they are shown the player error and know that they need to fix it.
 						'tags' => array ('wordpress', $current_user->user_login, $locationTag ),
 						'width' => 320,
 						'height' => 240
@@ -151,6 +151,7 @@ function ziggeo_content_replace_templates($matches)
 		//if it is not a template name, it is likely parameters list, so just post it as it is..
 		else {
 
+
 			//This is the actual processing ;)
 			
 			//If it is the list of parameters, we need to check few options from the DB..
@@ -162,7 +163,12 @@ function ziggeo_content_replace_templates($matches)
 
 			//Check if there are any beta tags in there..
 			foreach($beta_params as $param => $value) {
-				if( stripos($template, $param) > -1 ) { $tagName = 'ziggeoplayer'; }
+				if( stripos($template, $param) > -1 ) {
+					$tagName = 'ziggeoplayer';
+
+					//Since this is only plugin specific beta option - per template, so we need to remove it so that it is not passed to Ziggeo API
+					if($param === '_wpbeta_')	{ $template = str_replace('_wpbeta_', '', $template); }
+				}
 			}
 
 			//Apply ziggeo prefixes
@@ -175,11 +181,9 @@ function ziggeo_content_replace_templates($matches)
 			}
 			//one of the players/recorders/uploaders
 			else {
-				if( isset($options, $options['beta']) && $tag === 'ziggeoplayer' ) { //@TODO - this is going to be changed. Instead of globally using beta or non beta version, templates will allow to use both in the same time, depending on the template itself.
-					//@TODO - this part should be changed since ziggeoplayer is used for playback only, not for recording...
+				if( isset($options, $options['beta']) && $tag === 'ziggeoplayer' ) { 
 					$ret = '<ziggeoplayer ba-theme="modern" ' . $template . '></ziggeoplayer>';
-					//<ziggeoplayer ba-theme="modern"  limit=6 width=320 height=240 face_outline immediate_playback token=""></ziggeoplayer>
-					
+					//<ziggeoplayer ba-theme="modern"  limit=6 width=320 height=240 face_outline immediate_playback video=""></ziggeoplayer>
 				}
 				else {
 					$ret = '<ziggeo ' . $template . '></ziggeo>';
@@ -213,8 +217,7 @@ function ziggeo_parameter_processing($requiredAtt, $process, $stripDuplicates = 
 	$processed = $process; //for now
 
 	foreach ($requiredAtt as $req => $value) {
-		$v = stripos($process, $req);
-		if( $v < 0 || $v === false )
+		if( stripos($process, $req) === false )
 		{
 			$processed .= ' ' .  $req;
 			
@@ -235,10 +238,12 @@ function ziggeo_parameter_processing($requiredAtt, $process, $stripDuplicates = 
 function ziggeo_parameter_prep($data) {
 
 	$tmp_str = explode(' ', $data);
+	$tmp_str2 = '';
 
 	foreach($tmp_str as $key => $value) {
 		if($value !== '') {
-			if( stripos('ziggeo-', $value) > -1 ) {
+
+			if( stripos($value, 'ziggeo-') > -1 ) {
 				//seems that ziggeo- prefix is already present.. should we do something then, or just skip it?
 			}
 			else {

@@ -2,8 +2,16 @@
 //Checking if WP is running or if this is a direct call..
 defined('ABSPATH') or die();
 
-	global $current_user;
-	get_currentuserinfo();
+	global $wp_version;
+
+	if( version_compare( $wp_version, '4.5') >= 0 ) {
+		$current_user = wp_get_current_user();
+	}
+	else {
+		global $current_user;
+		get_currentuserinfo();		
+	}
+
 	$options = get_option('ziggeo_video');
 ?>
 <div>

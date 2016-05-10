@@ -27,7 +27,6 @@ add_filter("comments_template", "ziggeo_comment_template");
 // For now, all files will be written with fwrite and fread.. This is fastest method and allows us to avoid asking customer about their details. It would also not be a very good method for reading files in either case since when pages are loaded, we need to run the same, not to wait for input about credentials..
 //after this is working right, we can add notifications about the files created so that customers can modify them if needed, and have a fallback on the file parser using WP filesystem..
 
-
 //Adds new templates to the currently existing ones
 function ziggeo_templates_add($id, $value) {
 
@@ -37,6 +36,7 @@ function ziggeo_templates_add($id, $value) {
 
 	$content = array ( $id => $value );
 
+	//In case directory does not exist, we will make one.
 	if(!file_exists($dir)) {
 		mkdir($dir);
 
