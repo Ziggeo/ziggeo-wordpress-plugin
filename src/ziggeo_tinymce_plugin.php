@@ -36,7 +36,7 @@ $start = "(function() {
 
 $middle = '';
 if($list) {
-//@TODO = player and re-recorder require token.. so it would be good to detect which base the template has and then add any required attributes to the same..
+	//player and re-recorder require token.. so it would be good to detect which base the template has and then add any required attributes to the same..
 	foreach($list as $id => $template) {
 
 		//We will check each since we want people to be able to add 2 or more templates ;)
@@ -52,7 +52,7 @@ if($list) {
 		if( stripos( $template, '[ziggeorerecorder') > -1 ) {
 			//Is token already set?
 			if( stripos($template, 'video') === false ) { //nope, lets add it
-				$template = str_replace('[ziggeo_rerecorder', '[ziggeo_rerecorder video=\'YOUR_VIDEO_TOKEN\'', $template);
+				$template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'YOUR_VIDEO_TOKEN\'', $template);
 			}
 		}
 

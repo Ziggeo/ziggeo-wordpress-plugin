@@ -104,8 +104,53 @@ function ziggeo_content_replace_templates($matches)
 	//The new templates called the old way..[ziggeoplayer]TOKEN[/ziggeoplayer]
 	if(isset($matches, $matches[3]))
 	{
-		$tmp = ziggeo_content_replace_templates( array( substr( $matches[0], 0, strpos($matches[0], ']') ) . 'video="' . $matches[2] . '"]', $matches[2] ) );
-		return $tmp;
+		$full = '[ziggeo ';
+		$params = '';
+
+		if($matches[3] === 'rerecorder') {
+			$full = '[ziggeorerecorder ';
+
+			//Since we know that it is re-recorder, lets check if we 
+			if( ( $start = stripos($matches[2], 'modes') ) > -1) {
+				if(stripos($matches[2], 'rerecorder', $start) === false) {
+					//we have modes set, but they do not have rerecorder as one of the modes.. since rerecorder tag is used, it should override the same
+					$matches[2] = str_replace('modes="', ' modes="rerecorder,', $matches[2]);
+				}
+			}
+			//we did not have mode set, so lets set it up by adding at the start
+			else {
+				$full .= ' modes="rerecorder" ';
+			}
+		}
+
+		$tmp = stripos($matches[0], ' ');
+		$tmp = substr($matches[0], $tmp, stripos($matches[0], ']') - $tmp+1 );
+
+		//Did we add the template through TinyMCE? If so we will have a string placeholder in there..
+		if(stripos($matches[0], 'YOUR_VIDEO_TOKEN') > -1) {
+			$params = str_replace('YOUR_VIDEO_TOKEN', $matches[2], $tmp);
+		}
+		//OK, so we have someone that writes their own templates and specific term provided by TinyMCE was not used..
+		else {
+			//Do we have video parameter mentioned at all? If not, we will just add it to the list, otherwise, lets do some search and replace instead.
+			if( ($start = stripos($matches[0], 'video=') ) > -1) {
+
+				$params = str_replace('video=', '', $matches[1]);
+				//$params = str_replace($matches[0], 'video=', '');
+				$params .= ' video="' . $matches[2] . '" ';
+
+			}
+			//we just addd video parameter to the existing list of parameters
+			else {
+				$params = ' video="' . $matches[2] . '" ';
+			}
+		}
+		$full .= $params;
+
+		return ziggeo_content_replace_templates( array($full, $params) );
+
+//		$tmp = ziggeo_content_replace_templates( array( substr( $matches[0], 0, strpos($matches[0], ']') ) . ' video="' . $matches[2] . '"]', $matches[2] ) );
+//		return $tmp;
 	}
 
 	//This should be active for new templates only
@@ -251,6 +296,7 @@ function ziggeo_parameter_processing($requiredAtt, $process, $stripDuplicates = 
 
 	//Seems that if customers use "" within the visual editor, it will change quote to &#8221; and &#8243; so lets clean that up..
 	$processed = str_replace( array('&#8221;', '&#8243;'), '"', $processed);
+	$processed = str_replace( '&#8217;', "'", $processed);
 
 	return $processed;
 }
@@ -263,7 +309,8 @@ function ziggeo_parameter_prep($data) {
 
 	foreach($tmp_str as $key => $value) {
 		$value = trim($value);
-		if( $value !== '' && $value !== ']' ) {
+		if( $value !== '' && $value !== ']' && $value !== '""'&& $value !== '"'
+			&& $value !== 'player' && $value !== 'recorder' && $value !== 'rerecorder') {
 
 			if( stripos($value, 'ziggeo-') > -1 ) {
 				//seems that ziggeo- prefix is already present.. should we do something then, or just skip it?
