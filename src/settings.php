@@ -273,7 +273,7 @@ function ziggeo_video_templates_text() {
 						}						
 					}
 					else {
-						?><li>No templates yet, please create</li><?php
+						?><li>No templates yet, please create one</li><?php
 					}
 				?>
 				<?php //Edit should do //document.location += "#ziggeo_editing" while edit should do confim() ?>
@@ -473,7 +473,7 @@ function ziggeo_video_validate($input) {
 		//templates tab
 			'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true,
 		//general tab
-			'token' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, video_and_text => true
+			'token' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true
 	);
 
 	//Going through all updated settings so that we can update all that need to be so
