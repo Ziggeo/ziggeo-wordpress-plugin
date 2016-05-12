@@ -148,9 +148,6 @@ function ziggeo_content_replace_templates($matches)
 		$full .= $params;
 
 		return ziggeo_content_replace_templates( array($full, $params) );
-
-//		$tmp = ziggeo_content_replace_templates( array( substr( $matches[0], 0, strpos($matches[0], ']') ) . ' video="' . $matches[2] . '"]', $matches[2] ) );
-//		return $tmp;
 	}
 
 	//This should be active for new templates only
@@ -167,6 +164,8 @@ function ziggeo_content_replace_templates($matches)
 
 		//There is something for us to do, so lets determine what is our starting tag at this stage since later we will use it if it is template and if it is not
 		else {
+			$tag = '';
+
 			//Is it base?
 			if( stripos($fullMatch, '[ziggeo ') > -1 ) {
 				$parameters = substr($fullMatch, 8, -1);
@@ -206,6 +205,14 @@ function ziggeo_content_replace_templates($matches)
 				$parameters = substr($fullMatch, 11, -1);
 
 				$tag = 'ziggeoform';
+			}
+
+			//When the call is not done right, we might not get it captured by [ziggeo test at the top, so we should check it again..
+			if($tag === '') {
+				if( stripos($fullMatch, '[ziggeo') > -1 ) {
+					$parameters = substr($fullMatch, 8, -1);
+					$tag = 'ziggeo';
+				}
 			}
 		}
 
@@ -260,10 +267,6 @@ function ziggeo_content_replace_templates($matches)
 //We are updating this in such a way that we will keep the old calls, so that we have backwards compatibility, but in the same time, we are adding another call that will check for us if there are any tags matching new templates. We must do it like this, since using regex we will be able to find this in all locations that we want, while if we use shortcode, it will only work (out of the box) if the shortcode is within the section covered by 'the_content' filter.
 function ziggeo_content_filter($content) {
 
-	//Just looking at the above, it seems to me that it would be best to apply some moderation checks. For example, if we just scan the comments for shortcode, it would mean that anyone could come and set up a ziggeo recorder on the comments, even if they are not logged in.. As such it might be best to limit this, to only if the author of the comment is the one that made the post, page or the comment hence allowing us to not trust the shortcodes sent to us by the people that just posted, but should not otherwise be able to do the same..
-
-	//@TODO if author admin/moderator - do it..
-
 	//Match the current setups - the ones done by previous versions
 	$content = preg_replace_callback("|\\[ziggeo\\](.*)\\[/ziggeo\\]|", 'ziggeo_content_replace', $content);
 
@@ -273,7 +276,12 @@ function ziggeo_content_filter($content) {
 	$content = preg_replace_callback("|\\[ziggeo(.*)\\](.*)\\[/ziggeo(.*)\\]|", 'ziggeo_content_replace_templates', $content);
 
 	//finally we do a check for the latest way of doing it only.
-	return preg_replace_callback("|\\[ziggeo(.*)\\]|", 'ziggeo_content_replace_templates', $content);
+	$content = preg_replace_callback("|\\[ziggeo(.*)\\]|", 'ziggeo_content_replace_templates', $content);
+
+	//check to make sure that we get even [ziggeo calls without end bracket and show the embedding matching the call as much as possible instead of an error on a page
+	$content = preg_replace_callback("|\\[ziggeo*([^\s\<]+)|", 'ziggeo_content_replace_templates', $content);
+
+	return $content;
 }
 
 //Function to process parameters. We send it which ones have to be in and which one are currently set and it sends us back a string that we can use as a template

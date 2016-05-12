@@ -138,7 +138,7 @@ function ziggeo_video_templates_text() {
 		<br><br>
 
 		<?php //The actual template body that we will save ?>
-		<textarea id="ziggeo_templates_editor" name="ziggeo_video[templates_editor]" rows="11" cols="50"></textarea>
+		<textarea id="ziggeo_templates_editor" name="ziggeo_video[templates_editor]" rows="11" cols="50">[ziggeo </textarea>
 
 		<?php //The list of parameters to use in templates ?>
 
@@ -511,7 +511,7 @@ function ziggeo_video_validate($input) {
 
 	//From this point on, we should not use $input, only $options
 
-	if( isset($options['templates_editor']) && $options['templates_editor'] !== '' )
+	if( isset($options['templates_editor']) && $options['templates_editor'] !== '' && $options['templates_editor'] !== '[ziggeo ' )
 	{
 		//Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
 		if( substr( $options['templates_editor'], -1) !== "]" )	{ $options['templates_editor'] .= ']'; }
@@ -555,6 +555,10 @@ function ziggeo_video_validate($input) {
 	elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
 		ziggeo_templates_remove($options['templates_manager']);
 	}
+
+	//We are currently showing it up as default, so we should remove it at this point - we do not want it saved
+	unset($options['templates_editor']);
+
 
 	return $options;
 }
