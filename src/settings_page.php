@@ -1,4 +1,5 @@
 <?php
+
 //Checking if WP is running or if this is a direct call..
 defined('ABSPATH') or die();
 
@@ -47,6 +48,8 @@ defined('ABSPATH') or die();
 	<h2>Ziggeo Video Posts &amp; Comments</h2>
 
 	<form action="options.php" method="post">
+		<?php wp_nonce_field('ziggeo_nonce_action', 'ziggeo_video_nonce'); ?>
+		<?php get_settings_errors(); ?>
 		<?php settings_fields('ziggeo_video'); ?>
 		<?php do_settings_sections('ziggeo_video'); ?>
 

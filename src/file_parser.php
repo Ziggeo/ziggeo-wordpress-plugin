@@ -3,11 +3,14 @@
 // It will be used for events and templates, but could also be used for notifications so that we keep the log in the local storage
 // File access vs db - faster, especially if looking up for entry that does not exist, but depending on the hosting, it might ask customers to fill out the details multiple times. To work around it, they could add the same credentials into their wp_config.php file..
 
-//Checking if WP is running or if this is a direct call..
+//Checking if WP is running or if this is a direct call.. - can not use it due to its use through tinymce plugin
 /*defined('ABSPATH') or die();*/
 
 //Checks if file exists and if so updates it, otherwise creates one in 'userData' directory
-function ziggeo_file_write($file, $content) {
+// > file - the path to file including file name
+// > content - content to write down
+// > context - it is only set for failure, so that we can know which form fields to keep
+function ziggeo_file_write($file, $content, $context = false) {
 
 	//encode content as JSON
 	$content = json_encode($content);
@@ -18,23 +21,49 @@ function ziggeo_file_write($file, $content) {
 	//add PHP tags
 	$content = '<' . '?' . 'php//' . $content . '?' . '>';
 
-	//Lets temporarily unlock the file if possible..
-	$c = chmod($file, 0766);
-
-	if($c === false) {
-		//nope, it failed..
-		//Leaving this for notifications ;)
+	if(file_exists($file)) {
+		//Lets temporarily unlock the file if possible..
+		$c = @chmod($file, 0766);
+		if($c === false) {
+			//nope, it failed..
+			//Leaving this for notifications ;)
+		}
+	}
+	else {
+		//raise error..	
 	}
 
 	//write it down
-	$ret = file_put_contents($file, $content);
+	$ret = @file_put_contents($file, $content);
 
-	//Lets set it back to closed
-	$c = chmod($file, 0755);
+	//the file writing has failed
+	if($ret === false) {
+		//lets use WP file system since customer has different users set.
+		if($context === 'templates'){
+			$form_fields = array ('templates_editor', 'templates_id');
+			$context = 'ziggeo_templates_id';
+		}
 
-	if($c === false) {
-		//nope, it failed..
-		//Leaving this for notifications ;)
+		//lets notify customer that there were some issues along the way..
+		add_settings_error($context,
+							'file_write_action',
+							'There were issues creating directory. If you were not shown WordPress credentials form, the action failed.
+								Please see more about it here: <a href="https://ziggeo.com/@TODO">Creating files fails in our WordPress plugin</a>',
+							'error');
+
+		//later we will check other things here as well.
+
+		$ret = ziggeo_file_WP_prepare('write', $form_fields, $file, $content);
+	}
+
+	if($ret) {
+		//Lets set it back to `closed`
+		$c = @chmod($file, 0755);
+
+		if($c === false) {
+			//nope, it failed..
+			//Leaving this for notifications ;)
+		}		
 	}
 
 	return $ret;
@@ -65,4 +94,92 @@ function ziggeo_file_read($file) {
 	return false;
 }
 
+/// -- These functions will only work with WP initialized and should not be called otherwise --- ///
+
+//WP filesystem parsing
+
+//Checks if file exists and if so updates it, otherwise creates one in 'userData' directory
+//It must be called through ziggeo_file_WP_prepare()
+function ziggeo_file_WP_write($file, $content) {
+	global $wp_filesystem;
+
+	//We have all we need, now just to save the file..
+	//$fileName = trailingslashit( $wp_filesystem->wp_plugins_dir ) . $fileName;
+
+	//At this point this should be an array holding the old values as well as the new ones..
+	$content = json_encode($content);
+
+	//create file
+	if ( !$wp_filesystem->put_contents( $fileName, $content, FS_CHMOD_FILE) ) {
+		return false;
+	}
+}
+
+//Prepares everything so that we can write to file or read from the same..
+function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
+	global $wp_filesystem;
+
+	wp_verify_nonce('ziggeo_video_nonce', 'ziggeo_nonce_action');
+
+	$url = wp_nonce_url('options-general.php?page=ziggeo_video','ziggeo_nonce_action');
+	//options-general.php?page=ziggeo_video&_wpnonce=5441b62704
+
+	?>
+	<div class="wrap">
+		<h1>We need few details to complete this action</h1>
+		<p>Seems that you are running a secure setup on your server, which means that we can not write a file on the same. To help us with this we are calling WordPress functions that will allow you to share FTP details in secure way and allow us to use the same (through other WordPress functions) to save the files to your server.</p>
+	<?php
+
+	//Lets grab credentials if we do not have it..
+	if( ($credentials = request_filesystem_credentials($url, '', false, ZIGGEO_ROOT_PATH, $form_fields, true) ) === false ) {
+		//Customer did not enter these details before, so lets wait for input since the form is shown..
+		?> </div> <?php //closing the .wrap above
+		return false;
+	}
+
+	// We have the needed credentials, lets see if we can roll some wheels
+	if( !WP_Filesystem($credentials, ZIGGEO_ROOT_PATH, true) ) {
+		//Password is easy to be entered wrong, and since something is wrong, letting the user know with the error
+		request_filesystem_credentials($url, '', true, ZIGGEO_ROOT_PATH, $form_fields, true);
+		?> </div> <?php //closing the .wrap above
+		return;
+	}
+
+	//To show the errors that happened - if any
+	if ( $wp_filesystem->errors->get_error_code() ) {
+		foreach ( $wp_filesystem->errors->get_error_messages() as $message )
+			show_message($message);
+		echo '</div>';
+		return;
+	}
+
+	//We got it all set up and good to go..now lets do what we wanted to do..
+
+	//We define this here, so that we can use it without further recalcualtions - the wp_filesystem should be available at this time.
+	define('ZIGGEO_ROOT_PATH_FS', str_replace(ABSPATH, $wp_filesystem->abspath(), ZIGGEO_ROOT_PATH));
+
+	//Since all data should be in "userData" folder, if the same does not exist, we can simply return false on reading action and create it on write action..
+	if( !$wp_filesystem->is_dir( ZIGGEO_ROOT_PATH_FS . '/userData/') ) {
+		if($action === 'write') {
+			$wp_filesystem->mkdir(ZIGGEO_ROOT_PATH_FS . '/userData/');
+		}
+		else {
+			return false;
+		}
+	}
+
+	if($action === 'write') {
+		//Read the entire file, then add this back
+		return ziggeo_file_WP_write($file, $content);
+	}
+	else {
+		//Since we have the path and file allready set, we check it here for the same
+		if(!$wp_filesystem->exists($file)) {
+			return false;
+		}
+
+		//return ziggeo_file_WP_read($file, $content); //only website admin can read file with credentials..we do not want that.
+		return file_get_contents($file, $content);
+	}
+}
 ?>

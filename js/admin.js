@@ -49,6 +49,11 @@ function ziggeo_changeTab(tab)
 			document.getElementById('ziggeo-tab_templates').style.display = 'block';
 			break;
 		}
+		case 'contact': {
+			document.getElementById('ziggeo-tab_id_contact').className = 'ziggeo-tabName selected';
+			document.getElementById('ziggeo-tab_contact').style.display = 'block';
+			break;
+		}
 	}
 }
 

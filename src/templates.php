@@ -38,7 +38,19 @@ function ziggeo_templates_add($id, $value) {
 
 	//In case directory does not exist, we will make one.
 	if(!file_exists($dir)) {
-		mkdir($dir);
+		if(mkdir($dir, 0777) === false) {
+
+			//We have this error here and under ziggeo_file_write, since we do other checks there as well. The same error will however not be called twice
+			add_settings_error('templates_editor',
+							'file_write_action',
+							'There were issues creating directory. If you were not shown WordPress credentials form, the action failed.
+								Please see more about it here: <a href="https://ziggeo.com/@TODO">Creating files fails in our WordPress plugin</a>',
+							'error');
+
+			//This has failed.. we need to create it in a different manner..
+			$form_fields = array ('templates_editor', 'templates_id');
+			return ziggeo_file_WP_prepare('write', $form_fields, $file, $content);
+		}
 
 		return ziggeo_file_write($file, $content);
 	}

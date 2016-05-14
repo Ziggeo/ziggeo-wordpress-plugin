@@ -11,6 +11,7 @@ function ziggeo_admin_init() {
 	add_settings_section('ziggeo_video_tabss', '', 'ziggeo_video_tabss_html', 'ziggeo_video'); //for styling purposes start
 	add_settings_section('ziggeo_video_templates', '', 'ziggeo_video_templates_text', 'ziggeo_video'); //templates tab
 	add_settings_section('ziggeo_video_main', '', 'ziggeo_video_general_text', 'ziggeo_video'); //general tab
+	add_settings_section('ziggeo_video_contact', '', 'ziggeo_video_contact_text', 'ziggeo_video'); //contact us tab
 	add_settings_section('ziggeo_video_tabse', '', 'ziggeo_video_tabse_html', 'ziggeo_video'); //for styling purposes end
 
 	//Add sections settings
@@ -28,14 +29,14 @@ function ziggeo_admin_init() {
 			add_settings_field('ziggeo_player_config', 'Ziggeo Player Config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 			add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 
-
-
-
 		//Templates section
-		// @IMPORTANT - we must make it respect the previus tags as well
 		add_settings_field('ziggeo_templates_id', 'Template ID', 'ziggeo_templates_id_string', 'ziggeo_video', 'ziggeo_video_templates');
 		add_settings_field('ziggeo_templates_editor', 'Template Editor', 'ziggeo_templates_editor_string', 'ziggeo_video', 'ziggeo_video_templates');
 		add_settings_field('ziggeo_templates_manager', 'Manage your templates', 'ziggeo_templates_manager_string', 'ziggeo_video', 'ziggeo_video_templates');
+
+		//Contact us section
+		add_settings_field('ziggeo_contact_ziggeo', 'Contact Us on our platform', 'ziggeo_contact_ziggeo_string', 'ziggeo_video', 'ziggeo_video_contact');
+		add_settings_field('ziggeo_contact_wp', 'Contact Us on WordPress', 'ziggeo_contact_wp_string', 'ziggeo_video', 'ziggeo_video_contact');
 
 }
 
@@ -49,7 +50,6 @@ function ziggeo_video_tabss_html() {
 		<span class="ziggeo-tabName">Video Listing</span>
 		<span class="ziggeo-tabName">Notifications</span>
 		<span class="ziggeo-tabName">Backup/Restore</span>
-		<span class="ziggeo-tabName" style="border-top-right-radius: 8px;">Contact us</span>
 
 		<div style="display: none;" class="ziggeo-frame"></div>
 	*/
@@ -58,7 +58,13 @@ function ziggeo_video_tabss_html() {
 	<br>
 	<span id="ziggeo-tab_id_templates" class="ziggeo-tabName" style="border-top-left-radius: 8px;" onclick="ziggeo_changeTab('templates');">Templates</span>
 	<span id="ziggeo-tab_id_general" class="ziggeo-tabName selected" onclick="ziggeo_changeTab('general');">General</span>
-	<?php 
+	<span id="ziggeo-tab_id_contact" class="ziggeo-tabName" style="border-top-right-radius: 8px;" onclick="ziggeo_changeTab('contact');">Contact us</span>
+	<?php
+
+	// @NOTE
+	// To show a tab frame, we use:
+	//<div class="ziggeo-frame" style="display: none;" id="ziggeo-tab_{section}">
+	//If there are any frames before it we need to add </div> before the frame to close the previous one.
 }
 
 //Function to close the last tab frame
@@ -258,9 +264,6 @@ function ziggeo_video_templates_text() {
 	//This function build the interface that will help us show and manage the templates.
 	//It will show a list of templates and over each, at the top right corner there should be options to edit and remove the same.
 	function ziggeo_templates_manager_string() {
-		//@TODO - we need to first create templates parsing function which we would call at this point to get all of the templates.
-		// We would always skip the default templates
-		//SAMPLE CODE
 		?>
 		<div>
 			<ul class="ziggeo-manage_list">
@@ -462,6 +465,38 @@ function ziggeo_video_general_text() {
 		<?php
 	}
 
+
+
+// - contact us - tab fields functions
+//-------------------------------------
+
+//Function to show the frame of our tab
+function ziggeo_video_contact_text() {
+	?>
+	</div>
+	<div class="ziggeo-frame" style="display: none;" id="ziggeo-tab_contact">
+		<p><i>Regardless where your question is posted, we are happy to assist with the same, so all you need to do is ask</i></p>
+	<?php
+}
+	//Function to show the contact details on our Zendesk platform.
+	function ziggeo_contact_ziggeo_string() {
+		?>
+		<p>We are using Zendesk to provide assistance with your issues. To contact us there, you should either send an email
+		to <a href="mailto:support@ziggeo.com">support@ziggeo.com</a> or simply go to <a href="http://support.ziggeo.com/">our helpdesk</a> where
+		you might find the answers to your questions already being answered.</p>
+		<?php
+	}
+
+	//Function to show the contact instructions for contacting on WordPress itself instead.
+	function ziggeo_contact_wp_string() {
+		?>
+		<p>If you prefer to contact us over WordPress, all you need is to head here: <a href="https://wordpress.org/support/plugin/ziggeo">Ziggeo Plugin Support</a></p>
+		<?php
+	}
+
+
+//--- Tab functions end ----
+
 //Function to capture the values submitted by the customer
 function ziggeo_video_validate($input) {
 
@@ -476,17 +511,22 @@ function ziggeo_video_validate($input) {
 			'token' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true
 	);
 
-	//Going through all updated settings so that we can update all that need to be so
-	foreach($options as $option => $value)
-	{
-		if(isset($input[$option])) {	
-			$options[$option] = $input[$option];
-			//We have used the option, now lets not have it available any more
-			unset($input[$option]);
-		}
-		else {
-			$options[$option] = '';
-		}
+	if(is_array($options)) {
+		//Going through all updated settings so that we can update all that need to be so
+		foreach($options as $option => $value)
+		{
+			if(isset($input[$option])) {	
+				$options[$option] = $input[$option];
+				//We have used the option, now lets not have it available any more
+				unset($input[$option]);
+			}
+			else {
+				$options[$option] = '';
+			}
+		}		
+	}
+	else {
+		$options = array ();
 	}
 
 	//Now we check if there are any new options that are passed to us and we allow them
@@ -498,6 +538,9 @@ function ziggeo_video_validate($input) {
 				$options[$option] = $value;
 			}
 		}	
+	}
+	else {
+		return false; //nothing to do here..
 	}
 
 	//Lets make sure that if video and text is selected, that video and comment options are not selected (no sense having them disabled and this enabled)
@@ -520,40 +563,56 @@ function ziggeo_video_validate($input) {
 		//add new
 		if( !isset($options['templates_manager']) || $options['templates_manager'] === '' )
 		{
+			$idGiven = true;
+
 			//before adding template we need to know that the template name was added, if not, lets just name it for our customer :)
 			if( trim($options['templates_id']) === '' ) {
 				$options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
+
+				$message = 'We have saved your template, but since Template ID was not given, we have set one up for you! - "' . $options['templates_id'] . '"';
+				$idGiven = false;
+			}
+			//if the template is just a number, it will not work, we need to add it some text at the start
+			elseif( is_numeric($options['templates_id']) ) {
+				$options['templates_id'] = '_' . $options['templates_id'];
 			}
 
 			//Templates Editor value gets saved in a bit different manner, together with the ID.. We need to keep these two clean each time
 			// instead we save them into a new file as JSON, but we must make sure that such file does not exist currently.
-			ziggeo_templates_add( $options['templates_id'], $options['templates_editor']);
+			if( ziggeo_templates_add( $options['templates_id'], $options['templates_editor']) ) {
+
+				if($idGiven) {
+					$message = 'Your template "' . $options['templates_id'] . '" has been successfully created.';
+				}
+
+				add_settings_error('ziggeo_templates_manager',
+									'template_created',
+									$message,
+									'updated');					
+			}
 		}
 		//edit old
 		elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' )
 		{
 			//old ID, new ID, template structure
-			ziggeo_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']);
+			if( ziggeo_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']) ) {
+				add_settings_error('ziggeo_templates_manager',
+									'template_updated',
+									'Your template "' . $options['templates_id'] . '" has been successfully updated.',
+									'updated');	
+			}
 		}
 
 		unset( $options['templates_editor'], $options['templates_id'] );
-
-		//--------------------------------------------------------
-
-		//Check if templates are added
-		if( isset( $options['templates_id'] ) ) {
-
-			//@TODO - only as a fallback
-			//$form_fields = array ($options['templates_editor'], $options['templates_id']);
-			//$content = array ($options['templates_editor'], $options['templates_id']);
-			//ziggeo_file_WP_prepare('write', $form_fields, 'custom_templates.php', $content);
-		}
-		//check if events are added
-		//if not, just do nothing..
 	}
 	//Should we delete template?
 	elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
-		ziggeo_templates_remove($options['templates_manager']);
+		if( ziggeo_templates_remove($options['templates_manager']) ) {
+				add_settings_error('ziggeo_templates_manager',
+									'template_removed',
+									'Your template "' . $options['templates_manager'] . '" has been successfully deleted.',
+									'updated');	
+			}
 	}
 
 	//We are currently showing it up as default, so we should remove it at this point - we do not want it saved
@@ -564,7 +623,7 @@ function ziggeo_video_validate($input) {
 }
 
 function ziggeo_admin_add_page() {
-	add_options_page('Ziggeo Video', 'Ziggeo Video', 'manage_options', 'ziggeo_video', 'ziggeo_settings_page');
+	add_options_page('Ziggeo Video', '<img src="' . ZIGGEO_ROOT_URL . '/images/icon.png" style="height: 1em; position: relative; top: 0.1em; padding-right: 0.2em;">Ziggeo Video', 'manage_options', 'ziggeo_video', 'ziggeo_settings_page');
 }
 
 add_action('admin_menu', 'ziggeo_admin_add_page');
