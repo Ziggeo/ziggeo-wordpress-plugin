@@ -631,3 +631,4 @@ add_action('admin_menu', 'ziggeo_admin_add_page');
 function ziggeo_settings_page() {
 	include_once(dirname(__FILE__) . "/settings_page.php");
 }
+?>

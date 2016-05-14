@@ -10,6 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin allows you to do video posts and accept video comments through use of powerfull Ziggeo API.
 
+
 == Description ==
 
 You can use this plugin to spice up your blog with video posts. Simply start by creating a new post,
@@ -24,29 +25,43 @@ two lines of code in your site, service or app.
 
 = Support =
 
-We provide active support to all that have any questions or need any assistance with our plugin or our service. To submit your questions simply go to our [Help Center](https://ziggeo.zendesk.com/hc/en-us)
+We provide active support to all that have any questions or need any assistance with our plugin or our service.
+To submit your questions simply go to our [Help Center](https://ziggeo.zendesk.com/hc/en-us)
 
 = Recording =
 
-You control the length of the videos, the tags associated witht the same (by default we pre-set the tags to "wordpress", username of the submitter as reported by WordPress and (new) where the video was made - "post"/"comment" )
+You control the length of the videos, the tags associated witht the same (by default we pre-set the tags to "wordpress",
+username of the submitter as reported by WordPress and (new) where the video was made - "post"/"comment" )
 
-Recordings can be processed on our end to include any effects or filters that you have previously set, while you are still using only few lines of human readable short codes.
+Recordings can be processed on our end to include any effects or filters that you have previously set, while you are
+still using only few lines of human readable short codes.
 
 = Playback =
 
-You just tell us the video that you wish to play and how you want it to look - full customization possible - allowing your videos to blend into your WordPress website and to amaze your website visitors.
+You just tell us the video that you wish to play and how you want it to look - full customization possible - allowing
+your videos to blend into your WordPress website and to amaze your website visitors.
 
 = Video Uploads =
 
-You want to allow uploads? Want to turn them into playable videos right after uploading? This has never been easier - you simply set the recorder to allow uploads, or use our predefined uploading template and you are good to go. All videos uploaded through the same would be possible to be played back for you.
+You want to allow uploads? Want to turn them into playable videos right after uploading? This has never been easier - you
+simply set the recorder to allow uploads, or use our predefined uploading template (`[ziggeouploader]`) and you are good to go.
+All videos uploaded through the same would be possible to be played back for you.
 
 = Templates =
 
-Ziggeo plugin is now powered by templates allowing you to quickly set up the template in the "template builder" part of the plugin and then simply reference from your posts, pages and comments. There is no limit in the amount of templates you can have and it is up to you how you will use them.
+Ziggeo plugin is now powered by templates allowing you to quickly set up the template in the "template builder" part of the
+plugin and then simply reference from your posts, pages and comments. There is no limit in the amount of templates you can have
+and it is up to you how you will use them.
 
 You can also set default templates for your comments - for playback and recording so we got you covered there as well.
 
-If you experience any issues with the plugin, please let us know at support@ziggeo.com
+= Improvements and Feedback =
+
+If you experience any issues with the plugin, please let us know. You can do that through options shown in plugins `Contact Us` tab, or if
+you were in contact with us before, just let us know in the same manner as before.
+
+We value your suggestions in regards to all aspects of our service and plugin as well, so use this and don't be afraid to help us help you.
+
 
 == Installation ==
 
@@ -66,17 +81,41 @@ There are several ways to power your WordPress with video recording and video pl
 
 == Frequently asked questions ==
 
-= How to pass ID from plugin XY to Ziggeo tag =
+= How to pass ID from plugin XY to Ziggeo tag = @TODO
 Do step 1, 2, 3..
-TODO
+
+= How to show videos to only some people when using [WordPress Groups plugin](https://wordpress.org/plugins/groups/)
+
+You would be able to do that either by using:
+
+<pre>
+[groups_member group="YourLimitedGroup"]
+ [ziggeo][/ziggeo]
+[/groups_member]
+</pre>
+
+or by using
+
+<pre>
+[groups_non_member group="YourLimitedGroup"]
+ [ziggeo][/ziggeo]
+[/groups_non_member]
+</pre>
+
+
+@TODO
 
 == Screenshots ==
 
 1. General tab
 2. Templates Tab
-3. Working with templates
-4. Adding parameters
-5. //todo
+3. Contact us tab
+4. Working with templates - nice layout of parameters and their description
+5. Working with templates - managing templates
+6. Working with templates - editing templates
+7. Working with templates - beta templates (if you are not on beta by default)
+
+8. //@todo - maybe we could add segments =general tab=, =templates tab=, etc and then screenshots..
 
 == Upgrade notice ==
 

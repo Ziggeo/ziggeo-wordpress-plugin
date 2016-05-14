@@ -4,7 +4,7 @@
     Plugin URI: http://ziggeo.com
     Description: Plugin for adding video posts and video comments
     Author: Ziggeo
-    Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
+    Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder, video player, video gallery, video uploads, video submissions
     Version: 1.11
     Author URI: http://ziggeo.com
     */
@@ -17,6 +17,9 @@ define('ZIGGEO_ROOT_PATH', plugin_dir_path(__FILE__) );
 
 //Setting up the URL so that we can get/built on it later on from the plugin root
 define('ZIGGEO_ROOT_URL', plugins_url() . '/ziggeo/' );
+
+//plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
+define('ZIGGEO_VERSION', '1.11');
 
 include_once(ZIGGEO_ROOT_PATH . "src/player.php");
 include_once(ZIGGEO_ROOT_PATH . "src/assets.php");
