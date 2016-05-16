@@ -109,6 +109,9 @@ function ziggeo_parameters_quick_add(event) {
 		var start = attrLoc + current.innerHTML.length + 2;
 		var end = editor.value.indexOf( ' ', attrLoc+1); //adding plus1 since we were searching for whitespace as well (to know that attribut started and is not part of the other parameter..)
 
+		//What if we had removed the quote?
+		var quoteCheck = editor.value.indexOf( "'", attrLoc+1);
+
 		//We got to the end of the editor value and did not find space, so this is the last parameter..
 		if(end === -1) {
 			//we need to check for ', ] and = to know the correct positioning at this time
@@ -125,9 +128,16 @@ function ziggeo_parameters_quick_add(event) {
 
 		if(current.getAttribute('data-equal').indexOf("'") > -1)
 		{
-			//we got a string based parameter, lets change the start and end..
-			start++;
-			end--;
+			//we got a string based parameter, lets change the start and end..	
+			if(quoteCheck < 0) { // we need to add quotes as well..
+				start++;
+				editor.value = editor.value.substr(0, start) + "'' " + editor.value.substr(end);
+				end++;
+			}
+			else {
+				start++;
+				end--;				
+			}
 		}
 
 		editor.focus();
