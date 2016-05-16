@@ -8,7 +8,7 @@ Stable tag: 1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you to do video posts and accept video comments through use of powerfull Ziggeo API.
+This plugin allows you to do video posts and accept video comments through use of powerful Ziggeo API.
 
 
 == Description ==
@@ -30,22 +30,97 @@ To submit your questions simply go to our [Help Center](https://ziggeo.zendesk.c
 
 = Recording =
 
-You control the length of the videos, the tags associated witht the same (by default we pre-set the tags to "wordpress",
+You control the length of the videos, the tags associated with the same (by default we pre-set the tags to "wordpress",
 username of the submitter as reported by WordPress and (new) where the video was made - "post"/"comment" )
 
 Recordings can be processed on our end to include any effects or filters that you have previously set, while you are
 still using only few lines of human readable short codes.
+
+Recording videos is as simple as:
+
+`
+[ziggeo]
+`
+
+- This will load our default video recorder and if any defaults are set through plugin, they would be used.
+
+If you create template with name 'mytemplate', which includes video_profile, effects_profile, width, height and tags, instead of these few lines:
+
+`
+<ziggeo ziggeo-video_profile="_my_video_profile"
+                ziggeo-effect_profile='my_effects'
+                ziggeo-width=640
+                ziggeo-height=480
+                ziggeo-tags='mytag1,mytag2'>
+</ziggeo>
+`
+
+You can simply use the following, even shorter call:
+
+`
+[ziggeo mytemplate]
+`
 
 = Playback =
 
 You just tell us the video that you wish to play and how you want it to look - full customization possible - allowing
 your videos to blend into your WordPress website and to amaze your website visitors.
 
+A sample of your video player call was as simple as:
+
+`
+[ziggeo]VIDEO_TOKEN[/ziggeo]
+`
+
+This is still the same, but you can also use the following:
+
+`
+[ziggeoplayer video="VIDEO_TOKEN"]
+`
+
+or
+
+`
+[ziggeo video="VIDEO_TOKEN"]
+`
+
+All of them will load a player on your website. Want to customize it? With templates, your WordPress video player is created by simply adding the following:
+
+- seeing that myVideoPlayer is the name of the template:
+
+`
+[ziggeoplayer myVideoPlayer video="VIDEO_TOKEN"]
+`
+
+Do you love simple [ziggeo] tag instead? That is OK. It will work like that as well. Just change it to:
+
+`
+[ziggeo myVideoPlayer video="VIDEO_TOKEN"]
+`
+
 = Video Uploads =
 
 You want to allow uploads? Want to turn them into playable videos right after uploading? This has never been easier - you
 simply set the recorder to allow uploads, or use our predefined uploading template (*[ziggeouploader]*) and you are good to go.
 All videos uploaded through the same would be possible to be played back for you.
+
+Instead of setting up the Ziggeo embedding to allow video uploads to your WordPress plugin you can also simply call the uploader (plugin) template as so:
+
+`
+[ziggeouploader]
+`
+
+Do you want to style it to some specific setup? That is possible, simply set it up with a template as so (seeing that our "uploads" is the name of the template):
+
+`
+[ziggeouploader uploads]
+`
+
+As with video player and Ziggeo video recorder, you can set up your uploader using the base template:
+
+`
+[ziggeo uploads]
+`
 
 = Templates =
 
@@ -55,11 +130,24 @@ and it is up to you how you will use them.
 
 You can also set default templates for your comments - for playback and recording so we got you covered there as well.
 
+You have already seen some of the examples above, and to see their full power, you should definitely check them out for size.
+
 = How templates work =
 
 Templates are an easy way for you to set your parameters for recorder, player or uploader (at this time) and set it only in one place. In the same time this is done through a simple to use 'tool' next to the templates editor.
 
 When the embedding is detected in your posts, pages or comments, our plugin will go through it and find what you wanted to show and how you wanted to show it.
+
+There are several base templates:
+1. [ziggeo]
+1. [ziggeoplayer]
+1. [ziggeorecorder]
+1. [ziggeorerecorder]
+1. [ziggeouploader]
+
+The only reason why we created them is to allow you to use a simple tag in your post to specify what you are after with specific parameters being loaded for you.
+
+Please check FAQ section for some of the questions related to the same.
 
 = Improvements and Feedback =
 
@@ -85,10 +173,8 @@ There are several ways to power your WordPress with video recording and video pl
 
 * That is it, your plugin is installed :)
 
-== Frequently asked questions ==
 
-= How to pass ID from plugin XY to Ziggeo tag = @TODO
-Do step 1, 2, 3..
+== Frequently asked questions ==
 
 = How to show videos to only some people when using WordPress Groups plugin? =
 
@@ -110,11 +196,12 @@ or by using
 [/groups_non_member]
 `
 
-
-= Why would we use templates? =
+= Is using templates better than using previous method of embedding? =
 
 Do you happen to have hundreds of posts with Ziggeo embeddings?
 What if you wanted to change all of them? Well, if your first thought was about opening each and every one of those great posts on your websites or thinking about the SQL statements that you would use, stop. With templates that is not the case. You can just edit the template and that is it, all posts get updated with that one edit! How amazing is that? :)
+
+It is of course up to you to decide which method works best for you - this is just an option that you can use if you need it.
 
 = What happens when you delete the template? =
 
@@ -138,7 +225,30 @@ That simply means that you are using different 'user' to run WordPress and a dif
 
 = Why are the options on General tab hidding and showing when we move our mouse? =
 
-We added a lot of changes to this version and we are planning on adding more. In order to keep it all clean and simple we made few style decisions which we hope you will like, where the option explanation will only show itself onec you are over it and for the rest of the time your dashboard is nice and clean.
+We added a lot of changes to this version and we are planning on adding more. In order to keep it all clean and simple we made few style decisions which we hope you will like, where the option explanation will only show itself once you are over it and for the rest of the time your dashboard is nice and clean.
+
+= What happens when we set template for recording on a template base for playing videos, or some other combination? =
+
+We try to detect what you might want to do. As such, even if you are using tag that is not specific to the template we will try to do what we can with it, but the template base will prevail.
+
+We do however recommend that you set up any number of templates that you might want to have and use each as desired to make sure that all is loaded per your preferences.
+
+= Is there a way to load templates without going to settings to see their names? =
+
+Yes, we added *Ziggeo Video Aid* button to the toolbar of your TinyMCE shown right above the Post editing. It will allow you to quickly add your templates to your post without ever leaving it.
+
+If it detects that it needs to get the video token set it will show the same to you and allow you to quickly set it up by pre-selecting it for you.
+
+= Is there an easier way to get the body of a template / template structure into our post instead of the template id without doing edit to get it? =
+
+Yes. To add the template you use *Ziggeo Video Aid* button in the toolbar. To get the body, you use the same button, and click on the same option. The only difference is that to get the body of the template loaded, you need to press *Shift* on your keyboard while clicking on the template ID. That is it :)
+
+= What is "Turn into beta" option in templates tab? =
+
+If you want to use beta everywhere, the global options are the way to go with. However if you want to use beta calls on some templates only (which is for example available to your developers only, or your testers), the best option would be to use the template. Once you click on the button, it will add a custom tag to indicate that it is beta embedding.
+
+Clicking on it again will stop it from being 'beta'.
+
 
 == Screenshots ==
 
@@ -155,12 +265,17 @@ We added a lot of changes to this version and we are planning on adding more. In
 = Global Defaults =
 8. Your old setup is now used as fallback
 
-9. //@todo - maybe we could add segments =general tab=, =templates tab=, etc and then screenshots..
+= Editing Post =
+9. TinyMCE button
+
+10. //@todo - maybe we could add segments =general tab=, =templates tab=, etc and then screenshots..
+
 
 == Upgrade notice ==
 
 = 1.11 =
 * Templates are now available in Ziggeo plugin
+
 
 == Changelog ==
 

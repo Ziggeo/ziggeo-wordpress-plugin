@@ -19,91 +19,91 @@ $start = "(function() {
          * @param {string} url Absolute URL to where the plugin is located.
          */
         init : function(editor, url) {
-			editor.addButton('ziggeo_templates', {
-				title: 'Ziggeo Video Aid',
-				cmd: 'ziggeoAddTemplate',
-				image: url + '/../images/icon.png',
-				type: 'menubutton',
-				menu: [ //This is first level menu
-					{
-						text: 'Templates',
-						value: '[ziggeo]',
-						onclick: function() { //We will remove the onlick from here, this is just for test
-							editor.insertContent(this.value());
-						},
-						menu: [ //This is second level menu
-								";
+                        editor.addButton('ziggeo_templates', {
+                                title: 'Ziggeo Video Aid',
+                                cmd: 'ziggeoAddTemplate',
+                                image: url + '/../images/icon.png',
+                                type: 'menubutton',
+                                menu: [ //This is first level menu
+                                        {
+                                                text: 'Templates',
+                                                value: '[ziggeo]',
+                                                onclick: function() { //We will remove the onlick from here, this is just for test
+                                                        editor.insertContent(this.value());
+                                                },
+                                                menu: [ //This is second level menu
+                                                                ";
 
 $middle = '';
 if($list) {
-	//player and re-recorder require token.. so it would be good to detect which base the template has and then add any required attributes to the same..
-	foreach($list as $id => $template) {
+        //player and re-recorder require token.. so it would be good to detect which base the template has and then add any required attributes to the same..
+        foreach($list as $id => $template) {
 
-		$tokenRequired = 'false';
-		//We will check each since we want people to be able to add 2 or more templates ;)
+                $tokenRequired = 'false';
+                //We will check each since we want people to be able to add 2 or more templates ;)
 
-		//Are we dealing with player?
-		if( stripos( $template, '[ziggeoplayer' ) > -1 ) {
-			if( stripos($template, 'video') === false ) { //nope, lets add it
-				$template = str_replace( '[ziggeoplayer', '[ziggeoplayer video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
-			}
-			$tokenRequired = 'true';
-		}
+                //Are we dealing with player?
+                if( stripos( $template, '[ziggeoplayer' ) > -1 ) {
+                        if( stripos($template, 'video') === false ) { //nope, lets add it
+                                $template = str_replace( '[ziggeoplayer', '[ziggeoplayer video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
+                        }
+                        $tokenRequired = 'true';
+                }
 
-		//are we dealing with the rerecorder?
-		if( stripos( $template, '[ziggeorerecorder') > -1 ) {
-			//Is token already set?
-			if( stripos($template, 'video') === false ) { //nope, lets add it
-				$template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
-			}
-			$tokenRequired = 'true';
-		}
+                //are we dealing with the rerecorder?
+                if( stripos( $template, '[ziggeorerecorder') > -1 ) {
+                        //Is token already set?
+                        if( stripos($template, 'video') === false ) { //nope, lets add it
+                                $template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
+                        }
+                        $tokenRequired = 'true';
+                }
 
-		if($middle !== '')	{ $middle .= ', '; }
-		$middle .= "{
-						text: '" . $id . "',
-						value: \"" . $template . "\",
-						requiresToken: '" . $tokenRequired . "',
-						onclick: function(e) { 
-							e.stopPropagation();
-							if(e.shiftKey === true) {
-								editor.insertContent(this.value());
-							}
-							else {
-								if(this.settings.requiresToken) {
-									editor.insertContent('[ziggeo ' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');									
-								}
-								else {
-									editor.insertContent('[ziggeo ' + this.text() + ' ]');
-								}
-							}
-							ziggeo_tinymce_set_position();
-						}
-					}";
-	}
+                if($middle !== '')      { $middle .= ', '; }
+                $middle .= "{
+                                                text: '" . $id . "',
+                                                value: \"" . $template . "\",
+                                                requiresToken: '" . $tokenRequired . "',
+                                                onclick: function(e) { 
+                                                        e.stopPropagation();
+                                                        if(e.shiftKey === true) {
+                                                                editor.insertContent(this.value());
+                                                        }
+                                                        else {
+                                                                if(this.settings.requiresToken) {
+                                                                        editor.insertContent('[ziggeo ' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');                                                                     
+                                                                }
+                                                                else {
+                                                                        editor.insertContent('[ziggeo ' + this.text() + ' ]');
+                                                                }
+                                                        }
+                                                        ziggeo_tinymce_set_position();
+                                                }
+                                        }";
+        }
 }
 else {
-	$middle = "{
-				text: 'No templates found',
-				value: ''
-				}";
+        $middle = "{
+                                text: 'No templates found',
+                                value: ''
+                                }";
 }
 
-$end = 							"
-						]
-					}
-				]
-			});
+$end =                                                  "
+                                                ]
+                                        }
+                                ]
+                        });
         },
  
         /**
-         * Creates control instances based in the incomming name. This method is normally not
+         * Creates control instances based in the incoming name. This method is normally not
          * needed since the addButton method of the tinymce.Editor class is a more easy way of adding buttons
          * but you sometimes need to create more complex controls like listboxes, split buttons etc then this
          * method can be used to create those.
          *
          * @param {String} n Name of the control to create.
-         * @param {tinymce.ControlManager} cm Control manager to use inorder to create new control.
+         * @param {tinymce.ControlManager} cm Control manager to use in order to create new control.
          * @return {tinymce.ui.Control} New control instance or null if no control was created.
          */
         createControl : function(n, cm) {

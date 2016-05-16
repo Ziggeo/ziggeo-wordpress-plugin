@@ -26,12 +26,6 @@ defined('ABSPATH') or die();
 	</a>
 </script>
 
-<?php
-	//Since we are already declaring templates within the post, do we need this?
-	//maybe to allow people to choose which template will be set for playing, which for recording and which for rerecording and have it set like that through one shortcode?
-	
-?>
-
 <script type="text/template" id="ziggeo-recorder-template">
 	<div id="ziggeo-recorder">
 		<ziggeo
@@ -40,7 +34,7 @@ defined('ABSPATH') or die();
 			ziggeo-limit=240
 			ziggeo-form_accept="#post"
             ziggeo-perms="allowupload"
-			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>"
+			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>,creatingPost"
 		></ziggeo>
 	</div>
 </script>
@@ -55,7 +49,7 @@ defined('ABSPATH') or die();
 			ziggeo-modes="rerecorder"
 			ziggeo-perms="allowupload"
 			ziggeo-form_accept="#post"
-			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>"
+			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>,creatingPost,rerecorded"
 		></ziggeo>
 	</div>
 </script>

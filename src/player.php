@@ -14,16 +14,19 @@ function ziggeo_content_replace($matches) {
 	$video_token = trim($matches[1]);
 	$tagname = "ziggeo";
 	if (@$video_token) { //so if there is video token it is player, while if it is not set, it is not.. This means that it was not as easy to set up re-recorder.
-		if (@$options["beta"])
+		if (isset($options, $options["beta"])) {
 			$tagname = "ziggeoplayer";
-		$config = @$options["player_config"] ? $options["player_config"] : $default; 
+		}
+		$config = isset($options, $options["player_config"]) ? $options["player_config"] : $default; 
+		
 		return "<" . $tagname . " ba-theme='modern' " . $config . " ziggeo-video='" . $video_token . "'></" . $tagname . ">";
 	} else {
-		$config = @$options["recorder_config"] ? $options["recorder_config"] : $default;
+		$config = isset($options, $options["recorder_config"]) ? $options["recorder_config"] : $default;
 		try {
 			$current_user = wp_get_current_user();
 			$config .= ' ziggeo-tags="' . $current_user->user_login . '"';
 		} catch (Exception $e) {}
+
 		return "<" . $tagname . " " . $config . "'></" . $tagname . ">"; //This seems to hold ' too many..
 	}
 }

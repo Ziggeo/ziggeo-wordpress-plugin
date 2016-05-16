@@ -9,8 +9,12 @@ function ziggeo_token_notice() { ?>
     </div>
 <?php }
 
-if ($_SERVER["PHP_SELF"] != "/wp-admin/options-general.php" || @$_GET["page"] != "ziggeo_video") {
-	$options = get_option('ziggeo_video');
-	if (!@$options || !@$options["token"])
-		add_action('admin_notices', 'ziggeo_token_notice');
+//Wrapping it up into is_admin, since it is more secure than PHP_SELF call, but once it passes this we are OK to have it as it is to avoid AJAX calls getting the notice by some chance
+if ( is_admin() ) {
+	if($_SERVER["PHP_SELF"] != "/wp-admin/options-general.php" || @$_GET["page"] != "ziggeo_video") {
+		$options = get_option('ziggeo_video');
+		if (!isset($options, $options["token"]) ) {
+			add_action('admin_notices', 'ziggeo_token_notice');
+		}
+	}	
 }
