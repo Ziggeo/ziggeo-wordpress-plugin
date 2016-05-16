@@ -129,8 +129,15 @@ function ziggeo_templates_index() {
 //Checks if the template with specified ID exists or not
 function ziggeo_template_exists($id)
 {
+	//If we do not pass anything we do not want to parse the templates..
+	if(!$id) {
+		return false;
+	}
+
 	//Lets get a list of all existing templates
 	$index = ziggeo_templates_index();
+
+	$id = trim($id);
 
 	if( isset($index, $index[$id]) )
 	{

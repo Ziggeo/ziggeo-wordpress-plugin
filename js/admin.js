@@ -321,12 +321,34 @@ jQuery(document).ready( function() {
 	}
 );
 
-/*TODO:
-+1. line 169 - make sure that only the text name is shown, the rest should be removed ("xedit")
-+2. line 110 - Add another check for adding string based attributes when ] is the last character, otherwise it will not do the focus in the right location.
-+3. Change the form.submit() to actual form submit, things should be finished in JS segment, lets finish up the php end of the same as well.
-+4. Add the button to save the template as new, instead of changing the other one - for example if someone was to click on the edit, but then change their mind, we should do that, and we would be able to do that by clearing out the value in the ziggeo_templates_manager field.
-5. If a parameter is being added that would change the template start tag, it would be good to correct / change the same - this would require some logic behind it so best to check with Oliver if we should do it and if so, when
-+6. If parameter that is being added is already present, we should highlight the value of the same so that it can be adjusted
-7. Next to the #6 we could gray out the currently used parameters..
-*/
+//tinymce extension JS
+function ziggeo_tinymce_set_position(searchFor) {
+	if(!searchFor) {
+		searchFor = 'YOUR_VIDEO_TOKEN';
+	}
+
+	if(tinyMCE && tinyMCE.activeEditor) {
+		var editor = tinyMCE.activeEditor;
+	}
+	else {
+		return false;
+	}
+
+	var range = tinyMCE.activeEditor.selection.getRng(1);
+
+	var before = jQuery(editor.getBody()).find('span#ziggeo_token_range_s');
+	var after = jQuery(editor.getBody()).find('span#ziggeo_token_range_e')
+
+	if( before[0] ) {
+		range.setStartBefore( before.get(0) );
+		range.setEndBefore( after.get(0) );
+		editor.selection.setRng(range);
+
+		before.remove();
+		after.remove();
+		
+		return true;
+	}
+
+	return false;
+}

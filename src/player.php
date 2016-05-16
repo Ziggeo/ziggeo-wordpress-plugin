@@ -153,6 +153,17 @@ function ziggeo_content_replace_templates($matches)
 	//This should be active for new templates only
 	if(isset($matches, $matches[1]) )
 	{
+		$savedVideo = false;
+
+		//Quick check to see if we have video= in there or not..
+		//This would happen if we use tinyMCE to add template
+		if( ($ts = stripos($matches[0], 'video=')) > -1 ) {
+			//[ziggeo comments player video='bb9c5916d80277f7edba2d088c8c16a3']
+			$savedVideo = substr($matches[0], $ts );
+			$savedVideo = str_replace( ']', '', $savedVideo );
+			$matches[0] = str_replace( $savedVideo, '', $matches[0]);
+		}
+
 		//These are parameters sent to us through the [ziggeo] shortcode. It can be a raw setup like: " width=320 height=240 limit=4" or template ID/name
 		$parameters = trim($matches[1]);
 		$fullMatch = $matches[0];
@@ -219,12 +230,28 @@ function ziggeo_content_replace_templates($matches)
 		//Lets determine if it is ID/name of a template and call it
 		if( $template = ziggeo_template_exists( $parameters ) ) {
 
+			//Lets check if we sent the video along with template name, and if we did, lets give it back its video.
+			if($savedVideo) {
+				
+				if( stripos($template, ' video=') ) {
+					$template = str_ireplace( array('video=""', "video=''"), ' ' . $savedVideo . ' ', $template);
+				}
+				else {
+					$template = str_replace( ']', ' ' . $savedVideo . ']', $template);
+				}
+			}
+
 			//At this time the parameters holds the template ID not parameters and temaplte is having the the template loaded with tags and everything..
 			return ziggeo_content_replace_templates(array($template, $template));
 		}
 		//if it is not a template name, it is likely parameters list, so just post it 'as is'..
 		else {
 			//This is the actual processing ;)
+
+			//Lets check if we sent the video along with template name, and if we did, lets give it back its video.
+			if($savedVideo) {
+				$parameters .= ' ' . $savedVideo;
+			}
 
 			$template = ziggeo_parameter_processing($presets[$tag], $parameters);
 
@@ -304,7 +331,7 @@ function ziggeo_parameter_processing($requiredAtt, $process, $stripDuplicates = 
 
 	//Seems that if customers use "" within the visual editor, it will change quote to &#8221; and &#8243; so lets clean that up..
 	$processed = str_replace( array('&#8221;', '&#8243;'), '"', $processed);
-	$processed = str_replace( '&#8217;', "'", $processed);
+	$processed = str_replace( array('&#8217;', '&#8242;'), "'", $processed);
 
 	return $processed;
 }

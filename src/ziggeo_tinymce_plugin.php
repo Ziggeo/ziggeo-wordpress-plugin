@@ -39,30 +39,44 @@ if($list) {
 	//player and re-recorder require token.. so it would be good to detect which base the template has and then add any required attributes to the same..
 	foreach($list as $id => $template) {
 
+		$tokenRequired = 'false';
 		//We will check each since we want people to be able to add 2 or more templates ;)
 
 		//Are we dealing with player?
 		if( stripos( $template, '[ziggeoplayer' ) > -1 ) {
 			if( stripos($template, 'video') === false ) { //nope, lets add it
-				$template = str_replace( '[ziggeoplayer', '[ziggeoplayer video=\'YOUR_VIDEO_TOKEN\'', $template);
+				$template = str_replace( '[ziggeoplayer', '[ziggeoplayer video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
 			}
+			$tokenRequired = 'true';
 		}
 
 		//are we dealing with the rerecorder?
 		if( stripos( $template, '[ziggeorerecorder') > -1 ) {
 			//Is token already set?
 			if( stripos($template, 'video') === false ) { //nope, lets add it
-				$template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'YOUR_VIDEO_TOKEN\'', $template);
+				$template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
 			}
+			$tokenRequired = 'true';
 		}
 
 		if($middle !== '')	{ $middle .= ', '; }
 		$middle .= "{
 						text: '" . $id . "',
 						value: \"" . $template . "\",
+						requiresToken: '" . $tokenRequired . "',
 						onclick: function(e) { 
 							e.stopPropagation();
-							editor.insertContent(this.value());
+							if(e.shiftKey === true) {
+								editor.insertContent(this.value());
+							}
+							else {
+								if(this.settings.requiresToken) {
+									editor.insertContent('[ziggeo ' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');									
+								}
+								else {
+									editor.insertContent('[ziggeo ' + this.text() + ' ]');
+								}
+							}
 							ziggeo_tinymce_set_position();
 						}
 					}";
