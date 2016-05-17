@@ -302,7 +302,7 @@ function ziggeo_video_general_text() {
         <?php
 
         //Only show the instructions if the token is not already set
-        if( !isset($options, $options['token']) )
+        if( !isset($options, $options['token']) || ( isset($options['token']) && trim($options['token']) === '') )
         {
                 ?>
                 <p>
@@ -490,7 +490,7 @@ function ziggeo_video_contact_text() {
         //Function to show the contact instructions for contacting on WordPress itself instead.
         function ziggeo_contact_wp_string() {
                 ?>
-                <p>If you prefer to contact us over WordPress, all you need is to head here: <a href="https://wordpress.org/support/plugin/ziggeo">Ziggeo Plugin Support</a></p>
+                <p>If you prefer to contact us over WordPress, all you need is to head to: <a href="https://wordpress.org/support/plugin/ziggeo">Ziggeo Plugin Support Section</a></p>
                 <?php
         }
 
@@ -515,7 +515,7 @@ function ziggeo_video_validate($input) {
                 //Going through all updated settings so that we can update all that need to be so
                 foreach($options as $option => $value)
                 {
-                        if(isset($input[$option])) {    
+                        if(isset($input[$option])) {
                                 $options[$option] = $input[$option];
                                 //We have used the option, now lets not have it available any more
                                 unset($input[$option]);
@@ -588,7 +588,7 @@ function ziggeo_video_validate($input) {
                                 add_settings_error('ziggeo_templates_manager',
                                                                         'template_created',
                                                                         $message,
-                                                                        'updated');                                     
+                                                                        'updated');
                         }
                 }
                 //edit old
@@ -599,7 +599,7 @@ function ziggeo_video_validate($input) {
                                 add_settings_error('ziggeo_templates_manager',
                                                                         'template_updated',
                                                                         'Your template "' . $options['templates_id'] . '" has been successfully updated.',
-                                                                        'updated');     
+                                                                        'updated');
                         }
                 }
 
@@ -611,13 +611,12 @@ function ziggeo_video_validate($input) {
                                 add_settings_error('ziggeo_templates_manager',
                                                                         'template_removed',
                                                                         'Your template "' . $options['templates_manager'] . '" has been successfully deleted.',
-                                                                        'updated');     
+                                                                        'updated');
                         }
         }
 
         //We are currently showing it up as default, so we should remove it at this point - we do not want it saved
         unset($options['templates_editor']);
-
 
         return $options;
 }

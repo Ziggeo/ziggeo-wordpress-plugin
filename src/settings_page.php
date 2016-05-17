@@ -16,7 +16,7 @@ defined('ABSPATH') or die();
 	$options = get_option('ziggeo_video');
 ?>
 <div>
-	<?php if( !isset($options, $options["token"]) ) { ?>
+	<?php if( !isset($options, $options["token"]) || (isset($options["token"]) && trim($options["token"]) === '') ) { ?>
 	    <div class="update-nag">
 	        <p>
 	        	Haven't signed up for the Ziggeo API yet?
