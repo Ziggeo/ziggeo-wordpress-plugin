@@ -1,3 +1,4 @@
+/* Post Comments */
 #comments-video-container {
 	margin-top: 11px;
 	margin-bottom: 11px;
@@ -69,4 +70,7 @@
 .comment-navigation .current-menu-item > a, .comment-navigation .current-menu-ancestor > a, .comment-navigation .current_page_item > a, .comment-navigation .current_page_ancestor > a {
 	color: #636363;
 	font-weight: bold;
-}	
+}
+#comments-text-link.selected, #comments-video-link.selected {
+    border-bottom: 1px solid lightblue;
+}

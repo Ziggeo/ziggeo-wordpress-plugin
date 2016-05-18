@@ -70,7 +70,7 @@ if( isset($options['video_and_text']) && $options['video_and_text'] === '1' ) {
 	?>
 	<script type="text/template" id="comment-ziggeo-template">
 		<div class="comment-navigation">
-			<span class="dashicons dashicons-video-alt"></span> Video Comments with optional text comment
+			<span class="dashicons dashicons-video-alt"></span> Video Comment with optional text comment
 		</div>
 		<div id="comments-video-container">
 			<?php //We use this field to get the video token into it, allowing us more freedom with the overall comment manipulation ?>
@@ -192,7 +192,7 @@ elseif( !isset($options["disable_video_comments"]) || (isset($options["disable_v
 				</li>
 				<?php } ?>
 				<li>
-					<a id="comments-video-link">
+					<a id="comments-video-link" class="selected">
 						<span class="dashicons dashicons-video-alt"></span>
 						Video Comment
 					</a>
@@ -237,12 +237,18 @@ elseif( !isset($options["disable_video_comments"]) || (isset($options["disable_v
 			jQuery("#comments-text-container").css("display", "");
 			jQuery("#comments-video-container").css("display", "none");
 			jQuery("#comments-video-container").html("");
+			//Lets make it clear what is selected
+			jQuery('#comments-text-link').addClass('selected');
+			jQuery('#comments-video-link').removeClass('selected');
 			elems.textarea.val("");
 		});
 		jQuery("#comments-video-link").on("click", function () {
 			jQuery("#comments-video-container").css("display", ""); //show video comment recorder
 			jQuery("#comments-video-container").html(jQuery("#ziggeo-recorder").html());
 			jQuery("#comments-text-container").css("display", "none"); //hide text comment textarea
+			//Lets make it clear what is selected
+			jQuery('#comments-video-link').addClass('selected');
+			jQuery('#comments-text-link').removeClass('selected');
 			elems.textarea.val("");
 		});
 		ZiggeoApi.Events.on("submitted", function (data) {

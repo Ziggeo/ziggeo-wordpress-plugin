@@ -323,6 +323,18 @@ function ziggeo_templates_turn_into_beta(check) {
 
 }
 
+//Removes the feedback banner by setting the hidden option to checked and submits the form..
+function ziggeo_feedback_removal() {
+	var feedback = document.getElementById('ziggeo_feedback');
+
+	feedback.checked = true;
+
+	//submit the form
+	document.forms[0].submit();
+	return true;
+	//when reloaded, we will use the add_settings_error to show a nice thank you for that with some restyling done by CSS for that specific thank you.
+}
+
 //Registering onload needed to have everything run smoothly.. :)
 jQuery(document).ready( function() {
 		ziggeo_parameters_quick_add_init();

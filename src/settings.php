@@ -322,6 +322,18 @@ function ziggeo_video_general_text() {
                 ?>
                 <input id="ziggeo_app_token" name="ziggeo_video[token]" size="50" type="text" placeholder="Your app token goes here" value="<?php echo $options['token']; ?>" />
                 <?php
+
+				//Lets check feedback. We will keep it hidden on the form so that we can show it in a nice manner ;) (not as some other option)
+				if( !isset($options, $options['feedback']) || ( isset($options['feedback']) && $options['feedback'] !== "1" ) ) {
+					?>
+					<div class="ziggeo_hidden">
+						<input id="ziggeo_feedback" name="ziggeo_video[feedback]" type="checkbox" value="1">
+					</div>
+					<div id="ziggeo_feedback_banner">
+						<span>We hope that you like the plugin. If you do, consider letting us know by <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/ziggeo">leaving a feedback on WordPress plugin page</a>. That will help us and tell us that you want us to keep improving the plugin. Already did? Great - just <a href="javascript:ziggeo_feedback_removal();" title="This will submit this page causing it to reload so that you are no longer shown this notice">click here</a></span>
+					</div>
+					<?php
+				}
         }
 
         //beta is currently used to show beta player. We should make it possible to choose beta player and recorder at some point, and will need to capture this @OLD value
@@ -497,6 +509,7 @@ function ziggeo_video_contact_text() {
 
 //--- Tab functions end ----
 
+
 //Function to capture the values submitted by the customer
 function ziggeo_video_validate($input) {
 
@@ -506,10 +519,21 @@ function ziggeo_video_validate($input) {
         //List of all options that we accept
         $allowed_options = array(
                 //templates tab
-                        'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true,
+                        'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
                 //general tab
                         'token' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true
         );
+
+		$showFeedbackThankYou = false;
+
+		//The option is not yet set and input suggests that we are setting it now..
+		if( (!isset($options['feedback']) || (isset($options['feedback']) && $options['feedback'] !== "1" ) ) && ( isset($input['feedback']) && $input['feedback'] === "1" ) ) {
+			$showFeedbackThankYou = true;
+		}
+		//If option is already set that the feedback was left, but the input is passed (as it will be when something is saved), we just 'neutralize' it here
+		elseif(isset($input['feedback'])) {
+			unset($input['feedback']);
+		}
 
         if(is_array($options)) {
                 //Going through all updated settings so that we can update all that need to be so
@@ -521,7 +545,9 @@ function ziggeo_video_validate($input) {
                                 unset($input[$option]);
                         }
                         else {
+							if($option !== 'feedback'){ //since ths is the one that we do not want to disable...
                                 $options[$option] = '';
+							}
                         }
                 }               
         }
@@ -550,7 +576,6 @@ function ziggeo_video_validate($input) {
         elseif( ( isset($input['disable_video_comments']) && !empty($input['disable_video_comments']) ) || ( isset($input['disable_text_comments']) && !empty($input['disable_text_comments']) ) ) {
                 unset($options['video_and_text']);
         }
-                
 
         //From this point on, we should not use $input, only $options
 
@@ -617,6 +642,13 @@ function ziggeo_video_validate($input) {
 
         //We are currently showing it up as default, so we should remove it at this point - we do not want it saved
         unset($options['templates_editor']);
+
+		//Lets show a nice thank you if the link was clicked that we already got feedback.
+		if($showFeedbackThankYou) {
+			add_settings_error('ziggeo_feedback', 'feedback removed',
+				'Feedback banner was removed.<div id="ziggeo_feedback-thankYOU" onclick ="this.parentNode.removeChild(this);"><b>Thank you</b> for leaving us a feedback. We hope that you enjoy our plugin and we welcome any ideas or suggestions :) <script type="text/javascript">setTimeout( function() {var box = document.getElementById("ziggeo_feedback-thankYOU"); if(box) {box.parentNode.removeChild(box);}}, 5000 );</script></div>',
+				'updated');
+		}
 
         return $options;
 }
