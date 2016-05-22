@@ -35,7 +35,7 @@ add_filter("comments_template", "ziggeo_comment_template");
 function ziggeo_templates_add($id, $value) {
 
 	//path to userData directory 
-	$dir = ZIGGEO_ROOT_PATH . 'userData';
+	$dir = ZIGGEO_DATA_ROOT_PATH;
 	$file = $dir . '/custom_templates.php';
 
 	$content = array ( $id => $value );
@@ -75,7 +75,7 @@ function ziggeo_templates_update($old_id, $id, $content) {
 	$updated = array();
 
 	//path to custom templates file
-	$file = ZIGGEO_ROOT_PATH . 'userData/custom_templates.php';
+	$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
 	//grab all
 	if($current = ziggeo_file_read($file)) {
@@ -103,7 +103,7 @@ function ziggeo_templates_remove($id) {
 	$updated = array();
 
 	//path to custom templates file
-	$file = ZIGGEO_ROOT_PATH . 'userData/custom_templates.php';
+	$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
 	//grab all
 	if($current = ziggeo_file_read($file)) {
@@ -125,7 +125,7 @@ function ziggeo_templates_remove($id) {
 //Searches for all existing templates. Returns the list or false if none
 function ziggeo_templates_index() {
 	//path to custom templates file
-	$file = ZIGGEO_ROOT_PATH . 'userData/custom_templates.php';
+	$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
 	return ziggeo_file_read($file);
 }

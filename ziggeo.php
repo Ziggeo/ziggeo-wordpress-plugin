@@ -18,6 +18,10 @@ define('ZIGGEO_ROOT_PATH', plugin_dir_path(__FILE__) );
 //Setting up the URL so that we can get/built on it later on from the plugin root
 define('ZIGGEO_ROOT_URL', plugins_url() . '/ziggeo/' );
 
+//We will store data in another folder, so that it is not removed when the plugin gets updated
+define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . '../ziggeo-userData/');
+define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
+
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
 define('ZIGGEO_VERSION', '1.11');
 

@@ -6,7 +6,7 @@
 
 include_once('./file_parser.php');
 
-$list = ziggeo_file_read( '../userData/custom_templates.php' );
+$list = ziggeo_file_read( '../../ziggeo-userData/custom_templates.php' );
 
 $start = "(function() {
     tinymce.create('tinymce.plugins.ziggeo', {

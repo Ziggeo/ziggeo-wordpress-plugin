@@ -110,7 +110,7 @@ function ziggeo_file_WP_write($file, $content) {
 	$content = json_encode($content);
 
 	//create file
-	if ( !$wp_filesystem->put_contents( $fileName, $content, FS_CHMOD_FILE) ) {
+	if ( !$wp_filesystem->put_contents( $file, $content, FS_CHMOD_FILE) ) {
 		return false;
 	}
 }
@@ -122,7 +122,6 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 	wp_verify_nonce('ziggeo_video_nonce', 'ziggeo_nonce_action');
 
 	$url = wp_nonce_url('options-general.php?page=ziggeo_video','ziggeo_nonce_action');
-	//options-general.php?page=ziggeo_video&_wpnonce=5441b62704
 
 	?>
 	<div class="wrap">
@@ -156,12 +155,12 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 	//We got it all set up and good to go..now lets do what we wanted to do..
 
 	//We define this here, so that we can use it without further recalcualtions - the wp_filesystem should be available at this time.
-	define('ZIGGEO_ROOT_PATH_FS', str_replace(ABSPATH, $wp_filesystem->abspath(), ZIGGEO_ROOT_PATH));
+	define('ZIGGEO_DATA_ROOT_PATH_FS', str_replace(ABSPATH, $wp_filesystem->abspath(), ZIGGEO_DATA_ROOT_PATH));
 
 	//Since all data should be in "userData" folder, if the same does not exist, we can simply return false on reading action and create it on write action..
-	if( !$wp_filesystem->is_dir( ZIGGEO_ROOT_PATH_FS . '/userData/') ) {
+	if( !$wp_filesystem->is_dir( ZIGGEO_DATA_ROOT_PATH_FS) ) {
 		if($action === 'write') {
-			$wp_filesystem->mkdir(ZIGGEO_ROOT_PATH_FS . '/userData/');
+			$wp_filesystem->mkdir(ZIGGEO_DATA_ROOT_PATH_FS);
 		}
 		else {
 			return false;

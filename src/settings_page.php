@@ -62,12 +62,6 @@ defined('ABSPATH') or die();
 			<p>To proceed with the automated process just fill out the form. For manual steps please go to this page instead: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a></p>
 			<p>If you want to get back to Ziggeo plugin settings screen, just click on the following link: <a href="<?php echo esc_url( get_admin_url(null, 'options-general.php?page=ziggeo_video') ); ?>">Ziggeo Plugin settings</a>.</p>
 			<?php
-//+1. show some explanation why this form is shown
-//+2. give them option (instructions on how to) do it manually instead (how to create the directory and the file)
-//+3. show link to go away from this page
-//4. test if we download the plugin, are the directories within the same folder deleted - if they are, simply move the data to ziggeo-userData folder within the plugins folder!
-//5. make this create the file if they click on it..
-
 
 			//We should show the secure form in order to create files and do the first write..
 			$url = wp_nonce_url('options-general.php?page=ziggeo_video&secureForm=true','ziggeo_nonce_action');
