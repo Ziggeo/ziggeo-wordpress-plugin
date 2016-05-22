@@ -213,15 +213,21 @@ Even if unlikely to happen, we thought about that and are always using our own d
 
 = How are templates stored? =
 
-By default we try to write them into a file. This has some concerns that you should be aware of if you are on shared hosting, but otherwise it means that there are no extra DB calls made when saving and reading templates. See the *We are getting the error that the template can not be saved* segment for more.
+By default we try to write them into a file. This has some concerns that you should be aware of if you are on shared hosting, but otherwise it means that there are no extra DB calls made when saving and reading templates (it is faster). See the *We are getting the error that the template can not be saved* segment for more.
 
 = We are getting the error that the template can not be saved =
 
 That simply means that you are using different 'user' to run WordPress and a different one to create files. To work around this all you should do is to:
 
-1. create a folder/directory under /ziggeo/ (Ziggeo plugin directory) named **userData** (if it is not existing)
+1. create a folder/directory under your plugins directory and call it **ziggeo-userData** (if it is not already existing)
 1. create a file named **custom_templates.php**
 1. set its permissions to *766* or *666*. Our plugin will now try to read it and change the permissions once it is done saving the file (as such 766 will not stay the same all the time, only for a moment when plugin needs it to write to the same).
+
+= Why are there **ziggeo** and **ziggeo-userData** directories in our plugins folder? =
+
+In order to store data in files and read the same on-fly without loosing the data once the plugin is updated, we are storing the data in another folder - `ziggeo-userData`. That means that we have moved the actual data from the plugin itself. As such `ziggeo` directory holds the plugin functionality code and `ziggeo-userData` holds the data saved by the plugin.
+
+This is probably a good place to mention that we are still keeping the data that we previously did in your database, it is just that new data is moved from it.
 
 = Why are the options on General tab hidding and showing when we move our mouse? =
 
