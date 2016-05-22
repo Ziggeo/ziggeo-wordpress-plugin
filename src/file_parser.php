@@ -48,7 +48,7 @@ function ziggeo_file_write($file, $content, $context = false) {
 		add_settings_error($context,
 							'file_write_action',
 							'There were issues creating directory. If you were not shown WordPress credentials form, the action failed.
-								Please see more about it here: <a href="https://ziggeo.com/@TODO">Creating files fails in our WordPress plugin</a>',
+								Please see more about it here: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a>',
 							'error');
 
 		//later we will check other things here as well.
@@ -134,7 +134,7 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 	if( ($credentials = request_filesystem_credentials($url, '', false, ZIGGEO_ROOT_PATH, $form_fields, true) ) === false ) {
 		//Customer did not enter these details before, so lets wait for input since the form is shown..
 		?> </div> <?php //closing the .wrap above
-		return false;
+		return null;
 	}
 
 	// We have the needed credentials, lets see if we can roll some wheels
@@ -142,7 +142,7 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 		//Password is easy to be entered wrong, and since something is wrong, letting the user know with the error
 		request_filesystem_credentials($url, '', true, ZIGGEO_ROOT_PATH, $form_fields, true);
 		?> </div> <?php //closing the .wrap above
-		return;
+		return null;
 	}
 
 	//To show the errors that happened - if any
@@ -150,7 +150,7 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 		foreach ( $wp_filesystem->errors->get_error_messages() as $message )
 			show_message($message);
 		echo '</div>';
-		return;
+		return false;
 	}
 
 	//We got it all set up and good to go..now lets do what we wanted to do..

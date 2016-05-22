@@ -325,14 +325,21 @@ function ziggeo_video_general_text() {
 
 				//Lets check feedback. We will keep it hidden on the form so that we can show it in a nice manner ;) (not as some other option)
 				if( !isset($options, $options['feedback']) || ( isset($options['feedback']) && $options['feedback'] !== "1" ) ) {
-					?>
-					<div class="ziggeo_hidden">
-						<input id="ziggeo_feedback" name="ziggeo_video[feedback]" type="checkbox" value="1">
-					</div>
-					<div id="ziggeo_feedback_banner">
-						<span>We hope that you like the plugin. If you do, consider letting us know by <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/ziggeo">leaving a feedback on WordPress plugin page</a>. That will help us and tell us that you want us to keep improving the plugin. Already did? Great - just <a href="javascript:ziggeo_feedback_removal();" title="This will submit this page causing it to reload so that you are no longer shown this notice">click here</a></span>
-					</div>
-					<?php
+					
+					//We wil also not show it right away, but only if the customer had some time to check it out, so at least a token should be set.
+					
+					//Only show the instructions if the token is not already set
+					if( isset($options, $options['token']) && trim($options['token']) !== '' )
+					{
+						?>
+						<div class="ziggeo_hidden">
+							<input id="ziggeo_feedback" name="ziggeo_video[feedback]" type="checkbox" value="1">
+						</div>
+						<div id="ziggeo_feedback_banner">
+							<span>We hope that you like the plugin. If you do, consider letting us know by <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/ziggeo">leaving a feedback on WordPress plugin page</a>. That will help us and tell us that you want us to keep improving the plugin. Already did? Great - just <a href="javascript:ziggeo_feedback_removal();" title="This will submit this page causing it to reload so that you are no longer shown this notice">click here</a></span>
+						</div>
+						<?php
+					}
 				}
         }
 
@@ -494,7 +501,7 @@ function ziggeo_video_contact_text() {
         function ziggeo_contact_ziggeo_string() {
                 ?>
                 <p>We are using Zendesk to provide assistance with your issues. To contact us there, you should either send an email
-                to <a href="mailto:support@ziggeo.com">support@ziggeo.com</a> or simply go to <a href="https://ziggeo.zendesk.com/hc/en-us">our helpdesk</a> where
+                to <a href="mailto:support@ziggeo.com">support@ziggeo.com</a> or simply go to <a href="https://ziggeo.zendesk.com/hc/en-us" target="_blank">our helpdesk</a> where
                 you might find the answers to your questions already being answered.</p>
                 <?php
         }
@@ -502,7 +509,7 @@ function ziggeo_video_contact_text() {
         //Function to show the contact instructions for contacting on WordPress itself instead.
         function ziggeo_contact_wp_string() {
                 ?>
-                <p>If you prefer to contact us over WordPress, all you need is to head to: <a href="https://wordpress.org/support/plugin/ziggeo">Ziggeo Plugin Support Section</a></p>
+                <p>If you prefer to contact us over WordPress, all you need is to head to: <a href="https://wordpress.org/support/plugin/ziggeo" target="_blank">Ziggeo Plugin Support Section</a></p>
                 <?php
         }
 
@@ -579,6 +586,8 @@ function ziggeo_video_validate($input) {
 
         //From this point on, we should not use $input, only $options
 
+		// -- TEMPLATES --
+
         if( isset($options['templates_editor']) && $options['templates_editor'] !== '' && $options['templates_editor'] !== '[ziggeo ' )
         {
                 //Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
@@ -604,8 +613,9 @@ function ziggeo_video_validate($input) {
 
                         //Templates Editor value gets saved in a bit different manner, together with the ID.. We need to keep these two clean each time
                         // instead we save them into a new file as JSON, but we must make sure that such file does not exist currently.
-                        if( ziggeo_templates_add( $options['templates_id'], $options['templates_editor']) ) {
+                        if( ($rez = ziggeo_templates_add( $options['templates_id'], $options['templates_editor']) ) ) {
 
+								//Was template ID set (true) or did we make it for our customer? (false)
                                 if($idGiven) {
                                         $message = 'Your template "' . $options['templates_id'] . '" has been successfully created.';
                                 }
@@ -615,6 +625,41 @@ function ziggeo_video_validate($input) {
                                                                         $message,
                                                                         'updated');
                         }
+						elseif($rez === null) {
+							//WP FileSystem is needed, we need to return false at that point.
+
+							//Since we know that this is related to templates, we can add template details here as well..
+							$urlSuffix = '&templateID=' . $options['templates_id'] . '&template=' . base64_encode( $options['templates_editor'] );
+
+//This can and should be moved into the function with next features so that all can use it.
+							if( isset($_POST['ziggeo'], $_POST['ziggeo']['secure_form']) ) {
+								$urlSuffix .= '&error=true';
+								if( isset($_POST['ziggeo']['secure_try']) ) {
+
+									$_POST['ziggeo']['secure_try'] = (int)$_POST['ziggeo']['secure_try'];
+
+									if( $_POST['ziggeo']['secure_try'] > 2 ) {
+										//This was repeated error, adding this just in case (fallback), but we will be showing a different error
+										add_settings_error('templates_editor',
+											'file_write_action',
+											'It seems that writting to file did not work several times. Please check this guide instead: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a>',
+											'error');
+
+										wp_redirect( get_admin_url(null, 'options-general.php?page=ziggeo_video&secureForm=failed') );
+										exit;
+									}
+									else {
+										$urlSuffix .= '&attempt=' . ++$_POST['ziggeo']['secure_try'];
+									}
+								}
+								else {
+									$urlSuffix .= '&attempt=2';
+								}
+							}
+
+							wp_redirect( get_admin_url(null, 'options-general.php?page=ziggeo_video&secureForm=true' . $urlSuffix) );
+							exit;
+						}
                 }
                 //edit old
                 elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' )
@@ -642,6 +687,8 @@ function ziggeo_video_validate($input) {
 
         //We are currently showing it up as default, so we should remove it at this point - we do not want it saved
         unset($options['templates_editor']);
+
+		// - TEMPLATES (END)
 
 		//Lets show a nice thank you if the link was clicked that we already got feedback.
 		if($showFeedbackThankYou) {
