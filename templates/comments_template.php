@@ -75,13 +75,19 @@ if( isset($options['video_and_text']) && $options['video_and_text'] === '1' ) {
 		<div id="comments-video-container">
 			<?php //We use this field to get the video token into it, allowing us more freedom with the overall comment manipulation ?>
 			<input type="hidden" id="ziggeo_video_token" value="">
+			<?php //Capture user comment as video ?>
 			<ziggeo
-				<?php echo $default_recorder; ?>
-				<?php //Do not allow the form to be submitted unless video is filled out ?>
-				ziggeo-form_accept="#commentform"
-				<?php //Capture "wordpress" and "username" as video tags. ?>
-				ziggeo-tags="wordpress,<?php echo $curent_username; ?>,comment">
-			</ziggeo>
+				<?php echo $default_recorder;
+				//Do not allow the form to be submitted unless video is filled out, but also allow custom form_accept setup
+				if( stripos($default_recorder, 'form_accept') === false) {
+					?> ziggeo-form_accept="#commentform" <?php
+				}
+				//Capture "wordpress" and "username" as video tags, but only if the tags are not set in the template
+				if( stripos($default_recorder, 'tags') === false) {
+					?> ziggeo-tags="wordpress,<?php echo $curent_username; ?>,comment" <?php
+				}
+				?>
+			></ziggeo>
 		</div>
 		<div id="comments-text-container"></div>
 	</script>
@@ -207,11 +213,16 @@ elseif( !isset($options["disable_video_comments"]) || (isset($options["disable_v
 	<script type="text/template" id="ziggeo-recorder">
 		<?php //Capture user comment as video ?>
 		<ziggeo
-			<?php echo $default_recorder; ?>
-			<?php //Do not allow the form to be submitted unless video is filled out ?>
-			ziggeo-form_accept="#commentform"
-			<?php //Capture "wordpress" and "username" as video tags. ?>
-			ziggeo-tags="wordpress,<?php echo $curent_username; ?>,comment"
+			<?php echo $default_recorder;
+			//Do not allow the form to be submitted unless video is filled out, but also allow custom form_accept setup
+			if( stripos($default_recorder, 'form_accept') === false) {
+				?> ziggeo-form_accept="#commentform" <?php
+			}
+			//Capture "wordpress" and "username" as video tags, but only if the tags are not set in the template
+			if( stripos($default_recorder, 'tags') === false) {
+				?> ziggeo-tags="wordpress,<?php echo $curent_username; ?>,comment" <?php
+			}
+			?>
 		></ziggeo>
 	</script>
 
