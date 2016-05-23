@@ -16,7 +16,7 @@ function ziggeo_file_write($file, $content, $context = false) {
 	$content = json_encode($content);
 
 	//If we already have an error, lets go back..
-	if(!$content)	{ return null; }
+	if(!$content)   { return null; }
 
 	//add PHP tags
 	$content = '<' . '?' . 'php//' . $content . '?' . '>';
@@ -30,7 +30,7 @@ function ziggeo_file_write($file, $content, $context = false) {
 		}
 	}
 	else {
-		//raise error..	
+			//raise error.. 
 	}
 
 	//write it down
@@ -48,7 +48,7 @@ function ziggeo_file_write($file, $content, $context = false) {
 		add_settings_error($context,
 							'file_write_action',
 							'There were issues creating directory. If you were not shown WordPress credentials form, the action failed.
-								Please see more about it here: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a>',
+									Please see more about it here: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a>',
 							'error');
 
 		//later we will check other things here as well.
@@ -63,7 +63,7 @@ function ziggeo_file_write($file, $content, $context = false) {
 		if($c === false) {
 			//nope, it failed..
 			//Leaving this for notifications ;)
-		}		
+		}
 	}
 
 	return $ret;
@@ -73,12 +73,12 @@ function ziggeo_file_write($file, $content, $context = false) {
 function ziggeo_file_read($file) {
 
 	//Lets check if it exists or not
-	if(!file_exists($file))	{ return false; }
+	if(!file_exists($file)) { return false; }
 
 	//Lets get the content
 	$read = file_get_contents($file);
 
-	if($read === false || $read === '' || strlen($read) < 10 ) { return false; }		
+	if($read === false || $read === '' || strlen($read) < 10 ) { return false; }
 
 	//Strip away php tags and the WP check related to direct file calls
 	$read = substr($read, 7, -2);
@@ -89,7 +89,7 @@ function ziggeo_file_read($file) {
 		$read = json_decode($read, true);
 	}
 
-	if($read)	{ return $read; }
+	if($read)       { return $read; }
 
 	return false;
 }
@@ -146,15 +146,17 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 
 	//To show the errors that happened - if any
 	if ( $wp_filesystem->errors->get_error_code() ) {
-		foreach ( $wp_filesystem->errors->get_error_messages() as $message )
-			show_message($message);
+		foreach ( $wp_filesystem->errors->get_error_messages() as $message ) {
+				show_message($message);
+		}
+
 		echo '</div>';
 		return false;
 	}
 
 	//We got it all set up and good to go..now lets do what we wanted to do..
 
-	//We define this here, so that we can use it without further recalcualtions - the wp_filesystem should be available at this time.
+	//We define this here, so that we can use it without further recalculations - the wp_filesystem should be available at this time.
 	define('ZIGGEO_DATA_ROOT_PATH_FS', str_replace(ABSPATH, $wp_filesystem->abspath(), ZIGGEO_DATA_ROOT_PATH));
 
 	//Since all data should be in "userData" folder, if the same does not exist, we can simply return false on reading action and create it on write action..
@@ -168,11 +170,11 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 	}
 
 	if($action === 'write') {
-		//Read the entire file, then add this back
-		return ziggeo_file_WP_write($file, $content);
+			//Read the entire file, then add this back
+			return ziggeo_file_WP_write($file, $content);
 	}
 	else {
-		//Since we have the path and file allready set, we check it here for the same
+		//Since we have the path and file already set, we check it here for the same
 		if(!$wp_filesystem->exists($file)) {
 			return false;
 		}
