@@ -494,7 +494,7 @@ function ziggeo_video_contact_text() {
         ?>
         </div>
         <div class="ziggeo-frame" style="display: none;" id="ziggeo-tab_contact">
-                <p><i>Regardless where your question is posted, we are happy to assist with the same, so all you need to do is ask</i></p>
+                <p><i>Regardless where your question is posted, we are happy to assist with the same, so all you need to do is ask.</i></p>
         <?php
 }
         //Function to show the contact details on our Zendesk platform.
@@ -509,7 +509,7 @@ function ziggeo_video_contact_text() {
         //Function to show the contact instructions for contacting on WordPress itself instead.
         function ziggeo_contact_wp_string() {
                 ?>
-                <p>If you prefer to contact us over WordPress, all you need is to head to: <a href="https://wordpress.org/support/plugin/ziggeo" target="_blank">Ziggeo Plugin Support Section</a></p>
+                <p>If you prefer to contact us via WordPress, all you need is to head to: <a href="https://wordpress.org/support/plugin/ziggeo" target="_blank">Ziggeo Plugin Support Section</a></p>
                 <?php
         }
 
