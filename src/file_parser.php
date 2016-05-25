@@ -124,15 +124,19 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 	$url = wp_nonce_url('options-general.php?page=ziggeo_video','ziggeo_nonce_action');
 
 	?>
-	<div class="wrap">
-		<h1>We need few details to complete this action</h1>
-		<p>Seems that you are running a secure setup on your server, which means that we can not write a file on the same. To help us with this we are calling WordPress functions that will allow you to share FTP details in secure way and allow us to use the same (through other WordPress functions) to save the files to your server.</p>
+	
 	<?php
 
 	//Lets grab credentials if we do not have it..
 	if( ($credentials = request_filesystem_credentials($url, '', false, ZIGGEO_ROOT_PATH, $form_fields, true) ) === false ) {
+		
 		//Customer did not enter these details before, so lets wait for input since the form is shown..
-		?> </div> <?php //closing the .wrap above
+		?><div class="wrap">
+			<h1>We need few details to complete this action</h1>
+			<p>Seems that you are running a secure setup on your server, which means that we can not write a file on the same. To help us with this we are calling
+			WordPress functions that will allow you to share FTP details in secure way and allow us to use the same (through other WordPress functions) to save
+			the files to your server.</p>
+		</div> <?php //closing the .wrap above
 		return null;
 	}
 
@@ -140,7 +144,13 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
 	if( !WP_Filesystem($credentials, ZIGGEO_ROOT_PATH, true) ) {
 		//Password is easy to be entered wrong, and since something is wrong, letting the user know with the error
 		request_filesystem_credentials($url, '', true, ZIGGEO_ROOT_PATH, $form_fields, true);
-		?> </div> <?php //closing the .wrap above
+		?>
+		<div class="wrap">
+			<h1>We need few details to complete this action</h1>
+			<p>Seems that you are running a secure setup on your server, which means that we can not write a file on the same. To help us with this we are calling
+			WordPress functions that will allow you to share FTP details in secure way and allow us to use the same (through other WordPress functions) to save
+			the files to your server.</p>
+		</div> <?php //closing the .wrap above
 		return null;
 	}
 
