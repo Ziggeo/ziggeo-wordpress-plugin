@@ -642,7 +642,7 @@ function ziggeo_video_validate($input) {
 										//This was repeated error, adding this just in case (fallback), but we will be showing a different error
 										add_settings_error('templates_editor',
 											'file_write_action',
-											'It seems that writting to file did not work several times. Please check this guide instead: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a>',
+											'It seems that writting to file did not work several times. Please check this guide instead: <a href="https://ziggeo.com/wordpress-plugin-filesystem" target="_blank">How to create setup files in our WordPress plugin?</a>',
 											'error');
 
 										wp_redirect( get_admin_url(null, 'options-general.php?page=ziggeo_video&secureForm=failed') );

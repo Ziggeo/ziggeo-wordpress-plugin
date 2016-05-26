@@ -48,7 +48,7 @@ function ziggeo_file_write($file, $content, $context = false) {
 		add_settings_error($context,
 							'file_write_action',
 							'There were issues creating directory. If you were not shown WordPress credentials form, the action failed.
-									Please see more about it here: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a>',
+									Please see more about it here: <a href="https://ziggeo.com/wordpress-plugin-filesystem" target="_blank">How to create setup files in our WordPress plugin?</a>',
 							'error');
 
 		//later we will check other things here as well.

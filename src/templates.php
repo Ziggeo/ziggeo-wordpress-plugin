@@ -48,7 +48,7 @@ function ziggeo_templates_add($id, $value) {
 //			add_settings_error('templates_editor',
 //							'file_write_action',
 //							'There were issues creating directory. If you were not shown WordPress credentials form, the action failed.
-//								Please see more about it here: <a href="https://ziggeo.com/@TODO" target="_blank">How to create setup files in our WordPress plugin?</a>',
+//								Please see more about it here: <a href="https://ziggeo.com/wordpress-plugin-filesystem" target="_blank">How to create setup files in our WordPress plugin?</a>',
 //							'error');
 
 			//This has failed.. we need to create it in a different manner..
@@ -62,7 +62,7 @@ function ziggeo_templates_add($id, $value) {
 	{
 		if($current = ziggeo_file_read($file)) {
 			//This way the new data updates the old one, if array keys match..
-			//@TODO - the name should be unique, so do we want to record an error for our customer to know that they had used the name previously used in some other template, or do we just overwrite it? -> error settings_error() otherwise leave as is.
+			//@TODO - the name should be unique, so do we want to record an error for our customer to know that they had used the name that was previously used in some other template, or do we just overwrite it? -> report otherwise leave as is.
 			$content = array_merge($current, $content);
 		}
 
