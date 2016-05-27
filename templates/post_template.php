@@ -1,6 +1,17 @@
 <?php
-	global $current_user;
-	get_currentuserinfo();
+//Checking if WP is running or if this is a direct call..
+defined('ABSPATH') or die();
+
+	global $wp_version;
+
+	//Since 
+	if( version_compare( $wp_version, '4.5') >= 0 ) {
+		$current_user = wp_get_current_user();
+	}
+	else {
+		global $current_user;
+		get_currentuserinfo();		
+	}
 ?>
 
 <script type="text/template" id="ziggeo-insert-button-template">
@@ -23,7 +34,7 @@
 			ziggeo-limit=240
 			ziggeo-form_accept="#post"
             ziggeo-perms="allowupload"
-			ziggeo-tags="wordpress,<?= $current_user->user_login ?>"
+			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>,creatingPost"
 		></ziggeo>
 	</div>
 </script>
@@ -38,7 +49,7 @@
 			ziggeo-modes="rerecorder"
 			ziggeo-perms="allowupload"
 			ziggeo-form_accept="#post"
-			ziggeo-tags="wordpress,<?= $current_user->user_login ?>"
+			ziggeo-tags="wordpress,<?php echo $current_user->user_login; ?>,creatingPost,rerecorded"
 		></ziggeo>
 	</div>
 </script>

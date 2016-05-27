@@ -1,11 +1,18 @@
 <?php
+//Checking if WP is running or if this is a direct call..
+defined('ABSPATH') or die();
 
 function ziggeo_script_header() {
 	$options = get_option('ziggeo_video');
-	echo "<script>ZiggeoApi.token = '" . (@$options && @$options["token"] ? $options["token"] : '') . "';</script>\n";
-	echo "<script>ZiggeoApi.Config.webrtc = true;</script>\n";
-	echo "<script>ZiggeoApi.Config.resumable = true;</script>\n";
-	echo "<script>ZiggeoApi.Config.cdn = true;</script>\n";
+
+	echo '
+	<!-- Ziggeo API code -->
+	<script type="text/javascript">
+		ZiggeoApi.token = "' . ( ( isset($options, $options["token"]) ) ? $options["token"] : "") . '";
+		ZiggeoApi.Config.webrtc = true;
+		ZiggeoApi.Config.resumable = true;
+		ZiggeoApi.Config.cdn = true;
+	</script>';
 }
 
 add_action('wp_head', "ziggeo_script_header");
