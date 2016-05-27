@@ -4,7 +4,7 @@ Donate link: http://ziggeo.com/
 Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
 Tested up to: 4.5.2
-Stable tag: 1.8
+Stable tag: 1.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -139,11 +139,21 @@ Templates are an easy way for you to set your parameters for recorder, player or
 When the embedding is detected in your posts, pages or comments, our plugin will go through it and find what you wanted to show and how you wanted to show it.
 
 There are several base templates:
-1. [ziggeo]
-1. [ziggeoplayer]
-1. [ziggeorecorder]
-1. [ziggeorerecorder]
-1. [ziggeouploader]
+
+1. Any embedding
+ `[ziggeo]`
+
+2. Ziggeo Video Player
+ `[ziggeoplayer]`
+
+3. Ziggeo Video Recorder
+ `[ziggeorecorder]`
+
+4. Ziggeo Video ReRecorder
+ `[ziggeorerecorder]`
+
+5. Ziggeo Video Uploader base
+ `[ziggeouploader]`
 
 The only reason why we created them is to allow you to use a simple tag in your post to specify what you are after with specific parameters being loaded for you.
 
@@ -161,7 +171,7 @@ We value your suggestions in regards to all aspects of our service and plugin as
 
 There are several ways to power your WordPress with video recording and video playback features.
 
-= Manually -
+= Manually =
 1. Upload the directory to your plugins folder (by default this is) `/wp-content/plugins/` directory and click on *Ziggeo Video* in the Settings menu.
 
 = Automatically =
@@ -223,7 +233,7 @@ That simply means that you are using different 'user' to run WordPress and a dif
 1. create a file named **custom_templates.php**
 1. set its permissions to *766* or *666*. Our plugin will now try to read it and change the permissions once it is done saving the file (as such 766 will not stay the same all the time, only for a moment when plugin needs it to write to the same).
 
-= Why are there **ziggeo** and **ziggeo-userData** directories in our plugins folder? =
+= Why are there 'ziggeo' and 'ziggeo-userData' directories in our plugins folder? =
 
 In order to store data in files and read the same on-fly without loosing the data once the plugin is updated, we are storing the data in another folder - `ziggeo-userData`. That means that we have moved the actual data from the plugin itself. As such `ziggeo` directory holds the plugin functionality code and `ziggeo-userData` holds the data saved by the plugin.
 
