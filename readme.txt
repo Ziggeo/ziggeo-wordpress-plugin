@@ -271,10 +271,11 @@ Clicking on it again will stop it from being 'beta'.
 = Global Defaults =
 8. Your old setup is now used as fallback
 
-= Editing Post =
-9. TinyMCE button
+= Comments =
+9. More options for comments.
 
-10. //@todo - maybe we could add segments =general tab=, =templates tab=, etc and then screenshots..
+= Editing Post =
+10. TinyMCE button
 
 
 == Upgrade notice ==
