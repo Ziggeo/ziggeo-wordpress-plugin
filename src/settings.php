@@ -352,6 +352,7 @@ function ziggeo_video_general_text() {
 			
 			?>
                 <input id="ziggeo_showVideoAidButton" name="ziggeo_video[showVideoAidButton]" size="50" type="checkbox" value="1" <?php echo checked( 1, $options['showVideoAidButton'], false ); ?> />
+				<label for="ziggeo_showVideoAidButton">Removes the `Ziggeo Video Aid` button in the toolbar shown when Posts and pages are edited.</label>
              <?php
 		}
 
