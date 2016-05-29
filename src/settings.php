@@ -31,8 +31,8 @@ function ziggeo_admin_init() {
 
                 //Templates section
                 add_settings_field('ziggeo_templates_id', 'Template ID', 'ziggeo_templates_id_string', 'ziggeo_video', 'ziggeo_video_templates');
-                add_settings_field('ziggeo_templates_editor', 'Template Editor', 'ziggeo_templates_editor_string', 'ziggeo_video', 'ziggeo_video_templates');
                 add_settings_field('ziggeo_templates_manager', 'Manage your templates', 'ziggeo_templates_manager_string', 'ziggeo_video', 'ziggeo_video_templates');
+                add_settings_field('ziggeo_templates_editor', 'Template Editor', 'ziggeo_templates_editor_string', 'ziggeo_video', 'ziggeo_video_templates');
 
                 //Contact us section
                 add_settings_field('ziggeo_contact_ziggeo', 'Contact Us on our platform', 'ziggeo_contact_ziggeo_string', 'ziggeo_video', 'ziggeo_video_contact');
@@ -106,6 +106,32 @@ function ziggeo_video_templates_text() {
                 //On load, we do not need to load any data, just have the box empty. When we get back the response, that is when we need to capture the data..
                 ?>
                 <input id="ziggeo_templates_id" name="ziggeo_video[templates_id]" size="50" type="text" placeholder="Give the template any name you wish here" value="" />
+                <?php
+        }
+
+        //This function build the interface that will help us show and manage the templates.
+        //It will show a list of templates and over each, at the top right corner there should be options to edit and remove the same.
+        function ziggeo_templates_manager_string() {
+                ?>
+                <div>
+                        <ul class="ziggeo-manage_list">
+                                <?php
+                                        $list = ziggeo_templates_index();
+                                        if($list) {
+                                                foreach($list as $template => $value)
+                                                {
+                                                        ?><li><?php echo $template; ?> <span class="delete">x</span><span class="edit" data-template="<?php echo $value; ?>">edit</span></li><?php
+                                                }                                               
+                                        }
+                                        else {
+                                                ?><li>No templates yet, please create one</li><?php
+                                        }
+                                ?>
+                                <?php //Edit should do //document.location += "#ziggeo_editing" while edit should do confirm() ?>
+                        </ul>
+                        <?php //We use this to help us see what action we need to make.. if edit, or delete, we store the old ID into its value, while it is empty if we create new ?>
+                        <input type="hidden" id="ziggeo_templates_manager" name="ziggeo_video[templates_manager]" value="">
+                </div>
                 <?php
         }
 
@@ -258,32 +284,6 @@ function ziggeo_video_templates_text() {
                         </dl>
                 </div>
                 <br style="clear: both;">
-                <?php
-        }
-
-        //This function build the interface that will help us show and manage the templates.
-        //It will show a list of templates and over each, at the top right corner there should be options to edit and remove the same.
-        function ziggeo_templates_manager_string() {
-                ?>
-                <div>
-                        <ul class="ziggeo-manage_list">
-                                <?php
-                                        $list = ziggeo_templates_index();
-                                        if($list) {
-                                                foreach($list as $template => $value)
-                                                {
-                                                        ?><li><?php echo $template; ?> <span class="delete">x</span><span class="edit" data-template="<?php echo $value; ?>">edit</span></li><?php
-                                                }                                               
-                                        }
-                                        else {
-                                                ?><li>No templates yet, please create one</li><?php
-                                        }
-                                ?>
-                                <?php //Edit should do //document.location += "#ziggeo_editing" while edit should do confirm() ?>
-                        </ul>
-                        <?php //We use this to help us see what action we need to make.. if edit, or delete, we store the old ID into its value, while it is empty if we create new ?>
-                        <input type="hidden" id="ziggeo_templates_manager" name="ziggeo_video[templates_manager]" value="">
-                </div>
                 <?php
         }
 

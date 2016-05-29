@@ -1,12 +1,11 @@
 <?php 
     /*
     Plugin Name: Ziggeo Video Posts and Comments
-    Plugin URI: http://ziggeo.com
+    Plugin URI: https://ziggeo.com
     Description: Plugin for adding video posts and video comments
     Author: Ziggeo
-    Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder, video player, video gallery, video uploads, video submissions
-    Version: 1.11
-    Author URI: http://ziggeo.com
+    Version: 1.12
+    Author URI: https://ziggeo.com
     */
 
 //Checking if WP is running or if this is a direct call..

@@ -8,6 +8,13 @@ include_once('./file_parser.php');
 
 $list = ziggeo_file_read( '../../ziggeo-userData/custom_templates.php' );
 
+
+if($list) {
+	//If there are double quotes, it would cause issues with TinyMCE, however with templates editing as well.
+	//Since this is called for templates only, we know that we are OK with changing all double quotes into single quotes..
+	$list = str_replace('"', "'", $list);		
+}
+
 $start = "(function() {
     tinymce.create('tinymce.plugins.ziggeo', {
         /**
@@ -39,7 +46,7 @@ if($list) {
         //player and re-recorder require token.. so it would be good to detect which base the template has and then add any required attributes to the same..
         foreach($list as $id => $template) {
 
-                $tokenRequired = 'false';
+                $tokenRequired = 'no';
                 //We will check each since we want people to be able to add 2 or more templates ;)
 
                 //Are we dealing with player?
@@ -47,7 +54,7 @@ if($list) {
                         if( stripos($template, 'video') === false ) { //nope, lets add it
                                 $template = str_replace( '[ziggeoplayer', '[ziggeoplayer video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
                         }
-                        $tokenRequired = 'true';
+                        $tokenRequired = 'yes';
                 }
 
                 //are we dealing with the rerecorder?
@@ -56,7 +63,7 @@ if($list) {
                         if( stripos($template, 'video') === false ) { //nope, lets add it
                                 $template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
                         }
-                        $tokenRequired = 'true';
+                        $tokenRequired = 'yes';
                 }
 
                 if($middle !== '')      { $middle .= ', '; }
@@ -70,7 +77,7 @@ if($list) {
                                                                 editor.insertContent(this.value());
                                                         }
                                                         else {
-                                                                if(this.settings.requiresToken) {
+                                                                if(this.settings.requiresToken === 'yes') {
                                                                         editor.insertContent('[ziggeo ' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');                                                                     
                                                                 }
                                                                 else {

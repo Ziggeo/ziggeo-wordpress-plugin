@@ -1,10 +1,10 @@
 === Ziggeo ===
 Contributors: oliverfriedmann, baned
-Donate link: http://ziggeo.com/
-Tags: comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
+Donate link: https://ziggeo.com/
+Tags: video, comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
 Tested up to: 4.5.2
-Stable tag: 1.11
+Stable tag: 1.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -290,11 +290,16 @@ Clicking on it again will stop it from being 'beta'.
 
 == Upgrade notice ==
 
-= 1.11 =
-* Templates are now available in Ziggeo plugin
+= 1.12 =
+* Fixes related to templates structure
 
 
 == Changelog ==
+
+= 1.12 =
+* Fixed issue with double quotes stopping TinyMCE button in toolbar to not work properly
+* Fixed issue with double quotes breaking template editing option
+* Fixed template parsing in comments to allow template to be used and custom parameters
 
 = 1.11 =
 * Templates tab added to the plugin to expand its possibilities/features
