@@ -22,7 +22,7 @@ define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . '../ziggeo-userData/');
 define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
 
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
-define('ZIGGEO_VERSION', '1.11');
+define('ZIGGEO_VERSION', '1.12');
 
 include_once(ZIGGEO_ROOT_PATH . "src/player.php");
 include_once(ZIGGEO_ROOT_PATH . "src/assets.php");

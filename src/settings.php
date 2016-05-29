@@ -18,6 +18,7 @@ function ziggeo_admin_init() {
         //----------------------
                 //General section
                 add_settings_field('ziggeo_app_token', 'Ziggeo API Token', 'ziggeo_app_token_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+                add_settings_field('ziggeo_showVideoAidButton', 'Show "Ziggeo Video Aid" button in TinyMCE toolbar', 'ziggeo_video_aid_string', 'ziggeo_video', 'ziggeo_video_main');
                 add_settings_field('ziggeo_comments_html', '', 'ziggeo_comments_html', 'ziggeo_video', 'ziggeo_video_main');
                         add_settings_field('ziggeo_video_comments', 'Disable Video Comments', 'ziggeo_video_comments_string', 'ziggeo_video', 'ziggeo_video_main');
                         add_settings_field('ziggeo_video_and_text', 'Require Video and have text as optional', 'ziggeo_video_and_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
@@ -343,6 +344,18 @@ function ziggeo_video_general_text() {
 				}
         }
 
+		//Function that tells us if we should show the TinyMCE button in the toolbar or not
+		function ziggeo_video_aid_string() {
+			$options = get_option('ziggeo_video');
+
+			if(!isset($options['showVideoAidButton']) )  { $options['showVideoAidButton'] = '1'; }
+			
+			?>
+                <input id="ziggeo_showVideoAidButton" name="ziggeo_video[showVideoAidButton]" size="50" type="checkbox" value="1" <?php echo checked( 1, $options['showVideoAidButton'], false ); ?> />
+				<label for="ziggeo_showVideoAidButton">Removes the `Ziggeo Video Aid` button in the toolbar shown when Posts and pages are edited.</label>
+             <?php
+		}
+
         //beta is currently used to show beta player. We should make it possible to choose beta player and recorder at some point, and will need to capture this @OLD value
         function ziggeo_beta_setting_string() {
                 $options = get_option('ziggeo_video');
@@ -520,184 +533,196 @@ function ziggeo_video_contact_text() {
 //Function to capture the values submitted by the customer
 function ziggeo_video_validate($input) {
 
-        //We will first grab the old values, then add to them, or simply replace them where needed..
-        $options = get_option('ziggeo_video');
+	//We will first grab the old values, then add to them, or simply replace them where needed..
+	$options = get_option('ziggeo_video');
 
-        //List of all options that we accept
-        $allowed_options = array(
-                //templates tab
-                        'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
-                //general tab
-                        'token' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true
-        );
+	//List of all options that we accept
+	$allowed_options = array(
+		//not shown
+			'version' => true,
+		//templates tab
+			'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
+		//general tab
+			'token' => true, 'showVideoAidButton' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true
+	);
 
-		$showFeedbackThankYou = false;
+	$showFeedbackThankYou = false;
 
-		//The option is not yet set and input suggests that we are setting it now..
-		if( (!isset($options['feedback']) || (isset($options['feedback']) && $options['feedback'] !== "1" ) ) && ( isset($input['feedback']) && $input['feedback'] === "1" ) ) {
-			$showFeedbackThankYou = true;
+	//The option is not yet set and input suggests that we are setting it now..
+	if( (!isset($options['feedback']) || (isset($options['feedback']) && $options['feedback'] !== "1" ) ) && ( isset($input['feedback']) && $input['feedback'] === "1" ) ) {
+		$showFeedbackThankYou = true;
+	}
+	//If option is already set that the feedback was left, but the input is passed (as it will be when something is saved), we just 'neutralize' it here
+	elseif(isset($input['feedback'])) {
+		unset($input['feedback']);
+	}
+
+	if(is_array($options)) {
+		//Going through all updated settings so that we can update all that need to be so
+		foreach($options as $option => $value)
+		{
+			if(isset($input[$option])) {
+				$options[$option] = $input[$option];
+				//We have used the option, now lets not have it available any more
+				unset($input[$option]);
+			}
+			else {
+				if($option !== 'feedback'){ //since ths is the one that we do not want to disable...
+					$options[$option] = '';
+				}
+			}
 		}
-		//If option is already set that the feedback was left, but the input is passed (as it will be when something is saved), we just 'neutralize' it here
-		elseif(isset($input['feedback'])) {
-			unset($input['feedback']);
-		}
+	}
+	else {
+			$options = array ();
+	}
 
-        if(is_array($options)) {
-                //Going through all updated settings so that we can update all that need to be so
-                foreach($options as $option => $value)
-                {
-                        if(isset($input[$option])) {
-                                $options[$option] = $input[$option];
-                                //We have used the option, now lets not have it available any more
-                                unset($input[$option]);
-                        }
-                        else {
-							if($option !== 'feedback'){ //since ths is the one that we do not want to disable...
-                                $options[$option] = '';
-							}
-                        }
-                }               
-        }
-        else {
-                $options = array ();
-        }
+	//Now we check if there are any new options that are passed to us and we allow them
+	if( !empty($input) ) {
+		foreach($input as $option => $value)
+		{
+			if(isset($allowed_options[$option]))
+			{       
+				$options[$option] = $value;
+			}
+		}       
+	}
+	else {
+		return false; //nothing to do here..
+	}
 
-        //Now we check if there are any new options that are passed to us and we allow them
-        if( !empty($input) ) {
-                foreach($input as $option => $value)
-                {
-                        if(isset($allowed_options[$option]))
-                        {       
-                                $options[$option] = $value;
-                        }
-                }       
-        }
-        else {
-                return false; //nothing to do here..
-        }
+	//Lets make sure that if video and text is selected, that video and comment options are not selected (no sense having them disabled and this enabled)
+	if( isset($input['video_and_text']) && !empty($input['video_and_text']) ) {
+		unset($options['disable_video_comments'], $options['disable_text_comments']);
+	}
+	elseif( ( isset($input['disable_video_comments']) && !empty($input['disable_video_comments']) ) || ( isset($input['disable_text_comments']) && !empty($input['disable_text_comments']) ) ) {
+		unset($options['video_and_text']);
+	}
 
-        //Lets make sure that if video and text is selected, that video and comment options are not selected (no sense having them disabled and this enabled)
-        if( isset($input['video_and_text']) && !empty($input['video_and_text']) ) {
-                unset($options['disable_video_comments'], $options['disable_text_comments']);
-        }
-        elseif( ( isset($input['disable_video_comments']) && !empty($input['disable_video_comments']) ) || ( isset($input['disable_text_comments']) && !empty($input['disable_text_comments']) ) ) {
-                unset($options['video_and_text']);
-        }
+	//From this point on, we should not use $input, only $options
 
-        //From this point on, we should not use $input, only $options
+	// -- TEMPLATES --
 
-		// -- TEMPLATES --
+	if( isset($options['templates_editor']) && $options['templates_editor'] !== '' && $options['templates_editor'] !== '[ziggeo ' )
+	{
+		//Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
+		if( substr( $options['templates_editor'], -1) !== "]" ) { $options['templates_editor'] .= ']'; }
 
-        if( isset($options['templates_editor']) && $options['templates_editor'] !== '' && $options['templates_editor'] !== '[ziggeo ' )
-        {
-                //Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
-                if( substr( $options['templates_editor'], -1) !== "]" ) { $options['templates_editor'] .= ']'; }
+		//We should check what is the action..
+		//add new
+		if( !isset($options['templates_manager']) || $options['templates_manager'] === '' )
+		{
+			$idGiven = true;
 
-                //We should check what is the action..
-                //add new
-                if( !isset($options['templates_manager']) || $options['templates_manager'] === '' )
-                {
-                        $idGiven = true;
+			//before adding template we need to know that the template name was added, if not, lets just name it for our customer :)
+			if( trim($options['templates_id']) === '' ) {
+				$options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
 
-                        //before adding template we need to know that the template name was added, if not, lets just name it for our customer :)
-                        if( trim($options['templates_id']) === '' ) {
-                                $options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
+				$message = 'We have saved your template, but since Template ID was not given, we have set one up for you! - "' . $options['templates_id'] . '"';
+				$idGiven = false;
+			}
+			//if the template is just a number, it will not work, we need to add it some text at the start
+			elseif( is_numeric($options['templates_id']) ) {
+				$options['templates_id'] = '_' . $options['templates_id'];
+			}
 
-                                $message = 'We have saved your template, but since Template ID was not given, we have set one up for you! - "' . $options['templates_id'] . '"';
-                                $idGiven = false;
-                        }
-                        //if the template is just a number, it will not work, we need to add it some text at the start
-                        elseif( is_numeric($options['templates_id']) ) {
-                                $options['templates_id'] = '_' . $options['templates_id'];
-                        }
+			//Templates Editor value gets saved in a bit different manner, together with the ID.. We need to keep these two clean each time
+			// instead we save them into a new file as JSON, but we must make sure that such file does not exist currently.
+			if( ($rez = ziggeo_templates_add( $options['templates_id'], $options['templates_editor']) ) ) {
 
-                        //Templates Editor value gets saved in a bit different manner, together with the ID.. We need to keep these two clean each time
-                        // instead we save them into a new file as JSON, but we must make sure that such file does not exist currently.
-                        if( ($rez = ziggeo_templates_add( $options['templates_id'], $options['templates_editor']) ) ) {
+				//Was template ID set (true) or did we make it for our customer? (false)
+				if($idGiven) {
+						$message = 'Your template "' . $options['templates_id'] . '" has been successfully created.';
+				}
 
-								//Was template ID set (true) or did we make it for our customer? (false)
-                                if($idGiven) {
-                                        $message = 'Your template "' . $options['templates_id'] . '" has been successfully created.';
-                                }
+				add_settings_error('ziggeo_templates_manager',
+														'template_created',
+														$message,
+														'updated');
+			}
+			elseif($rez === null) {
+				//WP FileSystem is needed, we need to return false at that point.
 
-                                add_settings_error('ziggeo_templates_manager',
-                                                                        'template_created',
-                                                                        $message,
-                                                                        'updated');
-                        }
-						elseif($rez === null) {
-							//WP FileSystem is needed, we need to return false at that point.
-
-							//Since we know that this is related to templates, we can add template details here as well..
-							$urlSuffix = '&templateID=' . $options['templates_id'] . '&template=' . base64_encode( $options['templates_editor'] );
+				//Since we know that this is related to templates, we can add template details here as well..
+				$urlSuffix = '&templateID=' . $options['templates_id'] . '&template=' . base64_encode( $options['templates_editor'] );
 
 //This can and should be moved into the function with next features so that all can use it.
-							if( isset($_POST['ziggeo'], $_POST['ziggeo']['secure_form']) ) {
-								$urlSuffix .= '&error=true';
-								if( isset($_POST['ziggeo']['secure_try']) ) {
+				if( isset($_POST['ziggeo'], $_POST['ziggeo']['secure_form']) ) {
+					$urlSuffix .= '&error=true';
+					if( isset($_POST['ziggeo']['secure_try']) ) {
 
-									$_POST['ziggeo']['secure_try'] = (int)$_POST['ziggeo']['secure_try'];
+						$_POST['ziggeo']['secure_try'] = (int)$_POST['ziggeo']['secure_try'];
 
-									if( $_POST['ziggeo']['secure_try'] > 2 ) {
-										//This was repeated error, adding this just in case (fallback), but we will be showing a different error
-										add_settings_error('templates_editor',
-											'file_write_action',
-											'It seems that writting to file did not work several times. Please check this guide instead: <a href="https://ziggeo.com/wordpress-plugin-filesystem" target="_blank">How to create setup files in our WordPress plugin?</a>',
-											'error');
+						if( $_POST['ziggeo']['secure_try'] > 2 ) {
+							//This was repeated error, adding this just in case (fallback), but we will be showing a different error
+							add_settings_error('templates_editor',
+								'file_write_action',
+								'It seems that writting to file did not work several times. Please check this guide instead: <a href="https://ziggeo.com/wordpress-plugin-filesystem" target="_blank">How to create setup files in our WordPress plugin?</a>',
+								'error');
 
-										wp_redirect( get_admin_url(null, 'options-general.php?page=ziggeo_video&secureForm=failed') );
-										exit;
-									}
-									else {
-										$urlSuffix .= '&attempt=' . ++$_POST['ziggeo']['secure_try'];
-									}
-								}
-								else {
-									$urlSuffix .= '&attempt=2';
-								}
-							}
-
-							wp_redirect( get_admin_url(null, 'options-general.php?page=ziggeo_video&secureForm=true' . $urlSuffix) );
+							wp_redirect( get_admin_url(null, 'options-general.php?page=ziggeo_video&secureForm=failed') );
 							exit;
 						}
-                }
-                //edit old
-                elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' )
-                {
-                        //old ID, new ID, template structure
-                        if( ziggeo_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']) ) {
-                                add_settings_error('ziggeo_templates_manager',
-                                                                        'template_updated',
-                                                                        'Your template "' . $options['templates_id'] . '" has been successfully updated.',
-                                                                        'updated');
-                        }
-                }
+						else {
+							$urlSuffix .= '&attempt=' . ++$_POST['ziggeo']['secure_try'];
+						}
+					}
+					else {
+						$urlSuffix .= '&attempt=2';
+					}
+				}
 
-                unset( $options['templates_editor'], $options['templates_id'] );
-        }
-        //Should we delete template?
-        elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
-                if( ziggeo_templates_remove($options['templates_manager']) ) {
-                                add_settings_error('ziggeo_templates_manager',
-                                                                        'template_removed',
-                                                                        'Your template "' . $options['templates_manager'] . '" has been successfully deleted.',
-                                                                        'updated');
-                        }
-        }
-
-        //We are currently showing it up as default, so we should remove it at this point - we do not want it saved
-        unset($options['templates_editor']);
-
-		// - TEMPLATES (END)
-
-		//Lets show a nice thank you if the link was clicked that we already got feedback.
-		if($showFeedbackThankYou) {
-			add_settings_error('ziggeo_feedback', 'feedback removed',
-				'Feedback banner was removed.<div id="ziggeo_feedback-thankYOU" onclick ="this.parentNode.removeChild(this);"><b>Thank you</b> for leaving us a feedback. We hope that you enjoy our plugin and we welcome any ideas or suggestions :) <script type="text/javascript">setTimeout( function() {var box = document.getElementById("ziggeo_feedback-thankYOU"); if(box) {box.parentNode.removeChild(box);}}, 5000 );</script></div>',
-				'updated');
+				wp_redirect( get_admin_url(null, 'options-general.php?page=ziggeo_video&secureForm=true' . $urlSuffix) );
+				exit;
+			}
+		}
+		//edit old
+		elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' )
+		{
+			//old ID, new ID, template structure
+			if( ziggeo_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']) ) {
+					add_settings_error('ziggeo_templates_manager',
+																	'template_updated',
+																	'Your template "' . $options['templates_id'] . '" has been successfully updated.',
+																	'updated');
+			}
 		}
 
-        return $options;
+		unset( $options['templates_editor'], $options['templates_id'] );
+	}
+	//Should we delete template?
+	elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
+			if( ziggeo_templates_remove($options['templates_manager']) ) {
+							add_settings_error('ziggeo_templates_manager',
+																	'template_removed',
+																	'Your template "' . $options['templates_manager'] . '" has been successfully deleted.',
+																	'updated');
+					}
+	}
+
+	//We are currently showing it up as default, so we should remove it at this point - we do not want it saved
+	unset($options['templates_editor']);
+
+	// - TEMPLATES (END)
+
+	//Lets show a nice thank you if the link was clicked that we already got feedback.
+	if($showFeedbackThankYou) {
+		add_settings_error('ziggeo_feedback', 'feedback removed',
+			'Feedback banner was removed.<div id="ziggeo_feedback-thankYOU" onclick ="this.parentNode.removeChild(this);"><b>Thank you</b> for leaving us a feedback. We hope that you enjoy our plugin and we welcome any ideas or suggestions :) <script type="text/javascript">setTimeout( function() {var box = document.getElementById("ziggeo_feedback-thankYOU"); if(box) {box.parentNode.removeChild(box);}}, 5000 );</script></div>',
+			'updated');
+	}
+
+	//adding version in the DB as well so that we can know when plugin is updated and do any required actions..
+	if(!isset($options['version'])) {
+		$options['version'] = ZIGGEO_VERSION;
+	}
+
+	//This is just added at this time
+	if(!isset($options['showVideoAidButton'])) {
+		$options['showVideoAidButton'] = '';
+	}
+
+	return $options;
 }
 
 function ziggeo_admin_add_page() {
