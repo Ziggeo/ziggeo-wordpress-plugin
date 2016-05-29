@@ -37,6 +37,9 @@ if($template_recorder) {
 	//Just confirm it one more time which one we should use, in case template was removed and settings not updated.
 	//maybe change this to raise a notification if it happens to call deleted template.
 	$default_recorder = ( $tempParams ) ? $tempParams : $default_recorder;
+
+	//Make sure that template is parsed and prefix added if needed.
+	$default_recorder = ziggeo_parameter_prep($default_recorder);
 }
 
 //Player defaults to be used in comments.
@@ -53,6 +56,9 @@ if($template_player) {
 	//Just confirm it one more time which one we should use, in case template was removed and settings not updated.
 	//maybe change this to raise a notification if it happens to call deleted template.
 	$default_player = ( $tempParams ) ? $tempParams : $default_player;
+
+	//Make sure that template is parsed and prefix added if needed.
+	$default_player = ziggeo_parameter_prep($default_player);
 }
 
 
