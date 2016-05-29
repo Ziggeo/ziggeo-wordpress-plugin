@@ -127,7 +127,15 @@ function ziggeo_templates_index() {
 	//path to custom templates file
 	$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
-	return ziggeo_file_read($file);
+	$ret = ziggeo_file_read($file);
+
+	if($ret) {
+		//If there are double quotes, it would cause issues with TinyMCE, however with templates editing as well.
+		//Since this is called for templates only, we know that we are OK with changing all double quotes into single quotes..
+		$ret = str_replace('"', "'", $ret);		
+	}
+
+	return $ret;
 }
 
 //Checks if the template with specified ID exists or not
