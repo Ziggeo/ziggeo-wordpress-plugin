@@ -292,6 +292,7 @@ Clicking on it again will stop it from being 'beta'.
 
 = 1.12 =
 * Fixes related to templates structure
+* Modified templates builder layout and made toolbar button as optional
 
 
 == Changelog ==
@@ -300,6 +301,8 @@ Clicking on it again will stop it from being 'beta'.
 * Fixed issue with double quotes stopping TinyMCE button in toolbar to not work properly
 * Fixed issue with double quotes breaking template editing option
 * Fixed template parsing in comments to allow template to be used and custom parameters
+* Added option to remove Ziggeo Video Aid button from TinyMCE toolbar
+* Modified templates builder layout
 
 = 1.11 =
 * Templates tab added to the plugin to expand its possibilities/features
