@@ -37,7 +37,7 @@ include_once(ZIGGEO_ROOT_PATH . "src/ziggeo_tinymce.php"); //to activate TinyMCE
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ziggeo_action_links');
 
 function ziggeo_action_links($links) {
-        $links[] = '<a href="' . esc_url( get_admin_url(null, 'options-general.php?page=ziggeo_video') ) . '">Settings</a>';
-        $links[] = '<a href="mailto:support@ziggeo.com">Support</a>';
-        return $links;
+    $links[] = '<a href="' . esc_url( get_admin_url(null, 'options-general.php?page=ziggeo_video') ) . '">Settings</a>';
+    $links[] = '<a href="mailto:support@ziggeo.com">Support</a>';
+    return $links;
 }

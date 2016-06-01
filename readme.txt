@@ -48,10 +48,10 @@ If you create template with name 'mytemplate', which includes video_profile, eff
 
 `
 <ziggeo ziggeo-video_profile="_my_video_profile"
-                ziggeo-effect_profile='my_effects'
-                ziggeo-width=640
-                ziggeo-height=480
-                ziggeo-tags='mytag1,mytag2'>
+        ziggeo-effect_profile='my_effects'
+        ziggeo-width=640
+        ziggeo-height=480
+        ziggeo-tags='mytag1,mytag2'>
 </ziggeo>
 `
 
@@ -290,12 +290,14 @@ Clicking on it again will stop it from being 'beta'.
 
 == Upgrade notice ==
 
-= 1.12 =
-* Fixes related to templates structure
-* Modified templates builder layout and made toolbar button as optional
+= 1.13 =
+* @TODO
 
 
 == Changelog ==
+
+= 1.13 =
+* BUILDING @TODO
 
 = 1.12 =
 * Fixed issue with double quotes stopping TinyMCE button in toolbar to not work properly
