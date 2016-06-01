@@ -66,7 +66,29 @@ function ziggeo_templates_change(sel) {
     //Lets grab the currently set value if any from the templates editor
     var editor = document.getElementById('ziggeo_templates_editor');
 
-    editor.value = selected + ' ' + editor.value.substr(editor.value.indexOf(' ')+1);
+    //Lets grab the parameter holders
+    var wallParams = document.getElementById('ziggeo-wall-parameters');
+    var embeddingParams = document.getElementById('ziggeo-embedding-parameters');
+ 
+    //If it is video wall we want to show its parameters
+    if(selected === '[ziggeovideowall'){
+        editor.value = selected + ' ';
+        wallParams.style.display = 'block';
+        embeddingParams.style.display = 'none';
+    }
+    //otherwise lets show Ziggeo embedding parameters
+    else {
+        //If we were setting the video wall prior to this, we can remove all parameters
+        if(editor.value.substr(0, editor.value.indexOf(' ')) === '[ziggeovideowall') {
+            editor.value = selected + ' ';            
+        }
+        //Otherwise, lets keep the parameters, so that it is easier to set it all up :)
+        else {
+            editor.value = selected + ' ' + editor.value.substr(editor.value.indexOf(' ')+1);            
+        }
+        wallParams.style.display = 'none';
+        embeddingParams.style.display = 'block';
+    }
 }
 
 //Attaching events to the parameters list..

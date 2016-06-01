@@ -26,7 +26,7 @@ two lines of code in your site, service or app.
 = Support =
 
 We provide active support to all that have any questions or need any assistance with our plugin or our service.
-To submit your questions simply go to our [Help Center](https://ziggeo.zendesk.com/hc/en-us)
+To submit your questions simply go to our [Help Center](https://support.ziggeo.com/hc/en-us)
 
 = Recording =
 

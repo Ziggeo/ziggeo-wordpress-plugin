@@ -91,6 +91,7 @@ function ziggeo_video_templates_text() {
         <p>The different parameters have the following value types:
             <ol>
                 <li>Integer - after equal you simply add the number, no quotes</li>
+                <li>Float - this is integer with decimal precision</li>
                 <li>Boolean - you can just remove parameter (which equals to false) or add it and will be seen as true</li>
                 <li>String - value holding numbers, characters and spaces (as needed), which must be enclosed in quotation marks on both sides (on start and end)</li>
                 <li>Array - similar to string as it needs to be enclosed with quotation marks, but you can select multiple options, separating them with comma</li>
@@ -150,7 +151,7 @@ function ziggeo_video_templates_text() {
             <option value="[ziggeoplayer">Ziggeo Player</option>
             <option value="[ziggeorecorder">Ziggeo Recorder</option>
             <option value="[ziggeorerecorder">Ziggeo ReRecorder</option>
-            <?php // <option value="[ziggeovideowall">Ziggeo VideoWall</option> ?>
+            <option value="[ziggeovideowall">Ziggeo VideoWall</option>
             <option value="[ziggeouploader">Ziggeo Uploader</option>
             <?php // <option value="[ziggeoform">Ziggeo Form</option> ?>
         </select>
@@ -176,112 +177,157 @@ function ziggeo_video_templates_text() {
 
         <div id="ziggeo-params-holder">
             <b>Ziggeo parameters that you can use in templates (Click to add)</b>
-            <dl class="ziggeo-params">
-                <dt class="play record rerecord" data-equal="=">width</dt>
-                    <dd>Integer value representing the width of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the width of recording, just of the video screen</dd>
-                <dt class="play record rerecord" data-equal="=">height</dt>
-                    <dd>Integer value representing the height of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the height of recording, just of the video screen</dd>
-                <dt class="record rerecord" data-equal="=">recording_width</dt>
-                    <dd>Integer representing the width of recording captured</dd>
-                <dt class="record rerecord" data-equal="=">recording_height</dt>
-                    <dd>Integer representing the width of recording captured</dd>
-                <dt data-equal="">responsive</dt>
-                    <dd>Boolean value that allows you to make embedding capture the full size of the bounding box (applyed on load only)</dd>
-                <dt data-equal="=">popup_width</dt>
-                    <dd>Integer value setting up the width of the popup holding the embedding</dd>
-                <dt data-equal="=">popup height</dt>
-                    <dd>Integer value setting up the height of the popup holding the embedding</dd>
-                <dt data-equal="=''">video</dt>
-                    <dd>String representation of a video token or video key</dd>
-                <dt class="record rerecord" data-equal="">face_outline</dt>
-                    <dd>Boolean value setting if face outline would be shown on the video or not</dd>
-                <dt data-equal="''">stream</dt>
-                    <dd>String representing stream token or stream key</dd>
-                <dt class="default" data-equal="=''">modes</dt>
-                    <dd>Array value determining how the embedding is used. Possible values are "recorder", "player", "rerecorder" For more modes, separate values with comma</dd>
-                <dt class="record rerecord" data-equal="=''">tags</dt>
-                    <dd>Array holding the tags that the new video should be associated with. By default it will add "wordpress, {username}"</dd>
+            <div id="ziggeo-wall-parameters" style="display:none;">
+                <dl class="ziggeo-params">
+                    <dt class="wall" data-equal="=">video_width</dt>
+                        <dd>Integer value representing the width of each video in the wall</dd>
+                    <dt class="wall" data-equal="=">video_height</dt>
+                        <dd>Integer value representing the height of each video in the wall</dd>
+                    <dt class="wall" data-equal="=">fixed_width</dt>
+                        <dd>Integer value representing fixed width of the video wall</dd>
+                    <dt class="wall" data-equal="=">fixed_height</dt>
+                        <dd>Integer value representing fixed height of the video wall</dd>
+                    <dt class="wall" data-equal="=">scalable_width</dt>
+                        <dd>Float value representing width of the video wall in percentages of the available space</dd>
+                    <dt class="wall" data-equal="=">scalable_height</dt>
+                        <dd>Float value representing height of the video wall in percentages of the available space</dd>
+                    <dt class="wall" data-equal="=''">title</dt>
+                        <dd>String value representing title of the video wall - always shown on top</dd>
+                    <dt class="wall" data-equal="">slide_wall</dt>
+                        <dd>Boolean value representing the video wall showing videos left to right (disables show_pages)</dd>
+                    <dt class="wall" data-equal="">show_pages</dt>
+                        <dd>Boolean value (enabled by default) - causing pages to be shown at the bottom</dd>
+                    <dt class="wall" data-equal="=">videos_per_page</dt>
+                        <dd>Integer value determining how many videos should be shown per page (defaults: 1 with slide_wall and 2 with show_pages)</dd>
+                    <dt class="wall" data-equal="=''">on_no_videos</dt>
+                        <dd>String value representing what should happen if there are no videos. It can be 'showmessage', 'showtemplate', 'hidewall'</dd>
+                    <dt class="wall" data-equal="=''">message</dt>
+                        <dd>String value that will be shown if 'on_no_videos' is set to 'showmessage'</dd>
+                    <dt class="wall" data-equal="=">template_name</dt>
+                        <dd>String value holding the name of the video template that you want to show if the 'on_no_videos' is set to 'showtemplate' (if it does not exist default is loaded)</dd>
+                    <dt class="wall" data-equal="=">show_videos</dt>
+                        <dd>Array value stating which videos will be shown. Possible options are 'all', 'approved', 'rejected'</dd>
+                    <dt class="wall" data-equal="">autoplay</dt>
+                        <dd>Boolean value indicating if first video should be played automatically</dd>
+                    <?php /*
+                    <dt class="wall" data-equal="=">show_video_comments</dt>
+                        <dd>Boolean value to show the comments of each video - if available (under each video)</dd>
+                    <dt class="wall" data-equal="=">show_video_rating</dt>
+                        <dd>Boolean value to show the collected video rating - if available (under each video)</dd>
+                    <dt class="wall" data-equal="=">param</dt>
+                        <dd>desc</dd>
+                    */
+                    ?>
+                </dl>
+            </div>
+            <div id="ziggeo-embedding-parameters">
+                <dl class="ziggeo-params">
+                    <dt class="play record rerecord" data-equal="=">width</dt>
+                        <dd>Integer value representing the width of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the width of recording, just of the video screen</dd>
+                    <dt class="play record rerecord" data-equal="=">height</dt>
+                        <dd>Integer value representing the height of <span title="ziggeo player or recorder that you are setting this for">embedding</span>. This will not change the height of recording, just of the video screen</dd>
+                    <dt class="record rerecord" data-equal="=">recording_width</dt>
+                        <dd>Integer representing the width of recording captured</dd>
+                    <dt class="record rerecord" data-equal="=">recording_height</dt>
+                        <dd>Integer representing the width of recording captured</dd>
+                    <dt data-equal="">responsive</dt>
+                        <dd>Boolean value that allows you to make embedding capture the full size of the bounding box (applyed on load only)</dd>
+                    <dt data-equal="=">popup_width</dt>
+                        <dd>Integer value setting up the width of the popup holding the embedding</dd>
+                    <dt data-equal="=">popup height</dt>
+                        <dd>Integer value setting up the height of the popup holding the embedding</dd>
+                    <dt data-equal="=''">video</dt>
+                        <dd>String representation of a video token or video key</dd>
+                    <dt class="record rerecord" data-equal="">face_outline</dt>
+                        <dd>Boolean value setting if face outline would be shown on the video or not</dd>
+                    <dt data-equal="''">stream</dt>
+                        <dd>String representing stream token or stream key</dd>
+                    <dt class="default" data-equal="=''">modes</dt>
+                        <dd>Array value determining how the embedding is used. Possible values are "recorder", "player", "rerecorder" For more modes, separate values with comma</dd>
+                    <dt class="record rerecord" data-equal="=''">tags</dt>
+                        <dd>Array holding the tags that the new video should be associated with. By default it will add "wordpress, {username}"</dd>
 
-                <dt class="play record rerecord" data-equal="=''">effect_profile</dt>
-                    <dd>Array allowing you to select what effects to be applied to recorder, or which video stream to get when playing (the one with the same effects applied)</dd>
-                <dt class="record rerecord" data-equal="=''">data</dt>
-                    <dd>JSON formatted data that you wish to pass with the video</dd>
-                <dt class="default" data-equal="=''">perms</dt>
-                    <dd>Array value with video permissions that you could apply: "<span title="Enables uploading of videos for your customer">allowupload</span>", "<span title="Disables recording of video">forbidrecord</span>", "<span title="Disables switching between uploading and recording">forbidswitch</span>", "<span title="Disables rerecording completely">forbidrerecord</span>", "<span title="Overwrites the video if a video with the same key already exists">forceoverwrite</span>"</dd>
-                <dt class="record rerecord" data-equal="">disable_first_screen</dt>
-                    <dd>Boolean value to disable recorder's initial screen</dd>
-                <dt class="record rerecord" data-equal="">disable_device_test</dt>
-                    <dd>Boolean value to disable the camera and microphone tests prior to recording</dd>
-                <dt class="record rerecord" data-equal="">disable_timer</dt>
-                    <dd>Boolean value to hide the duration of recording on the recorder</dd>
-                <dt class="record rerecord" data-equal="">disable_snapshots</dt>
-                    <dd>Disables the selection of snapshots after the recording</dd>
-                <dt class="record rerecord" data-equal="">hide_rerecord_on_snapshots</dt>
-                    <dd>Boolean value to hide rerecord option while picking snapshots</dd>
-                <dt class="record rerecord" data-equal="">auto_crop</dt>
-                    <dd>Boolean value to automatically crop videos to specific resolution (this cuts all the parts that are bigger than set resolution) - can only be applied to recorder</dd>
-                <dt class="record rerecord" data-equal="">auto_pad</dt>
-                    <dd>Boolean value to automatically add black surface padding if video does not match set resolution - can only be applied to recorder</dd>
-                <dt class="play record rerecord" data-equal="=''">key</dt>
-                    <dd>String that tells recorder under which key the video should be saved under</dd>
-                <dt class="play record rerecord" data-equal="=">limit</dt>
-                    <dd>Integer value limiting the number of seconds that video / recording can be</dd>
-            </dl>
-            <dl class="ziggeo-params">
-                <dt data-equal="=">countdown</dt>
-                    <dd>Integer value to set when the recording should start after selecting same. Defaults to 3 seconds. Use 0 to disable countdown</dd>
-                <dt data-equal="=''">input_bind</dt>
-                    <dd>String value representing form field name to which video token would be passed over</dd>
-                <dt data-equal="=''">form_accept</dt>
-                    <dd>String value holding jQuery selector to disable form submission until video is created</dd>
-                <dt data-equal="=''">id</dt>
-                    <dd>String value representing desired ID of embedding element so that it can be looked up using JavaScript code</dd>
-                <dt data-equal="">immediate_playback</dt>
-                    <dd>Boolean value to tell if the video should start playing right away after recording</dd>
-                <dt data-equal="">autoplay</dt>
-                    <dd>Boolean value to indicate if the video should automatically play back in player</dd>
-                <dt data-equal="">loop</dt>
-                    <dd>Boolean value to set if you wish for the player to play the video indefinitely</dd>
-                <dt data-equal="=''">server_auth</dt>
-                    <dd>String representing authorization token retrieved from the server side</dd>
-                <dt data-equal="=''">client_auth</dt>
-                    <dd>String representing authorization token for use on client side</dd>
-                <dt data-equal="=">rerecordings</dt>
-                    <dd>Integer value indicating how many rerecordings you would allow to be made</dd>
-                <dt data-equal="=">expiration_days</dt>
-                    <dd>Integer value to set after how many days you want to delete the recorded video (by default, never)</dd>
-                <dt data-equal="=''">video_profile</dt>
-                    <dd>Strig value holding key or token of your video profile that you want to use</dd>
+                    <dt class="play record rerecord" data-equal="=''">effect_profile</dt>
+                        <dd>Array allowing you to select what effects to be applied to recorder, or which video stream to get when playing (the one with the same effects applied)</dd>
+                    <dt class="record rerecord" data-equal="=''">data</dt>
+                        <dd>JSON formatted data that you wish to pass with the video</dd>
+                    <dt class="default" data-equal="=''">perms</dt>
+                        <dd>Array value with video permissions that you could apply: "<span title="Enables uploading of videos for your customer">allowupload</span>", "<span title="Disables recording of video">forbidrecord</span>", "<span title="Disables switching between uploading and recording">forbidswitch</span>", "<span title="Disables rerecording completely">forbidrerecord</span>", "<span title="Overwrites the video if a video with the same key already exists">forceoverwrite</span>"</dd>
+                    <dt class="record rerecord" data-equal="">disable_first_screen</dt>
+                        <dd>Boolean value to disable recorder's initial screen</dd>
+                    <dt class="record rerecord" data-equal="">disable_device_test</dt>
+                        <dd>Boolean value to disable the camera and microphone tests prior to recording</dd>
+                    <dt class="record rerecord" data-equal="">disable_timer</dt>
+                        <dd>Boolean value to hide the duration of recording on the recorder</dd>
+                    <dt class="record rerecord" data-equal="">disable_snapshots</dt>
+                        <dd>Disables the selection of snapshots after the recording</dd>
+                    <dt class="record rerecord" data-equal="">hide_rerecord_on_snapshots</dt>
+                        <dd>Boolean value to hide rerecord option while picking snapshots</dd>
+                    <dt class="record rerecord" data-equal="">auto_crop</dt>
+                        <dd>Boolean value to automatically crop videos to specific resolution (this cuts all the parts that are bigger than set resolution) - can only be applied to recorder</dd>
+                    <dt class="record rerecord" data-equal="">auto_pad</dt>
+                        <dd>Boolean value to automatically add black surface padding if video does not match set resolution - can only be applied to recorder</dd>
+                    <dt class="play record rerecord" data-equal="=''">key</dt>
+                        <dd>String that tells recorder under which key the video should be saved under</dd>
+                    <dt class="play record rerecord" data-equal="=">limit</dt>
+                        <dd>Integer value limiting the number of seconds that video / recording can be</dd>
+                </dl>
+                <dl class="ziggeo-params">
+                    <dt data-equal="=">countdown</dt>
+                        <dd>Integer value to set when the recording should start after selecting same. Defaults to 3 seconds. Use 0 to disable countdown</dd>
+                    <dt data-equal="=''">input_bind</dt>
+                        <dd>String value representing form field name to which video token would be passed over</dd>
+                    <dt data-equal="=''">form_accept</dt>
+                        <dd>String value holding jQuery selector to disable form submission until video is created</dd>
+                    <dt data-equal="=''">id</dt>
+                        <dd>String value representing desired ID of embedding element so that it can be looked up using JavaScript code</dd>
+                    <dt data-equal="">immediate_playback</dt>
+                        <dd>Boolean value to tell if the video should start playing right away after recording</dd>
+                    <dt data-equal="">autoplay</dt>
+                        <dd>Boolean value to indicate if the video should automatically play back in player</dd>
+                    <dt data-equal="">loop</dt>
+                        <dd>Boolean value to set if you wish for the player to play the video indefinitely</dd>
+                    <dt data-equal="=''">server_auth</dt>
+                        <dd>String representing authorization token retrieved from the server side</dd>
+                    <dt data-equal="=''">client_auth</dt>
+                        <dd>String representing authorization token for use on client side</dd>
+                    <dt data-equal="=">rerecordings</dt>
+                        <dd>Integer value indicating how many rerecordings you would allow to be made</dd>
+                    <dt data-equal="=">expiration_days</dt>
+                        <dd>Integer value to set after how many days you want to delete the recorded video (by default, never)</dd>
+                    <dt data-equal="=''">video_profile</dt>
+                        <dd>Strig value holding key or token of your video profile that you want to use</dd>
 
-                <dt data-equal="=''">meta_profile</dt>
-                    <dd>Strig value holding key or token of your meta profile that you want to use</dd>
-                <dt data-equal="=">stream_width</dt>
-                    <dd>Integer value setting the optimal width of the stream</dd>
-                <dt data-equal="=">stream_height</dt>
-                    <dd>Integer value setting the optimal height of the stream</dd>
-                <dt data-equal="=''">title</dt>
-                    <dd>String value to set title of the video being recorded</dd>
-                <dt data-equal="=''">description</dt>
-                    <dd>String value to set the description of the video</dd>
-                <dt data-equal="=''">allowed_extensions</dt>
-                    <dd>String value to limit the uploads to only specific extensions (all allowed by default)</dd>
-                <dt data-equal="=">default_image_selector</dt>
-                    <dd>Float (integer with decimal point) value to indicate the default image selector</dd>
-                <dt data-equal="">enforce_duration</dt>
-                    <dd>Boolean value to reject videos if they are too long.</dd>
-                <dt data-equal="=">limit_upload_size</dt>
-                    <dd>Integer value to limit the size of videos being uploaded in bytes (no limit by default)</dd>
-                <dt data-equal="">performance_warning</dt>
-                    <dd>Boolean value to set a warning to be shown if framerate is too low</dd>
-                <dt data-equal="">recover_streams</dt>
-                    <dd>Boolean value to set the attempt to recover videos feature if your customers close their browser while recording</dd>
-                <dt data-equal="">nofullscreen</dt>
-                    <dd>Boolean value to disable fullscreen option in player</dd>
-                <dt class="beta" data-equal="">stretch</dt>
-                    <dd>Boolean value to set the beta player to be responsive (this happens in realtime)</dd>
-                <dt class="beta" data-equal="=''">theme</dt>
-                    <dd>String value of the name of the theme that you wish to have applied to your player</dd>
-            </dl>
+                    <dt data-equal="=''">meta_profile</dt>
+                        <dd>Strig value holding key or token of your meta profile that you want to use</dd>
+                    <dt data-equal="=">stream_width</dt>
+                        <dd>Integer value setting the optimal width of the stream</dd>
+                    <dt data-equal="=">stream_height</dt>
+                        <dd>Integer value setting the optimal height of the stream</dd>
+                    <dt data-equal="=''">title</dt>
+                        <dd>String value to set title of the video being recorded</dd>
+                    <dt data-equal="=''">description</dt>
+                        <dd>String value to set the description of the video</dd>
+                    <dt data-equal="=''">allowed_extensions</dt>
+                        <dd>String value to limit the uploads to only specific extensions (all allowed by default)</dd>
+                    <dt data-equal="=">default_image_selector</dt>
+                        <dd>Float (integer with decimal point) value to indicate the default image selector</dd>
+                    <dt data-equal="">enforce_duration</dt>
+                        <dd>Boolean value to reject videos if they are too long.</dd>
+                    <dt data-equal="=">limit_upload_size</dt>
+                        <dd>Integer value to limit the size of videos being uploaded in bytes (no limit by default)</dd>
+                    <dt data-equal="">performance_warning</dt>
+                        <dd>Boolean value to set a warning to be shown if framerate is too low</dd>
+                    <dt data-equal="">recover_streams</dt>
+                        <dd>Boolean value to set the attempt to recover videos feature if your customers close their browser while recording</dd>
+                    <dt data-equal="">nofullscreen</dt>
+                        <dd>Boolean value to disable fullscreen option in player</dd>
+                    <dt class="beta" data-equal="">stretch</dt>
+                        <dd>Boolean value to set the beta player to be responsive (this happens in realtime)</dd>
+                    <dt class="beta" data-equal="=''">theme</dt>
+                        <dd>String value of the name of the theme that you wish to have applied to your player</dd>
+                </dl>
+            </div>
         </div>
         <br style="clear: both;">
         <?php
@@ -510,11 +556,11 @@ function ziggeo_video_contact_text() {
         <p><i>Regardless where your question is posted, we are happy to assist with the same, so all you need to do is ask.</i></p>
     <?php
 }
-    //Function to show the contact details on our Zendesk platform.
+    //Function to show the contact details on Ziggeo.com
     function ziggeo_contact_ziggeo_string() {
         ?>
-        <p>We are using Zendesk to provide assistance with your issues. To contact us there, you should either send an email
-        to <a href="mailto:support@ziggeo.com">support@ziggeo.com</a> or simply go to <a href="https://ziggeo.zendesk.com/hc/en-us" target="_blank">our helpdesk</a> where
+        <p>We are using forum and email helpdesk to provide assistance with your issues and questions. To contact us there, you should either send an email
+        to <a href="mailto:support@ziggeo.com">support@ziggeo.com</a> or simply go to <a href="https://support.ziggeo.com/hc/en-us" target="_blank">our helpdesk</a> where
         you might find the answers to your questions already being answered.</p>
         <?php
     }
