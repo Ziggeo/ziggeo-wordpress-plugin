@@ -120,8 +120,26 @@ function ziggeo_parameters_quick_add(event) {
     //Reference to clicked attribute
     var current = event.currentTarget;
 
-    //Allows us to check the location of the parameter, if it is already added
-    var attrLoc = editor.value.indexOf( ' ' + current.innerHTML + '=' );
+    //The suffix to parameter indicating what king of value it is
+    var data = current.getAttribute('data-equal');
+
+    //We got boolean value and we do not want to add it multiple times..
+    if(data === '') {
+        //Allows us to check the location of the parameter, if it is already added
+        var attrLoc = editor.value.indexOf( ' ' + current.innerHTML + ' ' );
+        
+        if(attrLoc === -1) {
+            if(editor.value.indexOf( ' ' + current.innerHTML + '-' ) === -1) {
+                attrLoc = editor.value.indexOf( ' ' + current.innerHTML );
+            }
+        }
+    }
+    else {
+        //Allows us to check the location of the parameter, if it is already added
+        var attrLoc = editor.value.indexOf( ' ' + current.innerHTML + '=' );
+    }
+
+//@TODO Lets turn all quotes into single quote.. otherwise we could have an issue with the checks
 
     //Did we already add the same parameter? Might be good to check it out so that we do not add it again, just do custom cursor/caret positioning
     if( attrLoc > -1 )
@@ -129,7 +147,15 @@ function ziggeo_parameters_quick_add(event) {
         //current.getAttribute('data-equal') we can use it to see if it is string or something else.
 
         var start = attrLoc + current.innerHTML.length + 2;
-        var end = editor.value.indexOf( ' ', attrLoc+1); //adding plus1 since we were searching for whitespace as well (to know that attribut started and is not part of the other parameter..)
+
+        //Are we working with a string attribute?
+        if(data === "=''") {
+            //Yes, its a string, lets check it out then:
+            var end = editor.value.indexOf( "' ", attrLoc+1); //adding plus1 since we were searching for whitespace as well (to know that attribut started and is not part of the other parameter..)            
+        }
+        else {
+            var end = editor.value.indexOf( ' ', attrLoc+1); //adding plus1 since we were searching for whitespace as well (to know that attribut started and is not part of the other parameter..)            
+        }
 
         //What if we had removed the quote?
         var quoteCheck = editor.value.indexOf( "'", attrLoc+1);
@@ -148,7 +174,8 @@ function ziggeo_parameters_quick_add(event) {
             }
         }
 
-        if(current.getAttribute('data-equal').indexOf("'") > -1)
+        //are we adding string parameter?
+        if(data.indexOf("'") > -1)
         {
             //we got a string based parameter, lets change the start and end..    
             if(quoteCheck < 0) { // we need to add quotes as well..
@@ -158,7 +185,7 @@ function ziggeo_parameters_quick_add(event) {
             }
             else {
                 start++;
-                end--;                
+                end = editor.value.indexOf( "'", quoteCheck+1);               
             }
         }
 
@@ -170,15 +197,15 @@ function ziggeo_parameters_quick_add(event) {
 
     //If we are editing the template, we will have it closed every time.. so lets make sure that we do not add values after the closing bracket..
     if(editor.value[editor.value.length-1] === "]") {
-        editor.value = editor.value.substr(0, editor.value.length-1) + ' ' + current.innerHTML + current.getAttribute('data-equal') + ']';
+        editor.value = editor.value.substr(0, editor.value.length-1) + ' ' + current.innerHTML + data + ']';
     }
     //If the space is not the last character, we should add it to avoid combined parameters
     else if(editor.value[editor.value.length-1] !== " ") {
-        editor.value += ' ' + current.innerHTML + current.getAttribute('data-equal');
+        editor.value += ' ' + current.innerHTML + data;
     }
     //If it is space, we are adding the parameters, or we were, no closing bracket in sight, so we can continue
     else {
-        editor.value += current.innerHTML + current.getAttribute('data-equal');
+        editor.value += current.innerHTML + data;
     }
 
     //Set the focus to the editor

@@ -203,9 +203,9 @@ function ziggeo_video_templates_text() {
                         <dd>String value representing what should happen if there are no videos. It can be 'showmessage', 'showtemplate', 'hidewall'</dd>
                     <dt class="wall" data-equal="=''">message</dt>
                         <dd>String value that will be shown if 'on_no_videos' is set to 'showmessage'</dd>
-                    <dt class="wall" data-equal="=">template_name</dt>
+                    <dt class="wall" data-equal="=''">template_name</dt>
                         <dd>String value holding the name of the video template that you want to show if the 'on_no_videos' is set to 'showtemplate' (if it does not exist default is loaded)</dd>
-                    <dt class="wall" data-equal="=">show_videos</dt>
+                    <dt class="wall" data-equal="=''">show_videos</dt>
                         <dd>Array value stating which videos will be shown. Possible options are 'all', 'approved', 'rejected'</dd>
                     <dt class="wall" data-equal="">autoplay</dt>
                         <dd>Boolean value indicating if first video should be played automatically</dd>
