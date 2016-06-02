@@ -240,7 +240,7 @@ function ziggeo_video_templates_text() {
                         <dd>String representation of a video token or video key</dd>
                     <dt class="record rerecord" data-equal="">face_outline</dt>
                         <dd>Boolean value setting if face outline would be shown on the video or not</dd>
-                    <dt data-equal="''">stream</dt>
+                    <dt data-equal="=''">stream</dt>
                         <dd>String representing stream token or stream key</dd>
                     <dt class="default" data-equal="=''">modes</dt>
                         <dd>Array value determining how the embedding is used. Possible values are "recorder", "player", "rerecorder" For more modes, separate values with comma</dd>
