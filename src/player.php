@@ -350,6 +350,8 @@ function ziggeo_content_replace_templates($matches)
                 //lets set the post ID since we will need to reference it as tag
                 $wall['postID'] = get_the_ID();
 
+                //what kind of videos to show - defaults to approved ones
+                if(!isset($wall['show_videos'])) { $wall['show_videos'] = 'approved'; }
 
 
 
@@ -553,7 +555,7 @@ function ziggeo_content_replace_templates($matches)
                         else {
                             setTimeout( function(){
                                 ZiggeoApi.Events.on("submitted", function (data) {
-                                    ziggeoShowVideoWall(<?php echo $wallID; ?>);
+                                    ziggeoShowVideoWall('<?php echo $wallID; ?>');
                                 });
                             }, 10000 ); //10 seconds should be enough for page to load and we do not need to have this set up right away.
                         }
