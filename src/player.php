@@ -416,21 +416,14 @@ function ziggeo_content_replace_templates($matches)
                                         //total number of videos that will be shown
                                         var usedVideos = 0;
                                         //What page are we on?
-                                        var currentPage = 1;
+                                        var currentPage = 0;
                                         //did any videos match the checks while listing them - so that we do not place multiple pages since the count stays on 0
                                         var newPage = true;
 
-                                        for(i = 0, j = data.length; i < j; i++) {
-
-                                            //Do we need to create a new page?
-                                            if(currentVideosPageCount === 0 && newPage === true) {
-                                                //we do
-                                                html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage">';
-                                                newPage = false;
-                                            }
+                                        for(i = 0, j = data.length, tmp=''; i < j; i++, tmp='') {
 
                                             if(ZiggeoWall[id].indexing.status === 'all') {
-                                                html += '<ziggeo ' +
+                                                tmp += '<ziggeo ' +
                                                             ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                                                             ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                                                             ' ziggeo-video="' + data[i].token + '"' +
@@ -440,7 +433,7 @@ function ziggeo_content_replace_templates($matches)
                                             }
                                             else if(ZiggeoWall[id].indexing.status === 'rejected') {
                                                if(data[i].approved !== true) {
-                                                    html += '<ziggeo ' +
+                                                    tmp += '<ziggeo ' +
                                                                 ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                                                                 ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                                                                 ' ziggeo-video="' + data[i].token + '"' +
@@ -451,7 +444,7 @@ function ziggeo_content_replace_templates($matches)
                                             } 
                                             else { //approved
                                                 if(data[i].approved === true) {
-                                                    html += '<ziggeo ' +
+                                                    tmp += '<ziggeo ' +
                                                                 ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                                                                 ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                                                                 ' ziggeo-video="' + data[i].token + '"' +
@@ -461,25 +454,40 @@ function ziggeo_content_replace_templates($matches)
                                                 }
                                             }
 
+                                            //Do we need to create a new page?
+                                            //We only create new page if there were any videos to add, otherwise if 1 video per page is set, we would end up with empty pages when videos are not added..
+                                            if(currentVideosPageCount === 1 && newPage === true) {
+                                                //we do
+                                                currentPage++;
+                                                html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage">';
+                                                html += tmp;
+                                                tmp = '';
+                                                newPage = false;
+                                            }
+
+                                            //combining the code if any
+                                            if(tmp !== '') {
+                                                html += tmp;
+                                            }
+
                                             //Do we have enough of vidoes on this page and its time to create a new one?
                                             if(currentVideosPageCount === ZiggeoWall[id].indexing.perPage) {
                                                 //Yup, we do
                                                 html += '</div>';
                                                 currentVideosPageCount = 0;
-                                                currentPage++;
                                                 newPage = true;
                                             }
                                         }
 
                                         //In case last page has less videos than per page limit, we need to apply the closing tag
-                                        if(currentVideosPageCount < ZiggeoWall[id].indexing.perPage) {
+                                        if(currentVideosPageCount < ZiggeoWall[id].indexing.perPage && newPage === false) {
                                             html += '</div>';
                                         }
 
                                         //Lets add pages if showPages is set
                                         if(ZiggeoWall[id].indexing.showPages) {
                                             for(i = 0; i < currentPage; i++) {
-                                                html += '<div class="ziggeo_wallpage_number" onclick="ziggeoShowWallPage(\'' + id + '\', ' + (i+1) + ',this);">' + (i+1) + '</div>';
+                                                html += '<div class="ziggeo_wallpage_number' + ((i===0) ? ' current' : '') + '" onclick="ziggeoShowWallPage(\'' + id + '\', ' + (i+1) + ',this);">' + (i+1) + '</div>';
                                             }
                                             html += '<br class="clear" style="clear:both;">';
                                         }
@@ -566,7 +574,9 @@ function ziggeo_content_replace_templates($matches)
                     //video wall must be shown right away..
                     ?>
                     <script type="text/javascript">
-                        ziggeoShowVideoWall('<?php echo $wallID; ?>');
+                        jQuery(document).ready( function () {
+                            ziggeoShowVideoWall('<?php echo $wallID; ?>');                            
+                        });
                     </script>
                     <?php
                 }
