@@ -74,3 +74,68 @@
 #comments-text-link.selected, #comments-video-link.selected {
     border-bottom: 1px solid lightblue;
 }
+
+/*
+    Minimal styles for video Walls. To override them, you can add CSS to your child theme or if theme allows you to add any CSS into it directly.
+*/
+.ziggeo_videoWall {
+    background-color: beige; /* falback */
+    background-image: linear-gradient(120deg, beige, white);
+    box-sizing: border-box;
+    padding: 0.6em;
+}
+.ziggeo_wall_title {
+    border-bottom: 2px groove orange;
+    border-bottom-right-radius: 20px;
+    font-style: italic;
+    text-align: center;
+    text-shadow: 1px 1px 2px lightGray;
+}
+/* Allowing videos to be centered within the page */
+.ziggeo_wallpage {
+    text-align: center;
+}
+/* centering videos within page only */
+.ziggeo_wallpage > ziggeo {
+    display: inline-block;
+    margin: 0 auto;
+}
+/* spacing between videos on pages */
+.ziggeo_wallpage > ziggeo {
+    margin: 20px;
+}
+/* Hides all pages - otherwise you would have no paging.. */
+.ziggeo_wallpage {
+    display: none;
+}
+/* Display only the first page holding videos */
+.ziggeo_wallpage:nth-child(2) {
+    display: block;
+}
+br.clear {
+    float: none;
+    clear: both;
+}
+.ziggeo_wallpage_number {
+    box-shadow: 0 0 3px gray;
+    float: left;
+    margin: 0 4px;
+    text-align: center;
+    width: 2em;
+    border-radius: 2em;
+    cursor: pointer;
+    background-color: white;
+    background-image: linear-gradient(210deg, lightgray, white);
+}
+.ziggeo_wallpage_number:hover {
+    background-color: lightGray;
+    background-image: linear-gradient(210deg, white, lightGray );
+}
+.ziggeo_wallpage_number.current {
+    background-color: lightgreen;
+    background-image: linear-gradient(210deg, lightgreen, green);
+}
+.ziggeo_wallpage_number.current:hover {
+    background-color: lime;
+    background-image: linear-gradient(210deg, green, lime);
+}
