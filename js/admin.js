@@ -129,8 +129,11 @@ function ziggeo_parameters_quick_add(event) {
         var attrLoc = editor.value.indexOf( ' ' + current.innerHTML + ' ' );
         
         if(attrLoc === -1) {
-            if(editor.value.indexOf( ' ' + current.innerHTML + '-' ) === -1) {
+            if(editor.value.indexOf( ' ' + current.innerHTML + '_' ) === -1) {
                 attrLoc = editor.value.indexOf( ' ' + current.innerHTML );
+            }
+            else if(editor.value.indexOf( ' ' + current.innerHTML + ']' ) > -1) {
+                attrLoc = editor.value.indexOf( ' ' + current.innerHTML + ']' );
             }
         }
     }
@@ -140,6 +143,7 @@ function ziggeo_parameters_quick_add(event) {
     }
 
 //@TODO Lets turn all quotes into single quote.. otherwise we could have an issue with the checks
+//we could get trouble when doing that as well..best to leave and assist customers if they happen to experience any issues
 
     //Did we already add the same parameter? Might be good to check it out so that we do not add it again, just do custom cursor/caret positioning
     if( attrLoc > -1 )
