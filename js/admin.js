@@ -304,13 +304,20 @@ function ziggeo_templates_manage(event) {
         var editor = document.getElementById('ziggeo_templates_editor');
         editor.value = selected.getAttribute('data-template');
 
-        //Move the screen up, so that both are shown:
-        if(document.location.hash !== "") {
-            document.location.hash = "";
-            document.location += 'ziggeo_editing';
+        var templateBase = editor.value.substr(0, editor.value.indexOf(' ') );
+
+        var paramsWall = document.getElementById('ziggeo-wall-parameters');
+        var paramsZiggeo = document.getElementById('ziggeo-embedding-parameters');
+
+        if(templateBase === '[ziggeovideowall') {
+            //show parameters for video wall
+            paramsWall.style.display = 'block';
+            paramsZiggeo.style.display = 'none';
         }
         else {
-            document.location += '#ziggeo_editing';
+            //show ziggeo parameters
+            paramsZiggeo.style.display = 'block';
+            paramsWall.style.display = 'none';
         }
 
         //Turn into new button should now be shown..
