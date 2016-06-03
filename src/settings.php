@@ -200,7 +200,7 @@ function ziggeo_video_templates_text() {
                     <dt class="wall" data-equal="=">videos_per_page</dt>
                         <dd>Integer value determining how many videos should be shown per page (defaults: 1 with slide_wall and 2 with show_pages)</dd>
                     <dt class="wall" data-equal="=''">on_no_videos</dt>
-                        <dd>String value representing what should happen if there are no videos. It can be 'showmessage', 'showtemplate', 'hidewall'</dd>
+                        <dd>Array value representing what should happen if there are no videos. It can be 'showmessage', 'showtemplate', 'hidewall'</dd>
                     <dt class="wall" data-equal="=''">message</dt>
                         <dd>String value that will be shown if 'on_no_videos' is set to 'showmessage'</dd>
                     <dt class="wall" data-equal="=''">template_name</dt>
@@ -209,6 +209,8 @@ function ziggeo_video_templates_text() {
                         <dd>Array value stating which videos will be shown. Possible options are 'all', 'approved', 'rejected'</dd>
                     <dt class="wall" data-equal="">autoplay</dt>
                         <dd>Boolean value indicating if first video should be played automatically</dd>
+                    <dt class="wall" data-equal="">show</dt>
+                        <dd>Boolean value indicating if video wall is shown even if the video is not submitted (defaults to waiting for submission of a video to show the video wall)</dd>
                     <?php /*
                     <dt class="wall" data-equal="=">show_video_comments</dt>
                         <dd>Boolean value to show the comments of each video - if available (under each video)</dd>

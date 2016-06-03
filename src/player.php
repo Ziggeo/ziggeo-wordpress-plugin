@@ -269,17 +269,318 @@ function ziggeo_content_replace_templates($matches)
                     if($param === '_wpbeta_')    { $template = str_replace('_wpbeta_', '', $template); }
                 }
             }
-
-            //Apply ziggeo prefixes
-            $template = ziggeo_parameter_prep($template);
+            
+            // --- VIDEO WALL ---
+            // ------------------
 
             //To check if this is a call for video wall or form since we serve them differently
-            if($tag === 'ziggeovideowall' || $tag === 'ziggeoform')
+            if($tag === 'ziggeovideowall') {
+
+                //Since there could be several walls on the same page, it would be best to create some random id that will help distinguish the x from y
+                $wallID = 'ziggeo_video_wall' . str_replace(array(' ', '.'), '', microtime()); ///ziggeo_video_wall0363734001464901560
+
+                $ret = '<div id="' . $wallID . '" class="ziggeo_videoWall" ';
+
+                $wall = ziggeo_wall_parameter_values($template);
+
+                //To set up the wall inline style
+                $wallStyles = '';
+
+                //It would not be possible to use pixels and percentages in the same time, so to avoid bad HTML and CSS code percentages will rule the pixels when both are set
+                if(!isset($wall['scalable_width']) && isset($wall['fixed_width'])) {
+                    $wallStyles .= 'width:' . trim($wall['fixed_width']) . 'px;';
+                }
+
+                if(!isset($wall['scalable_height']) && isset($wall['fixed_height'])) {
+                    $wallStyles .= 'height:' . trim($wall['fixed_height']) . 'px;';
+                }
+                
+                if(isset($wall['scalable_width'])) {
+                    $wallStyles .= 'width:' . trim($wall['scalable_width']) . '%;';
+                }
+
+                if(isset($wall['scalable_height'])) {
+                    $wallStyles .= 'height:' . trim($wall['scalable_height']) . '%;';
+                }
+                
+                if(isset($wall['show'])) {
+                    $wallStyles .= 'display:block;';
+                }
+                else {
+                    $wallStyles .= 'display:none;';
+                }
+
+                //adding inline style
+                $ret .= 'style="' . $wallStyles . '"';
+                $ret .= '>'; //closing video wall starting element
+
+                //Does wall have the title parameter set up?
+                if( isset($wall['title']) ) {
+                    //Lets get the title then
+                    $wall['title'] = '<div class="ziggeo_wall_title">' . $wall['title'] . '</div>';
+                }
+                else {
+                    //will be needed because of CSS
+                    $wall['title'] = '<div class="ziggeo_wall_title" style="display:none"></div>';
+                }
+
+                //show_pages is default, so if slide_wall is set, it will be used over show_pages
+                if(!isset($wall['slide_wall'])) {
+                    $wall['show_pages'] = true; //regardless if it is mentioned or not since this is default
+                    $wall['slide_wall'] = false; //regardless if it is mentioned or not since this is default
+
+                    //videos per page
+                    if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 2; }
+                }
+                else {
+                    $wall['show_pages'] = false; //since the slide_wall was set, we turn off the show pages.
+                    $wall['slide_wall'] = true; //since the slide_wall was set, we turn off the show pages.
+
+                    if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 1; }
+                }
+
+                //getting the defaults:
+                
+                //video width
+                if(!isset($wall['video_width'])) { $wall['video_width'] = 480; }
+
+                //video height
+                if(!isset($wall['video_height'])) { $wall['video_height'] = 360; }
+
+                //lets set the post ID since we will need to reference it as tag
+                $wall['postID'] = get_the_ID();
+
+
+
+
+                //To handle search and everything, we will use JS, otherwise we would need to include SDK (which would be OK, however it would also cause a lot more code to be present and would be hard to update if needed)
+                //to use it through client side, we will now build JS templates which will be outputted to the page.
+
+                ?>
+                <script type="text/javascript">
+                    if(typeof ZiggeoWall === 'undefined') {
+                        var ZiggeoWall = [];
+                    }
+
+                    ZiggeoWall['<?php echo $wallID; ?>'] = {
+                        videos: {
+                            width: <?php echo $wall['video_width']; ?>,
+                            height: <?php echo $wall['video_height']; ?>
+                        },
+                        indexing: {
+                            perPage: <?php echo $wall['videos_per_page']; ?>,
+                            status: '<?php echo $wall['show_videos']; ?>', //good to note that we should search using tags, by default, this is to fine tune the results that are matching the post ID tag.
+                            showPages: <?php echo ($wall['show_pages'] ? 'true' : 'false'); ?>,
+                            slideWall: <?php echo ($wall['slide_wall'] ? 'true' : 'false'); ?>
+                        },
+                        title: '<?php echo $wall['title']; ?>'
+                    };
+
+                    //in case there are multiple walls on the same page, we want to be sure not to cause issues. This should catch it and not declare the function again.                    
+                    if(typeof ziggeoShowVideoWall !== 'function') {                        
+                        //show video wall based on its ID
+                        function ziggeoShowVideoWall(id) {
+                            //reference to wall
+                            var wall = document.getElementById(id);
+
+                            //lets check if wall is existing or not. If not, we break out and report it.
+                            if(!wall) {
+                                console.log('Exiting function. Specified wall is not present');
+                                return false;
+                            }
+
+                            if(!ZiggeoWall[id]) {
+                                console.log('Wall found, however no data found for the same');
+                                return false;
+                            }
+
+                            //HTML output buffer
+                            var html = '';
+
+                            //set the video wall title
+                            html += '<div class="ziggeo_wall_title">' + ZiggeoWall[id].title + '</div>'
+
+                            var parameters = 'tags=wordpress,comment,post_<?php echo $wall['postID']; ?>'; //do we want to show vidoes made in comments only or show all of them (made on this post)? - set to display comments only.
+
+                            //To show the page we must first index videos..
+                            ZiggeoApi.Videos.index(parameters, {
+                                success: function (args, data) {
+                                    if(data.length > 0) {
+                                        //we got some videos back
+                                        //go through videos
+
+                                        //number of videos per page currently
+                                        var currentVideosPageCount = 0;
+                                        //total number of videos that will be shown
+                                        var usedVideos = 0;
+                                        //What page are we on?
+                                        var currentPage = 1;
+                                        //did any videos match the checks while listing them - so that we do not place multiple pages since the count stays on 0
+                                        var newPage = true;
+
+                                        for(i = 0, j = data.length; i < j; i++) {
+
+                                            //Do we need to create a new page?
+                                            if(currentVideosPageCount === 0 && newPage === true) {
+                                                //we do
+                                                html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage">';
+                                                newPage = false;
+                                            }
+
+                                            if(ZiggeoWall[id].indexing.status === 'all') {
+                                                html += '<ziggeo ' +
+                                                            ' ziggeo-width=' + ZiggeoWall[id].videos.width +
+                                                            ' ziggeo-height=' + ZiggeoWall[id].videos.height +
+                                                            ' ziggeo-video="' + data[i].token + '"' +
+                                                        '></ziggeo>';
+                                                usedVideos++;
+                                                currentVideosPageCount++;
+                                            }
+                                            else if(ZiggeoWall[id].indexing.status === 'rejected') {
+                                               if(data[i].approved !== true) {
+                                                    html += '<ziggeo ' +
+                                                                ' ziggeo-width=' + ZiggeoWall[id].videos.width +
+                                                                ' ziggeo-height=' + ZiggeoWall[id].videos.height +
+                                                                ' ziggeo-video="' + data[i].token + '"' +
+                                                            '></ziggeo>';                                                   
+                                                    usedVideos++;
+                                                    currentVideosPageCount++;
+                                               }
+                                            } 
+                                            else { //approved
+                                                if(data[i].approved === true) {
+                                                    html += '<ziggeo ' +
+                                                                ' ziggeo-width=' + ZiggeoWall[id].videos.width +
+                                                                ' ziggeo-height=' + ZiggeoWall[id].videos.height +
+                                                                ' ziggeo-video="' + data[i].token + '"' +
+                                                            '></ziggeo>';
+                                                    usedVideos++;
+                                                    currentVideosPageCount++;
+                                                }
+                                            }
+
+                                            //Do we have enough of vidoes on this page and its time to create a new one?
+                                            if(currentVideosPageCount === ZiggeoWall[id].indexing.perPage) {
+                                                //Yup, we do
+                                                html += '</div>';
+                                                currentVideosPageCount = 0;
+                                                currentPage++;
+                                                newPage = true;
+                                            }
+                                        }
+
+                                        //In case last page has less videos than per page limit, we need to apply the closing tag
+                                        if(currentVideosPageCount < ZiggeoWall[id].indexing.perPage) {
+                                            html += '</div>';
+                                        }
+
+                                        //Lets add pages if showPages is set
+                                        if(ZiggeoWall[id].indexing.showPages) {
+                                            for(i = 0; i < currentPage; i++) {
+                                                html += '<div class="ziggeo_wallpage_number" onclick="ziggeoShowWallPage(\'' + id + '\', ' + (i+1) + ',this);">' + (i+1) + '</div>';
+                                            }
+                                            html += '<br class="clear" style="clear:both;">';
+                                        }
+
+                                        //Lets add everything so that it is shown..
+                                        wall.innerHTML = html;
+                                    }
+                                    else {
+                                        //no results
+                                        //follow the procedure for no videos (on no videos)
+                                        console.log('No videos found matching the requested:' + args);
+                                    }
+                                   
+                                    //lets show it:
+                                    wall.style.display = 'block';
+                                },
+                                falure: function (args, error) {
+                                    console.log('This was the error that we got back when seaching for ' + args +  ':' + error);
+                                }
+                            });
+                        }
+                    }
+                    function ziggeoShowWallPage(id, page, current) {
+                        //reference to wall
+                        var wall = document.getElementById(id);
+
+                        //lets check if wall is existing or not. If not, we break out and report it.
+                        if(!wall) {
+                            console.log('Exiting function. Specified wall is not present');
+                            return false;
+                        }
+                        
+                        var pageID = id + '_page_' + page;
+
+                        var newPage = document.getElementById(pageID);
+
+                        //Get all pages under current wall
+                        var pages = wall.getElementsByClassName('ziggeo_wallpage');
+
+                        //Hide all of the pages
+                        for(i = 0, j = pages.length; i < j; i++) {
+                            pages[i].style.display = 'none';
+                        }
+
+                        //set the visual indicator of what page is selected
+                        var pageNumbers = wall.getElementsByClassName('ziggeo_wallpage_number');
+
+                        //reset style of the page number buttons
+                        for(i = 0, j = pageNumbers.length; i < j; i++) {
+                            pageNumbers[i].className = 'ziggeo_wallpage_number';
+                        }
+
+                        //adding .current class to the existing list of classes
+                        current.className = 'ziggeo_wallpage_number current';
+
+                        newPage.style.display = 'block';
+                    }
+                </script>
+                <?php
+
+                //Video wall will by default only show when the video comment is submitted, unless this is overridden by the `show` parameter
+                if( !isset($wall['show']) ) {
+                    //wait for video submission first
+                    ?>
+                    <script type="text/javascript">
+                        //just to make sure that it is available
+                        if(ZiggeoApi) {
+                            ZiggeoApi.Events.on("submitted", function (data) {
+                                ziggeoShowVideoWall('<?php echo $wallID; ?>');
+                            });
+                        }
+                        //lets wait for a second and try again.
+                        else {
+                            setTimeout( function(){
+                                ZiggeoApi.Events.on("submitted", function (data) {
+                                    ziggeoShowVideoWall(<?php echo $wallID; ?>);
+                                });
+                            }, 10000 ); //10 seconds should be enough for page to load and we do not need to have this set up right away.
+                        }
+                    </script>
+                    <?php                    
+                }
+                else {
+                    //video wall must be shown right away..
+                    ?>
+                    <script type="text/javascript">
+                        ziggeoShowVideoWall('<?php echo $wallID; ?>');
+                    </script>
+                    <?php
+                }
+
+                //closing videowall div
+                $ret .= '</div>';
+            }
+            elseif($tag === 'ziggeoform')
             {
                 $ret = '<b> Here a ' . $tag . ' code would be placed</b>';
             }
             //one of the players/recorders/uploaders
             else {
+                //Apply ziggeo prefixes - only needed for <ziggeo> code
+                $template = ziggeo_parameter_prep($template);
+
                 if( isset($options, $options['beta']) && $tag === 'ziggeoplayer' ) { 
                     $ret = '<ziggeoplayer ziggeo-theme="modern" ' . $template . '></ziggeoplayer>';
                 }
@@ -360,5 +661,74 @@ function ziggeo_parameter_prep($data) {
     }
 
     return $tmp_str2;
+}
+
+//function to get the nice aray of the video wall parameters and values, so that we do not cluter the main function too much
+function ziggeo_wall_parameter_values($toParse){
+
+    $parsed = array();
+
+    //First we are grabbing the parameters that can and probably will include spaces within them.
+
+    //VideoWall Title
+    if( ($t = stripos($toParse, ' title=')) > -1 ) {
+        //Lets get the title then
+        $parsed['title'] = substr($toParse, $t+8, stripos($toParse, "'", $t+8) - ($t + 8));
+
+        //get parameters and values prior to title parameter
+        $tmp = substr($toParse, 0, $t) . ' ';
+        //get values after the title parameter and its values ( position + (starting space + parameter + = ) + length of parameter value + quotes )
+        $tmp .= substr($toParse, $t + 8 + strlen($parsed['title']) + 2);
+
+        $toParse = $tmp;
+    }
+
+    //No videos message
+    if( ($t = stripos($toParse, ' message=')) > -1 ) {
+
+        //Lets get the message then
+        $parsed['message'] = substr($toParse, $t+10, stripos($toParse, "'", $t+10) - ($t + 10) );
+
+        //get parameters and values prior to message parameter
+        $tmp = substr($toParse, 0, $t) . ' ';
+        //get values after the message parameter and its values ( position + (starting space + parameter + = ) + length of parameter value + quotes )
+        $tmp .= substr($toParse, $t + 10 + strlen($parsed['message']) + 2);
+
+        $toParse = $tmp;
+    }
+
+    //no videos template_name
+    if( ($t = stripos($toParse, ' template_name=')) > -1 ) {
+        //Lets get the template_name then
+        $parsed['template_name'] = substr($toParse, $t+16, stripos($toParse, "'", $t+16) - ($t + 16));
+
+        //get parameters and values prior to template_name parameter
+        $tmp = substr($toParse, 0, $t) . ' ';
+        //get values after the template_name parameter and its values ( position + (starting space + parameter + = ) + length of parameter value + quotes )
+        $tmp .= substr($toParse, $t + 16 + strlen($parsed['template_name']) + 2);
+
+        $toParse = $tmp;
+    }
+
+    //We can now split the rest with explode()
+
+    $tmp = explode(' ', $toParse);
+
+    foreach($tmp as $key => $value) {
+        $value = trim($value);
+        if( $value !== '' && $value !== ']' && $value !== '""'&& $value !== '"'
+            && $value !== 'wall') {
+                //explode on = and trim ' and "
+                $t = explode('=', $value);
+                if(isset($t[1])) {
+                    $parsed[$t[0]] = trim($t[1], "'");
+                }
+                else {
+                    $parsed[$t[0]] = true;
+                }
+        }
+    }
+
+    return $parsed;
 }
 ?>
