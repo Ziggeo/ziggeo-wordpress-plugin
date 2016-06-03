@@ -91,7 +91,7 @@ if( isset($options['video_and_text']) && $options['video_and_text'] === '1' ) {
                 //Capture "wordpress" and "username" as video tags, but only if the tags are not set in the template
                 if( stripos($default_recorder, 'tags') === false) {
                     //for video wall to work nicely, we will collect which post the recording is made from now on as well (by default).
-                    ?> ziggeo-tags="wordpress,<?php echo $curent_username; echo get_the_ID(); ?>,comment" <?php
+                ?> ziggeo-tags="wordpress,<?php echo $curent_username; ?>,post_<?php echo get_the_ID(); ?>,comment" <?php
                 }
                 ?>
             ></ziggeo>
@@ -228,7 +228,7 @@ elseif( !isset($options["disable_video_comments"]) || (isset($options["disable_v
             //Capture "wordpress" and "username" as video tags, but only if the tags are not set in the template
             if( stripos($default_recorder, 'tags') === false) {
                 //for video wall to work nicely, we will collect which post the recording is made from now on as well (by default).
-                ?> ziggeo-tags="wordpress,<?php echo $curent_username; echo get_the_ID(); ?>,comment" <?php
+                ?> ziggeo-tags="wordpress,<?php echo $curent_username; ?>,post_<?php echo get_the_ID(); ?>,comment" <?php
             }
             ?>
         ></ziggeo>
