@@ -161,7 +161,7 @@ function ziggeo_template_exists($id)
     return false;
 }
 
-//Retrieves tempalte parameters only based on template ID returns false if not available.
+//Retrieves template parameters only based on template ID returns false if not available.
 function ziggeo_template_params($id) {
 
     $rez = ziggeo_template_exists($id);
