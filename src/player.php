@@ -10,7 +10,7 @@ add_filter('thesis_comment_text', 'ziggeo_content_filter');
 // -- Default values to use: 'ziggeo-width=320 ziggeo-height=240'
 function ziggeo_content_replace($matches) {
     $options = get_option('ziggeo_video');
-    $default = 'ziggeo-width=320 ziggeo-height=240';
+    $default = ZIGGEO_DEFAULTS_PLAYER;
     $video_token = trim($matches[1]);
     $tagname = "ziggeo";
     if (@$video_token) { //so if there is video token it is player, while if it is not set, it is not.. This means that it was not as easy to set up re-recorder.
@@ -161,7 +161,6 @@ function ziggeo_content_replace_templates($matches)
         //Quick check to see if we have video= in there or not..
         //This would happen if we use tinyMCE to add template
         if( ($ts = stripos($matches[0], 'video=')) > -1 ) {
-            //[ziggeo comments player video='bb9c5916d80277f7edba2d088c8c16a3']
             $savedVideo = substr($matches[0], $ts );
             $savedVideo = str_replace( ']', '', $savedVideo );
             $matches[0] = str_replace( $savedVideo, '', $matches[0]);
@@ -342,10 +341,10 @@ function ziggeo_content_replace_templates($matches)
                 //getting the defaults:
                 
                 //video width
-                if(!isset($wall['video_width'])) { $wall['video_width'] = 480; }
+                if(!isset($wall['video_width'])) { $wall['video_width'] = 320; }
 
                 //video height
-                if(!isset($wall['video_height'])) { $wall['video_height'] = 360; }
+                if(!isset($wall['video_height'])) { $wall['video_height'] = 240; }
 
                 //lets set the post ID since we will need to reference it as tag
                 $wall['postID'] = get_the_ID();
@@ -353,7 +352,39 @@ function ziggeo_content_replace_templates($matches)
                 //what kind of videos to show - defaults to approved ones
                 if(!isset($wall['show_videos'])) { $wall['show_videos'] = 'approved'; }
 
+                if(!isset($wall['on_no_videos'])) { $wall['on_no_videos'] = 'showmessage'; }
 
+                //Is there a message set in of no videos? If not, we should make some:
+                if(!isset($wall['message'])) { $wall['message'] = 'Currently no videos found. We do suggest recording some first'; }
+
+                //We are parsing template only if it is set to be shown, otherwise there is no need for it.
+                if($wall['on_no_videos'] === 'showtemplate') {
+                    //Did we set up a template to be loaded into the videowall if there are no videos?
+                    if(!isset($wall['template_name'])) { $wall['template_name'] = ''; }
+                    else {
+                        $wall['template_name'] = ziggeo_template_params($wall['template_name']);
+
+                        //template was not found lets use the defaults
+                        if($wall['template_name'] === false) {
+                            $wall['template_name'] = ZIGGEO_RECORDER_DEFAULT;
+                        }
+                        else {
+                            $wall['template_name'] = str_ireplace("'", '"', $wall['template_name']);
+                            $wall['template_name'] = ziggeo_parameter_prep($wall['template_name']);
+                        }
+                    }
+                }
+                else {
+                    $wall['template_name'] = '';
+                }
+
+                //In case video wall should be hidden if empty
+                if($wall['on_no_videos'] === 'hidewall') {
+                    $wall['hide_wall'] = true;
+                }
+                else {
+                    $wall['hide_wall'] = false;
+                }
 
                 //To handle search and everything, we will use JS, otherwise we would need to include SDK (which would be OK, however it would also cause a lot more code to be present and would be hard to update if needed)
                 //to use it through client side, we will now build JS templates which will be outputted to the page.
@@ -382,10 +413,16 @@ function ziggeo_content_replace_templates($matches)
                         indexing: {
                             perPage: <?php echo $wall['videos_per_page']; ?>,
                             status: '<?php echo $wall['show_videos']; ?>', //good to note that we should search using tags, by default, this is to fine tune the results that are matching the post ID tag.
-                            showPages: <?php echo ($wall['show_pages'] ? 'true' : 'false'); ?>,
-                            slideWall: <?php echo ($wall['slide_wall'] ? 'true' : 'false'); ?>
+                            showPages: <?php echo ($wall['show_pages']) ? 'true' : 'false'; ?>,
+                            slideWall: <?php echo ($wall['slide_wall']) ? 'true' : 'false'; ?>
                         },
-                        title: '<?php echo $wall['title']; ?>'
+                        title: '<?php echo $wall['title']; ?>',
+                        onNoVideos: {
+                            showTemplate: <?php echo ($wall['on_no_videos'] === 'showtemplate') ? 'true' : 'false'; ?>,
+                            message: '<?php echo $wall['message']; ?>',
+                            templateName: '<?php echo $wall['template_name']; ?>',
+                            hideWall: <?php echo ($wall['hide_wall']) ? 'true' : 'false'; ?>
+                        }
                     };
 
                     //in case there are multiple walls on the same page, we want to be sure not to cause issues. This should catch it and not declare the function again.                    
@@ -528,15 +565,30 @@ function ziggeo_content_replace_templates($matches)
                                             }
                                             html += '<br class="clear" style="clear:both;">';
                                         }
-
-                                        //Lets add everything so that it is shown..
-                                        wall.innerHTML = html;
                                     }
                                     else {
                                         //no results
                                         //follow the procedure for no videos (on no videos)
                                         console.log('No videos found matching the requested:' + args);
+                                        
+                                        if(ZiggeoWall[id].onNoVideos.hideWall) {
+                                            console.log('VideoWall not shown');
+                                            return false;
+                                        }
+
+                                        html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage empty">';
+                                        if(ZiggeoWall[id].onNoVideos.showTemplate) {
+                                            html += '<ziggeo ' + ZiggeoWall[id].onNoVideos.templateName + '></ziggeo>';
+                                            console.log('<ziggeo ' + ZiggeoWall[id].onNoVideos.templateName + '></ziggeo>');
+                                        }
+                                        else {
+                                            html += ZiggeoWall[id].onNoVideos.message;
+                                        }
+                                        html += '</div>';
                                     }
+
+                                    //Lets add everything so that it is shown..
+                                    wall.innerHTML = html;
                                    
                                     //lets show it:
                                     wall.style.display = 'block';
