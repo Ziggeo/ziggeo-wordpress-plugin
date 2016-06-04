@@ -139,3 +139,41 @@ br.clear {
     background-color: lime;
     background-image: linear-gradient(210deg, green, lime);
 }
+/* Slide wall styles */
+.ziggeo_wallpage {
+    position: relative;
+}
+/* base properties for both previous and next arrows */
+.ziggeo_videowall_slide_previous, .ziggeo_videowall_slide_next {
+    height: 80%;
+    margin-top: 5%;
+    min-width: 40px;
+    position: absolute;
+    vertical-align: middle;
+    width: 10%;
+    background-color: transparent;
+    cursor: pointer;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+/* to make previous stick before the video */
+.ziggeo_videowall_slide_previous {
+    float: left;
+    border-top-left-radius: 100%;
+    border-bottom-left-radius: 100%;
+}
+/* to make next arrow stick on the right of the videos */
+.ziggeo_videowall_slide_next {
+    float: right;
+    right: 0;
+    top: 0;
+    /* To make them nice and rounded */
+    border-top-right-radius: 100%;
+    border-bottom-right-radius: 100%;
+}
+.ziggeo_videowall_slide_previous:hover {
+    box-shadow: -3px 0 4px lightgray;
+}
+.ziggeo_videowall_slide_next:hover {
+    box-shadow: 3px 0 4px lightGray;
+}

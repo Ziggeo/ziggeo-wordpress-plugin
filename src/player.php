@@ -278,7 +278,7 @@ function ziggeo_content_replace_templates($matches)
 
                 //Since there could be several walls on the same page, it would be best to create some random id that will help distinguish the x from y
                 $wallID = 'ziggeo_video_wall' . str_replace(array(' ', '.'), '', microtime()); ///ziggeo_video_wall0363734001464901560
-
+var_dump($wallID);
                 $ret = '<div id="' . $wallID . '" class="ziggeo_videoWall" ';
 
                 $wall = ziggeo_wall_parameter_values($template);
@@ -349,7 +349,7 @@ function ziggeo_content_replace_templates($matches)
 
                 //lets set the post ID since we will need to reference it as tag
                 $wall['postID'] = get_the_ID();
-
+$wall['postID'] = 129;
                 //what kind of videos to show - defaults to approved ones
                 if(!isset($wall['show_videos'])) { $wall['show_videos'] = 'approved'; }
 
@@ -358,7 +358,17 @@ function ziggeo_content_replace_templates($matches)
                 //To handle search and everything, we will use JS, otherwise we would need to include SDK (which would be OK, however it would also cause a lot more code to be present and would be hard to update if needed)
                 //to use it through client side, we will now build JS templates which will be outputted to the page.
 
+
+                //links to the background image, since CSS can not be hard coded (and make it work everywhere)
                 ?>
+                <style type="text/css">
+                    .ziggeo_videowall_slide_previous {
+                        background-image: url("<?php echo ZIGGEO_ROOT_URL . 'images/arrow-previous.png'; ?>");
+                    }
+                    .ziggeo_videowall_slide_next {
+                        background-image: url("<?php echo ZIGGEO_ROOT_URL . 'images/arrow-next.png'; ?>");
+                    }
+                </style>
                 <script type="text/javascript">
                     if(typeof ZiggeoWall === 'undefined') {
                         var ZiggeoWall = [];
@@ -459,10 +469,27 @@ function ziggeo_content_replace_templates($matches)
                                             if(currentVideosPageCount === 1 && newPage === true) {
                                                 //we do
                                                 currentPage++;
+
+                                                //For slidewall we add next right away..
+                                                if(ZiggeoWall[id].indexing.slideWall) {
+                                                    if(currentPage > 1) {
+                                                        html += '<div class="ziggeo_videowall_slide_next"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + currentPage + ');"></div>';
+                                                        html += '</div>';
+                                                    }
+                                                }
+                                                
                                                 html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage">';
+
+                                                //For slidewall we add back right away as well
+                                                if(ZiggeoWall[id].indexing.slideWall) {
+                                                    if(currentPage > 1) {
+                                                        html += '<div class="ziggeo_videowall_slide_previous"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + (currentPage-1) + ');"></div>';
+                                                    }
+                                                }
+
                                                 html += tmp;
                                                 tmp = '';
-                                                newPage = false;
+                                                newPage = false;                                                    
                                             }
 
                                             //combining the code if any
@@ -473,7 +500,9 @@ function ziggeo_content_replace_templates($matches)
                                             //Do we have enough of vidoes on this page and its time to create a new one?
                                             if(currentVideosPageCount === ZiggeoWall[id].indexing.perPage) {
                                                 //Yup, we do
-                                                html += '</div>';
+                                                if(ZiggeoWall[id].indexing.showPages) {
+                                                    html += '</div>';                                                    
+                                                }
                                                 currentVideosPageCount = 0;
                                                 newPage = true;
                                             }
@@ -481,6 +510,14 @@ function ziggeo_content_replace_templates($matches)
 
                                         //In case last page has less videos than per page limit, we need to apply the closing tag
                                         if(currentVideosPageCount < ZiggeoWall[id].indexing.perPage && newPage === false) {
+                                            
+                                            //For slidewall we add pages right away..
+                                            /*if(ZiggeoWall[id].indexing.slideWall) {
+                                                //if(currentPage > 1) { //add if not last
+                                                    html += '<div class="ziggeo_videowall_slide_next"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + (currentPage+1) + ');"></div>';
+                                                //}
+                                            }*/
+
                                             html += '</div>';
                                         }
 
@@ -525,7 +562,7 @@ function ziggeo_content_replace_templates($matches)
                         var newPage = document.getElementById(pageID);
 
                         //Get all pages under current wall
-                        var pages = wall.getElementsByClassName('ziggeo_wallpage');
+                        var pages = wall.getElementsByClassName('ziggeo_wallpage');                            
 
                         //Hide all of the pages
                         for(i = 0, j = pages.length; i < j; i++) {
@@ -535,13 +572,16 @@ function ziggeo_content_replace_templates($matches)
                         //set the visual indicator of what page is selected
                         var pageNumbers = wall.getElementsByClassName('ziggeo_wallpage_number');
 
-                        //reset style of the page number buttons
-                        for(i = 0, j = pageNumbers.length; i < j; i++) {
-                            pageNumbers[i].className = 'ziggeo_wallpage_number';
-                        }
+                        //This is only active if we show page numbers / page buttons
+                        if(current) {
+                            //reset style of the page number buttons
+                            for(i = 0, j = pageNumbers.length; i < j; i++) {
+                                pageNumbers[i].className = 'ziggeo_wallpage_number';
+                            }
 
-                        //adding .current class to the existing list of classes
-                        current.className = 'ziggeo_wallpage_number current';
+                            //adding .current class to the existing list of classes
+                            current.className = 'ziggeo_wallpage_number current';
+                        }
 
                         newPage.style.display = 'block';
                     }
