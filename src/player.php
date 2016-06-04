@@ -278,7 +278,7 @@ function ziggeo_content_replace_templates($matches)
 
                 //Since there could be several walls on the same page, it would be best to create some random id that will help distinguish the x from y
                 $wallID = 'ziggeo_video_wall' . str_replace(array(' ', '.'), '', microtime()); ///ziggeo_video_wall0363734001464901560
-var_dump($wallID);
+
                 $ret = '<div id="' . $wallID . '" class="ziggeo_videoWall" ';
 
                 $wall = ziggeo_wall_parameter_values($template);
@@ -349,7 +349,7 @@ var_dump($wallID);
 
                 //lets set the post ID since we will need to reference it as tag
                 $wall['postID'] = get_the_ID();
-$wall['postID'] = 129;
+
                 //what kind of videos to show - defaults to approved ones
                 if(!isset($wall['show_videos'])) { $wall['show_videos'] = 'approved'; }
 
