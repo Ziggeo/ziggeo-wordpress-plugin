@@ -24,7 +24,7 @@ $options = get_option('ziggeo_video');
 //Setting up defaults
 
 //Recorder defaults to be used in comments.
-$default_recorder = ( isset($options["recorder_config"]) && !empty($options["recorder_config"]) ) ? $options["recorder_config"] : 'ziggeo-width=480 ziggeo-height=360 ziggeo-limit=120';
+$default_recorder = ( isset($options["recorder_config"]) && !empty($options["recorder_config"]) ) ? $options["recorder_config"] : ZIGGEO_DEFAULTS_RECORDER;
 
 //Just so that we know if we are using template or not..
 $template_recorder = ( isset($options['comments_recorder_template'])  && !empty($options["comments_recorder_template"]) );
@@ -43,7 +43,7 @@ if($template_recorder) {
 }
 
 //Player defaults to be used in comments.
-$default_player = ( isset($options["player_config"]) && !empty($options["player_config"]) ) ? $options["player_config"] : 'ziggeo-width=480 ziggeo-height=360';
+$default_player = ( isset($options["player_config"]) && !empty($options["player_config"]) ) ? $options["player_config"] : ZIGGEO_DEFAULTS_PLAYER;
 
 //Just so that we know if we are using template or not..
 $template_player = ( isset($options['comments_player_template'])  && !empty($options["comments_player_template"]) );

@@ -24,6 +24,13 @@ define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
 define('ZIGGEO_VERSION', '1.12');
 
+//Best to state default code in one location, then just call for it when needed.
+//recorder
+define('ZIGGEO_DEFAULTS_RECORDER', 'ziggeo-width=360 ziggeo-height=240 ziggeo-limit=120');
+//player
+define('ZIGGEO_DEFAULTS_PLAYER', 'ziggeo-width=360 ziggeo-height=240');
+
+
 include_once(ZIGGEO_ROOT_PATH . "src/player.php");
 include_once(ZIGGEO_ROOT_PATH . "src/assets.php");
 include_once(ZIGGEO_ROOT_PATH . "src/header.php");
