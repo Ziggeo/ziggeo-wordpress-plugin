@@ -130,6 +130,10 @@ function ziggeo_parameters_quick_add(event) {
         
         if(attrLoc === -1) {
             if(editor.value.indexOf( ' ' + current.innerHTML + '_' ) === -1) {
+                //this could set pointer behind the word in a string matching the element - such as 'autoplay'. To make the code work in such cases as well
+                // - to detect parameter and if it is in the string or not, we could strip all of the strings first, then search from there and take into
+                // the account how many strings were stripped before the parameter.
+                // Not doing it at this time since it would add too much complexity to the same.
                 attrLoc = editor.value.indexOf( ' ' + current.innerHTML );
             }
             else if(editor.value.indexOf( ' ' + current.innerHTML + ']' ) > -1) {

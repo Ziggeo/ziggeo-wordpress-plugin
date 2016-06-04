@@ -386,6 +386,8 @@ function ziggeo_content_replace_templates($matches)
                     $wall['hide_wall'] = false;
                 }
 
+                if(!isset($wall['autoplay']))   { $wall['autoplay'] = false; }
+
                 //To handle search and everything, we will use JS, otherwise we would need to include SDK (which would be OK, however it would also cause a lot more code to be present and would be hard to update if needed)
                 //to use it through client side, we will now build JS templates which will be outputted to the page.
 
@@ -408,7 +410,8 @@ function ziggeo_content_replace_templates($matches)
                     ZiggeoWall['<?php echo $wallID; ?>'] = {
                         videos: {
                             width: <?php echo $wall['video_width']; ?>,
-                            height: <?php echo $wall['video_height']; ?>
+                            height: <?php echo $wall['video_height']; ?>,
+                            autoplay: <?php echo ($wall['autoplay']) ? 'true' : 'false'; ?>
                         },
                         indexing: {
                             perPage: <?php echo $wall['videos_per_page']; ?>,
@@ -447,7 +450,7 @@ function ziggeo_content_replace_templates($matches)
                             var html = '';
 
                             //set the video wall title
-                            html += '<div class="ziggeo_wall_title">' + ZiggeoWall[id].title + '</div>'
+                            html += ZiggeoWall[id].title;
 
                             var parameters = 'tags=wordpress,comment,post_<?php echo $wall['postID']; ?>'; //do we want to show vidoes made in comments only or show all of them (made on this post)? - set to display comments only.
 
@@ -474,6 +477,7 @@ function ziggeo_content_replace_templates($matches)
                                                             ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                                                             ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                                                             ' ziggeo-video="' + data[i].token + '"' +
+                                                            ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
                                                         '></ziggeo>';
                                                 usedVideos++;
                                                 currentVideosPageCount++;
@@ -484,6 +488,7 @@ function ziggeo_content_replace_templates($matches)
                                                                 ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                                                                 ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                                                                 ' ziggeo-video="' + data[i].token + '"' +
+                                                                ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
                                                             '></ziggeo>';                                                   
                                                     usedVideos++;
                                                     currentVideosPageCount++;
@@ -495,6 +500,7 @@ function ziggeo_content_replace_templates($matches)
                                                                 ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                                                                 ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                                                                 ' ziggeo-video="' + data[i].token + '"' +
+                                                                ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
                                                             '></ziggeo>';
                                                     usedVideos++;
                                                     currentVideosPageCount++;
@@ -545,16 +551,21 @@ function ziggeo_content_replace_templates($matches)
                                             }
                                         }
 
+                                        //Sometimes we will have videos, however due to calling parameters the same might not be added.
+                                        //At this time we would need to show the log in console about the same and show the on_no_videos message / setup
+                                        if(usedVideos === 0 && i > 0) {
+                                            html = ziggeoWallHandleNoVideos(id, html);
+                                            
+                                            //leaving a note of this
+                                            console.log('You have videos, just not the ones matching your request');
+
+                                            if(html === false) {
+                                                return false;
+                                            }
+                                        }
+
                                         //In case last page has less videos than per page limit, we need to apply the closing tag
                                         if(currentVideosPageCount < ZiggeoWall[id].indexing.perPage && newPage === false) {
-                                            
-                                            //For slidewall we add pages right away..
-                                            /*if(ZiggeoWall[id].indexing.slideWall) {
-                                                //if(currentPage > 1) { //add if not last
-                                                    html += '<div class="ziggeo_videowall_slide_next"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + (currentPage+1) + ');"></div>';
-                                                //}
-                                            }*/
-
                                             html += '</div>';
                                         }
 
@@ -570,21 +581,11 @@ function ziggeo_content_replace_templates($matches)
                                         //no results
                                         //follow the procedure for no videos (on no videos)
                                         console.log('No videos found matching the requested:' + args);
-                                        
-                                        if(ZiggeoWall[id].onNoVideos.hideWall) {
-                                            console.log('VideoWall not shown');
-                                            return false;
-                                        }
 
-                                        html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage empty">';
-                                        if(ZiggeoWall[id].onNoVideos.showTemplate) {
-                                            html += '<ziggeo ' + ZiggeoWall[id].onNoVideos.templateName + '></ziggeo>';
-                                            console.log('<ziggeo ' + ZiggeoWall[id].onNoVideos.templateName + '></ziggeo>');
-                                        }
-                                        else {
-                                            html += ZiggeoWall[id].onNoVideos.message;
-                                        }
-                                        html += '</div>';
+                                        //Lets process no videos which will return false or built HTML code.
+                                        html = ziggeoWallHandleNoVideos(id, html);
+                                        //function returns false if it should break out from the possition call was made.
+                                        if(html === false) { return false; }
                                     }
 
                                     //Lets add everything so that it is shown..
@@ -599,6 +600,32 @@ function ziggeo_content_replace_templates($matches)
                             });
                         }
                     }
+                    //handler for the cases when either no videos are found or videos found do not match the status requested (not to be mistaken with 'video status').
+                    function ziggeoWallHandleNoVideos(id, html) {
+
+                        //Is the vall set up to be hidden when there are no videos?
+                        if(ZiggeoWall[id].onNoVideos.hideWall) {
+                            //Lets still leave a note about it in console.
+                            console.log('VideoWall not shown');
+                            return false;
+                        }
+
+                        //adding page - has additional (empty) class to allow nicer styling
+                        html += '<div id="' + id + '_page_1' + '" class="ziggeo_wallpage empty">';
+
+                        //Should we show some template?
+                        if(ZiggeoWall[id].onNoVideos.showTemplate) {
+                            html += '<ziggeo ' + ZiggeoWall[id].onNoVideos.templateName + '></ziggeo>';
+                        }
+                        else { //or a message instead?
+                            html += ZiggeoWall[id].onNoVideos.message;
+                        }
+                        //closing the page.
+                        html += '</div>';
+
+                        return html; //return the code we built..
+                    }
+                    //Shows the selected page and hides the rest of the specific video wall.
                     function ziggeoShowWallPage(id, page, current) {
                         //reference to wall
                         var wall = document.getElementById(id);
