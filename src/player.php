@@ -278,7 +278,7 @@ function ziggeo_content_replace_templates($matches)
             if($tag === 'ziggeovideowall') {
 
                 //Since there could be several walls on the same page, it would be best to create some random id that will help distinguish the x from y
-                $wallID = 'ziggeo_video_wall' . str_replace(array(' ', '.'), '', microtime()); ///ziggeo_video_wall0363734001464901560
+                $wallID = 'ziggeo_video_wall' . rand(2,4) . str_replace(array(' ', '.'), '', microtime()) . rand(0,5); ///ziggeo_video_wall0363734001464901560
 
                 $ret = '<div id="' . $wallID . '" class="ziggeo_videoWall" ';
 
@@ -394,16 +394,17 @@ function ziggeo_content_replace_templates($matches)
                 //to use it through client side, we will now build JS templates which will be outputted to the page.
 
 
-                //links to the background image, since CSS can not be hard coded (and make it work everywhere)
+                //We want it to output this only once. It is no problem if we do it hundreds of times, since the images would only be loaded once and no conflicts would be made, however doing that would cause the page to be filled out with non required code, so this makes it nicer.
+                if(!wp_style_is('ziggeo_wall_images', 'done')) {
+                    //Lets make sure we mark it as done..
+                    global $wp_styles;
+                    $wp_styles->done[] = 'ziggeo_wall_images';
+
+                    //Lets also add the code into the header, so it is not in the page content area..
+                    add_action('wp_footer', 'ziggeo_wall_extra_css');
+                }
                 ?>
-                <style type="text/css">
-                    .ziggeo_videowall_slide_previous {
-                        background-image: url("<?php echo ZIGGEO_ROOT_URL . 'images/arrow-previous.png'; ?>");
-                    }
-                    .ziggeo_videowall_slide_next {
-                        background-image: url("<?php echo ZIGGEO_ROOT_URL . 'images/arrow-next.png'; ?>");
-                    }
-                </style>
+
                 <script type="text/javascript">
                     <?php
                         //This helps us create js code that works as is and uses the variable data from these outputs instead of outputting the data into the code each time - and adding JS directly to the page.
@@ -641,5 +642,19 @@ function ziggeo_wall_parameter_values($toParse){
     }
 
     return $parsed;
+}
+
+function ziggeo_wall_extra_css() {
+//links to the background image, since CSS can not be hard coded (and make it work everywhere)
+    ?>
+    <style type="text/css">
+        .ziggeo_videowall_slide_previous {
+            background-image: url("<?php echo ZIGGEO_ROOT_URL . 'images/arrow-previous.png'; ?>");
+        }
+        .ziggeo_videowall_slide_next {
+            background-image: url("<?php echo ZIGGEO_ROOT_URL . 'images/arrow-next.png'; ?>");
+        }
+    </style>
+    <?php
 }
 ?>
