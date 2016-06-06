@@ -110,7 +110,7 @@ function ziggeo_templates_remove($id) {
         foreach($current as $template => $value)
         {
             //find old and skip it
-            if($template !== $id) {
+            if( ($template !== $id) && (trim($template) !== $id) ) {
                 $updated[$template] = $value;
             }
         }

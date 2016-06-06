@@ -654,6 +654,13 @@ function ziggeo_video_validate($input) {
 
     if( isset($options['templates_editor']) && $options['templates_editor'] !== '' && $options['templates_editor'] !== '[ziggeo ' )
     {
+        if(isset($options['templates_id'])) {
+            $options['templates_id'] = trim($options['templates_id']);
+        }
+        else {
+            $options['templates_id'] = '';
+        }
+
         //Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
         if( substr( $options['templates_editor'], -1) !== "]" ) { $options['templates_editor'] .= ']'; }
 
@@ -664,7 +671,7 @@ function ziggeo_video_validate($input) {
             $idGiven = true;
 
             //before adding template we need to know that the template name was added, if not, lets just name it for our customer :)
-            if( trim($options['templates_id']) === '' ) {
+            if($options['templates_id'] === '' ) {
                 $options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
 
                 $message = 'We have saved your template, but since Template ID was not given, we have set one up for you! - "' . $options['templates_id'] . '"';
