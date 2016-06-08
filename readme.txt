@@ -4,7 +4,7 @@ Donate link: https://ziggeo.com/
 Tags: video, comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
 Tested up to: 4.5.2
-Stable tag: 1.12
+Stable tag: 1.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,15 +13,17 @@ This plugin allows you to do video posts and accept video comments through use o
 
 == Description ==
 
-You can use this plugin to spice up your blog with video posts. Simply start by creating a new post,
-click on the *Record Video* button and take a video of yourself. It'll then be shown to your audience
-once your post goes live.
+You can use this plugin to spice up your blog with video posts. Simply start by creating a new post, click on the *Record Video* button and take a video of yourself. It'll then be shown to your audience once your post goes live.
 
-You can also invite people to leave video comments. Folks will have the option to either leave a traditional
-text comment or take a short video of themselves that'll be viewable by everybody on your site.
+You can also invite people to leave video comments. Folks will have the option to either leave a traditional text comment or take a short video of themselves that'll be viewable by everybody on your site.
 
-The plugin is based on the Ziggeo API which allows you to integrate video recording and playback with only
-two lines of code in your site, service or app.
+The plugin is based on the Ziggeo API which allows you to integrate video recording and playback with only two lines of code in your site, service or app.
+
+= Why Ziggeo? =
+
+Ziggeo video playback and recording is built upon its own framework which allows you to record and play videos on various platforms without thinking about the video type specific to browsers or technology available on platform while in the same time unifying the design of your video player and recorder.
+
+Ziggeo is designed to do that using same calls and methods while our backend works out all of the specifics for you. And plugin? Well, plugin just packs the power of Ziggeo and allows you to have the same on your WordPress website in just few clicks, regardless if you are looking for video recorder, video player or video gallery.
 
 = Support =
 
@@ -30,11 +32,9 @@ To submit your questions simply go to our [Help Center](https://support.ziggeo.c
 
 = Recording =
 
-You control the length of the videos, the tags associated with the same (by default we pre-set the tags to "wordpress",
-username of the submitter as reported by WordPress and (new) where the video was made - "post"/"comment" )
+You control the length of the videos, the tags associated with the same (by default we pre-set the tags to "wordpress", username of the submitter as reported by WordPress and (new) where the video was made - "post"/"comment" )
 
-Recordings can be processed on our end to include any effects or filters that you have previously set, while you are
-still using only few lines of human readable short codes.
+Recordings can be processed on our end to include any effects or filters that you have previously set, while you are still using only few lines of human readable short codes.
 
 Recording videos is as simple as:
 
@@ -63,8 +63,7 @@ You can simply use the following, even shorter call:
 
 = Playback =
 
-You just tell us the video that you wish to play and how you want it to look - full customization possible - allowing
-your videos to blend into your WordPress website and to amaze your website visitors.
+You just tell us the video that you wish to play and how you want it to look - full customization possible - allowing your videos to blend into your WordPress website and to amaze your website visitors.
 
 A sample of your video player call was as simple as:
 
@@ -98,10 +97,11 @@ Do you love simple [ziggeo] tag instead? That is OK. It will work like that as w
 [ziggeo myVideoPlayer video="VIDEO_TOKEN"]
 `
 
+- Starting with version 1.13 you can also view your videos in video wall template. To see more about it, do check out its section bellow.
+
 = Video Uploads =
 
-You want to allow uploads? Want to turn them into playable videos right after uploading? This has never been easier - you
-simply set the recorder to allow uploads, or use our predefined uploading template (*[ziggeouploader]*) and you are good to go.
+You want to allow uploads? Want to turn them into playable videos right after uploading? This has never been easier - you simply set the recorder to allow uploads, or use our predefined uploading template (*[ziggeouploader]*) and you are good to go.
 All videos uploaded through the same would be possible to be played back for you.
 
 Instead of setting up the Ziggeo embedding to allow video uploads to your WordPress plugin you can also simply call the uploader (plugin) template as so:
@@ -122,11 +122,28 @@ As with video player and Ziggeo video recorder, you can set up your uploader usi
 [ziggeo uploads]
 `
 
+= Video Wall =
+
+Were you interested in having not only to collect videos in your comments but show them as well? Something like a video gallery?
+
+Well, if you are thinking "oh, that would be so nice" - we hear you! We also want to say that that is exactly what we did. As per your requests, we have thought of a way to introduce video walls that work with just a few lines in any part of your post or page.
+
+So what happens is that you add a call to your video wall template like so:
+
+`
+[ziggeovideowall myTemplate]
+`
+
+As you do, your post will show the wall as per template setup, which means that you could do one of the following:
+1. Show video gallery / video wall as soon as the page finishes loading
+1. Request for video to be posted as a comment on the post to see the video wall
+1. Show a message if no videos are present - or show another template instead.
+
+* Yes, you read that correctly. If you show your video wall, and you want to show a template within it - that is possible allowing you to quickly add more videos.
+
 = Templates =
 
-Ziggeo plugin is now powered by templates allowing you to quickly set up the template in the "template builder" part of the
-plugin and then simply reference from your posts, pages and comments. There is no limit in the amount of templates you can have
-and it is up to you how you will use them.
+Ziggeo plugin is now powered by templates allowing you to quickly set up the template in the "template builder" part of the plugin and then simply reference from your posts, pages and comments. There is no limit in the amount of templates you can have and it is up to you how you will use them.
 
 You can also set default templates for your comments - for playback and recording so we got you covered there as well.
 
@@ -155,14 +172,16 @@ There are several base templates:
 5. Ziggeo Video Uploader base
  `[ziggeouploader]`
 
+6. Ziggeo Video Wall base (Video Gallery)
+ `[ziggeovideowall]`
+
 The only reason why we created them is to allow you to use a simple tag in your post to specify what you are after with specific parameters being loaded for you.
 
 Please check FAQ section for some of the questions related to the same.
 
 = Improvements and Feedback =
 
-If you experience any issues with the plugin, please let us know. You can do that through options shown in plugins *Contact Us* tab, or if
-you were in contact with us before, just let us know in the same manner as before.
+If you experience any issues with the plugin, please let us know. You can do that through options shown in plugins *Contact Us* tab, or if you were in contact with us before, just let us know in the same manner as before.
 
 We value your suggestions in regards to all aspects of our service and plugin as well, so use this and don't be afraid to help us help you.
 
@@ -239,7 +258,7 @@ In order to store data in files and read the same on-fly without loosing the dat
 
 This is probably a good place to mention that we are still keeping the data that we previously did in your database, it is just that new data is moved from it.
 
-= Why are the options on General tab hidding and showing when we move our mouse? =
+= Why are the options on General tab hiding and showing when we move our mouse? =
 
 We added a lot of changes to this version and we are planning on adding more. In order to keep it all clean and simple we made few style decisions which we hope you will like, where the option explanation will only show itself once you are over it and for the rest of the time your dashboard is nice and clean.
 
@@ -264,6 +283,19 @@ Yes. To add the template you use *Ziggeo Video Aid* button in the toolbar. To ge
 If you want to use beta everywhere, the global options are the way to go with. However if you want to use beta calls on some templates only (which is for example available to your developers only, or your testers), the best option would be to use the template. Once you click on the button, it will add a custom tag to indicate that it is beta embedding.
 
 Clicking on it again will stop it from being 'beta'.
+
+= Can we re-style our videowall / video gallery? =
+
+Yes. There are few classes that you can use in your video walls
+`.ziggeo_videoWall` - To style videowall template (video gallery if you prefer) 
+`.ziggeo_wall_title` - To style the wall title if any is given
+`.ziggeo_wallpage` - to style video wall pages
+`.ziggeo_wallpage > ziggeo` - to style the embedings within the video wall
+`.ziggeo_wallpage_number` - to style the page number buttons
+`.ziggeo_videowall_slide_previous` - to style the < (previous arrow)
+`.ziggeo_videowall_slide_next` - to style > (next arrow)
+
+You can of course use your own CSS code, and with classes available for each element of the videowall this should be something very similar :)
 
 
 == Screenshots ==
@@ -291,13 +323,14 @@ Clicking on it again will stop it from being 'beta'.
 == Upgrade notice ==
 
 = 1.13 =
-* @TODO
+* VideoWall get it as its HOT ;)
 
 
 == Changelog ==
 
 = 1.13 =
-* BUILDING @TODO
+* Fixed a small bug where additional spaces after template name would not allow you to delete/edit it easily
+* Added VideoWall template with its various parameters to set it all up
 
 = 1.12 =
 * Fixed issue with double quotes stopping TinyMCE button in toolbar to not work properly
