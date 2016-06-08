@@ -10,9 +10,9 @@ $list = ziggeo_file_read( '../../ziggeo-userData/custom_templates.php' );
 
 
 if($list) {
-	//If there are double quotes, it would cause issues with TinyMCE, however with templates editing as well.
-	//Since this is called for templates only, we know that we are OK with changing all double quotes into single quotes..
-	$list = str_replace('"', "'", $list);		
+    //If there are double quotes, it would cause issues with TinyMCE, however with templates editing as well.
+    //Since this is called for templates only, we know that we are OK with changing all double quotes into single quotes..
+    $list = str_replace('"', "'", $list);        
 }
 
 $start = "(function() {
