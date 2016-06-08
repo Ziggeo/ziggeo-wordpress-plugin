@@ -200,7 +200,7 @@ There are several ways to power your WordPress with video recording and video pl
  1. Activate plugin
  1. Go to *Ziggeo Video* under Settings menu
 
-* That is it, your plugin is installed :)
+* That is it, your plugin is installed.
 
 
 == Frequently asked questions ==
@@ -228,7 +228,7 @@ or by using
 = Is using templates better than using previous method of embedding? =
 
 Do you happen to have hundreds of posts with Ziggeo embeddings?
-What if you wanted to change all of them? Well, if your first thought was about opening each and every one of those great posts on your websites or thinking about the SQL statements that you would use, stop. With templates that is not the case. You can just edit the template and that is it, all posts get updated with that one edit! How amazing is that? :)
+What if you wanted to change all of them? Well, if your first thought was about opening each and every one of those great posts on your websites or thinking about the SQL statements that you would use, stop. With templates that is not the case. You can just edit the template and that is it, all posts get updated with that one edit! How amazing is that?
 
 It is of course up to you to decide which method works best for you - this is just an option that you can use if you need it.
 
@@ -276,7 +276,7 @@ If it detects that it needs to get the video token set it will show the same to 
 
 = Is there an easier way to get the body of a template / template structure into our post instead of the template id without doing edit to get it? =
 
-Yes. To add the template you use *Ziggeo Video Aid* button in the toolbar. To get the body, you use the same button, and click on the same option. The only difference is that to get the body of the template loaded, you need to press *Shift* on your keyboard while clicking on the template ID. That is it :)
+Yes. To add the template you use *Ziggeo Video Aid* button in the toolbar. To get the body, you use the same button, and click on the same option. The only difference is that to get the body of the template loaded, you need to press *Shift* on your keyboard while clicking on the template ID.
 
 = What is "Turn into beta" option in templates tab? =
 
@@ -295,7 +295,7 @@ Yes. There are few classes that you can use in your video walls
 `.ziggeo_videowall_slide_previous` - to style the < (previous arrow)
 `.ziggeo_videowall_slide_next` - to style > (next arrow)
 
-You can of course use your own CSS code, and with classes available for each element of the videowall this should be something very similar :)
+You can of course use your own CSS code, and with classes available for each element of the videowall this should be something very similar.
 
 
 == Screenshots ==
@@ -323,7 +323,7 @@ You can of course use your own CSS code, and with classes available for each ele
 == Upgrade notice ==
 
 = 1.13 =
-* VideoWall get it as its HOT ;)
+* First release of the VideoWall
 
 
 == Changelog ==
