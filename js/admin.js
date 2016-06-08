@@ -37,24 +37,8 @@ function ziggeo_changeTab(tab)
     }
 
     //Now lets set the right tab to be shown as selected
-    switch(tab)
-    {
-        case 'general': {
-            document.getElementById('ziggeo-tab_id_general').className = 'ziggeo-tabName selected';
-            document.getElementById('ziggeo-tab_general').style.display = 'block';
-            break;
-        }
-        case 'templates': {
-            document.getElementById('ziggeo-tab_id_templates').className = 'ziggeo-tabName selected';
-            document.getElementById('ziggeo-tab_templates').style.display = 'block';
-            break;
-        }
-        case 'contact': {
-            document.getElementById('ziggeo-tab_id_contact').className = 'ziggeo-tabName selected';
-            document.getElementById('ziggeo-tab_contact').style.display = 'block';
-            break;
-        }
-    }
+    document.getElementById('ziggeo-tab_id_' + tab).className = 'ziggeo-tabName selected';
+    document.getElementById('ziggeo-tab_' + tab).style.display = 'block';
 }
 
 //Function to change the shortcode in the templates editor to the selected one and to show the parameters that can be applied to each

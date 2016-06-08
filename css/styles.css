@@ -171,9 +171,11 @@ br.clear {
     border-top-right-radius: 100%;
     border-bottom-right-radius: 100%;
 }
+/* the styles that are applied when mouse is over the slidewall previous button */
 .ziggeo_videowall_slide_previous:hover {
     box-shadow: -3px 0 4px lightgray;
 }
+/* the styles that are applied when mouse is over the slidewall next button */
 .ziggeo_videowall_slide_next:hover {
     box-shadow: 3px 0 4px lightGray;
 }

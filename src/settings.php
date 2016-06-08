@@ -772,6 +772,10 @@ function ziggeo_video_validate($input) {
     if(!isset($options['version'])) {
         $options['version'] = ZIGGEO_VERSION;
     }
+    //It is existing, we are just making it the current version. It is before this call that we should do any action when needed for specific version.
+    else {
+        $options['version'] = ZIGGEO_VERSION;
+    }
 
     //This is just added at this time
     if(!isset($options['showVideoAidButton'])) {
