@@ -10,10 +10,18 @@ function ziggeo_check_mce() {
     $options = get_option('ziggeo_video'); 
 
     if( (isset($options['showVideoAidButton']) && $options['showVideoAidButton'] === '1') || !isset($options['showVideoAidButton']) ) {
-        //Registering our plugin in the list of TinyMCE list of external plugins
-        add_filter('mce_external_plugins', 'ziggeo_mce_register');
-        //Adding a button to the TinyMCE toolbar
-        add_filter('mce_buttons', 'ziggeo_mce_add_button');        
+
+        ///if it can not get it, it does not need to be shown..
+        if(@include_once(ABSPATH . 'wp-includes/pluggable.php'))
+        {
+            //If current user can edit the posts, then they should be able to add Ziggeo video..it does not matter if it is on public side or not..
+            if(current_user_can('edit_posts')) {
+                //Registering our plugin in the list of TinyMCE list of external plugins
+                add_filter('mce_external_plugins', 'ziggeo_mce_register');
+                //Adding a button to the TinyMCE toolbar
+                add_filter('mce_buttons', 'ziggeo_mce_add_button');        
+            }
+        }
     }
 }
 ziggeo_check_mce();
