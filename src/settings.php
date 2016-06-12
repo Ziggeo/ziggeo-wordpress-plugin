@@ -206,7 +206,7 @@ function ziggeo_video_templates_text() {
                     <dt class="wall" data-equal="=''">template_name</dt>
                         <dd>String value holding the name of the video template that you want to show if the 'on_no_videos' is set to 'showtemplate' (if it does not exist default is loaded)</dd>
                     <dt class="wall" data-equal="=''">show_videos</dt>
-                        <dd>Array value stating which videos will be shown. Possible options are 'all', 'approved', 'rejected'</dd>
+                        <dd>Array value stating which videos will be shown. Possible options are 'all', 'approved', 'rejected', 'pending'</dd>
                     <dt class="wall" data-equal="">autoplay</dt>
                         <dd>Boolean value indicating if first video should be played automatically</dd>
                     <dt class="wall" data-equal="">show</dt>
@@ -631,10 +631,10 @@ function ziggeo_video_validate($input) {
         foreach($input as $option => $value)
         {
             if(isset($allowed_options[$option]))
-            {       
+            {
                 $options[$option] = $value;
             }
-        }       
+        }
     }
     else {
         return false; //nothing to do here..
