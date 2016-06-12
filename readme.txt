@@ -322,17 +322,18 @@ To show videos you need to have videos on that specific page. This is done to al
 5. Working with templates - managing templates
 6. Working with templates - editing templates
 7. Working with templates - beta templates (if you are not on beta by default)
-8. videowall (defaults - page numbers)
-9. videowall (defaults with slidewall turned on)
+8. Working with templates - videowall templates setup
+9. videowall (defaults - page numbers)
+10. videowall (defaults with slidewall turned on)
 
 = Global Defaults =
-10. Your old setup is now used as fallback
+11. Your old setup is now used as fallback
 
 = Comments =
-11. More options for comments.
+12. More options for comments.
 
 = Editing Post =
-12. TinyMCE button
+13. TinyMCE button
 
 
 == Upgrade notice ==
