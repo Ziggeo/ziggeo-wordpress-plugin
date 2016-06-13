@@ -39,37 +39,40 @@ if(typeof ziggeoShowVideoWall !== 'function') {
                     var newPage = true;
 
                     for(i = 0, j = data.length, tmp=''; i < j; i++, tmp='') {
-
-                        if(ZiggeoWall[id].indexing.status === 'all') {
-                            tmp += '<ziggeo ' +
+                        
+                        var tmp_embedding = '<ziggeo ' +
                                         ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                                         ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                                         ' ziggeo-video="' + data[i].token + '"' +
                                         ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
                                     '></ziggeo>';
+
+                        //show all videos
+                        if(ZiggeoWall[id].indexing.status === 'all') {
+                            tmp += tmp_embedding;
                             usedVideos++;
                             currentVideosPageCount++;
                         }
+                        //show only rejected videos
                         else if(ZiggeoWall[id].indexing.status === 'rejected') {
-                           if(data[i].approved !== true) {
-                                tmp += '<ziggeo ' +
-                                            ' ziggeo-width=' + ZiggeoWall[id].videos.width +
-                                            ' ziggeo-height=' + ZiggeoWall[id].videos.height +
-                                            ' ziggeo-video="' + data[i].token + '"' +
-                                            ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
-                                        '></ziggeo>';                                                   
+                           if(data[i].approved === false) {
+                                tmp += tmp_embedding;
                                 usedVideos++;
                                 currentVideosPageCount++;
                            }
-                        } 
-                        else { //approved
+                        }
+                        //show only pending videos
+                        else if(ZiggeoWall[id].indexing.status === 'pending') {
+                           if(data[i].approved === null || data[i].approved === '' ) {
+                                tmp += tmp_embedding;
+                                usedVideos++;
+                                currentVideosPageCount++;
+                           }
+                        }
+                        //show approved videos 
+                        else {
                             if(data[i].approved === true) {
-                                tmp += '<ziggeo ' +
-                                            ' ziggeo-width=' + ZiggeoWall[id].videos.width +
-                                            ' ziggeo-height=' + ZiggeoWall[id].videos.height +
-                                            ' ziggeo-video="' + data[i].token + '"' +
-                                            ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
-                                        '></ziggeo>';
+                                tmp += tmp_embedding;
                                 usedVideos++;
                                 currentVideosPageCount++;
                             }

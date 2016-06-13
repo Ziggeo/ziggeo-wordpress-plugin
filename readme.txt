@@ -124,7 +124,7 @@ As with video player and Ziggeo video recorder, you can set up your uploader usi
 
 = Video Wall =
 
-Were you interested in having not only to collect videos in your comments but show them as well? Something like a video gallery?
+Were you interested in having an option not only to collect videos in your comments, but to show them as well? Something like a video gallery?
 
 Well, if you are thinking "oh, that would be so nice" - we hear you! We also want to say that that is exactly what we did. As per your requests, we have thought of a way to introduce video walls that work with just a few lines in any part of your post or page.
 
@@ -181,10 +181,9 @@ Please check FAQ section for some of the questions related to the same.
 
 = Improvements and Feedback =
 
-If you experience any issues with the plugin, please let us know. You can do that through options shown in plugins *Contact Us* tab, or if you were in contact with us before, just let us know in the same manner as before.
+If you experience any issues with the plugin, please let us know. You can do that through options shown in plugins *Contact Us* tab, or if you were in contact with us before, just let us know in the same manner as before, or over our [Ziggeo Forum in WordPress Plugin section](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
 
 We value your suggestions in regards to all aspects of our service and plugin as well, so use this and don't be afraid to help us help you.
-
 
 == Installation ==
 
@@ -278,6 +277,10 @@ If it detects that it needs to get the video token set it will show the same to 
 
 Yes. To add the template you use *Ziggeo Video Aid* button in the toolbar. To get the body, you use the same button, and click on the same option. The only difference is that to get the body of the template loaded, you need to press *Shift* on your keyboard while clicking on the template ID.
 
+= We have few plugins that show the Post editing toolbar in public as well and do not want Ziggeo button to be shown as well =
+
+It is not. We have added a check to see if it is opened in public or by admin and show it only when it seems to be opened by admin. If you do have some specific plugin installed and by some chance it shows it in non admin places for you, just let us know, we will check it and add support for that plugin as well.
+
 = What is "Turn into beta" option in templates tab? =
 
 If you want to use beta everywhere, the global options are the way to go with. However if you want to use beta calls on some templates only (which is for example available to your developers only, or your testers), the best option would be to use the template. Once you click on the button, it will add a custom tag to indicate that it is beta embedding.
@@ -290,12 +293,22 @@ Yes. There are few classes that you can use in your video walls
 `.ziggeo_videoWall` - To style videowall template (video gallery if you prefer) 
 `.ziggeo_wall_title` - To style the wall title if any is given
 `.ziggeo_wallpage` - to style video wall pages
-`.ziggeo_wallpage > ziggeo` - to style the embedings within the video wall
+`.ziggeo_wallpage > ziggeo` - to style the embedings within the video wall (from here standard Ziggeo embedding CSS codes will work properly)
 `.ziggeo_wallpage_number` - to style the page number buttons
 `.ziggeo_videowall_slide_previous` - to style the < (previous arrow)
 `.ziggeo_videowall_slide_next` - to style > (next arrow)
 
-You can of course use your own CSS code, and with classes available for each element of the videowall this should be something very similar.
+You can of course use your own CSS code, and with classes available for each element of the videowall this should be something very simple.
+
+= Why there are some videos that can not be loaded in VideoWall? =
+
+If you notice in your console the following error: `NetworkError: 403 Forbidden - link to video snapshot` or if you check the link directly and you see `This video is currently under moderation` it means that your video wall was able to load the video, however you have checked `Client cannot view unaccepted videos` in your dashboard - that is why you are shown the same.
+
+If you are still not sure about how to resolve that, just let us know.
+
+= We open a page with video wall, however no videos are shown even with video wall set to load right away =
+
+To show videos you need to have videos on that specific page. This is done to allow you to show any videos from within your Ziggeo account that are specific to the post you are currently on. To show some videos, you can record your video in the post, or by recording it in the comments. All others that are added as video comments will be shown after new recording is made (to those that do it) or for all those that come to your page (depending on your setup).
 
 
 == Screenshots ==
@@ -309,21 +322,24 @@ You can of course use your own CSS code, and with classes available for each ele
 5. Working with templates - managing templates
 6. Working with templates - editing templates
 7. Working with templates - beta templates (if you are not on beta by default)
+8. Working with templates - videowall templates setup
+9. videowall (defaults - page numbers)
+10. videowall (defaults with slidewall turned on)
 
 = Global Defaults =
-8. Your old setup is now used as fallback
+11. Your old setup is now used as fallback
 
 = Comments =
-9. More options for comments.
+12. More options for comments.
 
 = Editing Post =
-10. TinyMCE button
+13. TinyMCE button
 
 
 == Upgrade notice ==
 
 = 1.13 =
-* First release of the VideoWall
+* Introducing VideoWall template
 
 
 == Changelog ==
@@ -331,6 +347,7 @@ You can of course use your own CSS code, and with classes available for each ele
 = 1.13 =
 * Fixed a small bug where additional spaces after template name would not allow you to delete/edit it easily
 * Added VideoWall template with its various parameters to set it all up
+* Made tinyMCE button load up when editing is done by Contributer or higher (in case the toolbar is shown in public)
 
 = 1.12 =
 * Fixed issue with double quotes stopping TinyMCE button in toolbar to not work properly
