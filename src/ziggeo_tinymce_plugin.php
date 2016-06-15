@@ -26,22 +26,23 @@ $start = "(function() {
          * @param {string} url Absolute URL to where the plugin is located.
          */
         init : function(editor, url) {
-                        editor.addButton('ziggeo_templates', {
-                                title: 'Ziggeo Video Aid',
-                                cmd: 'ziggeoAddTemplate',
-                                image: url + '/../images/icon.png',
-                                type: 'menubutton',
-                                menu: [ //This is first level menu
-                                        {
-                                                text: 'Templates',
-                                                value: '[ziggeo]',
-                                                onclick: function() { //We will remove the onlick from here, this is just for test
-                                                        editor.insertContent(this.value());
-                                                },
-                                                menu: [ //This is second level menu
-                                                                ";
+            editor.addButton('ziggeo_templates', {
+                title: 'Ziggeo Video Aid',
+                cmd: 'ziggeoAddTemplate',
+                image: url + '/../images/icon.png',
+                type: 'menubutton',
+                menu: [ //This is first level menu
+                    {
+                        text: 'Templates',
+                        value: '[ziggeo]',
+                        onclick: function() { //We will remove the onlick from here, this is just for test
+                            editor.insertContent(this.value());
+                        },
+                        menu: [ //This is second level menu
+                                    ";
 
 $middle = '';
+$base = '[ziggeo ';
 if($list) {
         //player and re-recorder require token.. so it would be good to detect which base the template has and then add any required attributes to the same..
         foreach($list as $id => $template) {
@@ -51,56 +52,61 @@ if($list) {
 
                 //Are we dealing with player?
                 if( stripos( $template, '[ziggeoplayer' ) > -1 ) {
-                        if( stripos($template, 'video') === false ) { //nope, lets add it
-                                $template = str_replace( '[ziggeoplayer', '[ziggeoplayer video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
-                        }
-                        $tokenRequired = 'yes';
+                    if( stripos($template, 'video') === false ) { //nope, lets add it
+                        $template = str_replace( '[ziggeoplayer', '[ziggeoplayer video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
+                    }
+                    $tokenRequired = 'yes';
                 }
 
                 //are we dealing with the rerecorder?
                 if( stripos( $template, '[ziggeorerecorder') > -1 ) {
-                        //Is token already set?
-                        if( stripos($template, 'video') === false ) { //nope, lets add it
-                                $template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
-                        }
-                        $tokenRequired = 'yes';
+                    //Is token already set?
+                    if( stripos($template, 'video') === false ) { //nope, lets add it
+                        $template = str_replace('[ziggeorerecorder', '[ziggeorerecorder video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\'', $template);
+                    }
+                    $tokenRequired = 'yes';
+                }
+
+                //If it is video wall, we should add it as ziggeowall, rather than ziggeo (because when template is removed the wall becomes recorder..)
+                if( stripos($template, '[ziggeovideowall') > -1 ) {
+                    $base = '[ziggeovideowall ';
                 }
 
                 if($middle !== '')      { $middle .= ', '; }
                 $middle .= "{
-                                                text: '" . $id . "',
-                                                value: \"" . $template . "\",
-                                                requiresToken: '" . $tokenRequired . "',
-                                                onclick: function(e) { 
-                                                        e.stopPropagation();
-                                                        if(e.shiftKey === true) {
-                                                                editor.insertContent(this.value());
-                                                        }
-                                                        else {
-                                                                if(this.settings.requiresToken === 'yes') {
-                                                                        editor.insertContent('[ziggeo ' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');                                                                     
-                                                                }
-                                                                else {
-                                                                        editor.insertContent('[ziggeo ' + this.text() + ' ]');
-                                                                }
-                                                        }
-                                                        ziggeo_tinymce_set_position();
-                                                }
-                                        }";
+                                text: '" . $id . "',
+                                value: \"" . $template . "\",
+                                requiresToken: '" . $tokenRequired . "',
+                                onclick: function(e) { 
+                                    e.stopPropagation();
+                                    if(e.shiftKey === true) {
+                                            editor.insertContent(this.value());
+                                    }
+                                    else {
+                                        if(this.settings.requiresToken === 'yes') {
+                                            editor.insertContent('" . $base . "' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');                                                                     
+                                        }
+                                        else {
+                                            editor.insertContent('" . $base . "' + this.text() + ' ]');
+                                        }
+                                    }
+                                    ziggeo_tinymce_set_position();
+                                }
+                            }";
         }
 }
 else {
         $middle = "{
-                                text: 'No templates found',
-                                value: ''
-                                }";
+                        text: 'No templates found',
+                        value: ''
+                    }";
 }
 
-$end =                                                  "
-                                                ]
-                                        }
-                                ]
-                        });
+$end =                       "
+                        ]
+                    }
+                ]
+            });
         },
  
         /**
