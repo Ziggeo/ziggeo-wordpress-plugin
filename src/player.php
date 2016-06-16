@@ -403,6 +403,15 @@ function ziggeo_content_replace_templates($matches)
                     //Lets also add the code into the header, so it is not in the page content area..
                     add_action('wp_footer', 'ziggeo_wall_extra_css');
                 }
+
+                //We now allow customers to set custom tags to search videos by..This will provide them with more freedom.
+                if(!isset($wall['videos_to_show'])) {
+                    $wall_tags = 'wordpress,comment,post_' . $wall['postID']; //default that shows the videos made in the comments of the specific post
+                }
+                else {
+                    $wall_tags = $wall['videos_to_show'];
+                }
+
                 ?>
 
                 <script type="text/javascript">
@@ -432,7 +441,7 @@ function ziggeo_content_replace_templates($matches)
                             hideWall: <?php echo ($wall['hide_wall']) ? 'true' : 'false'; ?>
                         },
                         title: '<?php echo $wall['title']; ?>',
-                        tags: 'tags=wordpress,comment,post_<?php echo $wall['postID']; ?>' //do we want to show vidoes made in comments only or show all of them (made on this post)? - set to display comments only.
+                        tags: '<?php echo $wall_tags; ?>' //the tags to look the video by based on template setup
                     };
                 </script>
                 <?php

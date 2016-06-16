@@ -199,6 +199,8 @@ function ziggeo_video_templates_text() {
                         <dd>Boolean value (enabled by default) - causing pages to be shown at the bottom</dd>
                     <dt class="wall" data-equal="=">videos_per_page</dt>
                         <dd>Integer value determining how many videos should be shown per page (defaults: 1 with slide_wall and 2 with show_pages)</dd>
+                    <dt class="wall" data-equal="=''">videos_to_show</dt>
+                        <dd>Array to setup which videos should be shown. Default video wall shows videos made on post it is on. This accepts comma separated values of post IDs (format: 'post_ID') or any other tags. Adding just '' (two single quotes) will show all videos in your account (videos_to_show='') <a href="https://support.ziggeo.com/hc/en-us/community/posts/212117427-VideoWall-parameters-introducing-new-changes">Check out more here..</a></dd>
                     <dt class="wall" data-equal="=''">on_no_videos</dt>
                         <dd>Array value representing what should happen if there are no videos. It can be 'showmessage', 'showtemplate', 'hidewall'</dd>
                     <dt class="wall" data-equal="=''">message</dt>

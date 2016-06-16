@@ -23,7 +23,9 @@ if(typeof ziggeoShowVideoWall !== 'function') {
         html += ZiggeoWall[id].title;
 
         //To show the page we must first index videos..
-        ZiggeoApi.Videos.index(ZiggeoWall[id].tags, {
+
+        //We are making it get 100 videos data per call
+        ZiggeoApi.Videos.index( 'limit=100&tags='+ZiggeoWall[id].tags, {
             success: function (args, data) {
                 if(data.length > 0) {
                     //we got some videos back
