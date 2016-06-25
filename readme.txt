@@ -3,8 +3,8 @@ Contributors: oliverfriedmann, baned
 Donate link: https://ziggeo.com/
 Tags: video, comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
-Tested up to: 4.5.2
-Stable tag: 1.13
+Tested up to: 4.5.3
+Stable tag: 1.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,6 +140,13 @@ As you do, your post will show the wall as per template setup, which means that 
 1. Show a message if no videos are present - or show another template instead.
 
 * Yes, you read that correctly. If you show your video wall, and you want to show a template within it - that is possible allowing you to quickly add more videos.
+
+By default the video wall will show you the videos made on the specific post (the one it is on), however if you wish to show videos from other posts or that are not associated yet with your WordPress, you can do that as well through videos_to_show parameter.
+
+You can read more about Video Wall templates on the following useful links:
+[Help Center](https://support.ziggeo.com/hc/en-us)
+[Introduction to VideoWall on our blog](http://blog.ziggeo.com/2016/06/13/videowall-the-best-way-to-easily-show-a-video-gallery-on-your-wordpress-based-website/)
+[Introduction to showing videos from other post on our forum](https://support.ziggeo.com/hc/en-us/community/posts/212117427-VideoWall-parameters-introducing-new-changes)
 
 = Templates =
 
@@ -338,11 +345,16 @@ To show videos you need to have videos on that specific page. This is done to al
 
 == Upgrade notice ==
 
-= 1.13 =
-* Introducing VideoWall template
+= 1.14 =
+* Added additional options to VideoWall templates
+* Made tests on latest WordPress version
 
 
 == Changelog ==
+
+= 1.14 =
+* Added option to show videos from different posts in a video wall
+* added option to show multiple types of videos (approved,rejected,pending) instead of single status.
 
 = 1.13 =
 * Fixed a small bug where additional spaces after template name would not allow you to delete/edit it easily

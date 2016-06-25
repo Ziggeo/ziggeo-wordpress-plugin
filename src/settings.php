@@ -169,6 +169,7 @@ function ziggeo_video_templates_text() {
 
         ?>
         <br><br>
+        <span id="ziggeo_videowall_info" class="ziggeo_info" style="display:none;">Video Wall template (by default) shows videos made on the post the videwall template is on. If you wish to change it to show other videos, just add <b onclick="ziggeo_parameters_quick_add({ currentTarget:this});" data-equal="=''">videos_to_show</b> and modify it to your needs</span>
 
         <?php //The actual template body that we will save ?>
         <textarea id="ziggeo_templates_editor" name="ziggeo_video[templates_editor]" rows="11" cols="50">[ziggeo </textarea>
@@ -199,6 +200,8 @@ function ziggeo_video_templates_text() {
                         <dd>Boolean value (enabled by default) - causing pages to be shown at the bottom</dd>
                     <dt class="wall" data-equal="=">videos_per_page</dt>
                         <dd>Integer value determining how many videos should be shown per page (defaults: 1 with slide_wall and 2 with show_pages)</dd>
+                    <dt class="wall" data-equal="=''">videos_to_show</dt>
+                        <dd>Array to setup which videos should be shown. Default video wall shows videos made on post it is on. This accepts comma separated values of post IDs (format: 'post_ID') or any other tags. Adding just '' (two single quotes) will show all videos in your account (videos_to_show='') <a href="https://support.ziggeo.com/hc/en-us/community/posts/212117427-VideoWall-parameters-introducing-new-changes">Check out more here..</a></dd>
                     <dt class="wall" data-equal="=''">on_no_videos</dt>
                         <dd>Array value representing what should happen if there are no videos. It can be 'showmessage', 'showtemplate', 'hidewall'</dd>
                     <dt class="wall" data-equal="=''">message</dt>
@@ -467,7 +470,7 @@ function ziggeo_video_general_text() {
                     else{
                         ?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
                     }
-                }                               
+                }
             }
         ?>
         </select>
@@ -494,7 +497,7 @@ function ziggeo_video_general_text() {
                     else {
                         ?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php                                               
                     }
-                }                               
+                }
             }
         ?>
         </select>

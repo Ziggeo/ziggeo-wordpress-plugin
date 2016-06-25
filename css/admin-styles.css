@@ -116,6 +116,14 @@
     background-image: linear-gradient(lightblue, transparent);
     border: 1px solid lightblue;
 }
+.ziggeo_info {
+    background-image: linear-gradient(gold, orange, gold);
+    border-radius: 4px 4px 4px 0;
+    font-size: 0.9em;
+    font-style: italic;
+    padding: 0.2em 0.6em;
+    margin-bottom: 2em;
+}
 
 /* General tab */
 #ziggeo-tab_general .form-table tr:hover .ziggeo-subframe {

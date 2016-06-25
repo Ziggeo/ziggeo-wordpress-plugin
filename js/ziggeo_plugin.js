@@ -23,7 +23,9 @@ if(typeof ziggeoShowVideoWall !== 'function') {
         html += ZiggeoWall[id].title;
 
         //To show the page we must first index videos..
-        ZiggeoApi.Videos.index(ZiggeoWall[id].tags, {
+
+        //We are making it get 100 videos data per call
+        ZiggeoApi.Videos.index( 'limit=100&tags='+ZiggeoWall[id].tags, {
             success: function (args, data) {
                 if(data.length > 0) {
                     //we got some videos back
@@ -48,30 +50,33 @@ if(typeof ziggeoShowVideoWall !== 'function') {
                                     '></ziggeo>';
 
                         //show all videos
-                        if(ZiggeoWall[id].indexing.status === 'all') {
+                        if(ZiggeoWall[id].indexing.status.indexOf('all') > -1 ) {
                             tmp += tmp_embedding;
                             usedVideos++;
                             currentVideosPageCount++;
+                            data[i] = null;//so that it is not used by other ifs..
                         }
                         //show only rejected videos
-                        else if(ZiggeoWall[id].indexing.status === 'rejected') {
-                           if(data[i].approved === false) {
+                        if(ZiggeoWall[id].indexing.status.indexOf('rejected') > -1 ) {
+                           if(data[i] !== null && data[i].approved === false) {
                                 tmp += tmp_embedding;
                                 usedVideos++;
                                 currentVideosPageCount++;
+                                data[i] = null;//so that it is not used by other ifs..
                            }
                         }
                         //show only pending videos
-                        else if(ZiggeoWall[id].indexing.status === 'pending') {
-                           if(data[i].approved === null || data[i].approved === '' ) {
+                        if(ZiggeoWall[id].indexing.status.indexOf('pending') > -1 ) {
+                           if(data[i] !== null && (data[i].approved === null || data[i].approved === '') ) {
                                 tmp += tmp_embedding;
                                 usedVideos++;
                                 currentVideosPageCount++;
+                                data[i] = null;//so that it is not used by other ifs..
                            }
                         }
                         //show approved videos 
-                        else {
-                            if(data[i].approved === true) {
+                        if(ZiggeoWall[id].indexing.status === '' || ZiggeoWall[id].indexing.status.indexOf('approved') > -1 ) {
+                            if(data[i] !== null && data[i].approved === true) {
                                 tmp += tmp_embedding;
                                 usedVideos++;
                                 currentVideosPageCount++;
