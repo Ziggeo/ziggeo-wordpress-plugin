@@ -144,8 +144,8 @@ As you do, your post will show the wall as per template setup, which means that 
 By default the video wall will show you the videos made on the specific post (the one it is on), however if you wish to show videos from other posts or that are not associated yet with your WordPress, you can do that as well through videos_to_show parameter.
 
 You can read more about Video Wall templates on the following useful links:
-[Help Center](https://support.ziggeo.com/hc/en-us)
 [Introduction to VideoWall on our blog](http://blog.ziggeo.com/2016/06/13/videowall-the-best-way-to-easily-show-a-video-gallery-on-your-wordpress-based-website/)
+and
 [Introduction to showing videos from other post on our forum](https://support.ziggeo.com/hc/en-us/community/posts/212117427-VideoWall-parameters-introducing-new-changes)
 
 = Templates =
