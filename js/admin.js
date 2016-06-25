@@ -53,12 +53,17 @@ function ziggeo_templates_change(sel) {
     //Lets grab the parameter holders
     var wallParams = document.getElementById('ziggeo-wall-parameters');
     var embeddingParams = document.getElementById('ziggeo-embedding-parameters');
+
+    //videowall info
+    var wallInfo = document.getElementById('ziggeo_videowall_info');
+    wallInfo.style.display = 'none';
  
     //If it is video wall we want to show its parameters
     if(selected === '[ziggeovideowall'){
         editor.value = selected + ' ';
         wallParams.style.display = 'block';
         embeddingParams.style.display = 'none';
+        wallInfo.style.display = 'inline-block';
     }
     //otherwise lets show Ziggeo embedding parameters
     else {
@@ -301,10 +306,15 @@ function ziggeo_templates_manage(event) {
         var paramsWall = document.getElementById('ziggeo-wall-parameters');
         var paramsZiggeo = document.getElementById('ziggeo-embedding-parameters');
 
+        //videowall info
+        var wallInfo = document.getElementById('ziggeo_videowall_info');
+        wallInfo.style.display = 'none';
+
         if(templateBase === '[ziggeovideowall') {
             //show parameters for video wall
             paramsWall.style.display = 'block';
             paramsZiggeo.style.display = 'none';
+            wallInfo.style.display = 'inline-block';
         }
         else {
             //show ziggeo parameters
