@@ -169,6 +169,7 @@ function ziggeo_video_templates_text() {
 
         ?>
         <br><br>
+        <span id="ziggeo_videowall_info" class="ziggeo_info" style="display:none;">Video Wall template (by default) shows videos made on the post the videwall template is on. If you wish to change it to show other videos, just add <b onclick="ziggeo_parameters_quick_add({ currentTarget:this});" data-equal="=''">videos_to_show</b> and modify it to your needs</span>
 
         <?php //The actual template body that we will save ?>
         <textarea id="ziggeo_templates_editor" name="ziggeo_video[templates_editor]" rows="11" cols="50">[ziggeo </textarea>
@@ -469,7 +470,7 @@ function ziggeo_video_general_text() {
                     else{
                         ?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
                     }
-                }                               
+                }
             }
         ?>
         </select>
@@ -496,7 +497,7 @@ function ziggeo_video_general_text() {
                     else {
                         ?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php                                               
                     }
-                }                               
+                }
             }
         ?>
         </select>
