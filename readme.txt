@@ -345,11 +345,16 @@ To show videos you need to have videos on that specific page. This is done to al
 
 == Upgrade notice ==
 
-= 1.13 =
-* Introducing VideoWall template
+= 1.14 =
+* Added additional options to VideoWall templates
+* Made tests on latest WordPress version
 
 
 == Changelog ==
+
+= 1.14 =
+* Added option to show videos from different posts in a video wall
+* added option to show multiple types of videos (approved,rejected,pending) instead of single status.
 
 = 1.13 =
 * Fixed a small bug where additional spaces after template name would not allow you to delete/edit it easily
