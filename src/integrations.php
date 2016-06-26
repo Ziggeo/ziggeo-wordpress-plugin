@@ -9,14 +9,6 @@ defined('ABSPATH') or die();
 
 class ZiggeoIntegrations {
 
-//  + check how many integrations we have and list them
-//  +run each integration module to check if their base (plugin we are integrating to is installed and active)
-//      each module should implement this, base just calls it and does what is needed based on response - disables the plugin for example.
-//      run each integration module to check if they support current Ziggeo version or require some other version instead.
-//  run modules of active plugins to make them integrate into other plugins.
-//      run admin side
-//      run public side
-
     //location of where we keep the integration modules
     private $modulesPath = '';
     //holds php (module) file names without the extension. 
@@ -24,10 +16,13 @@ class ZiggeoIntegrations {
     //holds the integrations details that we use in the end
     private $integrations = null;
 
-    private function can_we_run_plugin($plugin) {
+    private function can_we_run_integration($plugin) {
         include_once($this->modulesPath . $plugin . '.php');
 
-        if($this->get_plugin_details($plugin)) {
+        if($this->get_integration_details($plugin)) {
+//TODO - move the checks from print function to here
+// we should be able to know if we should disable the integration prior to the actual print..
+// specifically the checks for the plugin the integration is into versions
             return true;
         }
 
@@ -137,7 +132,7 @@ class ZiggeoIntegrations {
         //We will be passing array internally to check all of the plugins. However it might be needed to check one specific instead.
         if( is_array($plugin) ) {
             foreach($plugin as $name) {
-                if($this->can_we_run_plugin($name)) {
+                if($this->can_we_run_integration($name)) {
                     $check[] = $name;
                 }
             }
@@ -145,7 +140,7 @@ class ZiggeoIntegrations {
 
         //Check only the plugin that was asked for..
         else {
-            if($this->can_we_run_plugin($name)){
+            if($this->can_we_run_integration($name)){
                $check[] = $name; 
             }
         }
@@ -153,7 +148,7 @@ class ZiggeoIntegrations {
         foreach($check as $name) {
             $f = 'ZiggeoIntegration_' . $name . '_checkbase';
 
-            $this->integrations[$name] = $this->get_plugin_details($name);
+            $this->integrations[$name] = $this->get_integration_details($name);
 
             //We are including the plugin.php so that we can run the is_plugin_active function..
             include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -170,9 +165,9 @@ class ZiggeoIntegrations {
     }
 
     //returns the details of each module
-    public function get_plugin_details($plugin) {
-        if(function_exists('ZiggeoIntegration_' . $plugin . '_details')) {
-            $f = 'ZiggeoIntegration_' . $plugin . '_details';
+    public function get_integration_details($integration) {
+        if(function_exists('ZiggeoIntegration_' . $integration . '_details')) {
+            $f = 'ZiggeoIntegration_' . $integration . '_details';
             return $f();
         }
 
@@ -187,6 +182,12 @@ class ZiggeoIntegrations {
 
         foreach($this->integrations as $integration => $details) {
             $bad = null;
+            $bad2 = null;
+
+            //We need to get this info to be able to compare everything..
+            $f = 'ZiggeoIntegration_' . $integration . '_getVersion';
+            $details['plugin_version'] = $f();
+
             ?>
             <li class="ziggeo_integrations_row">
                 <div class="ziggeo_integration_left">
@@ -196,12 +197,6 @@ class ZiggeoIntegrations {
                     <div class="integration">
                         <b>Integration for:</b> <strong><?php echo $details['plugin_name']; ?></strong> - you can get it from <a href="<?php echo $details['plugin_url']; ?>" target="_blank"><?php echo $details['plugin_url']; ?></a>
                         <br>
-                        <?php
-//@TODO - we will need to see if there is a way for us to get older versions as well as the newer versions of the plugin, so that we can know the exact versions to put in..
-//@TODO - add checks for
-//    'plugin_min'
-//    'plugin_max'
-                        ?>
                     </div>
                     <div class="author">
                         <b>Author:</b> <?php echo $details['author_name']; ?>
@@ -212,18 +207,27 @@ class ZiggeoIntegrations {
                                 <?php
                                 }
 
-                        if(version_compare(ZIGGEO_VERSION, $details['requires_min'], '<')) {
+                        //Checks to see if our plugin meets the minimal requirement of the version required by the integration itself
+                        if($details['requires_min'] === '') {
+                            //unknown minimum version..
+                        }
+                        elseif(version_compare(ZIGGEO_VERSION, $details['requires_min'], '<')) {
                             $bad = true;
                             ?>
-                            <b class="warning">Per Author: The version of the Ziggeo WordPress plugin you are using is not compatible with the required version for integration to work properly. Please upgrade the plugin to the latest (if you already are and get this message, do let us know)</b>
+                            <b class="warning">Per Author: The version of the Ziggeo WordPress plugin you are using is not compatible with the minimal required version for integration to work properly. Please upgrade the plugin to the latest (if you already did and still get this message, do let us know)</b>
+                            <?php
+                        }
+                        //if we are not able to get proper info, it is not bad, however not entirely good neither..
+                        elseif(!version_compare(ZIGGEO_VERSION, $details['requires_min'], '>=')) {
+                            $bad = true;
+                            ?>
+                            <b class="warning">We were unable to verify if the integration will work properly with your version of our plugin. If you experience any issues try disabling the same.</b>
                             <?php
                         }
 
-                        if($details['requires_max'] === '?') {
+                        //Does our plugin meet the maximum version requirement as well?
+                        if($details['requires_max'] === '') {
                             //unknown how high it is recommended, so it is likely that all is good
-                        }
-                        elseif($details['requires_max'] === '~') {
-                            //Should be working properly with the latest plugin version
                         }
                         elseif(version_compare(ZIGGEO_VERSION, $details['requires_max'], '>')) {
                             $bad = true;
@@ -231,15 +235,49 @@ class ZiggeoIntegrations {
                             <b class="warning">Per Author: The version of the Ziggeo WordPress plugin you are using is not compatible with the required version for integration to work properly. Please contact author to upgrade the integration</b>
                             <?php
                         }
-                        else {
+
+                        //Lets check what is happening with the plugin that the integration integrates to - does it meet the requirements as well
+
+                        //Is the plugin the integration is made into of proper minimal version?
+                        if($details['plugin_min'] === '') {
+                            //We do not have any details about this..
+                        }
+                        elseif(version_compare($details['plugin_version'], $details['plugin_min'], '<')) {
+                            $bad2 = true;
                             ?>
-                            <b class="message">Author did not specify the version of the plugin required to run the integration</b>
+                            <b class="warning">Per Author: The version of the <u><?php echo $details['plugin_name']; ?></u> WordPress plugin you are using is not compatible with the minimal required version for integration to work properly. Please upgrade the plugin to the latest (if you already did and are still getting this message, do let us know)</b>
+                            <?php
+                        }
+                        //if for some reason we can not make a valid check..
+                        elseif(!version_compare($details['plugin_version'], $details['plugin_min'], '>=')) {
+                            $bad = true;
+                            ?>
+                            <b class="warning">We were unable to verify if the integration will work properly with your version of <u><?php echo $details['plugin_name']; ?></u> plugin. If you experience any issues try disabling the same.</b>
                             <?php
                         }
 
+                        //If there is a top version of the plugin this integration can be used for, we should have it listed here..
+                        if($details['plugin_max'] === '') {
+                            //unknown how high it is recommended, so it is likely that all is good
+                        }
+                        elseif(version_compare($details['plugin_version'], $details['plugin_max'], '>')) {
+                            $bad2 = true;
+                            ?>
+                            <b class="warning">Per Author: The version of the <u><?php echo $details['plugin_name']; ?></u> WordPress plugin you are using is not compatible with the required version for integration to work properly. Please contact author to upgrade the integration</b>
+                            <?php
+                        }
+
+                        //If we did not hit any big obstacles, we should be all good to go for integration module -> our plugin
                         if($bad !== true) {
                             ?>
                             <b class="message">Per Author: The integration should work properly with your current version of our plugin</b>
+                            <?php
+                        }
+
+                        //If we did not hit any big obstacles, we should be all good to go for integration module -> some other plugin
+                        if($bad2 !== true) {
+                            ?>
+                            <b class="message">Per Author: The integration should work properly with your current version of <u><?php echo $details['plugin_name']; ?></u> plugin</b>
                             <?php
                         }
                         ?>
