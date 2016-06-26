@@ -13,6 +13,7 @@ defined('ABSPATH') or die();
 
 //While the functions are fast, this will get the string of the path the WP way and keep it saved so we can just reference it. * WP ver 2.8 and up     
 define('ZIGGEO_ROOT_PATH', plugin_dir_path(__FILE__) );
+define('ZIGGEO_INTEGRATIONS_PATH', ZIGGEO_ROOT_PATH . 'modules/');
 
 //Setting up the URL so that we can get/built on it later on from the plugin root
 define('ZIGGEO_ROOT_URL', plugins_url() . '/ziggeo/' );
@@ -38,6 +39,7 @@ include_once(ZIGGEO_ROOT_PATH . "src/settings.php");
 include_once(ZIGGEO_ROOT_PATH . "src/templates.php");
 include_once(ZIGGEO_ROOT_PATH . "src/file_parser.php");
 include_once(ZIGGEO_ROOT_PATH . "src/ziggeo_tinymce.php"); //to activate TinyMCE toolbar button
+include_once(ZIGGEO_ROOT_PATH . "src/integrations.php");
 
 //For a link to settings in plugins screen
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ziggeo_action_links');
