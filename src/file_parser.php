@@ -193,4 +193,34 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
         return file_get_contents($file, $content);
     }
 }
+
+//retireves all files in a folder and returns array with their names, without the ones mentioned in $ignore
+function ziggeo_file_get_all_in_dir($path, $ignore = array('.', '..', 'index.php'), $ignoreEnding = array('_class.php') ) {
+    $ret = @scandir($path); //need @ to avoid getting an error if no files are present or it fails to load them..
+
+    if($ret) {
+        //quick way to remove the ones that match the ignore list..
+        $ret = array_diff($ret, $ignore);
+        $newDiff = array();
+
+        if(is_array($ignoreEnding)) {
+            //manually checking them as well, so that we can remove any 'ends with' files as well..
+            foreach($ignoreEnding as $param) {
+                foreach($ret as &$file) {
+                    if(stripos($file, $param) > -1){
+                        $newDiff[] = $file;
+                    }
+                }
+            }
+        }
+
+        if(count($newDiff) > 0) {
+            $ret = array_diff($ret, $newDiff);
+        }
+
+        return $ret;
+    }
+
+    return false;
+}
 ?>
