@@ -352,6 +352,7 @@ function ziggeo_content_replace_templates($matches)
                 $wall['postID'] = get_the_ID();
 
                 //what kind of videos to show - defaults to approved ones
+
                 if(!isset($wall['show_videos'])) { $wall['show_videos'] = 'approved'; }
 
                 if(!isset($wall['on_no_videos'])) { $wall['on_no_videos'] = 'showmessage'; }
@@ -413,8 +414,7 @@ function ziggeo_content_replace_templates($matches)
                 }
 
                 ?>
-
-                <script type="text/javascript">
+                <script type="text/javascript" class="runMe">
                     <?php
                         //This helps us create js code that works as is and uses the variable data from these outputs instead of outputting the data into the code each time - and adding JS directly to the page.
                     ?>
@@ -430,7 +430,7 @@ function ziggeo_content_replace_templates($matches)
                         },
                         indexing: {
                             perPage: <?php echo $wall['videos_per_page']; ?>,
-                            status: '<?php echo $wall['show_videos']; ?>', //good to note that we should search using tags, by default, this is to fine tune the results that are matching the post ID tag.
+                            status: '<?php echo $wall['show_videos']; ?>', <?php //good to note that we should search using tags, by default, this is to fine tune the results that are matching the post ID tag. ?>
                             showPages: <?php echo ($wall['show_pages']) ? 'true' : 'false'; ?>,
                             slideWall: <?php echo ($wall['slide_wall']) ? 'true' : 'false'; ?>
                         },
@@ -441,7 +441,7 @@ function ziggeo_content_replace_templates($matches)
                             hideWall: <?php echo ($wall['hide_wall']) ? 'true' : 'false'; ?>
                         },
                         title: '<?php echo $wall['title']; ?>',
-                        tags: '<?php echo $wall_tags; ?>' //the tags to look the video by based on template setup
+                        tags: '<?php echo $wall_tags; ?>' <?php //the tags to look the video by based on template setup ?>
                     };
                 </script>
                 <?php
@@ -450,20 +450,20 @@ function ziggeo_content_replace_templates($matches)
                 if( !isset($wall['show']) ) {
                     //wait for video submission first
                     ?>
-                    <script type="text/javascript">
-                        //just to make sure that it is available
+                    <script type="text/javascript" class="runMe">
+                        <?php //just to make sure that it is available ?>
                         if(ZiggeoApi) {
                             ZiggeoApi.Events.on("submitted", function (data) {
                                 ziggeoShowVideoWall('<?php echo $wallID; ?>');
                             });
                         }
-                        //lets wait for a second and try again.
+                        <?php //lets wait for a second and try again. ?>
                         else {
                             setTimeout( function(){
                                 ZiggeoApi.Events.on("submitted", function (data) {
                                     ziggeoShowVideoWall('<?php echo $wallID; ?>');
                                 });
-                            }, 10000 ); //10 seconds should be enough for page to load and we do not need to have this set up right away.
+                            }, 10000 );<?php //10 seconds should be enough for page to load and we do not need to have this set up right away. ?>
                         }
                     </script>
                     <?php                    
@@ -471,7 +471,7 @@ function ziggeo_content_replace_templates($matches)
                 else {
                     //video wall must be shown right away..
                     ?>
-                    <script type="text/javascript">
+                    <script type="text/javascript" class="runMe">
                         jQuery(document).ready( function () {
                             ziggeoShowVideoWall('<?php echo $wallID; ?>');                            
                         });
@@ -564,14 +564,21 @@ function ziggeo_parameter_processing($requiredAtt, $process, $stripDuplicates = 
 //Function to search for parameters without "ziggeo-" and apply the same to them.
 function ziggeo_parameter_prep($data) {
 
+    if( stripos($data, '[ziggeovideowall') > -1 ) {
+        return $data; //might be best to return $data / template as is, if it is videowall..
+    }
+
     $tmp_str = explode(' ', $data);
     $tmp_str2 = '';
 
     foreach($tmp_str as $key => $value) {
         $value = trim($value);
-        if( $value !== '' && $value !== ']' && $value !== '""'&& $value !== '"'
-            && $value !== 'player' && $value !== 'recorder' && $value !== 'rerecorder') {
+        if( $value !== '' && $value !== '[' && $value !== '[ziggeo' && $value !== ']' && $value !== '""'&& $value !== '"'
+            && $value !== 'player' && $value !== 'recorder' && $value !== 'rerecorder' && $value !== '[ziggeovideowall') {
 
+//@TODO
+// 1. we need to detect if videowall is sent and ignore it, since it is not using the same parameters...
+// 2. make it understand that 'some text' are not actually 2 parameters..
             if( stripos($value, 'ziggeo-') > -1 ) {
                 //seems that ziggeo- prefix is already present.. should we do something then, or just skip it?
             }
