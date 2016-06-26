@@ -9,6 +9,7 @@
 //      details() - to retrieve all details about the integration module and is required.
 //      checkbase() - all code that is needed to check if the main plugin that we are integrating to is present and if needed to check version, etc.
 //      run() - called when needed per details() function and this should be the starting point of all code. Used to register hooks, etc.
+//      getVersion() - called when needed to get the version of the plugin that the integration integrates to - in this case version of Gravity Forms.
 //
 // It is good to know 2 things, v 1.14 is the first version of Ziggeo plugin that supports integrations and that if possible, _min values should be added for the validations to be made correctly if it can not work on lower versions.
 
@@ -44,6 +45,14 @@ function ZiggeoIntegration_GravityForms_run() {
     add_action( 'gform_loaded', array( 'ziggeo_integration_gravityforms_start', 'load' ), 5 );
 }
 
+//returns the version of the plugin that we integrate to.
+function ZiggeoIntegration_GravityForms_getVersion() {
+    if(class_exists('GFForms')) {
+        return GFForms::$version;
+    }
+
+    return 0;
+}
 
 class ziggeo_integration_gravityforms_start {
 
