@@ -4,7 +4,7 @@
     Plugin URI: https://ziggeo.com
     Description: Plugin for adding video posts and video comments
     Author: Ziggeo
-    Version: 1.14
+    Version: 1.15
     Author URI: https://ziggeo.com
     */
 
@@ -23,7 +23,7 @@ define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . '../ziggeo-userData/');
 define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
 
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
-define('ZIGGEO_VERSION', '1.14');
+define('ZIGGEO_VERSION', '1.15');
 
 //Best to state default code in one location, then just call for it when needed.
 //recorder

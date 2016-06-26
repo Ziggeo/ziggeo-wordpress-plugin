@@ -4,7 +4,7 @@ Donate link: https://ziggeo.com/
 Tags: video, comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
 Tested up to: 4.5.3
-Stable tag: 1.14
+Stable tag: 1.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -345,12 +345,17 @@ To show videos you need to have videos on that specific page. This is done to al
 
 == Upgrade notice ==
 
-= 1.14 =
-* Added additional options to VideoWall templates
-* Made tests on latest WordPress version
-
+= 1.15 =
+* Introducing - Integrations
+* Available Integration: GravityForms
 
 == Changelog ==
+
+= 1.15 =
+* Added option to have integrations to other plugins
+* New tab is added so you can easily manage the same
+* Added first integration - to Gravity Forms - by adding templates to your Gravity Forms form (per your setup)
+* Integrations structure allows you to easily create your own integration modules and activate them through the plugin settings
 
 = 1.14 =
 * Added option to show videos from different posts in a video wall
