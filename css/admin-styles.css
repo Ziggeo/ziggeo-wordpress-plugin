@@ -273,3 +273,10 @@
 #ziggeo-tab_integrations .form-table {
     display: none;
 }
+
+b.message, b.warning {
+    display: inline-block;
+}
+b.warning {
+    color: orangeRed;
+}
