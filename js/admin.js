@@ -432,3 +432,64 @@ function ziggeo_tinymce_set_position(searchFor) {
 
     return false;
 }
+
+//set the integration to disable
+function ziggeo_integration_status(strPlugin, strStatus) {
+    var toChange = document.getElementById('ziggeo_integration_change');
+
+    if(toChange) {
+        toChange.value = strPlugin+'='+strStatus;
+    }
+}
+
+function ziggeo_integration_gravityforms_admin_select(sel) {
+
+    var field = document.getElementById('field_settings').parentElement.id;
+    field = field.replace('field_', 'input_');
+
+    //Lets grab the element that we will update..
+    var elem = document.getElementById(field);
+
+    //It should be ziggeo element, but just in case, better not to change the wrong element, than to do so
+    if(elem)
+    {
+        elem.innerHTML = '<h3>Processing template</h3>'; //maybe replace this with graphical process bar
+
+        var template = sel.options[sel.selectedIndex].value;
+
+        //prep data to make ajax request
+        var ajax = { integration: 'GravityForms', template: template };
+        
+        //calling ajax request to get the right data..
+        ziggeo_integration_ajax(ajax, elem);
+    }
+    else {
+        console.log('seems that something went wrong here..');
+    }
+}
+
+//Function to call our AJAX handler and return a response as needed.
+// > data object - {action: functionToCall, valueName: 'valueValue'}
+function ziggeo_integration_ajax(data, inner) {
+
+    data.action = 'ziggeo_integrations';
+
+    if(data.integration === 'GravityForms') {
+        Setziggeo_template_settingSetting(data.template);
+    }
+
+    jQuery.post(ajaxurl, data, function(response) {
+        inner.innerHTML = response;
+        if(inner.getElementsByClassName('runMe'))
+        {
+            var el = inner.getElementsByClassName('runMe');
+            var scr = document.createElement('script');
+
+            for(i = 0, c = el.length; i < c; i++) {
+                var tmp = el[i].innerHTML.toString().replace(/(\n)+/g, ' ').replace(/  +/g, ' ');
+                scr.innerHTML += tmp;
+            }
+            document.body.appendChild(scr);
+        }
+    });
+}
