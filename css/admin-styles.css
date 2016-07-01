@@ -280,3 +280,14 @@ b.message, b.warning {
 b.warning {
     color: orangeRed;
 }
+
+    /* Gravity Forms specific CSS */
+    .ginput_container_ZiggeoVideo > .small {
+        width: 50%;
+    }
+    .ginput_container_ZiggeoVideo > .medium {
+        width: 75%;
+    }
+    .ginput_container_ZiggeoVideo > .large {
+        width: 100%;
+    }
