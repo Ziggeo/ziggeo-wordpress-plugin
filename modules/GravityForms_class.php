@@ -72,6 +72,52 @@ class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
         $tooltips['ziggeo_template_setting'] = '<h6>Ziggeo Templates</h6>Select the template in the dropdown best matching your requirements';
         return $tooltips;
     }
+
+    //Adding Ziggeo script if the preview is used
+    public function scripts() {
+        //Only if this is preview will we add a script to the head
+        if($this->is_preview()) {
+            $scripts = array(
+                array(
+                    'handle'  => 'ziggeo_sdk',
+                    'src'     => '//assets-cdn.ziggeo.com/v1-stable/ziggeo.js',
+                    'version' => $this->_version,
+                    'enqueue' => array(
+                        'field_types' => array('ZiggeoVideo')
+                    )
+                )
+            );
+
+            //return the combined scripts of the ones that did exist and the ones we added above
+            return array_merge( parent::scripts(), $scripts );
+        }
+
+        //we send back the existing ones to make sure that GravityForms is not showing any errors due to no output
+        return parent::scripts();;
+    }
+
+    //Adding Ziggeo CSS if the preview is used.
+    public function styles() {
+        //Lets check if we are in preview pages
+        if($this->is_preview()) {
+            //We are in the preview page
+            $styles = array(
+                array(
+                    'handle'  => 'ziggeo_sdk_style',
+                    'src'     => '//assets-cdn.ziggeo.com/v1-stable/ziggeo.css',
+                    'version' => $this->_version,
+                    'enqueue' => array(
+                        'field_types' => array('ZiggeoVideo')
+                    )
+                )
+            );
+
+            return array_merge( parent::styles(), $styles );            
+        }
+
+        //we send back the existing ones to make sure that GravityForms is not showing any errors due to no output
+        return parent::styles();
+    }
 }
 
 if(class_exists('GF_Field')){
