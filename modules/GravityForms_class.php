@@ -211,7 +211,7 @@ if(class_exists('GF_Field')){
             // Prepare the input tag for this field.
             $field = '<div class="ginput_container ginput_container_' . $this->type . '">';
             //we are adding id to div, so that it is available if needed for conditions and other things in GravityForms
-            $field .= '<div id="' . $field_id . '" class="' . $class . '" ' . $tabindex . ' ' . $logic_event . ' ' . $placeholder_attribute . ' ' . $required_attribute . ' ' . $invalid_attribute . ' ' . $disabled_text . '>';
+            $field .= '<div id="' . $field_id . '" class="' . $class . '" ' . $tabindex . ' ' . $logic_event . ' ' . $placeholder_attribute . ' ' . $invalid_attribute . ' ' . $disabled_text . '>';
 
                 //Loads the template based on the selection in our dropdown..
                 $tmp = ziggeo_content_replace_templates(array($this->ziggeo_template_setting, $this->ziggeo_template_setting));
@@ -226,8 +226,9 @@ if(class_exists('GF_Field')){
 
                 // We include the prepared $tmp into the field.
                 $field .= $tmp;
+
                 //the input field ID is changed so that there is just one ID field.
-                $field .= '<input id="input_' . $id . '_field" name="input_' . $id . '" type="hidden" value="' . $videoToken . '">';
+                $field .= '<input id="input_' . $id . '_field" name="input_' . $id . '" type="hidden" value="' . $videoToken . '" ' . $required_attribute . ' >';
                 
                 $field .= '<script type="text/javascript">' .
                                 'ZiggeoApi.Events.on("submitted", function (data) {' .
@@ -237,6 +238,8 @@ if(class_exists('GF_Field')){
                                 '});' .
                             '</script>';
             $field .= '</div></div>';
+
+            //@NOTE: The embedding will keep its value on refresh unless it is a cold refresh - while this is default browser behaviour, it is good to point it out in case someone has any issues with the same. I presume that at that time we could output a JS function as well that clears the fields out, otherwise since fields are hidden people will not be able to clear them out manually.
 
             return $field;
         }
