@@ -9,8 +9,8 @@ class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
 	protected $_slug = 'ziggeogravityforms';
 	protected $_path = 'ziggeo/modules/GravityForms.php';
 	protected $_full_path = __FILE__;
-	protected $_title = 'Ziggeo Video Aid';
-	protected $_short_title = 'Ziggeo Video Aid';
+	protected $_title = 'Ziggeo Video Field';
+	protected $_short_title = 'Ziggeo Video Field';
 
     private static $_instance = null;
 
@@ -127,7 +127,7 @@ if(class_exists('GF_Field')){
 
         //Field title
         public function get_form_editor_field_title() {
-            return 'Ziggeo Video Aid';
+            return 'Ziggeo Video Field';
         }
 
         //Making the field shown under Advanced fields option
