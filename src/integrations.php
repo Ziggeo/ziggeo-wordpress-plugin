@@ -17,6 +17,7 @@ class ZiggeoIntegrations {
     private $integrations = null;
 
     //comparison values
+    private $_NOT_AVAILABLE = -1;
     private $_BAD = 0;
     private $_OK = 1;
     private $_GOOD = 2;
@@ -166,6 +167,7 @@ class ZiggeoIntegrations {
             else {
                 //this one can not be active
                 $this->integrations[$name]['active'] = false;
+                $this->integrations[$name]['comparison'] = $this->_NOT_AVAILABLE;
             }
         }
     }
@@ -188,79 +190,81 @@ class ZiggeoIntegrations {
                 $data['comparison'] = array( 'base' => '', 'into' => '' );
             }
 
-            $min = $this->_GOOD;
-            $max = $this->_GOOD;
+            if($data['comparison'] !== $this->_NOT_AVAILABLE) {
+                $min = $this->_GOOD;
+                $max = $this->_GOOD;
 
-            //-checks against our plugin verion-
+                //-checks against our plugin verion-
 
-            //min checks
-            if($data['requires_min'] === '') {
-                $min = $this->_OK;
-            }
-            //its less than what its needed..
-            elseif(version_compare(ZIGGEO_VERSION, $data['requires_min'], '<')) {
-                $min = $this->_BAD;
-            }
-            //if we are not able to get proper info, it is not bad, however not entirely good neither..
-            elseif(!version_compare(ZIGGEO_VERSION, $data['requires_min'], '>=')) {
-                $min = $this->_OK;
-            }
+                //min checks
+                if($data['requires_min'] === '') {
+                    $min = $this->_OK;
+                }
+                //its less than what its needed..
+                elseif(version_compare(ZIGGEO_VERSION, $data['requires_min'], '<')) {
+                    $min = $this->_BAD;
+                }
+                //if we are not able to get proper info, it is not bad, however not entirely good neither..
+                elseif(!version_compare(ZIGGEO_VERSION, $data['requires_min'], '>=')) {
+                    $min = $this->_OK;
+                }
 
-            //max checks
-            if($data['requires_max'] === '') {
-                $max = $this->_OK;
-            }
-            //its less than what its needed..
-            elseif(version_compare(ZIGGEO_VERSION, $data['requires_max'], '>')) {
-                $max = $this->_BAD;
-            }
+                //max checks
+                if($data['requires_max'] === '') {
+                    $max = $this->_OK;
+                }
+                //its less than what its needed..
+                elseif(version_compare(ZIGGEO_VERSION, $data['requires_max'], '>')) {
+                    $max = $this->_BAD;
+                }
 
-            //if either is bad, we want to disable the integration..
-            if($min === $this->_BAD || $max === $this->_BAD) {
-                $data['active'] = false;
-            }
+                //if either is bad, we want to disable the integration..
+                if($min === $this->_BAD || $max === $this->_BAD) {
+                    $data['active'] = false;
+                }
 
-            //save the data so that we do not need to check it again later.
-            $data['comparison']['base'] = array( 'min' => $min, 'max' => $max );
+                //save the data so that we do not need to check it again later.
+                $data['comparison']['base'] = array( 'min' => $min, 'max' => $max );
 
-            //-checks against the plugin the integration is for-
+                //-checks against the plugin the integration is for-
 
-            $min = $this->_GOOD;
-            $max = $this->_GOOD;
+                $min = $this->_GOOD;
+                $max = $this->_GOOD;
 
-            //get the plugin integrating to version
-            $f = 'ZiggeoIntegration_' . $integration . '_getVersion';
-            $data['plugin_version'] = $f();
+                //get the plugin integrating to version
+                $f = 'ZiggeoIntegration_' . $integration . '_getVersion';
+                $data['plugin_version'] = $f();
 
-            //min checks
-            if($data['requires_min'] === '') {
-                $min = $this->_OK;
-            }
-            //its less than what its needed..
-            elseif(version_compare($data['plugin_version'], $data['plugin_min'], '<')) {
-                $min = $this->_BAD;
-            }
-            //if we are not able to get proper info, it is not bad, however not entirely good neither..
-            elseif(!version_compare($data['plugin_version'], $data['plugin_min'], '>=')) {
-                $min = $this->_OK;
-            }
+                //min checks
+                if($data['requires_min'] === '') {
+                    $min = $this->_OK;
+                }
+                //its less than what its needed..
+                elseif(version_compare($data['plugin_version'], $data['plugin_min'], '<')) {
+                    $min = $this->_BAD;
+                }
+                //if we are not able to get proper info, it is not bad, however not entirely good neither..
+                elseif(!version_compare($data['plugin_version'], $data['plugin_min'], '>=')) {
+                    $min = $this->_OK;
+                }
 
-            //max checks
-            if($data['plugin_max'] === '') {
-                $max = $this->_OK;
-            }
-            //its less than what its needed..
-            elseif(version_compare($data['plugin_version'], $data['plugin_max'], '>')) {
-                $max = $this->_BAD;
-            }
-            
-            //if either is bad, we want to disable the integration..
-            if($min === $this->_BAD || $max === $this->_BAD) {
-                $data['active'] = false;
-            }
+                //max checks
+                if($data['plugin_max'] === '') {
+                    $max = $this->_OK;
+                }
+                //its less than what its needed..
+                elseif(version_compare($data['plugin_version'], $data['plugin_max'], '>')) {
+                    $max = $this->_BAD;
+                }
+                
+                //if either is bad, we want to disable the integration..
+                if($min === $this->_BAD || $max === $this->_BAD) {
+                    $data['active'] = false;
+                }
 
-            //save the data so that we do not need to check it again later.
-            $data['comparison']['into'] = array( 'min' => $min, 'max' => $max );
+                //save the data so that we do not need to check it again later.
+                $data['comparison']['into'] = array( 'min' => $min, 'max' => $max );
+            }
         }
     }
 
@@ -319,6 +323,7 @@ class ZiggeoIntegrations {
                             <b class="warning">Per Author: The version of the Ziggeo WordPress plugin you are using is not compatible with the required version for integration to work properly. Please contact author to upgrade the integration</b>
                             <?php
                         }
+                        
 
                         //Lets check what is happening with the plugin that the integration integrates to - does it meet the requirements as well
 
@@ -331,7 +336,7 @@ class ZiggeoIntegrations {
                         }
                         //if for some reason we can not make a valid check..
                         elseif($details['comparison']['into']['min'] === $this->_OK) {
-                            $bad = true;
+                            $bad2 = true;
                             ?>
                             <b class="warning">We were unable to verify if the integration will work properly with your version of <u><?php echo $details['plugin_name']; ?></u> plugin. If you experience any issues try disabling the same.</b>
                             <?php
@@ -349,6 +354,14 @@ class ZiggeoIntegrations {
                         if($bad !== true) {
                             ?>
                             <b class="message">Per Author: The integration should work properly with your current version of our plugin</b>
+                            <?php
+                        }
+
+                        //Is the plugin maybe not installed that we would integrate into? If it is, lets tell this
+                        if($details['comparison'] === $this->_NOT_AVAILABLE) {
+                            $bad2 = true;
+                            ?>
+                            <b class="message">Seems that your <u><?php echo $details['plugin_name']; ?></u> WordPress plugin is either not active, or you have not installed it yet. As such this integration is disabled.</b>
                             <?php
                         }
 
@@ -420,9 +433,9 @@ class ZiggeoIntegrations {
         //we only process the call if it has what we are expecting..
         if(isset($_POST, $_POST['action'])){
             //Later on we could add a hook here so if someone else makes the integration, we can allow them to use our AJAX as well..
-            
+
             $integration = $_POST['integration'];
-            
+
             switch($integration){
                 case 'GravityForms': {
                     $template = $_POST['template'];
@@ -433,7 +446,6 @@ class ZiggeoIntegrations {
                     break;
                 }
                 default: {
-                    
                 }
             }
         }
