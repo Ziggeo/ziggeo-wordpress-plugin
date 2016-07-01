@@ -20,11 +20,11 @@ function ZiggeoIntegration_GravityForms_details() {
     return array(
         'author_name'       => 'Ziggeo', //author name
         'author_url'        => 'https://ziggeo.com/', //link to author website
-        'requires_min'      => '1.14', //version of Ziggeo plugin required as minimum for this integration to work properly. (required)
+        'requires_min'      => '1.15', //version of Ziggeo plugin required as minimum for this integration to work properly. (required)
         'requires_max'      => '', //not known to not work with some version
         'plugin_name'       => 'Gravity Forms', //Name of the integration shown in Integrations tab (should be original plugin name as is)
         'plugin_url'        => 'http://www.gravityforms.com/', //URL to the plugin to be downloaded from.
-        'plugin_min'        => '1.5', //minimum version of the plugin this module integrates to (required) - GravityForms version in this case.
+        'plugin_min'        => '2.0', //minimum version of the plugin this module integrates to (required) - GravityForms version in this case.
         'plugin_max'        => '', //up to which version would module work upon which it should be disabled
         'screenshot_url'    => ZIGGEO_ROOT_URL . 'images/integrations/gravityforms.png', //URL to the screenshot of the plugin this module integrates to, to show it in Integrations tab
         'firesOn'           => 'both' //Where does the plugin fires on? "admin", "public" or "both" - so that we only run plugin where it is needed.
