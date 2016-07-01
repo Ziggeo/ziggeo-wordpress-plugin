@@ -132,7 +132,7 @@ if(class_exists('GF_Field')){
             return $script;
         }
         
-        //Handles field drawing on the form itself (in admin)
+        //Handles field drawing on the form itself (not in preview)
         public function get_field_input( $form, $value = '', $entry = null ) {
 
             $id              = absint( $this->id );
@@ -154,133 +154,45 @@ if(class_exists('GF_Field')){
             $class        = $size . $class_suffix . ' ' . $inputClass;
 
             // Prepare the other input attributes.
-            $tabindex              = $this->get_tabindex();
-            $logic_event           = ! $is_form_editor && ! $is_entry_detail ? $this->get_conditional_logic_event( 'keyup' ) : '';
-            $placeholder_attribute = $this->get_field_placeholder_attribute();
-            $required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
-            $invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
-            $disabled_text         = $is_form_editor ? 'disabled="disabled"' : '';
+            $tabindex               = $this->get_tabindex();
+            $logic_event            = !$is_form_editor && !$is_entry_detail ? $this->get_conditional_logic_event( 'keyup' ) : '';
+            $placeholder_attribute  = $this->get_field_placeholder_attribute();
+            $required_attribute     = $this->isRequired ? 'aria-required="true"' : '';
+            $invalid_attribute      = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
+            $disabled_text          = $is_form_editor ? 'disabled="disabled"' : '';
+            $ziggeo_embedding_id    = 'embedding_' . $id;
 
             // Prepare the input tag for this field.
             $field = '<div class="ginput_container ginput_container_' . $this->type . '">';
+            //we are adding id to div, so that it is available if needed for conditions and other things in GravityForms
             $field .= '<div id="' . $field_id . '" class="' . $class . '" ' . $tabindex . ' ' . $logic_event . ' ' . $placeholder_attribute . ' ' . $required_attribute . ' ' . $invalid_attribute . ' ' . $disabled_text . '>';
 
                 //Loads the template based on the selection in our dropdown..
-                $field .= ziggeo_content_replace_templates(array($this->ziggeo_template_setting, $this->ziggeo_template_setting));
+                $tmp = ziggeo_content_replace_templates(array($this->ziggeo_template_setting, $this->ziggeo_template_setting));
 
-                $field .= '<input id="input_' . $id . '" name="input_' . $id . '" type="hidden" value="' . $videoToken . '">';
+                if(strpos($tmp, 'ZiggeoWall') > -1) {
+                    //we have video wall, most likely we will not do anything with it..
+                }
+                else {
+                    //We now add the ID to the embedding so that we can have it fire up on the submitted event and fill out this field.. so if there are multiple ones on the form by any chance, we always update the one that the recording was made for..
+                    $tmp = add_replace_template_parameter_value($tmp, 'ziggeo-id', $ziggeo_embedding_id, 'replace');
+                }
+
+                // We include the prepared $tmp into the field.
+                $field .= $tmp;
+                //the input field ID is changed so that there is just one ID field.
+                $field .= '<input id="input_' . $id . '_field" name="input_' . $id . '" type="hidden" value="' . $videoToken . '">';
                 
+                $field .= '<script type="text/javascript">' .
+                                'ZiggeoApi.Events.on("submitted", function (data) {' .
+                                    'if(data.id && ( data.id === "' . $ziggeo_embedding_id . '" || data.id.indexOf("' . $ziggeo_embedding_id . '") > -1 ) ){' .
+                                        'document.getElementById("input_' . $id . '_field").value = data.video.token;' .
+                                    '} ' .
+                                '});' .
+                            '</script>';
             $field .= '</div></div>';
 
             return $field;
         }
     }
 }
-
-//Seems that we need this code as well otherwise it will not show up the field code on public or preview ;/
-add_filter( 'gform_field_input', 'ziggeoIntegrationGravityForms_public', 10, 5 );
-function ziggeoIntegrationGravityForms_public( $input, $field, $value, $lead_id, $form_id ) {
-
-    if($field->type === 'ZiggeoVideo' && !is_admin())
-    {
-        $id = absint( $field->id );
-        $is_entry_detail = false;
-        $is_form_editor  = false;
-
-        // Prepare the value of the input ID attribute.
-        $field_id = $form_id == 0 ? "input_$id" : 'input_' . $form_id . "_$id";
-
-        $videoToken = esc_attr( $value );
-
-        // Get the value of the inputClass property for the current field.
-        $inputClass = $field->inputClass;
-
-        // Prepare the input classes.
-        $size         = $field->size;
-        $class_suffix = $is_entry_detail ? '_admin' : '';
-        $class        = $size . $class_suffix . ' ' . $inputClass;
-
-        // Prepare the other input attributes.
-        $logic_event           = $field->conditionalLogic;
-        $placeholder_attribute = $field->placeholder;
-        $required_attribute    = $field->isRequired ? 'aria-required="true"' : '';
-        $invalid_attribute     = $field->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
-        $tabindex              = $field->get_tabindex();
-        $disabled_text         = $is_form_editor ? 'disabled="disabled"' : '';
-
-        // Prepare the input tag for this field.
-        $input = '<div class="ginput_container ginput_container_' . $field->type . '">';
-        $input .= '<div id="' . $field_id . '" class="' . $class . '" ' . $tabindex . ' ' . $logic_event . ' ' . $placeholder_attribute . ' ' . $required_attribute . ' ' . $invalid_attribute . ' ' . $disabled_text . '>';
-
-            //Loads the template based on the selection in our dropdown..
-            $input .= ziggeo_content_replace_templates(array($field->ziggeo_template_setting, $field->ziggeo_template_setting));
-
-            $input .= '<input id="input_' . $id . '" name="input_' . $id . '" type="hidden" value="' . $videoToken . '">';
-            
-        $input .= '</div></div>';
-/*
-        // Prepare the input tag for this field.
-        $input = '<div id="' . $field_id . '" class="' . $class . '" ' . $logic_event . ' ' . $placeholder_attribute . ' ' . $required_attribute . ' ' . $invalid_attribute . '>';
-            $input = '<ziggeo ';
-                if($videoToken !== '') {
-                    $input .= ' ziggeo-video="' . $videoToken . '"';                
-                }
-            $input .= '></ziggeo>';
-            $input .=   '<script type="text/javascript">
-                            ZiggeoApi.Events.on("submitted", function (data) {
-                                document.getElementById("input_' . $id . '").value = data.video.token;
-                            });
-                        </script>';
-            $input .= '<input id="input_' . $id . '" name="input_' . $id . '" type="hidden" value="' . $videoToken . '">';
-*/
-    }
-
-    return $input;
-}
-
-////////// ******** TEST TO SAVE THE SELECTED SETTINS - nothing gets called so far.
-
-/*
-add_filter( 'gform_save_field_value', 'save_field_value', 10, 4 );
-function save_field_value($value, $lead, $field, $form) {
-echo "\n<br>";
-echo 'save_field_value';
-echo "\n<br>";
-    var_dump($value2);
-    var_dump($lead);
-    var_dump($field);
-    var_dump($form);
-    die();
-}
-
-add_filter( 'gform_pre_form_settings_save', 'preform_settings_save', 10, 2 );
-function preform_settings_save($one, $two) {
-echo "\n<br>";
-echo 'preform_settings_save';
-echo "\n<br>";
-    var_dump($one, $two2);
-    exit;
-}
-
-add_filter( 'gform_form_settings', 'my_custom_form_setting', 10, 2 );
-function my_custom_form_setting( $settings, $form ) {
-echo "\n<br>";
-echo 'my_custom_form_setting';
-echo "\n<br>";
-    var_dump($settings2);
-    var_dump($form);
-?><script>alert('my_custom_form_setting');</script><?php
-    die();
-}
-
-add_filter( 'gform_get_input_value', 'decode_field', 10, 4 );
-function decode_field( $value, $entry, $field, $input_id ) {
-echo "\n<br>";
-echo 'save_field_value';
-echo "\n<br>";
-    var_dump($value2);
-    var_dump($entry);
-    var_dump($field);
-    var_dump($input_id);
-    die();
-}*/
