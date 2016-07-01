@@ -174,3 +174,50 @@ function ziggeo_template_params($id) {
 
     return false;
 }
+
+//adds, appends or replaces the current value set in the template
+// > embeddingString - the body of the template
+// > parameter - the parameter that we are after in the template
+// > value - new value to add / replace with
+// > action - do we want it to add to or replace the current value?
+// > connector - what are we using to connect the old and new parameter value (needed if action is 'append')
+function add_replace_template_parameter_value($embeddingString, $parameter, $value, $action = 'append', $connector = '+') {
+    //the parameter was already added to the template
+    if(stripos($embeddingString,$parameter) > -1) {
+        //the parameter was set before by the template, so we will add this one to it as well.
+        //get the location where our parameter starts
+        $start = stripos($embeddingString, $parameter . '=');
+        //get the end of the parameter value
+        $end = strpos($embeddingString, ' ', $start);
+        //the length of parameter
+        $len = strlen($parameter);
+
+        //lets get the current value
+        $current = substr($embeddingString, ($start+$len), ($end-$start-$len));
+
+        //It could have single or double quotes around it, while it does not need to (if it is bool type it would not even have = while int does not require quotes)
+        if(strpos($current, '=') > -1 ) {
+            //not a bool
+            //1. it can, however it does not need to have =
+            //2. it can, however id does not need to have ''
+            //3. it can, however id does not need to have ""
+            $current = str_replace(array('=', '"', "'"), '', $current);
+        }
+
+        //append the parameter to the previous one
+        if($action === 'append') {
+            $embeddingString = str_ireplace($current, $current . $connector . $value, $embeddingString);
+        }
+        //replace the previous value with the one sent..
+        else {
+            $embeddingString = str_ireplace($current, $value, $embeddingString);
+        }
+    }
+    //The parameter did not exist in the template before
+    else {
+        $replace = ' ' . $parameter . '="' . $value . '" ';
+        $firstSpace = strpos($embeddingString, ' ');
+        $embeddingString = substr($embeddingString, 0, $firstSpace) . $replace . substr($embeddingString, $firstSpace);
+    }
+    return $embeddingString;
+}

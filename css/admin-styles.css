@@ -197,3 +197,97 @@
     font-size: 2em;
     margin-bottom: 10px;
 }
+/* Integrations styles */
+.ziggeo_integrations_list {
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 10px;
+    width: 100%;
+}
+.ziggeo_integrations_row {
+    box-sizing: border-box;
+    height: 300px;
+    padding: 10px;
+    width: 100%;
+    margin: 0;
+    border-bottom: 4px groove gold;
+    border-top: 4px groove silver;
+}
+.ziggeo_integrations_row:nth-child(odd) {
+    background-image: linear-gradient(transparent, silver);
+}
+.ziggeo_integrations_row:nth-child(even) {
+    background-image: linear-gradient(silver, transparent);
+}
+.ziggeo_integrations_row:first-child {
+    border-top: none;
+}
+.ziggeo_integrations_row:last-child {
+    border-bottom: none;
+}
+.ziggeo_integration_left {
+    float: left;
+    width: 270px;
+}
+.ziggeo_integration_logo {
+    max-height: 256px;
+    max-width: 256px;
+}
+.ziggeo_integrations_right {
+    float: left;
+    width: calc(100% - 270px);
+}
+.ziggeo_integrations_right > div {
+    margin-bottom: 1em;
+}
+.integration > strong {
+    font-size: 1.2em;
+    font-style: italic;
+    text-shadow: 1px 1px 2px lightgray;
+}
+.ziggeo_integrations_row .integration_button {
+    background-image: linear-gradient(lightgray, transparent);
+    border: 1px solid gray;
+    border-radius: 4px;
+    box-sizing: border-box;
+    float: left;
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 20px;
+    text-align: center;
+    width: 100px;
+}
+.ziggeo_integrations_row .integration_button:hover {
+    background-image: linear-gradient(transparent, lightgray);
+}
+.ziggeo_integrations_row .integration_button.active {
+    background-image: linear-gradient(lime, transparent);
+    border: none transparent;
+}
+
+.ziggeo_integrations_row .integration_button.disabled {
+    background-image: linear-gradient(gray, silver);
+    border: none transparent;
+}
+#ziggeo-tab_integrations .form-table {
+    display: none;
+}
+
+b.message, b.warning {
+    display: inline-block;
+}
+b.warning {
+    color: orangeRed;
+}
+
+    /* Gravity Forms specific CSS */
+    .ginput_container_ZiggeoVideo > .small {
+        width: 50%;
+    }
+    .ginput_container_ZiggeoVideo > .medium {
+        width: 75%;
+    }
+    .ginput_container_ZiggeoVideo > .large {
+        width: 100%;
+    }

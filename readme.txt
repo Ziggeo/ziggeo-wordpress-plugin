@@ -4,7 +4,7 @@ Donate link: https://ziggeo.com/
 Tags: video, comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
 Requires at least: 3.0.1
 Tested up to: 4.5.3
-Stable tag: 1.14
+Stable tag: 1.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,8 +144,8 @@ As you do, your post will show the wall as per template setup, which means that 
 By default the video wall will show you the videos made on the specific post (the one it is on), however if you wish to show videos from other posts or that are not associated yet with your WordPress, you can do that as well through videos_to_show parameter.
 
 You can read more about Video Wall templates on the following useful links:
-[Help Center](https://support.ziggeo.com/hc/en-us)
 [Introduction to VideoWall on our blog](http://blog.ziggeo.com/2016/06/13/videowall-the-best-way-to-easily-show-a-video-gallery-on-your-wordpress-based-website/)
+and
 [Introduction to showing videos from other post on our forum](https://support.ziggeo.com/hc/en-us/community/posts/212117427-VideoWall-parameters-introducing-new-changes)
 
 = Templates =
@@ -317,40 +317,88 @@ If you are still not sure about how to resolve that, just let us know.
 
 To show videos you need to have videos on that specific page. This is done to allow you to show any videos from within your Ziggeo account that are specific to the post you are currently on. To show some videos, you can record your video in the post, or by recording it in the comments. All others that are added as video comments will be shown after new recording is made (to those that do it) or for all those that come to your page (depending on your setup).
 
+= How do we enable integrations? =
+
+This is done through your Integrations tab, however we do suggest checking out the *Integrations* tab above for more details specific to integrations.
+
 
 == Screenshots ==
 
 1. General tab
-2. Templates Tab
-3. Contact us tab
+2. Templates tab
+3. Integrations tab
+4. Contact us tab
 
 = Templates =
-4. Working with templates - nice layout of parameters and their description
-5. Working with templates - managing templates
-6. Working with templates - editing templates
-7. Working with templates - beta templates (if you are not on beta by default)
-8. Working with templates - videowall templates setup
-9. videowall (defaults - page numbers)
-10. videowall (defaults with slidewall turned on)
+5. Working with templates - nice layout of parameters and their description
+6. Working with templates - managing templates
+7. Working with templates - editing templates
+8. Working with templates - beta templates (if you are not on beta by default)
+9. Working with templates - videowall templates setup
+10. videowall (defaults - page numbers)
+11. videowall (defaults with slidewall turned on)
 
 = Global Defaults =
-11. Your old setup is now used as fallback
+12. Your old setup is now used as fallback
 
 = Comments =
-12. More options for comments.
+13. More options for comments.
 
 = Editing Post =
-13. TinyMCE button
+14. TinyMCE button
+
+= Integrations =
+15. Ziggeo Video Field in Gravity Forms builder
+16. Selecting template in Gravity Forms builder
+17. Saved result tokens from the form submission
+
+
+== Integrations ==
+
+Since version 1.15 the integrations are available. It is now rather easy to get the Ziggeo video and power of its API into various other plugins and make your goals easy to accomplish on your WordPress website.
+
+What integration means is that you can use our own created integrations or you could even create your own and if you want, share it with the others on our forum under [WordPress forum](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
+
+The way the integrations work is as follows:
+
+1. We make a quick check if the integration could work based on the required details given in the code of each integration module
+2. If it can work we give you the option of making it active or disabling it - so the entire code module for integration only fires if you want it
+3. what happens when integration is active is all up to the integration itself
+
+As a first integration, we are introducing *Gravity Forms* integration. You will of course need the Gravity Forms installed on your system and our tests have been made with version 2.0 to version 2.0.2. It uses the latest recommended code and as such should work properly for many new versions to come (as is) and we will keep it updated.
+
+It allows you to add any template that you have created to your Gravity Form.
+
+So in just a few clicks, you can turn your Gravity Form into a form accepting videos, or a Gravity Form with video gallery, all up to you!
+
+= Integrations FAQ =
+*Q:* What happens to Ziggeo form fields if Gravity Forms integration is disabled at a later time?
+*A:* If you disable the integration, you will be stopping it from working, and as such it would show only the parts created by Gravity Forms - such as form label. Everything else will no longer be shown, on admin, in preview nor on publick side.
+
+*Q:* Can we create our own integrations?
+*A:* Sure! Just let us know on our forum [under WordPress plugin topic](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin). and we would be happy to help you get started. It is also a place where we will be posting the steps on how to do it soon as well.
+
+*Q:* How do we add Ziggeo Video Field to our Gravity Form?
+*A:* To do it, you should open a form in the Gravity Forms builder. Once you do, open the `Advanced fields` section and you should see the *Ziggeo Video Field* in the same.
+
+*Q:* Can we give you our feedback?
+*A:* Of course! We welcome all feedback and suggestions, that is how we got to here, so do share with us your thoughts.
+
 
 
 == Upgrade notice ==
 
-= 1.14 =
-* Added additional options to VideoWall templates
-* Made tests on latest WordPress version
-
+= 1.15 =
+* Introducing - Integrations
+* Available Integration: GravityForms
 
 == Changelog ==
+
+= 1.15 =
+* Added option to have integrations to other plugins
+* New tab is added so you can easily manage the integration modules
+* Added first integration - to Gravity Forms - by adding templates to your Gravity Forms form (per your setup)
+* Integrations structure allows you to easily create your own integration modules and activate them through the plugin settings
 
 = 1.14 =
 * Added option to show videos from different posts in a video wall

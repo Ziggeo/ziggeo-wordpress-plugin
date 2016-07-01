@@ -11,11 +11,17 @@ function ziggeo_admin_init() {
     add_settings_section('ziggeo_video_tabss', '', 'ziggeo_video_tabss_html', 'ziggeo_video'); //for styling purposes start
     add_settings_section('ziggeo_video_templates', '', 'ziggeo_video_templates_text', 'ziggeo_video'); //templates tab
     add_settings_section('ziggeo_video_main', '', 'ziggeo_video_general_text', 'ziggeo_video'); //general tab
+    add_settings_section('ziggeo_video_integrations', '', 'ziggeo_video_integrations_text', 'ziggeo_video'); //integrations tab
     add_settings_section('ziggeo_video_contact', '', 'ziggeo_video_contact_text', 'ziggeo_video'); //contact us tab
     add_settings_section('ziggeo_video_tabse', '', 'ziggeo_video_tabse_html', 'ziggeo_video'); //for styling purposes end
 
     //Add sections settings
     //----------------------
+        //Templates section
+        add_settings_field('ziggeo_templates_id', 'Template ID', 'ziggeo_templates_id_string', 'ziggeo_video', 'ziggeo_video_templates');
+        add_settings_field('ziggeo_templates_manager', 'Manage your templates', 'ziggeo_templates_manager_string', 'ziggeo_video', 'ziggeo_video_templates');
+        add_settings_field('ziggeo_templates_editor', 'Template Editor', 'ziggeo_templates_editor_string', 'ziggeo_video', 'ziggeo_video_templates');
+
         //General section
         add_settings_field('ziggeo_app_token', 'Ziggeo API Token', 'ziggeo_app_token_setting_string', 'ziggeo_video', 'ziggeo_video_main');
         add_settings_field('ziggeo_showVideoAidButton', 'Show "Ziggeo Video Aid" button in TinyMCE toolbar', 'ziggeo_video_aid_string', 'ziggeo_video', 'ziggeo_video_main');
@@ -30,10 +36,8 @@ function ziggeo_admin_init() {
             add_settings_field('ziggeo_player_config', 'Ziggeo Player Config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
             add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
 
-        //Templates section
-        add_settings_field('ziggeo_templates_id', 'Template ID', 'ziggeo_templates_id_string', 'ziggeo_video', 'ziggeo_video_templates');
-        add_settings_field('ziggeo_templates_manager', 'Manage your templates', 'ziggeo_templates_manager_string', 'ziggeo_video', 'ziggeo_video_templates');
-        add_settings_field('ziggeo_templates_editor', 'Template Editor', 'ziggeo_templates_editor_string', 'ziggeo_video', 'ziggeo_video_templates');
+        //Integrations tab
+        add_settings_field('ziggeo_integration_change', '', 'ziggeo_integration_change_text', 'ziggeo_video', 'ziggeo_video_integrations');
 
         //Contact us section
         add_settings_field('ziggeo_contact_ziggeo', 'Contact Us on our platform', 'ziggeo_contact_ziggeo_string', 'ziggeo_video', 'ziggeo_video_contact');
@@ -58,6 +62,7 @@ function ziggeo_video_tabss_html() {
     <br>
     <span id="ziggeo-tab_id_templates" class="ziggeo-tabName" style="border-top-left-radius: 8px;" onclick="ziggeo_changeTab('templates');">Templates</span>
     <span id="ziggeo-tab_id_general" class="ziggeo-tabName selected" onclick="ziggeo_changeTab('general');">General</span>
+    <span id="ziggeo-tab_id_integrations" class="ziggeo-tabName" onclick="ziggeo_changeTab('integrations');">Integrations</span>
     <span id="ziggeo-tab_id_contact" class="ziggeo-tabName" style="border-top-right-radius: 8px;" onclick="ziggeo_changeTab('contact');">Contact us</span>
     <?php
 
@@ -550,6 +555,33 @@ function ziggeo_video_general_text() {
 
 
 
+// - INTEGRATIONS - tab fields functions
+//-------------------------------------
+
+//Function to show the integrations frame
+function ziggeo_video_integrations_text() {
+    //First, we end the previous tab..
+    ?>
+    </div>
+    <div class="ziggeo-frame" style="display: none;" id="ziggeo-tab_integrations">
+        <p>A place where you can connect your Ziggeo plugin with different plugins you use in your WordPress website.</p>
+        <p>Have something you want to see here and it is not yet shown? Let us know!</p>
+    <?php
+
+    global $ziggeoIntegration;
+    $ziggeoIntegration->print_integration_details();
+}
+
+    function ziggeo_integration_change_text() {
+        ?>
+        <div style="display:none;">
+            <input id="ziggeo_integration_change" value="" name="ziggeo_video[integration_change]">
+        </div>
+        <?php
+    }
+
+
+
 // - CONTACT US - tab fields functions
 //-------------------------------------
 
@@ -595,7 +627,9 @@ function ziggeo_video_validate($input) {
         //templates tab
             'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
         //general tab
-            'token' => true, 'showVideoAidButton' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true
+            'token' => true, 'showVideoAidButton' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
+        //integrations tab
+            'integrations'
     );
 
     $showFeedbackThankYou = false;
@@ -649,6 +683,24 @@ function ziggeo_video_validate($input) {
     }
     elseif( ( isset($input['disable_video_comments']) && !empty($input['disable_video_comments']) ) || ( isset($input['disable_text_comments']) && !empty($input['disable_text_comments']) ) ) {
         unset($options['video_and_text']);
+    }
+
+    //integrations..
+    if(isset($input['integration_change'])) {
+        //the call was made to change the status of some integration..
+        $details = explode('=', $input['integration_change']);
+
+        if(isset($options['integrations'], $options['integrations'][$details[0]])) {
+            $options['integrations'][$details[0]]['active'] = ($details[1] === 'disable') ? false : true;
+        }
+        else {
+            //seems that it was not set up so far, lets set it up..
+            if(!isset($options['integrations'])) {
+                $options['integrations'] = array();
+            }
+            //lets add integration..
+            $options['integrations'][$details[0]] = array('active' => ($details[1] === 'disable') ? false : true );
+        }
     }
 
     //From this point on, we should not use $input, only $options
