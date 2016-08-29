@@ -63,6 +63,18 @@ function ziggeo_integration_bbPress_start() {
 function ziggeo_bbPress_add_button($buttons) {
     //on admin side we already have the record button present for forum, topic and reply creation. As such we only need it on public side..
     if(is_admin()) { return $buttons; }
+
+    //Lets get details of the current user to use them in tags
+    $current_user = wp_get_current_user();
+
+    //If a guest was to record a reply, we still want to add the comments tag, but it seems nice to indicate that that was done by some guest instead of not having that tag - which makes it look like it is missing.
+    if(empty($current_user->user_login)) {
+        $curent_username = 'guest';
+    }
+    else {
+        $curent_username = $current_user->user_login;
+    }
+
     ?>
     <div class="wp-media-buttons">
     </div>
