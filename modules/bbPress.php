@@ -76,7 +76,7 @@ function ziggeo_bbPress_add_button($buttons) {
     }
 
     ?>
-    <div class="wp-media-buttons">
+    <div class="wp-media-buttons ziggeo-rem">
     </div>
     <br style="clear:both;" id="record_video">
     <script type="text/template" id="ziggeo-insert-button-template">
@@ -89,7 +89,7 @@ function ziggeo_bbPress_add_button($buttons) {
         <a href="#record_video" id="accept-ziggeo-button" class="button" title="Accept Video" style="display: none">
             <span class="dashicons dashicons-yes"></span> Accept Video
         </a>
-        <div id="ziggeo-bbPress-video-recorder"></div>
+        <div id="ziggeo-bbPress-video-recorder" style="display:none;"></div>
     </script>
 
     <script type="text/template" id="ziggeo-recorder-template">
@@ -107,6 +107,10 @@ function ziggeo_bbPress_add_button($buttons) {
 
     <script>
         jQuery(document).on("ready", function () {
+            if(jQuery(".wp-media-buttons").length > 1) {
+                //remove the ones we added manually..as they will have .ziggeo-rem as well.
+                jQuery(".wp-media-buttons.ziggeo-rem").remove();
+            }
             jQuery(".wp-media-buttons").prepend(jQuery("#ziggeo-insert-button-template").html());
             var editor_elements = [".wp-editor-tabs", ".wp-editor-container", "#post-status-info tr", "#insert-media-button"];
             var video_mode = false;
@@ -120,6 +124,7 @@ function ziggeo_bbPress_add_button($buttons) {
                 }
                 jQuery("#revert-ziggeo-button").css("display", "");
                 jQuery("#accept-ziggeo-button").css("display", "none");
+                jQuery("#ziggeo-bbPress-video-recorder").css("display", "block");
                 jQuery("#ziggeo-bbPress-video-recorder").append(jQuery("#ziggeo-recorder-template").html());
             });
             jQuery("#revert-ziggeo-button").on("click", function () {
@@ -130,6 +135,7 @@ function ziggeo_bbPress_add_button($buttons) {
                 }
                 jQuery("#revert-ziggeo-button").css("display", "none");
                 jQuery("#accept-ziggeo-button").css("display", "none");
+                jQuery("#ziggeo-bbPress-video-recorder").css("display", "none");
                 jQuery("#ziggeo-recorder").remove();
             });
             jQuery("#accept-ziggeo-button").on("click", function () {
@@ -140,6 +146,7 @@ function ziggeo_bbPress_add_button($buttons) {
                 }
                 jQuery("#revert-ziggeo-button").css("display", "none");
                 jQuery("#accept-ziggeo-button").css("display", "none");
+                jQuery("#ziggeo-bbPress-video-recorder").css("display", "none");
                 jQuery("#ziggeo-recorder").remove();
             });
             ZiggeoApi.Events.on("submitted", function (data) {
@@ -155,6 +162,7 @@ function ziggeo_bbPress_add_button($buttons) {
                 jQuery( elem ).val(jQuery( elem ).val() + "\n[ziggeo video=" + data.video.token + "]\n\n");
                 jQuery("#revert-ziggeo-button").css("display", "none");
                 jQuery("#accept-ziggeo-button").css("display", "");
+                jQuery("#ziggeo-bbPress-video-recorder").css("display", "none");
             });
         });
     </script>
