@@ -319,7 +319,7 @@ To show videos you need to have videos on that specific page. This is done to al
 
 = How do we enable integrations? =
 
-This is done through your Integrations tab, however we do suggest checking out the *Integrations* tab above for more details specific to integrations.
+This is done through your Integrations tab, however we do suggest checking out the *Other Notes* tab above for more details specific to integrations.
 
 
 == Screenshots ==

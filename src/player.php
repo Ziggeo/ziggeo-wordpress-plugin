@@ -555,8 +555,9 @@ function ziggeo_parameter_processing($requiredAtt, $process, $stripDuplicates = 
     }
 
     //Seems that if customers use "" within the visual editor, it will change quote to &#8221; and &#8243; so lets clean that up..
-    $processed = str_replace( array('&#8221;', '&#8243;'), '"', $processed);
-    $processed = str_replace( array('&#8217;', '&#8242;'), "'", $processed);
+    $processed = str_replace( array('&#8220;', '&#8221;', '&#8243;'), '"', $processed);
+    $processed = str_replace( array('&#8216;','&#8217;', '&#8242;'), "'", $processed);
+    //Thank you Jay for catching the additional quotes
 
     return $processed;
 }
