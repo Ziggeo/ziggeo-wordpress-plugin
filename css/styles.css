@@ -105,11 +105,11 @@
     margin: 20px;
 }
 /* Hides all pages - otherwise you would have no paging.. */
-.ziggeo_wallpage {
+.ziggeo-wall-showPages .ziggeo_wallpage, .ziggeo-wall-slideWall .ziggeo_wallpage {
     display: none;
 }
 /* Display only the first page holding videos */
-.ziggeo_wallpage:nth-child(2) {
+.ziggeo-wall-showPages .ziggeo_wallpage:nth-child(2), .ziggeo-wall-slideWall .ziggeo_wallpage {
     display: block;
 }
 br.clear {
@@ -140,7 +140,7 @@ br.clear {
     background-image: linear-gradient(210deg, green, lime);
 }
 /* Slide wall styles */
-.ziggeo_wallpage {
+.ziggeo-wall-slideWall .ziggeo_wallpage {
     position: relative;
 }
 /* base properties for both previous and next arrows */
@@ -178,4 +178,20 @@ br.clear {
 /* the styles that are applied when mouse is over the slidewall next button */
 .ziggeo_videowall_slide_next:hover {
     box-shadow: 3px 0 4px lightGray;
+}
+
+/* endless scroll chessboard grid implementation */
+.ziggeo-wall-chessboardGrid ziggeo, .ziggeo-wall-mosaicGrid ziggeo {
+    display: inline-block;
+    margin: 5px;
+}
+#ziggeo-endless-loading_more {
+    display: none;
+}
+.ziggeo-wall-chessboardGrid .ziggeo_wallpage, .ziggeo-wall-mosaicGrid .ziggeo_wallpage {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    clear:both;
 }

@@ -23,7 +23,7 @@ function ziggeo_content_replace($matches) {
             $tagname = "ziggeoplayer";
         }
         $config = isset($options, $options["player_config"]) ? $options["player_config"] : $default; 
-        
+
         return "<" . $tagname . " ba-theme='modern' " . $config . " ziggeo-video='" . $video_token . "'></" . $tagname . ">";
     } else {
         $config = isset($options, $options["recorder_config"]) ? $options["recorder_config"] : $default;
@@ -285,7 +285,7 @@ function ziggeo_content_replace_templates($matches)
                 //Since there could be several walls on the same page, it would be best to create some random id that will help distinguish the x from y
                 $wallID = 'ziggeo_video_wall' . rand(2,4) . str_replace(array(' ', '.'), '', microtime()) . rand(0,5); ///ziggeo_video_wall0363734001464901560
 
-                $ret = '<div id="' . $wallID . '" class="ziggeo_videoWall" ';
+                $ret = '<div id="' . $wallID . '" class="ziggeo_videoWall" '; //we add later the type of wall as a class as well
 
                 $wall = ziggeo_wall_parameter_values($template);
 
@@ -331,18 +331,49 @@ function ziggeo_content_replace_templates($matches)
                 }
 
                 //show_pages is default, so if slide_wall is set, it will be used over show_pages
-                if(!isset($wall['slide_wall'])) {
-                    $wall['show_pages'] = true; //regardless if it is mentioned or not since this is default
-                    $wall['slide_wall'] = false; //regardless if it is mentioned or not since this is default
+                if(isset($wall['slide_wall'])) {
+                    $wall['slide_wall'] = true;
+
+                    //we disable the rest
+                    $wall['show_pages'] = false;
+                    $wall['chessboard_grid'] = false;
+                    $wall['mosaic_grid'] = false;
+
+                    //videos per page
+                    if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 1; }
+                }
+                elseif(isset($wall['chessboard_grid'])) {
+                    $wall['chessboard_grid'] = true;
+
+                    //we disable the rest
+                    $wall['show_pages'] = false;
+                    $wall['slide_wall'] = false;
+                    $wall['mosaic_grid'] = false;
+
+                    //videos per page
+                    if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 20; }
+                }
+                elseif(isset($wall['mosaic_grid'])) {
+                    $wall['mosaic_grid'] = true;
+
+                    //we disable the rest
+                    $wall['show_pages'] = false;
+                    $wall['slide_wall'] = false;
+                    $wall['chessboard_grid'] = false;
+
+                    //videos per page
+                    if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 20; }
+                }
+                else {
+                    $wall['show_pages'] = true;
+
+                    //we disable the rest
+                    $wall['slide_wall'] = false;
+                    $wall['chessboard_grid'] = false;
+                    $wall['mosaic_grid'] = false;
 
                     //videos per page
                     if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 2; }
-                }
-                else {
-                    $wall['show_pages'] = false; //since the slide_wall was set, we turn off the show pages.
-                    $wall['slide_wall'] = true; //since the slide_wall was set, we turn off the show pages.
-
-                    if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 1; }
                 }
 
                 //getting the defaults:
@@ -440,7 +471,9 @@ function ziggeo_content_replace_templates($matches)
                             perPage: <?php echo $wall['videos_per_page']; ?>,
                             status: '<?php echo $wall['show_videos']; ?>', <?php //good to note that we should search using tags, by default, this is to fine tune the results that are matching the post ID tag. ?>
                             showPages: <?php echo ($wall['show_pages']) ? 'true' : 'false'; ?>,
-                            slideWall: <?php echo ($wall['slide_wall']) ? 'true' : 'false'; ?>
+                            slideWall: <?php echo ($wall['slide_wall']) ? 'true' : 'false'; ?>,
+                            chessboardGrid: <?php echo ($wall['chessboard_grid']) ? 'true' : 'false'; ?>,
+                            mosaicGrid: <?php echo ($wall['mosaic_grid']) ? 'true' : 'false'; ?>
                         },
                         onNoVideos: {
                             showTemplate: <?php echo ($wall['on_no_videos'] === 'showtemplate') ? 'true' : 'false'; ?>,

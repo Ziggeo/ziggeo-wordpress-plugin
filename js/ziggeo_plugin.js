@@ -1,7 +1,12 @@
 //in case there are multiple walls on the same page, we want to be sure not to cause issues. This should catch it and not declare the function again.                    
 if(typeof ziggeoShowVideoWall !== 'function') {                        
     //show video wall based on its ID
-    function ziggeoShowVideoWall(id) {
+    function ziggeoShowVideoWall(id, searchParams) {
+
+        if(searchParams === undefined || searchParams === "undefined" || searchParams === null || typeof(searchParams) != "string") {
+            searchParams = "";
+        }
+
         //reference to wall
         var wall = document.getElementById(id);
 
@@ -16,141 +21,51 @@ if(typeof ziggeoShowVideoWall !== 'function') {
             return false;
         }
 
-        //HTML output buffer
-        var html = '';
+        var wallClass = (ZiggeoWall[id].indexing.showPages) ? 'ziggeo-wall-showPages' : (
+            (ZiggeoWall[id].indexing.slideWall) ? 'ziggeo-wall-slideWall' : (
+                (ZiggeoWall[id].indexing.chessboardGrid) ? 'ziggeo-wall-chessboardGrid' : (
+                    (ZiggeoWall[id].indexing.mosaicGrid) ? 'ziggeo-wall-mosaicGrid' : ""
+                )
+            )
+        );
 
-        //set the video wall title
-        html += ZiggeoWall[id].title;
+        wall.className = "ziggeo_videoWall " + wallClass;
 
         //To show the page we must first index videos..
 
         //We are making it get 100 videos data per call
-        ZiggeoApi.Videos.index( 'limit=100&tags='+ZiggeoWall[id].tags, {
+        ZiggeoApi.Videos.index( 'limit=100&tags='+ZiggeoWall[id].tags + searchParams, {
             success: function (args, data) {
                 if(data.length > 0) {
                     //we got some videos back
                     //go through videos
 
-                    //number of videos per page currently
-                    var currentVideosPageCount = 0;
-                    //total number of videos that will be shown
-                    var usedVideos = 0;
-                    //What page are we on?
-                    var currentPage = 0;
-                    //did any videos match the checks while listing them - so that we do not place multiple pages since the count stays on 0
-                    var newPage = true;
+                    //if showPages or slideWall are true, then we use the original walls with pages
+                    if(ZiggeoWall[id].indexing.showPages || ZiggeoWall[id].indexing.slideWall) {
 
-                    for(i = 0, j = data.length, tmp=''; i < j; i++, tmp='') {
-                        
-                        var tmp_embedding = '<ziggeo ' +
-                                        ' ziggeo-width=' + ZiggeoWall[id].videos.width +
-                                        ' ziggeo-height=' + ZiggeoWall[id].videos.height +
-                                        ' ziggeo-video="' + data[i].token + '"' +
-                                        ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
-                                    '></ziggeo>';
+                        //HTML output buffer
+                        var html = '';
 
-                        //show all videos
-                        if(ZiggeoWall[id].indexing.status.indexOf('all') > -1 ) {
-                            tmp += tmp_embedding;
-                            usedVideos++;
-                            currentVideosPageCount++;
-                            data[i] = null;//so that it is not used by other ifs..
-                        }
-                        //show only rejected videos
-                        if(ZiggeoWall[id].indexing.status.indexOf('rejected') > -1 ) {
-                           if(data[i] !== null && data[i].approved === false) {
-                                tmp += tmp_embedding;
-                                usedVideos++;
-                                currentVideosPageCount++;
-                                data[i] = null;//so that it is not used by other ifs..
-                           }
-                        }
-                        //show only pending videos
-                        if(ZiggeoWall[id].indexing.status.indexOf('pending') > -1 ) {
-                           if(data[i] !== null && (data[i].approved === null || data[i].approved === '') ) {
-                                tmp += tmp_embedding;
-                                usedVideos++;
-                                currentVideosPageCount++;
-                                data[i] = null;//so that it is not used by other ifs..
-                           }
-                        }
-                        //show approved videos 
-                        if(ZiggeoWall[id].indexing.status === '' || ZiggeoWall[id].indexing.status.indexOf('approved') > -1 ) {
-                            if(data[i] !== null && data[i].approved === true) {
-                                tmp += tmp_embedding;
-                                usedVideos++;
-                                currentVideosPageCount++;
-                            }
-                        }
+                        //set the video wall title
+                        html += ZiggeoWall[id].title;
 
-                        //Do we need to create a new page?
-                        //We only create new page if there were any videos to add, otherwise if 1 video per page is set, we would end up with empty pages when videos are not added..
-                        if(currentVideosPageCount === 1 && newPage === true) {
-                            //we do
-                            currentPage++;
-
-                            //For slidewall we add next right away..
-                            if(ZiggeoWall[id].indexing.slideWall) {
-                                if(currentPage > 1) {
-                                    html += '<div class="ziggeo_videowall_slide_next"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + currentPage + ');"></div>';
-                                    html += '</div>';
-                                }
-                            }
-                            
-                            html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage">';
-
-                            //For slidewall we add back right away as well
-                            if(ZiggeoWall[id].indexing.slideWall) {
-                                if(currentPage > 1) {
-                                    html += '<div class="ziggeo_videowall_slide_previous"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + (currentPage-1) + ');"></div>';
-                                }
-                            }
-
-                            html += tmp;
-                            tmp = '';
-                            newPage = false;                                                    
-                        }
-
-                        //combining the code if any
-                        if(tmp !== '') {
-                            html += tmp;
-                        }
-
-                        //Do we have enough of vidoes on this page and its time to create a new one?
-                        if(currentVideosPageCount === ZiggeoWall[id].indexing.perPage) {
-                            //Yup, we do
-                            if(ZiggeoWall[id].indexing.showPages) {
-                                html += '</div>';                                                    
-                            }
-                            currentVideosPageCount = 0;
-                            newPage = true;
-                        }
+                        handlePagedWalls(wall, id, html, data);
                     }
+                    //if we are here, then this is one of the newer walls with endless scroll..
+                    else {
+                        //lets attach the event listener..
+                        (document.addEventListener) ? (
+                            window.addEventListener( 'scroll',  ziggeo_endlessScroll, false ) ) : (
+                            window.attachEvent( 'onscroll', ziggeo_endlessScroll) );
 
-                    //Sometimes we will have videos, however due to calling parameters the same might not be added.
-                    //At this time we would need to show the log in console about the same and show the on_no_videos message / setup
-                    if(usedVideos === 0 && i > 0) {
-                        html = ziggeoWallHandleNoVideos(id, html);
-                        
-                        //leaving a note of this
-                        console.log('You have videos, just not the ones matching your request');
-
-                        if(html === false) {
-                            return false;
+                        if( ZiggeoWall['continueFrom'] ) {
+                            ZiggeoWall['continueFrom'] += data.length;
                         }
-                    }
-
-                    //In case last page has less videos than per page limit, we need to apply the closing tag
-                    if(currentVideosPageCount < ZiggeoWall[id].indexing.perPage && newPage === false) {
-                        html += '</div>';
-                    }
-
-                    //Lets add pages if showPages is set
-                    if(ZiggeoWall[id].indexing.showPages) {
-                        for(i = 0; i < currentPage; i++) {
-                            html += '<div class="ziggeo_wallpage_number' + ((i===0) ? ' current' : '') + '" onclick="ziggeoShowWallPage(\'' + id + '\', ' + (i+1) + ',this);">' + (i+1) + '</div>';
+                        else {
+                            ZiggeoWall['continueFrom'] = data.length;
                         }
-                        html += '<br class="clear" style="clear:both;">';
+
+                        handleEndlessScrollWalls(wall, id, data, true);
                     }
                 }
                 else {
@@ -159,22 +74,276 @@ if(typeof ziggeoShowVideoWall !== 'function') {
                     console.log('No videos found matching the requested:' + args);
 
                     //Lets process no videos which will return false or built HTML code.
-                    html = ziggeoWallHandleNoVideos(id, html);
+                    var html = ziggeoWallHandleNoVideos(id, html);
+
+                    //cancel the scrolling event when we have no more videos to load..
+                    if(ZiggeoWall['endless'] === id) {
+                        ZiggeoWall['endless'] = null;
+                    }
+                    
+                    var tmp = document.getElementById('ziggeo-endless-loading_more');
+
+                    if(tmp) {
+                        tmp.innerHTML = "No more videos..";
+                    }
+                    
                     //function returns false if it should break out from the possition call was made.
                     if(html === false) { return false; }
                 }
-
-                //Lets add everything so that it is shown..
-                wall.innerHTML = html;
-               
-                //lets show it:
-                wall.style.display = 'block';
             },
             falure: function (args, error) {
                 console.log('This was the error that we got back when seaching for ' + args +  ':' + error);
             }
         });
     }
+}
+// function to handle the video walls without the pagination, having the endless scroll implementation base..
+function handleEndlessScrollWalls(wall, id, data, _new) {
+
+    //we need to create new page within the wall in order to not break anything..
+
+    var html = wall;
+
+    var usedVideos = 0;
+    var j = data.length;
+    
+    if(ZiggeoWall['loadedData'] && _new === true) {
+        j -= ZiggeoWall['loadedData'].length;
+    }
+
+    for(i = 0, tmp=''; i < j; i++, tmp='') {
+
+        //break once we load enought of videos
+        if(i >= ZiggeoWall[id].indexing.perPage) {
+            break;
+        }
+
+        var tmp_embedding = '<ziggeo ' +
+                        ' ziggeo-width=' + ZiggeoWall[id].videos.width +
+                        ' ziggeo-height=' + ZiggeoWall[id].videos.height +
+                        ' ziggeo-video="' + data[i].token + '"' +
+                    '></ziggeo>';
+
+        //show all videos
+        if(ZiggeoWall[id].indexing.status.indexOf('all') > -1 ) {
+            html.insertAdjacentHTML('beforeend', tmp_embedding);
+            usedVideos++;
+            data[i] = null;//so that it is not used by other ifs..
+        }
+        //show only rejected videos
+        if(ZiggeoWall[id].indexing.status.indexOf('rejected') > -1 ) {
+           if(data[i] !== null && data[i].approved === false) {
+                html.insertAdjacentHTML('beforeend', tmp_embedding);
+                usedVideos++;
+                data[i] = null;//so that it is not used by other ifs..
+           }
+        }
+        //show only pending videos
+        if(ZiggeoWall[id].indexing.status.indexOf('pending') > -1 ) {
+           if(data[i] !== null && (data[i].approved === null || data[i].approved === '') ) {
+                html.insertAdjacentHTML('beforeend', tmp_embedding);
+                usedVideos++;
+                data[i] = null;//so that it is not used by other ifs..
+           }
+        }
+        //show approved videos 
+        if(ZiggeoWall[id].indexing.status === '' || ZiggeoWall[id].indexing.status.indexOf('approved') > -1 ) {
+            if(data[i] !== null && data[i].approved === true) {
+                html.insertAdjacentHTML('beforeend', tmp_embedding);
+                usedVideos++;
+            }
+        }
+    }
+
+    var tmp = document.getElementById('ziggeo-endless-loading_more');
+
+    if(tmp) {
+        tmp.parentNode.removeChild(tmp);
+    }
+    else {
+        var loadingElm = document.createElement('div');
+        loadingElm.id = "ziggeo-endless-loading_more";
+        loadingElm.innerHTML = "Loading More Videos..";
+        //@HERE - make this string translatable for people using WPML.
+        //It will have two strings - loading more and no more videos..
+        wall.parentNode.appendChild(loadingElm, wall);
+    }
+
+    ZiggeoWall['endless'] = id;
+
+    for(i = -1, j = data.length; i < j; j--) {
+        //break once we load enought of videos
+        if(data[j] === null) {
+            data.splice(j, 1);
+        }
+    }
+
+    if(data.length > 0) {
+        ZiggeoWall['loadedData'] = data;
+    }
+}
+//handler for the scroll event, so that we can do our stuff for the endless scroll templates
+function ziggeo_endlessScroll() {
+    //get reference to the wall..
+
+    var wall = null;
+
+    if( ZiggeoWall && ZiggeoWall['endless'] && (wall = document.getElementById(ZiggeoWall['endless'])) ) {
+        //all good
+        var id = ZiggeoWall['endless'];
+    }
+    else {
+        //OK so there is obviously no wall. Instead of recreating the same check each time, lets clean up..
+        (document.removeEventListener) ? (
+            window.removeEventListener( 'scroll',  ziggeo_endlessScroll ) ) : (
+            window.detachEvent( 'onscroll', ziggeo_endlessScroll) );
+        return false;
+    }
+
+    //lets check the position of the bottom of the video wall from the top of the screen and then, if the same is equal to or lower than 80% of our video wall, we need to do some new things
+    if(wall.getBoundingClientRect().bottom <= ( wall.getBoundingClientRect().height * 0.20 )) {
+        //do we have more data than we need to show? if we do, lets show it right away, if not, we should load more data and show what we have as well..
+        if(ZiggeoWall['loadedData'].length > ZiggeoWall[id].indexing.perPage) {
+            //we use the data we already got from our servers
+            handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
+        }
+        else {
+            //we are using any data that we already have and create a call to grab new ones as well.
+            handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
+            ziggeoShowVideoWall(id, '&skip=' + ZiggeoWall['continueFrom']);
+        }
+    }
+}
+// function to handle the video walls with the pagination
+function handlePagedWalls(wall, id, html, data) {
+
+    //number of videos per page currently
+    var currentVideosPageCount = 0;
+    //total number of videos that will be shown
+    var usedVideos = 0;
+    //What page are we on?
+    var currentPage = 0;
+    //did any videos match the checks while listing them - so that we do not place multiple pages since the count stays on 0
+    var newPage = true;
+
+    for(i = 0, j = data.length, tmp=''; i < j; i++, tmp='') {
+        
+        var tmp_embedding = '<ziggeo ' +
+                        ' ziggeo-width=' + ZiggeoWall[id].videos.width +
+                        ' ziggeo-height=' + ZiggeoWall[id].videos.height +
+                        ' ziggeo-video="' + data[i].token + '"' +
+                        ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
+                    '></ziggeo>';
+
+        //show all videos
+        if(ZiggeoWall[id].indexing.status.indexOf('all') > -1 ) {
+            tmp += tmp_embedding;
+            usedVideos++;
+            currentVideosPageCount++;
+            data[i] = null;//so that it is not used by other ifs..
+        }
+        //show only rejected videos
+        if(ZiggeoWall[id].indexing.status.indexOf('rejected') > -1 ) {
+           if(data[i] !== null && data[i].approved === false) {
+                tmp += tmp_embedding;
+                usedVideos++;
+                currentVideosPageCount++;
+                data[i] = null;//so that it is not used by other ifs..
+           }
+        }
+        //show only pending videos
+        if(ZiggeoWall[id].indexing.status.indexOf('pending') > -1 ) {
+           if(data[i] !== null && (data[i].approved === null || data[i].approved === '') ) {
+                tmp += tmp_embedding;
+                usedVideos++;
+                currentVideosPageCount++;
+                data[i] = null;//so that it is not used by other ifs..
+           }
+        }
+        //show approved videos 
+        if(ZiggeoWall[id].indexing.status === '' || ZiggeoWall[id].indexing.status.indexOf('approved') > -1 ) {
+            if(data[i] !== null && data[i].approved === true) {
+                tmp += tmp_embedding;
+                usedVideos++;
+                currentVideosPageCount++;
+            }
+        }
+
+        //Do we need to create a new page?
+        //We only create new page if there were any videos to add, otherwise if 1 video per page is set, we would end up with empty pages when videos are not added..
+        if(currentVideosPageCount === 1 && newPage === true) {
+            //we do
+            currentPage++;
+
+            //For slidewall we add next right away..
+            if(ZiggeoWall[id].indexing.slideWall) {
+                if(currentPage > 1) {
+                    html += '<div class="ziggeo_videowall_slide_next"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + currentPage + ');"></div>';
+                    html += '</div>';
+                }
+            }
+
+            html += '<div id="' + id + '_page_' + currentPage + '" class="ziggeo_wallpage">';
+
+            //For slidewall we add back right away as well
+            if(ZiggeoWall[id].indexing.slideWall) {
+                if(currentPage > 1) {
+                    html += '<div class="ziggeo_videowall_slide_previous"  onclick="ziggeoShowWallPage(\'' + id + '\', ' + (currentPage-1) + ');"></div>';
+                }
+            }
+
+            html += tmp;
+            tmp = '';
+            newPage = false;                                                    
+        }
+
+        //combining the code if any
+        if(tmp !== '') {
+            html += tmp;
+        }
+
+        //Do we have enough of vidoes on this page and its time to create a new one?
+        if(currentVideosPageCount === ZiggeoWall[id].indexing.perPage) {
+            //Yup, we do
+            if(ZiggeoWall[id].indexing.showPages) {
+                html += '</div>';                                                    
+            }
+            currentVideosPageCount = 0;
+            newPage = true;
+        }
+    }
+
+    //Sometimes we will have videos, however due to calling parameters the same might not be added.
+    //At this time we would need to show the log in console about the same and show the on_no_videos message / setup
+    if(usedVideos === 0 && i > 0) {
+        html = ziggeoWallHandleNoVideos(id, html);
+        
+        //leaving a note of this
+        console.log('You have videos, just not the ones matching your request');
+
+        if(html === false) {
+            return false;
+        }
+    }
+
+    //In case last page has less videos than per page limit, we need to apply the closing tag
+    if(currentVideosPageCount < ZiggeoWall[id].indexing.perPage && newPage === false) {
+        html += '</div>';
+    }
+
+    //Lets add pages if showPages is set
+    if(ZiggeoWall[id].indexing.showPages) {
+        for(i = 0; i < currentPage; i++) {
+            html += '<div class="ziggeo_wallpage_number' + ((i===0) ? ' current' : '') + '" onclick="ziggeoShowWallPage(\'' + id + '\', ' + (i+1) + ',this);">' + (i+1) + '</div>';
+        }
+        html += '<br class="clear" style="clear:both;">';
+    }
+
+    //Lets add everything so that it is shown..
+    wall.innerHTML = html;
+
+    //lets show it:
+    wall.style.display = 'block';
 }
 //handler for the cases when either no videos are found or videos found do not match the status requested (not to be mistaken with 'video status').
 function ziggeoWallHandleNoVideos(id, html) {
@@ -211,13 +380,13 @@ function ziggeoShowWallPage(id, page, current) {
         console.log('Exiting function. Specified wall is not present');
         return false;
     }
-    
+
     var pageID = id + '_page_' + page;
 
     var newPage = document.getElementById(pageID);
 
     //Get all pages under current wall
-    var pages = wall.getElementsByClassName('ziggeo_wallpage');                            
+    var pages = wall.getElementsByClassName('ziggeo_wallpage');
 
     //Hide all of the pages
     for(i = 0, j = pages.length; i < j; i++) {

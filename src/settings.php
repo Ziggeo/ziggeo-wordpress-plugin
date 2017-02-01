@@ -219,7 +219,11 @@ function ziggeo_video_templates_text() {
                         <dd>Boolean value indicating if first video should be played automatically</dd>
                     <dt class="wall" data-equal="">show</dt>
                         <dd>Boolean value indicating if video wall is shown even if the video is not submitted (defaults to waiting for submission of a video to show the video wall)</dd>
+                    <dt class="wall" data-equal="">chessboard_grid</dt>
+                        <dd>Boolean value indicating if you want ChessBoard Grid style of the videoWall as active one (disables "slide_wall" and "show_pages" styles).</dd>
                     <?php /*
+                    <dt class="wall" data-equal="">mosaic_grid</dt>
+                        <dd>Boolean value indicating if you want Mosaic Grid style of the videoWall as active one (disables "slide_wall" and "show_pages" and "chessboard_grid" styles).</dd>
                     <dt class="wall" data-equal="=">show_video_comments</dt>
                         <dd>Boolean value to show the comments of each video - if available (under each video)</dd>
                     <dt class="wall" data-equal="=">show_video_rating</dt>
