@@ -2,10 +2,15 @@
 //Checking if WP is running or if this is a direct call..
 defined('ABSPATH') or die();
 
-add_filter('the_content', 'ziggeo_content_filter');
-add_filter('comment_text', 'ziggeo_content_filter');
-add_filter('the_excerpt', 'ziggeo_content_filter');
-add_filter('thesis_comment_text', 'ziggeo_content_filter');
+//To initialize filters after the theme was loaded..
+add_action('after_setup_theme', 'ziggeo_filtersInit');
+
+function ziggeo_filtersInit() {
+    add_filter('the_content', 'ziggeo_content_filter');
+    add_filter('comment_text', 'ziggeo_content_filter');
+    add_filter('the_excerpt', 'ziggeo_content_filter');
+    add_filter('thesis_comment_text', 'ziggeo_content_filter');
+}
 
 // -- Default values to use: 'ziggeo-width=320 ziggeo-height=240'
 function ziggeo_content_replace($matches) {
@@ -412,6 +417,9 @@ function ziggeo_content_replace_templates($matches)
                 else {
                     $wall_tags = $wall['videos_to_show'];
                 }
+
+                //added to allow the video wall to process videos of the current user without requiring the PHP code to run it
+                $wall_tags = str_ireplace( '%ZIGGEO_USER%', $current_user->user_login, $wall_tags );
 
                 ?>
                 <script type="text/javascript" class="runMe">

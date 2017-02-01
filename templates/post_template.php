@@ -109,10 +109,13 @@ defined('ABSPATH') or die();
             jQuery("#accept-ziggeo-button").css("display", "none");
             jQuery("#ziggeo-recorder").remove();
         });
-        ZiggeoApi.Events.on("submitted", function (data) {
-            jQuery("#content").val(jQuery("#content").val() + "[ziggeo]" + data.video.token + "[/ziggeo]");
-            jQuery("#revert-ziggeo-button").css("display", "none");
-            jQuery("#accept-ziggeo-button").css("display", "");
-        });
+        if(typeof ZiggeoApi !== "undefined") {
+            //For times when this is included without the ziggeo.js (happens sometimes in GF)
+            ZiggeoApi.Events.on("submitted", function (data) {
+                jQuery("#content").val(jQuery("#content").val() + "[ziggeo]" + data.video.token + "[/ziggeo]");
+                jQuery("#revert-ziggeo-button").css("display", "none");
+                jQuery("#accept-ziggeo-button").css("display", "");
+            });
+        }
     });
 </script>

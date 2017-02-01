@@ -5,48 +5,48 @@ GFForms::include_addon_framework();
 class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
 
     protected $_version = 1.0;
-	protected $_min_gravityforms_version = '1.9';
-	protected $_slug = 'ziggeogravityforms';
-	protected $_path = 'ziggeo/modules/GravityForms.php';
-	protected $_full_path = __FILE__;
-	protected $_title = 'Ziggeo Video Field';
-	protected $_short_title = 'Ziggeo Video Field';
+    protected $_min_gravityforms_version = '1.9';
+    protected $_slug = 'ziggeogravityforms';
+    protected $_path = 'ziggeo/modules/GravityForms.php';
+    protected $_full_path = __FILE__;
+    protected $_title = 'Ziggeo Video Field';
+    protected $_short_title = 'Ziggeo Video Field';
 
     private static $_instance = null;
 
     public static function get_instance() {
-		if(self::$_instance == null) {
+        if(self::$_instance == null) {
             self::$_instance = new self();
-		}
+        }
 
-		return self::$_instance;
-	}
+        return self::$_instance;
+    }
 
     public function pre_init() {
-		parent::pre_init();
+        parent::pre_init();
 
-		if($this->is_gravityforms_supported() && class_exists('GF_Field')) {
-			GF_Fields::register( new ZiggeoIntegrationGravityFormsClass_Field() );
-		}
-	}
-    
+        if($this->is_gravityforms_supported() && class_exists('GF_Field')) {
+            GF_Fields::register( new ZiggeoIntegrationGravityFormsClass_Field() );
+        }
+    }
+
     public function init_admin() {
-		parent::init_admin();
+        parent::init_admin();
 
-		add_filter( 'gform_tooltips', array( $this, 'tooltips' ) );
-		add_action( 'gform_field_appearance_settings', array( $this, 'field_appearance_settings' ), 10, 2 );
-	}
+        add_filter( 'gform_tooltips', array( $this, 'tooltips' ) );
+        add_action( 'gform_field_appearance_settings', array( $this, 'field_appearance_settings' ), 10, 2 );
+    }
 
     //Add the custom setting for the Simple field to the Appearance tab.
-	public function field_appearance_settings( $position, $form_id ) {
-		// Add our custom setting just before the 'Custom CSS Class' setting.
+    public function field_appearance_settings( $position, $form_id ) {
+        // Add our custom setting just before the 'Custom CSS Class' setting.
 
-		if( $position == 250 ) {
-			?>
-			<li class="ziggeo_template_setting field_setting">
-				<label for="ziggeo_template_setting">Choose your template:
-					<?php gform_tooltip( 'ziggeo_template_setting' ) ?>
-				</label>
+        if( $position == 250 ) {
+            ?>
+            <li class="ziggeo_template_setting field_setting">
+                <label for="ziggeo_template_setting">Choose your template:
+                    <?php gform_tooltip( 'ziggeo_template_setting' ) ?>
+                </label>
                 <select id="ziggeo_template_setting" class="fieldwidth-1" onchange="ziggeo_integration_gravityforms_admin_select(this)">
                     <?php //fill out the templates ?>
                     <option disabled=disabled>Select a template</option>
@@ -62,11 +62,11 @@ class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
                     }
                     ?>
                 </select>
-			</li>
+            </li>
 
-			<?php
-		}
-	}
+            <?php
+        }
+    }
 
     public function tooltips( $tooltips ) {
         $tooltips['ziggeo_template_setting'] = '<h6>Ziggeo Templates</h6>Select the template in the dropdown best matching your requirements';
@@ -76,7 +76,7 @@ class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
     //Adding Ziggeo script if the preview is used
     public function scripts() {
         //Only if this is preview will we add a script to the head
-        if($this->is_preview()) {
+        if($this->is_preview() || $this->is_form_editor()) {
             $scripts = array(
                 array(
                     'handle'  => 'ziggeo_sdk',
@@ -86,6 +86,7 @@ class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
                         'field_types' => array('ZiggeoVideo')
                     )
                 )
+                //@HERE - add the call to local admin.js file. Seems that it would be needed
             );
 
             //return the combined scripts of the ones that did exist and the ones we added above
@@ -93,13 +94,13 @@ class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
         }
 
         //we send back the existing ones to make sure that GravityForms is not showing any errors due to no output
-        return parent::scripts();;
+        return parent::scripts();
     }
 
     //Adding Ziggeo CSS if the preview is used.
     public function styles() {
         //Lets check if we are in preview pages
-        if($this->is_preview()) {
+        if($this->is_preview() || $this->is_form_editor()) { //needs a check for form editor / builder on some setups, as it does not post JS and CSS files
             //We are in the preview page
             $styles = array(
                 array(
@@ -229,7 +230,7 @@ if(class_exists('GF_Field')){
 
                 //the input field ID is changed so that there is just one ID field.
                 $field .= '<input id="input_' . $id . '_field" name="input_' . $id . '" type="hidden" value="' . $videoToken . '" ' . $required_attribute . ' >';
-                
+
                 $field .= '<script type="text/javascript">' .
                                 'ZiggeoApi.Events.on("submitted", function (data) {' .
                                     'if(data.id && ( data.id === "' . $ziggeo_embedding_id . '" || data.id.indexOf("' . $ziggeo_embedding_id . '") > -1 ) ){' .
