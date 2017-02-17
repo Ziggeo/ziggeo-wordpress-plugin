@@ -31,6 +31,7 @@ function ziggeo_admin_init() {
             add_settings_field('ziggeo_video_comments_template_recorder', 'Video Comments recorder template', 'ziggeo_video_comments_template_recorder_string', 'ziggeo_video', 'ziggeo_video_main');
             add_settings_field('ziggeo_video_comments_template_player', 'Video Comments player template', 'ziggeo_video_comments_template_player_string', 'ziggeo_video', 'ziggeo_video_main');
             add_settings_field('ziggeo_text_comments', 'Disable Text Comments', 'ziggeo_text_comments_string', 'ziggeo_video', 'ziggeo_video_main');
+            add_settings_field('ziggeo_video_comments_roles', 'Minimal required permissions for video comments', 'ziggeo_video_comments_roles_string', 'ziggeo_video', 'ziggeo_video_main');
         add_settings_field('ziggeo_global_html', '', 'ziggeo_global_html', 'ziggeo_video', 'ziggeo_video_main');
             add_settings_field('ziggeo_recorder_config', 'Ziggeo Recorder Config', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
             add_settings_field('ziggeo_player_config', 'Ziggeo Player Config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
@@ -522,7 +523,35 @@ function ziggeo_video_general_text() {
 
         ?>
         <input id="ziggeo_text_comments" name="ziggeo_video[disable_text_comments]" type="checkbox" value="1" <?php echo checked( 1, $options['disable_text_comments'], false ); ?> />
-        <label for="ziggeo_text_comments">Want to have video comments only? Check this to set it as such ( leave unchecked to allow<span id="ziggeo-comments_video_checker"> video and</span> text comments ).</label>
+        <label for="ziggeo_text_comments">Want to have video comments only? Check this to set it as such ( leave unchecked to allow video and text comments ).</label>
+        <?php
+    }
+
+    function ziggeo_video_comments_roles_string() {
+        $options = get_option('ziggeo_video');
+
+        if(!isset($options['comment_roles']) )  { $options['comment_roles'] = ''; }
+
+        //Roles:
+        //SuperAdmin = 6
+        //Admin = 5
+        //Editor = 4
+        //Author = 3
+        //Contributor = 2
+        //Subscriber = 1
+        //Everyone (guest) = 0 || ""
+
+        ?>
+        <select id="ziggeo_video_comments_roles" name="ziggeo_video[comment_roles]">
+            <option value="0" <?php echo ( $options['comment_roles'] == "" || $options['comment_roles'] == 0 ) ? "selected" : "" ?>>Everyone is allowed</option>
+            <option value="1" <?php echo ( $options['comment_roles'] == 1 ) ? " selected " : "" ?>>Subscribers</option>
+            <option value="2" <?php echo ( $options['comment_roles'] == 2 ) ? " selected " : "" ?>>Contributors</option>
+            <option value="3" <?php echo ( $options['comment_roles'] == 3 ) ? " selected " : "" ?>>Authors</option>
+            <option value="4" <?php echo ( $options['comment_roles'] == 4 ) ? " selected " : "" ?>>Editors</option>
+            <option value="5" <?php echo ( $options['comment_roles'] == 5 ) ? " selected " : "" ?>>Admins</option>
+            <option value="6" <?php echo ( $options['comment_roles'] == 6 ) ? " selected " : "" ?>>Super Admins</option>
+        </select>
+        <label for="ziggeo_video_comments_roles">By selecting some role you allow people with the same role and higher one to use video comments, while it is disabled for everyone else (with lower capabilities).</label>
         <?php
     }
 
@@ -631,7 +660,7 @@ function ziggeo_video_validate($input) {
         //templates tab
             'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
         //general tab
-            'token' => true, 'showVideoAidButton' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
+            'token' => true, 'showVideoAidButton' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true, 'comment_roles' => true,
         //integrations tab
             'integrations'
     );
