@@ -80,19 +80,21 @@ if(typeof ziggeoShowVideoWall !== 'function') {
                     if(ZiggeoWall['endless'] === id) {
                         ZiggeoWall['endless'] = null;
                     }
-                    
+
                     var tmp = document.getElementById('ziggeo-endless-loading_more');
 
                     if(tmp) {
                         tmp.innerHTML = "No more videos..";
                     }
-                    
+
                     //function returns false if it should break out from the possition call was made.
                     if(html === false) { return false; }
                 }
+
+                ZiggeoWall[id].processing = false;
             },
-            falure: function (args, error) {
-                console.log('This was the error that we got back when seaching for ' + args +  ':' + error);
+            failure: function (args, error) {
+                console.log('This was the error that we got back when searching for ' + args +  ':' + error);
             }
         });
     }
@@ -184,10 +186,10 @@ function handleEndlessScrollWalls(wall, id, data, _new) {
 }
 //handler for the scroll event, so that we can do our stuff for the endless scroll templates
 function ziggeo_endlessScroll() {
-    //get reference to the wall..
 
     var wall = null;
 
+    //get reference to the wall..
     if( ZiggeoWall && ZiggeoWall['endless'] && (wall = document.getElementById(ZiggeoWall['endless'])) ) {
         //all good
         var id = ZiggeoWall['endless'];
@@ -200,12 +202,21 @@ function ziggeo_endlessScroll() {
         return false;
     }
 
+    //lets go out if we are already processing the same request and scroll happened again..
+    if(ZiggeoWall[id].processing === true) {
+		return false;
+	}
+
     //lets check the position of the bottom of the video wall from the top of the screen and then, if the same is equal to or lower than 80% of our video wall, we need to do some new things
     if(wall.getBoundingClientRect().bottom <= ( wall.getBoundingClientRect().height * 0.20 )) {
+		//lets lock the indexing to not be called more than once for same scroll action..
+		ZiggeoWall[id].processing = true;
+
         //do we have more data than we need to show? if we do, lets show it right away, if not, we should load more data and show what we have as well..
         if(ZiggeoWall['loadedData'].length > ZiggeoWall[id].indexing.perPage) {
             //we use the data we already got from our servers
             handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
+			ZiggeoWall[id].processing = false;
         }
         else {
             //we are using any data that we already have and create a call to grab new ones as well.
