@@ -1,5 +1,5 @@
 //in case there are multiple walls on the same page, we want to be sure not to cause issues. This should catch it and not declare the function again.                    
-if(typeof ziggeoShowVideoWall !== 'function') {                        
+if(typeof ziggeoShowVideoWall !== 'function') {
     //show video wall based on its ID
     function ziggeoShowVideoWall(id, searchParams) {
 
@@ -328,7 +328,7 @@ function handlePagedWalls(wall, id, html, data) {
     //At this time we would need to show the log in console about the same and show the on_no_videos message / setup
     if(usedVideos === 0 && i > 0) {
         html = ziggeoWallHandleNoVideos(id, html);
-        
+
         //leaving a note of this
         console.log('You have videos, just not the ones matching your request');
 
@@ -419,4 +419,71 @@ function ziggeoShowWallPage(id, page, current) {
     }
 
     newPage.style.display = 'block';
+}
+
+//shows overlay with the recorder element
+function ziggeoShowOverlayWithRecorder(z_tinyMCEEditor) {
+    //create element covering entire screen
+    var o = document.createElement('div');
+    o.style.position= "fixed";
+    o.style.top = 0;
+    o.style.left = 0;
+    o.style.width = "100%";
+    o.style.height = "100%";
+    o.style['background-color'] = "gray";
+    o.style.opacity = 0.6;
+    o.style.zIndex = 99999;
+    o.id = "ziggeo-overlay-screen";
+    document.body.appendChild(o);
+
+    //lets create element that will close this..
+    var c = document.createElement('div');
+    c.style.width = "30px";
+    c.style.height = "30px";
+    c.style.position = "absolute";
+    c.style.right = "10px";
+    c.style.top = "10px";
+    c.style['background-color'] = "white";
+    c.style.color = "white";
+    c.style.cursor = "pointer";
+    c.style['text-shadow'] = "-1px -1px 0px black, 1px 1px 1px black, -1px 1px 1px black, 1px -1px 1px black";
+    c.style['text-align'] = "center";
+    c.style['border-radius'] = "50%";
+    c.id="ziggeo-overlay-close";
+    c.innerHTML = "x";
+    c.addEventListener( 'click', ziggeoRemoveOverlayWithRecorder, false );
+    document.getElementById('ziggeo-overlay-screen').appendChild(c);
+
+    //now the element that will hold our recorder (we make sure that it will be fully displayed on mobile and desktop screens)..
+    var s = document.createElement('div');
+    s.id="ziggeo-video-screen";
+    s.style.width = "300px"
+    s.style.height = "300px";
+    s.style['background-color'] = "white";
+    s.style.left = "calc(50% - 150px)";
+    s.style.top = "calc(50% - 150px)";
+    s.style.position = "fixed";
+    s.style.zIndex = "100000";
+    document.body.appendChild(s);
+
+    //create recorder using v1 recorder code
+    ZiggeoApi.Embed.embed('#ziggeo-video-screen', {width: 300, height: 300, perms: ["allowupload"] } );
+
+    //add event handler
+    ZiggeoApi.Events.on("submitted", function ( data ) {
+        //The record video button above the toolbar has its own code that reacts to can react to this one so lets hide it..
+        jQuery("#revert-ziggeo-button").css("display", "none");
+        jQuery("#accept-ziggeo-button").css("display", "none");
+        //might be good to know what we will add the data to - which integration is needing it..
+        z_tinyMCEEditor.insertContent( '[ziggeo]' + data.video.token + '[/ziggeo]' );
+        //Since video is submitted, lets make sure that this is shown a bit differently - pointed out more..
+        document.getElementById('ziggeo-overlay-close').style['background-color'] = "orangeRed";
+    });
+}
+
+//destroys overlay and recorder over it
+//TODO maybe make it possible to close only if the video was uploaded, for now, lets just close it.
+function ziggeoRemoveOverlayWithRecorder() {
+    jQuery("#ziggeo-video-screen").remove();
+    jQuery("#ziggeo-overlay-screen").remove();
 }
