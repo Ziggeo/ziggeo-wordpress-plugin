@@ -39,7 +39,7 @@ function ziggeo_file_write($file, $content, $context = false) {
     //the file writing has failed
     if($ret === false) {
         //lets use WP file system since customer has different users set.
-        if($context === 'templates'){
+        if($context === 'templates' || $context === false){
             $form_fields = array ('templates_editor', 'templates_id');
             $context = 'ziggeo_templates_id';
         }
@@ -122,10 +122,6 @@ function ziggeo_file_WP_prepare($action, $form_fields, $file, $content) {
     wp_verify_nonce('ziggeo_video_nonce', 'ziggeo_nonce_action');
 
     $url = wp_nonce_url('options-general.php?page=ziggeo_video','ziggeo_nonce_action');
-
-    ?>
-    
-    <?php
 
     //Lets grab credentials if we do not have it..
     if( ($credentials = request_filesystem_credentials($url, '', false, ZIGGEO_ROOT_PATH, $form_fields, true) ) === false ) {

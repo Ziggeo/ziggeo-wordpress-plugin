@@ -10,7 +10,7 @@ defined('ABSPATH') or die();
     }
     else {
         global $current_user;
-        get_currentuserinfo();        
+        get_currentuserinfo();
     }
 ?>
 
