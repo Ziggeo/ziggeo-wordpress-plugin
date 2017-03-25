@@ -12,7 +12,7 @@ $list = ziggeo_file_read( '../../ziggeo-userData/custom_templates.php' );
 if($list) {
     //If there are double quotes, it would cause issues with TinyMCE, however with templates editing as well.
     //Since this is called for templates only, we know that we are OK with changing all double quotes into single quotes..
-    $list = str_replace('"', "'", $list);        
+    $list = str_replace('"', "'", $list);
 }
 
 $start = "(function() {
@@ -26,6 +26,15 @@ $start = "(function() {
          * @param {string} url Absolute URL to where the plugin is located.
          */
         init : function(editor, url) {
+
+            if( url.indexOf('#frontend=1') > -1 ) {
+                url = ( url.substr(0, url.indexOf('#frontend=1') ) + url.substr( url.indexOf('?') ) );
+                isAdmin = false
+            }
+            else {
+                isAdmin = true;
+            }
+
             editor.addButton('ziggeo_templates', {
                 title: 'Ziggeo Video Aid',
                 cmd: 'ziggeoAddTemplate',
@@ -33,13 +42,26 @@ $start = "(function() {
                 type: 'menubutton',
                 menu: [ //This is first level menu
                     {
-                        text: 'Templates',
-                        value: '[ziggeo]',
-                        onclick: function() { //We will remove the onlick from here, this is just for test
-                            editor.insertContent(this.value());
-                        },
-                        menu: [ //This is second level menu
-                                    ";
+                        text: 'Record your video',
+                        value: '{@Open recorder@}',
+                        onclick: function() {
+                            //this shows overlay and recorder and saves it into the textarea..
+                            ziggeoShowOverlayWithRecorder(editor);
+//detect if it is loaded on frontend and remove the templates submenu if it is..                      
+                        }
+                    }
+                ]
+            });";
+//The above will always be shown, however templates will only be shown if we are on admin side, not when loaded on frontend
+$backend =  "
+                editor.buttons['ziggeo_templates'].menu.push(
+                {
+                    text: 'Templates',
+                    value: '[ziggeo][/ziggeo]',
+                    onclick: function() { //if clicked on templates, lets just add a basic recorder template
+                        editor.insertContent(this.value());
+                    },
+                    menu: [ //This is second level menu";
 
 $middle = '';
 $base = '[ziggeo ';
@@ -73,40 +95,43 @@ if($list) {
                 }
 
                 if($middle !== '')      { $middle .= ', '; }
-                $middle .= "{
-                                text: '" . $id . "',
-                                value: \"" . $template . "\",
-                                requiresToken: '" . $tokenRequired . "',
-                                onclick: function(e) { 
-                                    e.stopPropagation();
-                                    if(e.shiftKey === true) {
-                                            editor.insertContent(this.value());
-                                    }
-                                    else {
-                                        if(this.settings.requiresToken === 'yes') {
-                                            editor.insertContent('" . $base . "' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');                                                                     
-                                        }
-                                        else {
-                                            editor.insertContent('" . $base . "' + this.text() + ' ]');
-                                        }
-                                    }
-                                    ziggeo_tinymce_set_position();
+                $middle .= "
+                    {
+                        text: '" . $id . "',
+                        value: \"" . $template . "\",
+                        requiresToken: '" . $tokenRequired . "',
+                        onclick: function(e) { 
+                            e.stopPropagation();
+                            if(e.shiftKey === true) {
+                                    editor.insertContent(this.value());
+                            }
+                            else {
+                                if(this.settings.requiresToken === 'yes') {
+                                    editor.insertContent('" . $base . "' + this.text() + ' video=\'<span id=\"ziggeo_token_range_s\"></span>YOUR_VIDEO_TOKEN<span id=\"ziggeo_token_range_e\"></span>\' ]');                                                                     
                                 }
-                            }";
+                                else {
+                                    editor.insertContent('" . $base . "' + this.text() + ' ]');
+                                }
+                            }
+                            ziggeo_tinymce_set_position();
+                        }
+                    }";
         }
 }
 else {
-        $middle = "{
+        $middle = "
+                    {
                         text: 'No templates found',
                         value: ''
                     }";
 }
 
-$end =                       "
-                        ]
-                    }
+$middle .= "
                 ]
-            });
+            });";
+
+
+$end =  "
         },
  
         /**
@@ -144,7 +169,11 @@ $end =                       "
     tinymce.PluginManager.add( 'ziggeo', tinymce.plugins.ziggeo );
 })();";
 
-
-echo $start . $middle . $end;
-
+//This is a hack that allows us to see if this is front end or backend.. The way it works is by combining this with the code in ziggeo_tinymce.php file under ziggeo_mce_register() function where I am leaving more details.
+if(count($_GET) > 0) {
+    echo $start . $backend . $middle . $end;
+}
+else {
+    echo $start . $end;
+}
 ?>
