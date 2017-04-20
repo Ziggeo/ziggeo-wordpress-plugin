@@ -218,6 +218,10 @@ function ziggeo_video_templates_text() {
                         <dd>Array value stating which videos will be shown. Possible options are 'all', 'approved', 'rejected', 'pending'</dd>
                     <dt class="wall" data-equal="">autoplay</dt>
                         <dd>Boolean value indicating if first video should be played automatically</dd>
+					<dt class="wall" data-equal="">autoplay-continue-end</dt>
+                        <dd>Boolean value indicating that you want the autoplay of second video to start when playback of first one ends and to continue until the end of the (first) page (requires `autoplay`)/dd>
+                    <dt class="wall" data-equal="">autoplay-continue-run</dt>
+                        <dd>Boolean value indicating that you want the autoplay of second video to start when playback of first one ends and to continue until the end of the (first) page is met, then start again (looping through all videos on the page one by one) - (requires `autoplay`).</dd>
                     <dt class="wall" data-equal="">show</dt>
                         <dd>Boolean value indicating if video wall is shown even if the video is not submitted (defaults to waiting for submission of a video to show the video wall)</dd>
                     <dt class="wall" data-equal="">chessboard_grid</dt>
@@ -413,7 +417,7 @@ function ziggeo_video_general_text() {
 
         ?>
         <input id="ziggeo_showVideoAidButton" name="ziggeo_video[showVideoAidButton]" size="50" type="checkbox" value="1" <?php echo checked( 1, $options['showVideoAidButton'], false ); ?> />
-        <label for="ziggeo_showVideoAidButton">Removes the `Ziggeo Video Aid` button in the toolbar shown when Posts and pages are edited.</label>
+        <label for="ziggeo_showVideoAidButton">If unchecked, it removes the `Ziggeo Video Aid` button in the toolbar shown when Posts and pages are edited.</label>
         <?php
     }
 
@@ -717,9 +721,9 @@ function ziggeo_video_validate($input) {
     elseif( ( isset($input['disable_video_comments']) && !empty($input['disable_video_comments']) ) || ( isset($input['disable_text_comments']) && !empty($input['disable_text_comments']) ) ) {
         unset($options['video_and_text']);
     }
-
+//var_dump($options['integrations']);
     //integrations..
-    if(isset($input['integration_change'])) {
+    if(isset($input['integration_change']) && $input['integration_change']!== "" ) {
         //the call was made to change the status of some integration..
         $details = explode('=', $input['integration_change']);
 
@@ -735,7 +739,7 @@ function ziggeo_video_validate($input) {
             $options['integrations'][$details[0]] = array('active' => ($details[1] === 'disable') ? false : true );
         }
     }
-
+//var_dump($options['integrations']);
     //From this point on, we should not use $input, only $options
 
     // -- TEMPLATES --

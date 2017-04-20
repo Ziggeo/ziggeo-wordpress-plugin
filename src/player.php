@@ -155,6 +155,8 @@ function ziggeo_content_replace_templates($matches)
         }
         $full .= $params;
 
+        //At this $full holds something like: [ziggeo  video="VIDEO_TOKEN"
+        //and $params holds video="VIDEO_TOKEN"
         return ziggeo_content_replace_templates( array($full, $params) );
     }
 
@@ -239,7 +241,7 @@ function ziggeo_content_replace_templates($matches)
 
             //Lets check if we sent the video along with template name, and if we did, lets give it back its video.
             if($savedVideo) {
-                
+
                 if( stripos($template, ' video=') ) {
                     $template = str_ireplace( array('video=""', "video=''"), ' ' . $savedVideo . ' ', $template);
                 }
@@ -300,7 +302,7 @@ function ziggeo_content_replace_templates($matches)
                 if(!isset($wall['scalable_height']) && isset($wall['fixed_height'])) {
                     $wallStyles .= 'height:' . trim($wall['fixed_height']) . 'px;';
                 }
-                
+
                 if(isset($wall['scalable_width'])) {
                     $wallStyles .= 'width:' . trim($wall['scalable_width']) . '%;';
                 }
@@ -308,7 +310,7 @@ function ziggeo_content_replace_templates($matches)
                 if(isset($wall['scalable_height'])) {
                     $wallStyles .= 'height:' . trim($wall['scalable_height']) . '%;';
                 }
-                
+
                 if(isset($wall['show'])) {
                     $wallStyles .= 'display:block;';
                 }
@@ -330,7 +332,8 @@ function ziggeo_content_replace_templates($matches)
                     $wall['title'] = '<div class="ziggeo_wall_title" style="display:none"></div>';
                 }
 
-                //show_pages is default, so if slide_wall is set, it will be used over show_pages
+
+				//show_pages is default, so if slide_wall is set, it will be used over show_pages
                 if(isset($wall['slide_wall'])) {
                     $wall['slide_wall'] = true;
 
@@ -350,7 +353,7 @@ function ziggeo_content_replace_templates($matches)
                     $wall['slide_wall'] = false;
                     $wall['mosaic_grid'] = false;
 
-                    //videos per page
+                     //videos per page
                     if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 20; }
                 }
                 elseif(isset($wall['mosaic_grid'])) {
@@ -363,8 +366,8 @@ function ziggeo_content_replace_templates($matches)
 
                     //videos per page
                     if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 20; }
-                }
-                else {
+                 }
+                 else {
                     $wall['show_pages'] = true;
 
                     //we disable the rest
@@ -374,10 +377,10 @@ function ziggeo_content_replace_templates($matches)
 
                     //videos per page
                     if(!isset($wall['videos_per_page'])) { $wall['videos_per_page'] = 2; }
-                }
+                 }
 
                 //getting the defaults:
-                
+
                 //video width
                 if(!isset($wall['video_width'])) { $wall['video_width'] = 320; }
 
@@ -425,7 +428,18 @@ function ziggeo_content_replace_templates($matches)
                     $wall['hide_wall'] = false;
                 }
 
+				$autoplaytype = '';
+
                 if(!isset($wall['autoplay']))   { $wall['autoplay'] = false; }
+                else {
+					//autoplay is set, so we check if any of the other 2 options are set as well:
+					if(isset($wall['autoplay-continue-end'])) {
+						$autoplaytype = 'continue-end';
+					}
+					elseif(isset($wall['autoplay-continue-run'])) {
+						$autoplaytype = 'continue-run';
+					}
+                }
 
                 //To handle search and everything, we will use JS, otherwise we would need to include SDK (which would be OK, however it would also cause a lot more code to be present and would be hard to update if needed)
                 //to use it through client side, we will now build JS templates which will be outputted to the page.
@@ -465,7 +479,8 @@ function ziggeo_content_replace_templates($matches)
                         videos: {
                             width: <?php echo $wall['video_width']; ?>,
                             height: <?php echo $wall['video_height']; ?>,
-                            autoplay: <?php echo ($wall['autoplay']) ? 'true' : 'false'; ?>
+                            autoplay: <?php echo ($wall['autoplay']) ? 'true' : 'false'; ?>,
+							autoplaytype: '<?php echo $autoplaytype; ?>'
                         },
                         indexing: {
                             perPage: <?php echo $wall['videos_per_page']; ?>,
@@ -507,14 +522,14 @@ function ziggeo_content_replace_templates($matches)
                             }, 10000 );<?php //10 seconds should be enough for page to load and we do not need to have this set up right away. ?>
                         }
                     </script>
-                    <?php                    
+                    <?php
                 }
                 else {
                     //video wall must be shown right away..
                     ?>
                     <script type="text/javascript" class="runMe">
                         jQuery(document).ready( function () {
-                            ziggeoShowVideoWall('<?php echo $wallID; ?>');                            
+                            ziggeoShowVideoWall('<?php echo $wallID; ?>');
                         });
                     </script>
                     <?php
@@ -561,7 +576,8 @@ function ziggeo_content_replace_templates($matches)
 function ziggeo_content_filter($content) {
 
     //Match the current setups - the ones done by previous versions
-    $content = preg_replace_callback("|\\[ziggeo\\](.*)\\[/ziggeo\\]|", 'ziggeo_content_replace', $content);
+    //commenting out for now, however looking to remove it. It is not using templates so if template is set for comments, this would break the workflow by showing pre-coded template, instead of one created and selected by customer, still leaving it commented out for just in case.
+    //$content = preg_replace_callback("|\\[ziggeo\\](.*)\\[/ziggeo\\]|", 'ziggeo_content_replace', $content);
 
     //Match the new setups - must be made after the above, since this one will match that one as well..
 

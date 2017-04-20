@@ -124,7 +124,17 @@ function handleEndlessScrollWalls(wall, id, data, _new) {
                         ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                         ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                         ' ziggeo-video="' + data[i].token + '"' +
-                    '></ziggeo>';
+                        ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' );
+
+		//in case we need to add the class to it
+		if(ZiggeoWall[id].videos.autoplaytype !== "") {
+			tmp_embedding += ' class="ziggeo-autoplay-' +
+				( ( ZiggeoWall[id].videos.autoplaytype === 'continue-end' ) ? 'continue-end' : 'continue-run' ) +
+				'"';
+		}
+
+		//finalize the embedding
+		tmp_embedding += '></ziggeo>';
 
         //show all videos
         if(ZiggeoWall[id].indexing.status.indexOf('all') > -1 ) {
@@ -238,13 +248,22 @@ function handlePagedWalls(wall, id, html, data) {
     var newPage = true;
 
     for(i = 0, j = data.length, tmp=''; i < j; i++, tmp='') {
-        
+
         var tmp_embedding = '<ziggeo ' +
                         ' ziggeo-width=' + ZiggeoWall[id].videos.width +
                         ' ziggeo-height=' + ZiggeoWall[id].videos.height +
                         ' ziggeo-video="' + data[i].token + '"' +
-                        ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' ) +
-                    '></ziggeo>';
+                        ( (usedVideos === 0 && ZiggeoWall[id].videos.autoplay) ? ' ziggeo-autoplay ' : '' );
+
+		//in case we need to add the class to it
+		if(ZiggeoWall[id].videos.autoplaytype !== "") {
+			tmp_embedding += ' class="ziggeo-autoplay-' +
+				( ( ZiggeoWall[id].videos.autoplaytype === 'continue-end' ) ? 'continue-end' : 'continue-run' ) +
+				'"';
+		}
+
+		//finalize the embedding
+		tmp_embedding += '></ziggeo>';
 
         //show all videos
         if(ZiggeoWall[id].indexing.status.indexOf('all') > -1 ) {
@@ -487,3 +506,125 @@ function ziggeoRemoveOverlayWithRecorder() {
     jQuery("#ziggeo-video-screen").remove();
     jQuery("#ziggeo-overlay-screen").remove();
 }
+
+//event to detect the playback being stopped
+//since plugin currently uses v1 only we only need to use v1 events and methods at this time
+//used to search through object..
+function ZiggeoSearchForSameObject(obj, key, val) {
+	//a bit of control
+	if(typeof obj !== "object") {
+		console.error( obj + ' is not a valid object');
+		return false;
+	}
+
+	for(prop in obj) {
+		if(obj.hasOwnProperty(prop)) {
+			if(key === 'video')	{
+				if(obj[prop].original_options.video === val) {
+					//we got a match..
+					return obj[prop];
+				}
+			}
+			else if(key === 'element') {
+				if(obj[prop].$el[0] === val) {
+					//we got a match..
+					return obj[prop];
+					break;
+				}
+			}
+			else {
+				//for general search through object..might be needed
+				if(obj[prop] === val)	{ return obj[prop]; }
+			}
+		}
+	}
+	
+	return false;
+}
+
+ZiggeoApi.Events.on("stop", function ( data ) {
+	//NOTE v1 sets the class name on the div within ziggeo element ziggeo.div.className
+	//NOTE ZiggeoApi.Embed.__views holds v1 videos only
+	//NOTE v2 sets the class name on the ziggeoplayer element directly
+
+	var currentPlayer = {token: data.video.token, elem: '', view: ''};
+	var nextPlayer = {};
+	var firstPlayer = {};
+	var tmp = null;
+
+	if(currentPlayer.view = ZiggeoSearchForSameObject(ZiggeoApi.Embed.__views, 'video', currentPlayer.token)) {
+		//now we know the current player element
+		
+		currentPlayer.elem = currentPlayer.view.$el[0];
+		
+		//this is the first point where we can see if it should be autoplayed or not..
+		if(currentPlayer.elem.parentElement.tagName === "ZIGGEO" && currentPlayer.elem.className.indexOf('ziggeo-autoplay-') > -1) {
+			//we continue - it is v1
+			v = 1;
+		}
+		else if(currentPlayer.elem.parentElement.tagName === "ZIGGEOPLAYER" && currentPlayer.elem.parentElement.className.indexOf('ziggeo-autoplay-') > -1) {
+			//we continue - it is v2
+			v = 2;
+		}
+		else {
+			//we bail out, the video is not from autoplay family
+			return false;
+		}
+
+		//lets find the next one
+		if(tmp = currentPlayer.elem.parentElement.nextElementSibling) {
+			for(i = 0; i < 2; i++, tmp = tmp.nextElementSibling) {
+				if(tmp.tagName === "ZIGGEO") {
+					//in some cases the player will be followed by a player..so this would run
+					//nextPlayer.elem = currentPlayer.elem.$el.nextElementSibling;
+					//now search the object again to find the next element..this time we search with $el
+					if(nextPlayer.view = ZiggeoSearchForSameObject(ZiggeoApi.Embed.__views, 'element', tmp.children[0])) {
+						nextPlayer.view.play();
+						nextPlayer.elem = tmp;
+					}
+					
+					return true;
+				}
+				else if(tmp.tagName === "ZIGGEOPLAYER") {
+					//since v2 is within a different place we need to do this a bit differently...
+					nextPlayer.elem = tmp;
+					nextPlayer.view = ZiggeoApi.V2.Player.findByElement(nextPlayer.elem);
+					nextPlayer.view.play();
+
+					return true;
+				}
+			}
+		}
+		else {
+			if(v === 1) {
+				//here we would handle the `run` case
+				if(currentPlayer.elem.$el[0].className.indexOf('continue-run') > -1) {
+					//At this place we go back to the first element and play it again.
+					if(currentPlayer.elem.$el[0].parentElement.parentElement.className.indexOf('ziggeo_videoWall') > -1) {
+						//we got the video wall...
+						if(firstPlayer.elem = ZiggeoSearchForSameObject(ZiggeoApi.Embed.__views, 'element', currentPlayer.elem.$el[0].parentElement.parentElement.childrenNodes[0])) {
+							firstPlayer.elem.play();
+						}
+					}
+				}
+			}
+			else if(v === 2) { //this does not actually work for now because v2 does not have global events..TODO
+				//here we would handle the `run` case
+				if(currentPlayer.elem.$el[0].parentElement.className.indexOf('continue-run') > -1) {
+					//At this place we go back to the first element and play it again.
+					if(currentPlayer.elem.$el[0].parentElement.parentElement.className.indexOf('ziggeo_videoWall') > -1) {
+						//we got the video wall...
+						if(firstPlayer.elem = ZiggeoSearchForSameObject(ZiggeoApi.Embed.__views, 'element', currentPlayer.elem.$el[0].parentElement.parentElement.childrenNodes[0])) {
+							firstPlayer.elem.play();
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+	}
+
+	//indicating that we did not do anything..
+	return false;
+});

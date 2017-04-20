@@ -169,6 +169,6 @@ function ziggeo_bbPress_add_button($buttons) {
     <?php
 
     return $buttons;
- };
+};
 
 ?>

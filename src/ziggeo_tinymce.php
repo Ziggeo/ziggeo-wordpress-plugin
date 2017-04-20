@@ -27,12 +27,16 @@ function ziggeo_check_mce() {
 
                     //If current user can edit the posts, then they should be able to add Ziggeo video..it does not matter if it is on public side or not..
 
-                    if(current_user_can('edit_posts')) {
-                        //Registering our plugin in the list of TinyMCE list of external plugins
-                        add_filter('mce_external_plugins', 'ziggeo_mce_register');
-                        //Adding a button to the TinyMCE toolbar
-                        add_filter('mce_buttons', 'ziggeo_mce_add_button');
-                    }
+                    //well due to the bbPress bug, this check causes issues otherwise it complains about bb_user not done right...so lets add another check..
+                    //this one helps us post/save things when creating posts, otherwise if commented out or removed, it would not work. It still shows error in loading of the page to create a post :/
+                    if( (isset($_GET) || count($_GET) > 0 ) && (!isset($_POST) || count($_POST) === 0 ) ) {
+						if(current_user_can('edit_posts')) {
+							//Registering our plugin in the list of TinyMCE list of external plugins
+							add_filter('mce_external_plugins', 'ziggeo_mce_register');
+							//Adding a button to the TinyMCE toolbar
+							add_filter('mce_buttons', 'ziggeo_mce_add_button');
+						}
+					}
                 }
             }
         }
