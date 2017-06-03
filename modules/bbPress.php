@@ -21,7 +21,6 @@ function ZiggeoIntegration_bbPress_details() {
 
 //Function to call to see if the main / base plugin is present or not.
 function ZiggeoIntegration_bbPress_checkbase() {
-    //since Gravity Forms integration should only run in the back, we can check out if it exists using the following
     if ( is_plugin_active('bbpress/bbpress.php') ) {
         return true;
     }
