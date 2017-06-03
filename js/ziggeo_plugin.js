@@ -1,11 +1,17 @@
-//in case there are multiple walls on the same page, we want to be sure not to cause issues. This should catch it and not declare the function again.                    
+//in case there are multiple walls on the same page, we want to be sure not to cause issues. This should catch it and not declare the function again.
 if(typeof ziggeoShowVideoWall !== 'function') {
     //show video wall based on its ID
     function ziggeoShowVideoWall(id, searchParams) {
 
-        if(searchParams === undefined || searchParams === "undefined" || searchParams === null || typeof(searchParams) != "string") {
-            searchParams = "";
+        if(searchParams === undefined || searchParams === "undefined" || searchParams === null || 
+        	typeof(searchParams) != "object") {
+            searchParams = {};
         }
+        var search_obj = {
+			limit: 100,
+			tags: (ZiggeoWall[id].tags) ? ZiggeoWall[id].tags : "",
+			skip: (searchParams.skip) ? searchParams.skip : 0
+		}
 
         //reference to wall
         var wall = document.getElementById(id);
@@ -34,7 +40,7 @@ if(typeof ziggeoShowVideoWall !== 'function') {
         //To show the page we must first index videos..
 
         //We are making it get 100 videos data per call
-        ZiggeoApi.Videos.index( 'limit=100&tags='+ZiggeoWall[id].tags + searchParams, {
+        ZiggeoApi.Videos.index( search_obj, {
             success: function (args, data) {
                 if(data.length > 0) {
                     //we got some videos back
@@ -231,7 +237,7 @@ function ziggeo_endlessScroll() {
         else {
             //we are using any data that we already have and create a call to grab new ones as well.
             handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
-            ziggeoShowVideoWall(id, '&skip=' + ZiggeoWall['continueFrom']);
+            ziggeoShowVideoWall(id, { skip: ZiggeoWall['continueFrom'] });
         }
     }
 }
@@ -324,7 +330,7 @@ function handlePagedWalls(wall, id, html, data) {
 
             html += tmp;
             tmp = '';
-            newPage = false;                                                    
+            newPage = false;
         }
 
         //combining the code if any
@@ -336,7 +342,7 @@ function handlePagedWalls(wall, id, html, data) {
         if(currentVideosPageCount === ZiggeoWall[id].indexing.perPage) {
             //Yup, we do
             if(ZiggeoWall[id].indexing.showPages) {
-                html += '</div>';                                                    
+                html += '</div>';
             }
             currentVideosPageCount = 0;
             newPage = true;
@@ -556,20 +562,37 @@ ZiggeoApi.Events.on("stop", function ( data ) {
 		//now we know the current player element
 		
 		currentPlayer.elem = currentPlayer.view.$el[0];
-		
-		//this is the first point where we can see if it should be autoplayed or not..
-		if(currentPlayer.elem.parentElement.tagName === "ZIGGEO" && currentPlayer.elem.className.indexOf('ziggeo-autoplay-') > -1) {
-			//we continue - it is v1
-			v = 1;
-		}
-		else if(currentPlayer.elem.parentElement.tagName === "ZIGGEOPLAYER" && currentPlayer.elem.parentElement.className.indexOf('ziggeo-autoplay-') > -1) {
-			//we continue - it is v2
-			v = 2;
+
+		//for cases outside of video wall...
+		if(currentPlayer.elem.parentElement) {
+			//this is the first point where we can see if it should be autoplayed or not..
+			if(currentPlayer.elem.parentElement.tagName === "ZIGGEO" && currentPlayer.elem.className.indexOf('ziggeo-autoplay-') > -1) {
+				//we continue - it is v1
+				v = 1;
+			}
+			else if(currentPlayer.elem.parentElement.tagName === "ZIGGEOPLAYER" && currentPlayer.elem.parentElement.className.indexOf('ziggeo-autoplay-') > -1) {
+				//we continue - it is v2
+				v = 2;
+			}
+			else {
+				//we bail out, the video is not from autoplay family
+				return false;
+			}
 		}
 		else {
-			//we bail out, the video is not from autoplay family
 			return false;
 		}
+if(v === 1) {
+	//if it is not the last player in the list
+	if(tmp = currentPlayer.elem.parentElement.nextElementSibling) {
+		We can grab the cid from the element using "data-active-dom-element" attribute value, however we still need to find the embedding with this info to be able to play it.
+	}
+	//it is last
+	else {
+	}
+}
+
+return true;
 
 		//lets find the next one
 		if(tmp = currentPlayer.elem.parentElement.nextElementSibling) {
