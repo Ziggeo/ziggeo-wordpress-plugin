@@ -16,7 +16,7 @@ function ziggeo_filtersInit() {
 function ziggeo_content_replace($matches) {
     $options = get_option('ziggeo_video');
     $default = ZIGGEO_DEFAULTS_PLAYER;
-    $video_token = trim($matches[1]);
+    $video_token = trim($matches[1], " \t\n\r\0\x0B".chr(0xC2).chr(0xA0));
     $tagname = "ziggeo";
     if (@$video_token) { //so if there is video token it is player, while if it is not set, it is not.. This means that it was not as easy to set up re-recorder.
         if (isset($options, $options["beta"])) {
@@ -77,6 +77,8 @@ function ziggeo_content_replace_templates($matches)
         $locationTag = 'post';
     }
 
+    $c_user = ( $current_user->user_login == "" ) ? 'Guest' : $current_user->user_login;
+
     //We are listing all of the required parameters for that specific tag. All of the player tags will however have ziggeo as their base.
     $presets = array (
         'ziggeo' => array (
@@ -89,17 +91,18 @@ function ziggeo_content_replace_templates($matches)
                         'height' => 240
                     ),
         'ziggeorecorder' => array (
-                        'tags' => array ('wordpress', $current_user->user_login, $locationTag ),
+                        'tags' => array ('wordpress', $c_user, $locationTag ),
                         'width' => 320,
                         'height' => 240
                     ), //tags are pre-set
         'ziggeorerecorder' => array (
                         'video' => '', //requires token to play video. If it is not added, we will pass empty token, so that they are shown the player error and know that they need to fix it.
-                        'tags' => array ('wordpress', $current_user->user_login, $locationTag ),
+                        'tags' => array ('wordpress', $c_user, $locationTag ),
                         'width' => 320,
                         'height' => 240
                     ),
         'ziggeouploader' => array (
+                        'tags' => array ('wordpress', $c_user, $locationTag, 'uploader' ),
                         'perms' => array ('allowupload', 'forbidrecord'),
                         'width' => 320,
                         'height' => 240
@@ -174,7 +177,7 @@ function ziggeo_content_replace_templates($matches)
         }
 
         //These are parameters sent to us through the [ziggeo] shortcode. It can be a raw setup like: " width=320 height=240 limit=4" or template ID/name
-        $parameters = trim($matches[1]);
+        $parameters = trim($matches[1], " \t\n\r\0\x0B".chr(0xC2).chr(0xA0));
         $fullMatch = $matches[0];
 
         //It could be an empty list.. if it is, then we should apply defaults to the same and just send it up..
@@ -296,19 +299,19 @@ function ziggeo_content_replace_templates($matches)
 
                 //It would not be possible to use pixels and percentages in the same time, so to avoid bad HTML and CSS code percentages will rule the pixels when both are set
                 if(!isset($wall['scalable_width']) && isset($wall['fixed_width'])) {
-                    $wallStyles .= 'width:' . trim($wall['fixed_width']) . 'px;';
+                    $wallStyles .= 'width:' . trim($wall['fixed_width'], " \t\n\r\0\x0B".chr(0xC2).chr(0xA0)) . 'px;';
                 }
 
                 if(!isset($wall['scalable_height']) && isset($wall['fixed_height'])) {
-                    $wallStyles .= 'height:' . trim($wall['fixed_height']) . 'px;';
+                    $wallStyles .= 'height:' . trim($wall['fixed_height'], " \t\n\r\0\x0B".chr(0xC2).chr(0xA0)) . 'px;';
                 }
 
                 if(isset($wall['scalable_width'])) {
-                    $wallStyles .= 'width:' . trim($wall['scalable_width']) . '%;';
+                    $wallStyles .= 'width:' . trim($wall['scalable_width'], " \t\n\r\0\x0B".chr(0xC2).chr(0xA0)) . '%;';
                 }
 
                 if(isset($wall['scalable_height'])) {
-                    $wallStyles .= 'height:' . trim($wall['scalable_height']) . '%;';
+                    $wallStyles .= 'height:' . trim($wall['scalable_height'], " \t\n\r\0\x0B".chr(0xC2).chr(0xA0)) . '%;';
                 }
 
                 if(isset($wall['show'])) {
@@ -464,7 +467,7 @@ function ziggeo_content_replace_templates($matches)
                 }
 
                 //added to allow the video wall to process videos of the current user without requiring the PHP code to run it
-                $wall_tags = str_ireplace( '%ZIGGEO_USER%', $current_user->user_login, $wall_tags );
+                $wall_tags = str_ireplace( '%ZIGGEO_USER%', $c_user, $wall_tags );
 
                 ?>
                 <script type="text/javascript" class="runMe">
@@ -630,7 +633,7 @@ function ziggeo_parameter_prep($data) {
     $tmp_str2 = '';
 
     foreach($tmp_str as $key => $value) {
-        $value = trim($value);
+        $value = trim($value, " \t\n\r\0\x0B".chr(0xC2).chr(0xA0));
         if( $value !== '' && $value !== '[' && $value !== '[ziggeo' && $value !== ']' && $value !== '""'&& $value !== '"'
             && $value !== 'player' && $value !== 'recorder' && $value !== 'rerecorder' && $value !== '[ziggeovideowall') {
 
@@ -701,7 +704,7 @@ function ziggeo_wall_parameter_values($toParse){
     $tmp = explode(' ', $toParse);
 
     foreach($tmp as $key => $value) {
-        $value = trim($value);
+        $value = trim($value, " \t\n\r\0\x0B".chr(0xC2).chr(0xA0));
         if( $value !== '' && $value !== ']' && $value !== '""'&& $value !== '"'
             && $value !== 'wall') {
                 //explode on = and trim ' and "

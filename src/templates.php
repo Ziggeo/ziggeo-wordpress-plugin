@@ -175,6 +175,38 @@ function ziggeo_template_params($id) {
     return false;
 }
 
+//function is OK for v1, however for v2 it would cause issues with parameters using minus (dash) as if turned into
+// object as is, it would be two variables, instead of name, and error out..
+// TODO: Add code to handle this 
+function ziggeo_template_params_as_object($id) {
+	$parameters = ziggeo_template_params($id);
+
+	if($parameters) {
+		//width=222 height=222 perms=\"allowupload\"
+		// width=640 height=480 face_outline perms='allowupload' limit=30
+
+		$parameters = trim($parameters);
+		$parameters = '"' . $parameters;
+
+		$parameters = str_replace('=', '":', $parameters);
+		$parameters = str_replace("\'", "'", $parameters);
+		$parameters = str_replace('\"', "'", $parameters);
+		$parameters = str_replace("\'", "'", $parameters);
+
+		//we need to trim away any unwanted spaces
+		$parameters = trim($parameters);
+
+		//this could lead to issues if there is a value with space! however this is needed for the object
+		$parameters = str_replace(' ', ',"', $parameters);
+
+		//"width":640,"height":480,"face_outline":true,"perms":'allowupload',"limit":30
+
+		return $parameters;
+	}
+
+	return false;
+}
+
 //adds, appends or replaces the current value set in the template
 // > embeddingString - the body of the template
 // > parameter - the parameter that we are after in the template

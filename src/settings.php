@@ -36,6 +36,8 @@ function ziggeo_admin_init() {
             add_settings_field('ziggeo_recorder_config', 'Ziggeo Recorder Config', 'ziggeo_recorder_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
             add_settings_field('ziggeo_player_config', 'Ziggeo Player Config', 'ziggeo_player_config_setting_string', 'ziggeo_video', 'ziggeo_video_main');
             add_settings_field('ziggeo_beta', 'Use Ziggeo Beta Player', 'ziggeo_beta_setting_string', 'ziggeo_video', 'ziggeo_video_main');
+            add_settings_field('ziggeo_recorder_integrations_default', 'Ziggeo Recorder for Integrations',
+            					'ziggeo_recorder_integrations_default_string', 'ziggeo_video', 'ziggeo_video_main');
 
         //Integrations tab
         add_settings_field('ziggeo_integration_change', '', 'ziggeo_integration_change_text', 'ziggeo_video', 'ziggeo_video_integrations');
@@ -433,6 +435,34 @@ function ziggeo_video_general_text() {
         <?php
     }
 
+ 	function ziggeo_recorder_integrations_default_string() {
+        $options = get_option('ziggeo_video');
+
+        if( !isset($options, $options['integrations_recorder_template']) ) {
+    		$options['integrations_recorder_template'] = false;
+    	}
+        ?>
+        <select id="integrations_recorder_template" name="ziggeo_video[integrations_recorder_template]">
+                <option value="">Default</option>
+        <?php
+            $list = ziggeo_templates_index();
+            if($list) {
+                foreach($list as $template => $value)
+                {
+                    if( $template === $options['integrations_recorder_template'] ) {
+                        ?><option value="<?php echo $template; ?>" selected><?php echo $template; ?></option><?php
+                    }
+                    else{
+                        ?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
+                    }
+                }
+            }
+        ?>
+        </select>
+        <label for="integrations_recorder_template">Some integrations will use this template as their default</label>
+    	<?php
+ 	}
+
     //Used for styling purposes only.
     function ziggeo_comments_html() {
         ?>
@@ -664,7 +694,10 @@ function ziggeo_video_validate($input) {
         //templates tab
             'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
         //general tab
-            'token' => true, 'showVideoAidButton' => true, 'recorder_config' => true, 'player_config' => true, 'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true, 'comment_roles' => true,
+            'token' => true, 'showVideoAidButton' => true, 'recorder_config' => true, 'player_config' => true, 
+            'beta' => true, 'disable_video_comments' => true, 'disable_text_comments' => true,
+            'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
+            'comment_roles' => true, 'integrations_recorder_template' => true,
         //integrations tab
             'integrations'
     );
