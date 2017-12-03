@@ -21,9 +21,11 @@ function ZiggeoIntegration_bbPressEnableTinyMCEVisualTab_details() {
 
 //Function to call to see if the main / base plugin is present or not.
 function ZiggeoIntegration_bbPressEnableTinyMCEVisualTab_checkbase() {
-    //since Gravity Forms integration should only run in the back, we can check out if it exists using the following
-    if ( is_plugin_active('bbpress-enable-tinymce-visual-tab/init.php') ) {
-        return true;
+	//this requires bbPress to run, so we should check for the same as well..
+	if ( is_plugin_active('bbpress/bbpress.php') ) {
+		if ( is_plugin_active('bbpress-enable-tinymce-visual-tab/init.php') ) {
+			return true;
+		}
     }
     return false;
 }
@@ -47,7 +49,7 @@ function ZiggeoIntegration_bbPressEnableTinyMCEVisualTab_run() {
 //
     add_filter( "teeny_mce_buttons", 'ziggeo_test');
 
-    add_filter( 'bbp_after_get_the_content_parse_args', 'ziggeo_test2');
+//    add_filter( 'bbp_after_get_the_content_parse_args', 'ziggeo_test2');
 }
 function ziggeo_test2($args) {
 //    var_dump($args);

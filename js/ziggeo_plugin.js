@@ -10,7 +10,8 @@ if(typeof ziggeoShowVideoWall !== 'function') {
         var search_obj = {
 			limit: 100,
 			tags: (ZiggeoWall[id].tags) ? ZiggeoWall[id].tags : "",
-			skip: (searchParams.skip) ? searchParams.skip : 0
+			skip: (searchParams.skip) ? searchParams.skip : 0,
+			approved: ZiggeoWall[id].status
 		}
 
         //reference to wall
@@ -77,7 +78,7 @@ if(typeof ziggeoShowVideoWall !== 'function') {
                 else {
                     //no results
                     //follow the procedure for no videos (on no videos)
-                    console.log('No videos found matching the requested:' + args);
+                    console.log('No videos found matching the requested:' + JSON.stringify(args));
 
                     //Lets process no videos which will return false or built HTML code.
                     var html = ziggeoWallHandleNoVideos(id, html);
@@ -100,7 +101,7 @@ if(typeof ziggeoShowVideoWall !== 'function') {
                 ZiggeoWall[id].processing = false;
             },
             failure: function (args, error) {
-                console.log('This was the error that we got back when searching for ' + args +  ':' + error);
+                console.log('This was the error that we got back when searching for ' + JSON.stringify(args) +  ':' + error);
             }
         });
     }
@@ -121,7 +122,7 @@ function handleEndlessScrollWalls(wall, id, data, _new) {
 
     for(i = 0, tmp=''; i < j; i++, tmp='') {
 
-        //break once we load enought of videos
+        //break once we load enough of videos
         if(i >= ZiggeoWall[id].indexing.perPage) {
             break;
         }
@@ -228,17 +229,19 @@ function ziggeo_endlessScroll() {
 		//lets lock the indexing to not be called more than once for same scroll action..
 		ZiggeoWall[id].processing = true;
 
-        //do we have more data than we need to show? if we do, lets show it right away, if not, we should load more data and show what we have as well..
-        if(ZiggeoWall['loadedData'].length > ZiggeoWall[id].indexing.perPage) {
-            //we use the data we already got from our servers
-            handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
-			ZiggeoWall[id].processing = false;
-        }
-        else {
-            //we are using any data that we already have and create a call to grab new ones as well.
-            handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
-            ziggeoShowVideoWall(id, { skip: ZiggeoWall['continueFrom'] });
-        }
+		if(ZiggeoWall['loadedData']) {
+			//do we have more data than we need to show? if we do, lets show it right away, if not, we should load more data and show what we have as well..
+			if(ZiggeoWall['loadedData'].length > ZiggeoWall[id].indexing.perPage) {
+				//we use the data we already got from our servers
+				handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
+				ZiggeoWall[id].processing = false;
+			}
+			else {
+				//we are using any data that we already have and create a call to grab new ones as well.
+				handleEndlessScrollWalls(wall, id, ZiggeoWall['loadedData']);
+				ziggeoShowVideoWall(id, { skip: ZiggeoWall['continueFrom'] });
+			}
+		}
     }
 }
 // function to handle the video walls with the pagination
