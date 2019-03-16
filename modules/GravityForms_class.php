@@ -53,7 +53,7 @@ class ZiggeoIntegrationGravityFormsClass extends GFAddOn {
 
                     <?php
                     //index function changes " to ' to make sure that we do not have issues with TinyMCE, so we can use it here as well.
-                    $list = ziggeo_templates_index();
+                    $list = ziggeo_p_templates_index();
                     if($list) {
                         foreach($list as $template => $value)
                         {
@@ -215,14 +215,14 @@ if(class_exists('GF_Field')){
             $field .= '<div id="' . $field_id . '" class="' . $class . '" ' . $tabindex . ' ' . $logic_event . ' ' . $placeholder_attribute . ' ' . $invalid_attribute . ' ' . $disabled_text . '>';
 
                 //Loads the template based on the selection in our dropdown..
-                $tmp = ziggeo_content_replace_templates(array($this->ziggeo_template_setting, $this->ziggeo_template_setting));
+                $tmp = ziggeo_p_content_parse_templates(array($this->ziggeo_template_setting, $this->ziggeo_template_setting));
 
                 if(strpos($tmp, 'ZiggeoWall') > -1) {
                     //we have video wall, most likely we will not do anything with it..
                 }
                 else {
                     //We now add the ID to the embedding so that we can have it fire up on the submitted event and fill out this field.. so if there are multiple ones on the form by any chance, we always update the one that the recording was made for..
-                    $tmp = add_replace_template_parameter_value($tmp, 'ziggeo-id', $ziggeo_embedding_id, 'replace');
+                    $tmp = ziggeo_p_template_add_replace_parameter_value($tmp, 'ziggeo-id', $ziggeo_embedding_id, 'replace');
                 }
 
                 // We include the prepared $tmp into the field.

@@ -1,0 +1,668 @@
+# Copyright (C) 2019 Ziggeo
+# This file is distributed under the same license as the Ziggeo Video Posts and Comments plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ziggeo Video Posts and Comments 2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ZiggeoWordpressComments\n"
+"Last-Translator: Bane <bane@ziggeo.com>\\n"
+"Language-Team: Bane <bane@ziggeo.com>\\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-03-14T14:22:12+01:00\n"
+"PO-Revision-Date: 2019-03-14 14:25+01:00\n"
+"X-Generator: WP-CLI 2.1.0\n"
+"X-Domain: ziggeo\n"
+
+#. Plugin Name of the plugin
+msgid "Ziggeo Video Posts and Comments"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://ziggeo.com"
+msgstr ""
+
+#. Description of the plugin
+msgid "Plugin for adding videos to your website quickly and easily. It is powered by Ziggeo and allows you to add video posts and video comments and much more."
+msgstr ""
+
+#. Author of the plugin
+msgid "Ziggeo"
+msgstr ""
+
+#: templates/template_parameters.php:80
+msgid "Default"
+msgstr ""
+
+#: templates/template_parameters.php:225
+msgid "Integer value representing the width of player or recorder that you are setting this for. This will not change the width of recording, just of the video screen size"
+msgstr ""
+
+#: templates/template_parameters.php:235
+msgid "Integer value representing the height of player or recorder that you are setting this for. This will not change the height of recording, just of the video screen size"
+msgstr ""
+
+#: templates/template_parameters.php:245
+msgid "Integer value representing the width of the recording. This will request specific width of recording, regardless of the size of the preview."
+msgstr ""
+
+#: templates/template_parameters.php:255
+msgid "Integer value representing the height of the recording. This will request specific height of recording, regardless of the size of the preview."
+msgstr ""
+
+#: templates/template_parameters.php:265
+msgid "Boolean value that allows you to make embedding capture the full size of the bounding box (applied on load only)."
+msgstr ""
+
+#: templates/template_parameters.php:275
+msgid "Boolean value that says if this is popup or standard embedding."
+msgstr ""
+
+#: templates/template_parameters.php:285
+msgid "Integer value setting up the width of the popup holding the embedding."
+msgstr ""
+
+#: templates/template_parameters.php:295
+msgid "Integer value setting up the height of the popup holding the embedding."
+msgstr ""
+
+#: templates/template_parameters.php:305
+msgid "String representation of a video token or video key."
+msgstr ""
+
+#: templates/template_parameters.php:315
+msgid "Boolean value setting if face outline would be shown on the video or not."
+msgstr ""
+
+#: templates/template_parameters.php:325
+msgid "String representing stream token or stream key."
+msgstr ""
+
+#: templates/template_parameters.php:335
+msgid "Array value determining how the embedding is used. Possible values are \"recorder\", \"player\", \"rerecorder\" For more modes, separate values with comma."
+msgstr ""
+
+#: templates/template_parameters.php:346
+msgid "Array holding the tags that the new video should be associated with. By default it will add \\\"wordpress, {username}\\\"."
+msgstr ""
+
+#: templates/template_parameters.php:356
+msgid "Array allowing you to select what effects to be applied to recorder, or which video stream to get when playing (the one with the same effects applied)."
+msgstr ""
+
+#: templates/template_parameters.php:366
+msgid "String of JSON formatted data that you wish to pass with the video."
+msgstr ""
+
+#: templates/template_parameters.php:376
+msgid "Array value with video permissions that you could apply: \"<span title=\"Enables uploading of videos for your customer\">allowupload</span>\", \"<span title=\"Disables recording of video\">forbidrecord</span>\", \"<span title=\"Disables switching between uploading and recording\">forbidswitch</span>\", \"<span title=\"Disables rerecording completely\">forbidrerecord</span>\", \"<span title=\"Overwrites the video if a video with the same key already exists\">forceoverwrite</span>\"."
+msgstr ""
+
+#: templates/template_parameters.php:387
+msgid "Boolean value to disable recorder's initial screen."
+msgstr ""
+
+#: templates/template_parameters.php:397
+msgid "Boolean value to disable the camera and microphone tests prior to recording."
+msgstr ""
+
+#: templates/template_parameters.php:407
+msgid "Boolean value to show (or hide) the duration of recording on the recorder."
+msgstr ""
+
+#: templates/template_parameters.php:417
+msgid "Enables/disables the selection of snapshots after the recording."
+msgstr ""
+
+#: templates/template_parameters.php:427
+msgid "Boolean value to hide rerecord option while picking snapshots."
+msgstr ""
+
+#: templates/template_parameters.php:437
+msgid "Boolean value to automatically crop videos to specific resolution (this cuts all the parts that are bigger than set resolution)."
+msgstr ""
+
+#: templates/template_parameters.php:447
+msgid "Boolean value to automatically add black surface padding if video does not match set resolution - can only be applied to recorder."
+msgstr ""
+
+#: templates/template_parameters.php:457
+msgid "String that tells recorder under which key the video should be saved under."
+msgstr ""
+
+#: templates/template_parameters.php:467
+msgid "Integer value limiting the number of seconds that video / recording can be."
+msgstr ""
+
+#: templates/template_parameters.php:477
+msgid "Integer value to set when the recording should start after selecting same. Defaults to 3 seconds. Use 0 to disable countdown."
+msgstr ""
+
+#: templates/template_parameters.php:487
+msgid "String value representing form field name to which video token would be passed over."
+msgstr ""
+
+#: templates/template_parameters.php:497
+msgid "String value holding jQuery selector to disable form submission until video is created."
+msgstr ""
+
+#: templates/template_parameters.php:507
+msgid "String value representing desired ID of embedding element so that it can be looked up using JavaScript code."
+msgstr ""
+
+#: templates/template_parameters.php:518
+msgid "Boolean value to tell if the video should start playing right away after recording."
+msgstr ""
+
+#: templates/template_parameters.php:529
+msgid "Boolean value to indicate if the video should automatically play back in player."
+msgstr ""
+
+#: templates/template_parameters.php:539
+msgid "Boolean value to set if you wish for the player to play the video indefinitely."
+msgstr ""
+
+#: templates/template_parameters.php:549
+msgid "String representing authorization token retrieved from the server side."
+msgstr ""
+
+#: templates/template_parameters.php:559
+msgid "String representing authorization token for use on client side."
+msgstr ""
+
+#: templates/template_parameters.php:569
+msgid "Integer value indicating how many (re)recordings you would allow to be made."
+msgstr ""
+
+#: templates/template_parameters.php:579
+msgid "Integer value to set after how many days you want to delete the recorded video (by default, never)."
+msgstr ""
+
+#: templates/template_parameters.php:589
+msgid "String value holding key or token of your video profile that you want to use."
+msgstr ""
+
+#: templates/template_parameters.php:599
+msgid "String value holding key or token of your meta profile that you want to use."
+msgstr ""
+
+#: templates/template_parameters.php:609
+msgid "Integer value setting the optimal width of the stream."
+msgstr ""
+
+#: templates/template_parameters.php:619
+msgid "Integer value setting the optimal height of the stream."
+msgstr ""
+
+#: templates/template_parameters.php:629
+msgid "String value to set title of the video being recorded."
+msgstr ""
+
+#: templates/template_parameters.php:639
+msgid "String value to set the description of the video."
+msgstr ""
+
+#: templates/template_parameters.php:649
+msgid "String value to limit the uploads to only specific extensions (all allowed by default)."
+msgstr ""
+
+#: templates/template_parameters.php:659
+msgid "Boolean value to reject videos if they are too long."
+msgstr ""
+
+#: templates/template_parameters.php:669
+msgid "Integer value to limit the size of videos being uploaded in bytes (no limit by default)."
+msgstr ""
+
+#: templates/template_parameters.php:679
+msgid "Boolean value to set a warning to be shown if framerate is too low."
+msgstr ""
+
+#: templates/template_parameters.php:689
+msgid "Boolean value to disable fullscreen option in player."
+msgstr ""
+
+#: templates/template_parameters.php:699
+msgid "Boolean value to set the player to play video in full width (regardless if hight gets cut or not)."
+msgstr ""
+
+#: templates/template_parameters.php:709
+msgid "String value of the name of the theme that you wish to have applied to your player."
+msgstr ""
+
+#: templates/comments_video_required.php:15
+msgid "Video Comment with optional text comment"
+msgstr ""
+
+#: admin/settings-tabs-expert.php:14
+msgid "Expert settings for everyone that wants a bit more options to change around."
+msgstr ""
+
+#: admin/settings-tabs-expert.php:68
+msgid "Select where you want the templates to be saved at. Default is \"DataBase\", previously was \"Files\"."
+msgstr ""
+
+#: admin/settings-tabs-general.php:24
+msgid "Get your Ziggeo API application token from following locations:"
+msgstr ""
+
+#: admin/settings-tabs-general.php:26
+msgid "US REGION"
+msgstr ""
+
+#: admin/settings-tabs-general.php:29
+msgid "EU REGION"
+msgstr ""
+
+#: admin/settings-tabs-general.php:33
+msgid "* Login to your account -> App -> Overview"
+msgstr ""
+
+#: admin/settings-tabs-general.php:46
+msgctxt "placeholder for APP token"
+msgid "Your app token goes here"
+msgstr ""
+
+#: admin/settings-tabs-general.php:64
+msgctxt "Plugin settings - general tab - feedback banner 1/X"
+msgid "We hope that you like the plugin. If you do, consider letting us know by"
+msgstr ""
+
+#: admin/settings-tabs-general.php:66
+msgctxt "Plugin settings - general tab - feedback banner 2/X"
+msgid "leaving a feedback on WordPress plugin page"
+msgstr ""
+
+#: admin/settings-tabs-general.php:68
+msgctxt "Plugin settings - general tab - feedback banner 3/X"
+msgid "That will help us and tell us that you want us to keep improving the plugin. Already did? Great - just"
+msgstr ""
+
+#: admin/settings-tabs-general.php:70
+msgctxt "Plugin settings - general tab - feedback banner - title"
+msgid "This will submit this page causing it to reload so that you are no longer shown this notice"
+msgstr ""
+
+#: admin/settings-tabs-general.php:72
+msgctxt "Plugin settings - general tab - feedback banner 4/X"
+msgid "click here"
+msgstr ""
+
+#: admin/settings-tabs-general.php:156
+#: admin/settings-tabs-general.php:227
+#: admin/settings-tabs-general.php:257
+msgctxt "dropdown option of default/unchanged value"
+msgid "Default"
+msgstr ""
+
+#: admin/settings-tabs-general.php:173
+msgid "Set up which template should integrations pick up and use."
+msgstr ""
+
+#: admin/settings-tabs-general.php:182
+msgid "Comments options"
+msgstr ""
+
+#: admin/settings-tabs-general.php:198
+msgid "By default the comments will get activated with the feature to add videos as comments (check this to disable it)"
+msgstr ""
+
+#: admin/settings-tabs-general.php:214
+msgid "Set video comment to be required, but allow your visitors to leave some text for you as well (next to video)"
+msgstr ""
+
+#: admin/settings-tabs-general.php:244
+msgid "This template will be applied to all comment recorders (it can be uploader template, recorder, ... the choice is yours)"
+msgstr ""
+
+#: admin/settings-tabs-general.php:287
+msgid "Want to have video comments only? Check this to set it as such ( leave unchecked to allow video and text comments )."
+msgstr ""
+
+#: admin/settings-tabs-general.php:310
+msgctxt "WP roles"
+msgid "Everyone is allowed"
+msgstr ""
+
+#: admin/settings-tabs-general.php:314
+msgctxt "WP roles"
+msgid "Subscribers"
+msgstr ""
+
+#: admin/settings-tabs-general.php:319
+msgctxt "WP roles"
+msgid "Contributors"
+msgstr ""
+
+#: admin/settings-tabs-general.php:323
+msgctxt "WP roles"
+msgid "Authors"
+msgstr ""
+
+#: admin/settings-tabs-general.php:326
+msgctxt "WP roles"
+msgid "Editors"
+msgstr ""
+
+#: admin/settings-tabs-general.php:329
+msgctxt "WP roles"
+msgid "Admins"
+msgstr ""
+
+#: admin/settings-tabs-general.php:332
+msgctxt "WP roles"
+msgid "Super Admins"
+msgstr ""
+
+#: admin/settings-tabs-general.php:335
+msgid "By selecting some role you allow people with the same role and higher one to use video comments, while it is disabled for everyone else (with lower capabilities)."
+msgstr ""
+
+#: admin/settings-tabs-general.php:345
+msgid "Global & Default options"
+msgstr ""
+
+#: admin/settings-tabs-general.php:357
+msgid "Ziggeo Recorder Config (leave blank for default settings)"
+msgstr ""
+
+#: admin/settings-tabs-general.php:370
+msgid "Ziggeo Player Config (leave blank for default settings)"
+msgstr ""
+
+#: admin/onboard-helper-missing-token.php:10
+msgid "You need to <a href=\""
+msgstr ""
+
+#: admin/settings.php:33
+msgid "Manage your templates"
+msgstr ""
+
+#: admin/settings.php:40
+msgid "Template ID"
+msgstr ""
+
+#: admin/settings.php:47
+msgid "Template Editor"
+msgstr ""
+
+#: admin/settings.php:56
+msgid "Ziggeo API APP Token"
+msgstr ""
+
+#: admin/settings.php:63
+msgid "Ziggeo Default language"
+msgstr ""
+
+#: admin/settings.php:77
+msgid "Disable Video Comments"
+msgstr ""
+
+#: admin/settings.php:84
+msgid "Require Video and have text as optional"
+msgstr ""
+
+#: admin/settings.php:91
+msgid "Video Comments recorder template"
+msgstr ""
+
+#: admin/settings.php:98
+msgid "Video Comments player template"
+msgstr ""
+
+#: admin/settings.php:105
+msgid "Disable Text Comments"
+msgstr ""
+
+#: admin/settings.php:112
+msgid "Minimal required permissions for video comments"
+msgstr ""
+
+#: admin/settings.php:126
+msgid "Ziggeo Recorder Config"
+msgstr ""
+
+#: admin/settings.php:133
+msgid "Ziggeo Player Config"
+msgstr ""
+
+#: admin/settings.php:140
+msgid "Ziggeo Recorder for Integrations"
+msgstr ""
+
+#: admin/settings.php:157
+msgid "Contact us on our platform"
+msgstr ""
+
+#: admin/settings.php:164
+msgid "Contact us on WordPress"
+msgstr ""
+
+#: admin/settings.php:171
+msgid "Lets chat"
+msgstr ""
+
+#: admin/settings.php:180
+msgid "Ziggeo Development Mode"
+msgstr ""
+
+#: admin/settings.php:187
+msgid "Where to save the templates"
+msgstr ""
+
+#: admin/settings.php:213
+msgid "Sync saved templates in file and database"
+msgstr ""
+
+#: admin/settings.php:236
+msgctxt "\"Templates Editor\" tab in settings"
+msgid "Templates Editor"
+msgstr ""
+
+#: admin/settings.php:237
+msgctxt "\"General\" tab in settings"
+msgid "General"
+msgstr ""
+
+#: admin/settings.php:238
+msgctxt "\"Integrations\" tab in settings"
+msgid "Integrations"
+msgstr ""
+
+#: admin/settings.php:239
+msgctxt "\"Contact Us\" tab in settings"
+msgid "Contact Us"
+msgstr ""
+
+#: admin/settings.php:240
+msgctxt "\"Expert Settings\" tab in settings"
+msgid "Expert Settings"
+msgstr ""
+
+#: admin/settings-validation.php:143
+msgid "Feedback banner was removed."
+msgstr ""
+
+#: admin/settings-validation.php:145
+msgid "<b>Thank you</b> for leaving us a feedback. We hope that you enjoy our plugin and we welcome any ideas or suggestions :)"
+msgstr ""
+
+#: admin/settings-validation.php:263
+msgid "We have saved your template, but since Template ID was not given, we have set one up for you! - \"%s\""
+msgstr ""
+
+#: admin/settings-validation.php:277
+msgid "Your template \"%s\" has been successfully created."
+msgstr ""
+
+#: admin/settings-validation.php:307
+msgid "Your template \"%s\" has been successfully updated."
+msgstr ""
+
+#: admin/settings-validation.php:321
+msgid "Your template \"%s\" has been successfully deleted."
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:14
+msgid "Regardless where your question is posted, we are happy to assist with the same, so all you need to do is ask."
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:21
+msgctxt "part of email and chat segment on contact us page 1/7"
+msgid "We are using forum and email helpdesk to provide assistance with any questions you might have."
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:22
+msgctxt "part of email and chat segment on contact us page 2/7"
+msgid "To contact us there, you can use any of the bellow details:"
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:26
+msgctxt "part of email and chat segment on contact us page 3/7"
+msgid "E-Mail"
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:32
+msgctxt "part of email and chat segment on contact us page 4/7"
+msgid "Our Knowledge Base system"
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:34
+msgid "Knowledge Base"
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:38
+msgctxt "part of email and chat segment on contact us page 5/7"
+msgid "WordPress plugin section of our forum"
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:40
+msgctxt "part of email and chat segment on contact us page 6/7"
+msgid "WordPress Plugin forum"
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:40
+msgctxt "part of email and chat segment on contact us page 7/7"
+msgid "where you might find the answers to your questions already being answered."
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:52
+msgctxt "contact us tab - wp forum 1/2"
+msgid "If you prefer to contact us via WordPress, all you need is to head to:"
+msgstr ""
+
+#: admin/settings-tabs-contactus.php:54
+msgctxt "contact us tab - wp forum 1/2"
+msgid "Ziggeo Plugin Support Section"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:18
+msgid "Welcome to templates - an easy way for you to set up the Ziggeo codes; you can call them from any post or page with a simple shortcode with the template ID, while everything is saved and handled for you by Ziggeo plugin."
+msgstr ""
+
+#: admin/settings-tabs-templates.php:23
+msgid "You can start from the default shortcode and work your way from it, or choose one that is pre-set with some specific options"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:35
+msgid "Give the template any name you wish here"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:54
+msgid "No templates yet, please create one"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:76
+msgid "Integer - after equal you simply add the number, no quotes"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:77
+msgid "Float - this is integer with decimal precision"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:78
+msgid "Boolean - you can just remove parameter (which equals to false) or add it and will be seen as true"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:79
+msgid "String - value holding numbers, characters and spaces (as needed), which must be enclosed in quotation marks on both sides (on start and end)"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:80
+msgid "Array - similar to string as it needs to be enclosed with quotation marks, but you can select multiple options, separating them with comma"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:81
+msgid "JSON - data formated as per JSON specification"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:90
+msgid "Ziggeo Player"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:94
+msgid "Ziggeo Recorder"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:98
+msgid "Ziggeo ReRecorder"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:102
+msgid "Ziggeo Uploader"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:132
+msgid "Turn into new"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:150
+msgid "Leave fields empty or checkboxes unchecked to not use it"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:160
+msgid "Ziggeo parameters that you can use in templates (Click to add)"
+msgstr ""
+
+#: admin/settings-tabs-templates.php:165
+msgid "Save Template"
+msgstr ""
+
+#: admin/settings-tabs-integrations.php:15
+msgid "A place where you can connect your Ziggeo plugin with different plugins you use in your WordPress website."
+msgstr ""
+
+#: admin/settings-tabs-integrations.php:16
+msgid "Have something you want to see here and it is not yet shown? Let us know!"
+msgstr ""
+
+#: admin/plugins.php:15
+msgctxt "\"Settings\" link on the Plugins page"
+msgid "Settings"
+msgstr ""
+
+#: admin/plugins.php:17
+msgctxt "\"Support\" link on the Plugins page"
+msgid "Support"
+msgstr ""
+
+#: core/hooks-examples.php:211
+msgid "Please add some templates first"
+msgstr ""
+
+#: core/integrations.php:20
+msgid "Integration for:"
+msgstr ""
+
+#: core/integrations.php:20
+msgid " - you can get it from "
+msgstr ""
+
+#: core/integrations.php:26
+msgid "Author:"
+msgstr ""
+
+#: core/integrations.php:39
+msgid "Author message:"
+msgstr ""

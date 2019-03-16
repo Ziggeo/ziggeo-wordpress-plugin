@@ -1,38 +1,68 @@
 === Ziggeo ===
-Contributors: oliverfriedmann, baned
-Donate link: https://ziggeo.com/
-Tags: video, comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
+Contributors: oliverfriedmann, baned, carloscsz409
+Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
-Tested up to: 4.5.3
-Stable tag: 1.15
+Tested up to: 5.0.3
+Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you to do video posts and accept video comments through use of powerful Ziggeo API.
+This plugin allows you to bring video to your Wordpress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.
+
+== Who is this plugin for? ==
+
+Are you looking to showcase some videos?
+This plugin can help with that!
+
+Are you looking to have themed galleries of videos on your website?
+This plugin can help with that!
+
+Want to allow people to submit their own videos?
+Yup, this can also be done by this plugin.
+
+Want to submit a post and attach video in it?
+This plugin can handle it.
+
+Want to know quickly what it can do?
+There are plenty of features:
+1. Screen Recording
+2. Webcam recording
+3. Playback from powerful Ziggeo servers and CDN or from your WP directory, S3, etc.
+4. Mobile friendly
+5. Easy to setup and use
+6. PLenty ready to use themes yet easy to restyle
+7. AI powered video analysis
+8. AI powered audio transcription
+9. AI powered (Not) Safe to use filter
+10. Filter effects (Instagram like effects and watermarks / logos)
+
+..and many many more features. Check them all out at https://ziggeo.com/features/
 
 
-== Description ==
+== Quick Description ==
 
-You can use this plugin to spice up your blog with video posts. Simply start by creating a new post, click on the *Record Video* button and take a video of yourself. It'll then be shown to your audience once your post goes live.
+You can use this plugin to spice up your blog, community or store with video posts. Want so share a video of yourself? Simply start by creating a new post, click on the *Record Video* button and take a video of yourself. It will then be shown to your audience once your post goes live.
 
-You can also invite people to leave video comments. Folks will have the option to either leave a traditional text comment or take a short video of themselves that'll be viewable by everybody on your site.
+Want to allow your community to share videos between them? Utilize this plugin and its various hooks, or alternatively enable helper plugin for your specific community plugin such as bbPress or BuddyPress. Read more about it in the helper plugins section.
 
-The plugin is based on the Ziggeo API which allows you to integrate video recording and playback with only two lines of code in your site, service or app.
+You can also invite people to leave video comments. Folks will have the option to either leave a traditional text comment or take a short video of themselves. These comments might be viewable by everybody on your site, or not, depending on your own setup.
+
+The plugin is based on the powerful Ziggeo API. While it is easy to add by yourself, this plugin adds it for you. All that you are left to do is to click around and set it all up (very simple and quite quick).
 
 = Why Ziggeo? =
 
-Ziggeo video playback and recording is built upon its own framework which allows you to record and play videos on various platforms without thinking about the video type specific to browsers or technology available on platform while in the same time unifying the design of your video player and recorder.
+Ziggeo video playback and recording is built upon its own framework. It allows you to record and play videos on various platforms out of the box. Stop thinking about the video type specific to browsers or technology available on specific platform. Ziggeo API is unifying the design of your video player and recorder and makes all processes just work.
 
 Ziggeo is designed to do that using same calls and methods while our backend works out all of the specifics for you. And plugin? Well, plugin just packs the power of Ziggeo and allows you to have the same on your WordPress website in just few clicks, regardless if you are looking for video recorder, video player or video gallery.
 
 = Support =
 
 We provide active support to all that have any questions or need any assistance with our plugin or our service.
-To submit your questions simply go to our [Help Center](https://support.ziggeo.com/hc/en-us)
+To submit your questions simply go to our [Help Center](https://support.ziggeo.com/hc/en-us). Alternatively we have also added contact us page into our plugin so feel free to use that one as well.
 
 = Recording =
 
-You control the length of the videos, the tags associated with the same (by default we pre-set the tags to "wordpress", username of the submitter as reported by WordPress and (new) where the video was made - "post"/"comment" )
+You control the length of the videos, the tags associated with the same (by default we pre-set the tags to "wordpress", username of the submitter as reported by WordPress and where the video was made - "post"/"comment" )
 
 Recordings can be processed on our end to include any effects or filters that you have previously set, while you are still using only few lines of human readable short codes.
 
@@ -61,6 +91,8 @@ You can simply use the following, even shorter call:
 [ziggeo mytemplate]
 `
 
+This allows you to easily make change in one place and have it reflected everywhere else.
+
 = Playback =
 
 You just tell us the video that you wish to play and how you want it to look - full customization possible - allowing your videos to blend into your WordPress website and to amaze your website visitors.
@@ -68,19 +100,7 @@ You just tell us the video that you wish to play and how you want it to look - f
 A sample of your video player call was as simple as:
 
 `
-[ziggeo]VIDEO_TOKEN[/ziggeo]
-`
-
-This is still the same, but you can also use the following:
-
-`
 [ziggeoplayer video="VIDEO_TOKEN"]
-`
-
-or
-
-`
-[ziggeo video="VIDEO_TOKEN"]
 `
 
 All of them will load a player on your website. Want to customize it? With templates, your WordPress video player is created by simply adding the following:
@@ -91,13 +111,6 @@ All of them will load a player on your website. Want to customize it? With templ
 [ziggeoplayer myVideoPlayer video="VIDEO_TOKEN"]
 `
 
-Do you love simple [ziggeo] tag instead? That is OK. It will work like that as well. Just change it to:
-
-`
-[ziggeo myVideoPlayer video="VIDEO_TOKEN"]
-`
-
-- Starting with version 1.13 you can also view your videos in video wall template. To see more about it, do check out its section bellow.
 
 = Video Uploads =
 
@@ -118,9 +131,6 @@ Do you want to style it to some specific setup? That is possible, simply set it 
 
 As with video player and Ziggeo video recorder, you can set up your uploader using the base template:
 
-`
-[ziggeo uploads]
-`
 
 = Video Wall =
 

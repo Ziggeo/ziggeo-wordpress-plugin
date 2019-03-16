@@ -26,7 +26,7 @@ function ZiggeoIntegration_GravityForms_details() {
         'plugin_url'        => 'http://www.gravityforms.com/', //URL to the plugin to be downloaded from.
         'plugin_min'        => '2.0', //minimum version of the plugin this module integrates to (required) - GravityForms version in this case.
         'plugin_max'        => '', //up to which version would module work upon which it should be disabled
-        'screenshot_url'    => ZIGGEO_ROOT_URL . 'images/integrations/gravityforms.png', //URL to the screenshot of the plugin this module integrates to, to show it in Integrations tab
+        'screenshot_url'    => ZIGGEO_ROOT_URL . 'assets/images/integrations/gravityforms.png', //URL to the screenshot of the plugin this module integrates to, to show it in Integrations tab
         'firesOn'           => 'both' //Where does the plugin fires on? "admin", "public" or "both" - so that we only run plugin where it is needed.
     );
 }
