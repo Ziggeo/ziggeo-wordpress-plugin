@@ -9,7 +9,7 @@ defined('ABSPATH') or die();
 add_filter('ziggeo_comments_js_template_vrto', 'ziggeo_p_default_handle_vrto_comments', 0, 2);
 
 //This is an example of how you would hook to change the code for comments. We are actually just adding code this way that we would add either way. You can simply write your own code and change this one..
-function ziggeo_p_default_handle_vrto_comments($code, $recorder_params) {
+function ziggeo_p_default_handle_vrto_comments($recorder_code, $player_code) {
 	?>
 	<div class="comment-navigation">
 		<span class="dashicons dashicons-video-alt"></span> <?php _e('Video Comment with optional text comment', 'ziggeo'); ?>
@@ -21,13 +21,13 @@ function ziggeo_p_default_handle_vrto_comments($code, $recorder_params) {
 		<input type="hidden" id="ziggeo_video_token" value="">
 		<?php //Capture user comment as video ?>
 		<ziggeorecorder
-			<?php echo $recorder_params;
+			<?php echo $recorder_code;
 			//Do not allow the form to be submitted unless video is filled out, but also allow custom form_accept setup
-			if( stripos($recorder_params, 'form_accept') === false) {
+			if( stripos($recorder_code, 'form_accept') === false) {
 				?> ziggeo-form-accept="#commentform" <?php
 			}
 			//Capture "wordpress" and "username" as video tags, but only if the tags are not set in the template
-			if( stripos($recorder_params, 'tags') === false) {
+			if( stripos($recorder_code, 'tags') === false) {
 				//for video wall to work nicely, we will collect which post the recording is made from now on as well (by default).
 				//Lets get details of the current user to use them in tags
 				$current_user = ziggeo_p_get_current_user();

@@ -34,6 +34,7 @@ add_action('wp_ajax_ziggeo_ajax', function() {
 
 	//we only process the call if it has what we are expecting..
 	if(isset($_POST, $_POST['operation'])){
+
 		$rez = '';
 		$operation = $_POST['operation'];
 

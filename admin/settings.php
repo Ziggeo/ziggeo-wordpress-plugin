@@ -189,6 +189,13 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_expert');
 
+		//Option to remove all templates
+		add_settings_field('ziggeo_templates_clear',
+							__('Want to clear all templates?', 'ziggeo'),
+							'ziggeo_a_s_e_clear_templates',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
 		/* - set of for next version
 		//@ADD option to turn on the SDK, if done, then we could tell them which version to download as well and from where and how to manually add it
 		// * This would be preferred over adding the SDK manually as part of the plugin itself

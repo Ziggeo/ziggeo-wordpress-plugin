@@ -12,8 +12,9 @@
 //		2.2. ziggeo_p_templates_add_all()
 //		2.3. ziggeo_p_templates_update()
 //		2.4. ziggeo_p_templates_remove()
-//		2.5. ziggeo_p_templates_index()
-//		2.6. ziggeo_p_template_exists()
+//		2.5. ziggeo_p_templates_remove_all()
+//		2.6. ziggeo_p_templates_index()
+//		2.7. ziggeo_p_template_exists()
 // 3. Complex template managment
 //		3.1. ziggeo_p_template_params()
 //		3.2. ziggeo_p_template_params_as_object()
@@ -145,10 +146,13 @@ defined('ABSPATH') or die();
 
 			foreach($existing_templates as $existing => $value)
 			{
+
 				//find old
 				if($existing === $old_id) {
 					//update old
+
 					$updated[$id] = $content;
+
 					//@HERE do we remove the old ID then?
 				}
 				else{
@@ -202,6 +206,22 @@ defined('ABSPATH') or die();
 		}
 
 		return false;
+	}
+
+	//Removes all templates. Should not be called lightly
+	// This will not remove them from pages, just from the list of templates in panel. It is up to you to make sure those are found, updated and/or removed
+	function ziggeo_p_templates_remove_all() {
+		//path to custom templates file
+		$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
+
+		//Remove templates from DB
+		update_option('ziggeo_templates', array());
+
+		//Remove templates from files
+		if(ziggeo_p_file_read($file)) {
+			//We only do this if the file already exits
+			ziggeo_p_file_write($file, array());
+		}
 	}
 
 	//Searches for all existing templates. Returns the list or false if none

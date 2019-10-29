@@ -143,6 +143,9 @@ INDEX:
 		position: fixed;
 		z-index: 100000;
 	}
+	.ziggeo_nonclickable {
+		pointer-events: none;
+	}
 
 
 

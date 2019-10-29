@@ -2,7 +2,7 @@
 /*
 Plugin Name: Ziggeo Video Posts and Comments
 Plugin URI: https://ziggeo.com
-Description: Plugin for adding videos to your website quickly and easily. It is powered by Ziggeo and allows you to add video posts and video comments and much more.
+Description: Plugin for adding videos to your website quickly and easily. It is powered by Ziggeo and allows you to add video posts and video comments and so much more.
 Author: Ziggeo
 Version: 2.0
 Author URI: https://ziggeo.com
@@ -103,6 +103,9 @@ include_once(ZIGGEO_ROOT_PATH . 'core/hooks-examples.php');
 
 //Include ajax handler
 include_once(ZIGGEO_ROOT_PATH . 'core/ajax.php');
+
+//Includes the rest handler
+include_once(ZIGGEO_ROOT_PATH . 'core/rest.php');
 
 //include the PHP SDK so that we can talk with the Ziggeo servers in the back as well (and receive useful info through webhooks)
 //include_once(ZIGGEO_ROOT_PATH . 'sdk/Ziggeo.php');

@@ -5,14 +5,13 @@
 //The reason why anonymous functions are used here is because that way they are not polluting the namespace so it is easier to see all functions.
 
 
-
 //Add support to handle management of the templates over AJAX
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
 	if($operation === 'settings_manage_template') {
 		if(isset($_POST['template_id'])) {
 
-			$id = (isset($_POST['template_id'])) ? urldecode($_POST['template_id']): '';
+			$id = urldecode($_POST['template_id']);
 			$code = (isset($_POST['template_code'])) ? urldecode($_POST['template_code']): '';
 			$manager = (isset($_POST['manager'])) ? urldecode($_POST['manager']): '';
 
@@ -21,6 +20,7 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 				'templates_editor'		=> $code,
 				'templates_manager'		=> $manager,
 			);
+
 			$rez = ziggeo_a_s_v_templates_handler($data);
 
 			//$rez can be ('added', 'unchanged', 'updated', removed', false)
@@ -171,7 +171,7 @@ add_action('ziggeo_toolbar_button', function($ajax) {
 			<script type="text/javascript">
 				jQuery(document).on("ready", function () {
 					ziggeoSetupOverlayRecorder();
-				}});
+				});
 			</script>
 		<?php } ?>
 	<?php
@@ -226,6 +226,19 @@ add_action('ziggeo_toolbar_button', function($ajax) {
 //================================================================================================
 // @REMOVE - to be removed from here in future versions
 //================================================================================================
+
+//Add videowall JS and CSS file (so that calls work) and it all looks right
+add_action('ziggeo_assets_post', function() {
+	//Lets add JS
+	wp_register_script('videowallsz-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/videowalls-client.js', array());
+	wp_enqueue_script('videowallsz-plugin-js');
+
+	//Lets add CSS
+	wp_register_style('videowallsz-styles-css', ZIGGEO_ROOT_URL . 'assets/css/videowall-styles.css', array());
+	wp_enqueue_style('videowallsz-styles-css');
+
+	//Note: Anyone editing this. The IDs need to be same as in the videowalls plugin. If not you would be loading 2 of the same files 2 times, this way WP handles it so it is only one
+});
 
 //Add the videowall template to the list of templates that are available in the admin (plugin settings)
 add_filter('ziggeo_setting_available_templates', function($templates) {

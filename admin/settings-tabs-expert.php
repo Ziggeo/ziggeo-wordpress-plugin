@@ -69,6 +69,19 @@ function ziggeo_a_s_e_text() {
 		<?php
 	}
 
+	function ziggeo_a_s_e_clear_templates() {
+
+		$options = get_option('ziggeo_video');
+
+		?>
+		<select id="ziggeo_templates_clear" name="ziggeo_video[templates_clear]">
+			<option value="leave">Leave it</option>
+			<option value="clear">Clear it</option>
+		</select>
+		<label for="ziggeo_templates_clear"><?php _e('This should be used only if you want to clear all templates for some reason! It will remove all templates', 'ziggeo'); ?></label>
+		<?php
+	}
+
 	/*
 	//@ADD - set for next version
 	function ziggeo_a_s_e_private_token_field() {

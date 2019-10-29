@@ -79,7 +79,10 @@ function ziggeo_p_page_header() {
 				fire: function(hook_name, data) {
 					if( typeof(ZiggeoWP.hooks._hooks[hook_name]) != 'undefined') {
 						for(i = 0, c = ZiggeoWP.hooks._hooks[hook_name].length; i < c; i++) {
-							ZiggeoWP.hooks._hooks[hook_name][i].func(data);
+							//final sanity if the function is still available..
+							if( typeof(ZiggeoWP.hooks._hooks[hook_name][i]) != 'undefined') {
+								ZiggeoWP.hooks._hooks[hook_name][i].func(data);
+							}
 						}
 					}
 				},

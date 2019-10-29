@@ -7,7 +7,7 @@ defined('ABSPATH') or die();
 // ziggeo_comment_vat_js_code = Parse Comments when Video is used (not required, just present)
 // we allow it to be completely overwritten by a plugin or through functions.php in theme..
 if(!function_exists('ziggeo_comment_vat_js_code')) {
-	function ziggeo_comment_vat_js_code($template_recorder, $template_player) {
+	function ziggeo_comment_vat_js_code($recorder_code, $player_code) {
 		?>
 		<script type="text/template" id="comment-ziggeo-template">
 			<div class="comment-navigation">
@@ -38,13 +38,13 @@ if(!function_exists('ziggeo_comment_vat_js_code')) {
 		<script type="text/template" id="ziggeo-recorder">
 			<?php //Capture user comment as video ?>
 			<ziggeorecorder id="comments_recorder" 
-				<?php echo $default_recorder;
+				<?php echo $recorder_code;
 				//Do not allow the form to be submitted unless video is filled out, but also allow custom form_accept setup
-				if( stripos($default_recorder, 'form_accept') === false) {
+				if( stripos($recorder_code, 'form_accept') === false) {
 					?> ziggeo-form_accept="#commentform" <?php
 				}
 				//Capture "wordpress" and "username" as video tags, but only if the tags are not set in the template
-				if( stripos($default_recorder, 'tags') === false) {
+				if( stripos($recorder_code, 'tags') === false) {
 					//for video wall to work nicely, we will collect which post the recording is made from now on as well (by default).
 
 					//Lets get details of the current user to use them in tags

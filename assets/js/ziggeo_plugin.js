@@ -176,6 +176,8 @@
 		explanation.setAttribute('locked', false);
 		list_holder.appendChild(explanation);
 
+		var msg = '';
+
 		//Set the events handling for mouse move
 		jQuery('#ziggeo-templates-list-insert li').on('hover', function() {
 			if(explanation.getAttribute('locked') == 'true') {
@@ -191,6 +193,11 @@
 
 		//Sets the event handling for the mouse click
 		jQuery('#ziggeo-templates-list-insert li').on('click', function() {
+
+			//Make all buttons clickable
+			jQuery('#ziggeo-templates-list-holder button')[0].className = '';
+			jQuery('#ziggeo-templates-list-holder button')[1].className = '';
+
 			if(explanation.getAttribute('locked') == 'true') {
 				explanation.setAttribute('locked', 'false');
 			}
@@ -214,12 +221,14 @@
 		_btn_cancel.innerHTML = 'Cancel';
 
 		var _btn_add = document.createElement('button');
+		_btn_add.className = 'ziggeo_nonclickable';
 		_btn_add.addEventListener('click', function(event) {
+
 			if(event.altKey || event.shiftKey) {
-				window.parent.send_to_editor(explanation.original_code);
+				ziggeoInsertTextToPostEditor(explanation.original_code);
 			}
 			else {
-				window.parent.send_to_editor('[ziggeo ' + explanation.template_name + ']');
+				ziggeoInsertTextToPostEditor('[ziggeo ' + explanation.template_name + ']');
 			}
 
 			//close it all
@@ -283,7 +292,25 @@
 		});
 	}
 
+	//Used to be able to just pass the text into editor, while one place holds all
+	// the logic needed to actually do that
+	function ziggeoInsertTextToPostEditor(msg) {
+		//How can it be delivered?
 
+		//w5 / Gutenberg approach
+		if(wp.blocks) {
+			var t_block = wp.blocks.createBlock( 'core/paragraph', { content: msg } );
+			wp.data.dispatch( 'core/editor' ).insertBlocks( t_block );
+		}
+		//This should be available
+		else if(wpActiveEditor) {
+			window.parent.send_to_editor(msg);
+		}
+		//Unsuported editor found
+		else {
+			ziggeoDevReport('Unsupported editor detected. Can not pass the message that should be passed', 'error');
+		}
+	}
 
 
 /////////////////////////////////////////////////
@@ -382,9 +409,4 @@
 		});
 	}
 	*/
-
-
-//============================================================================
-// 4. @REMOVE EVERYTHING THAT FOLLOWS IN THE NEXT VERSION OF PLUGIN
-//============================================================================
 

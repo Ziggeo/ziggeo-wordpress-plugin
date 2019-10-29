@@ -211,9 +211,9 @@ INDEX:
 		}
 
 		#ziggeo_templates_update {
-		    background-image: linear-gradient(25deg, blue,navy, blue);
-		    color: white;
-		    margin-top: 10px;
+			background-image: linear-gradient(25deg, blue,navy, blue);
+			color: white;
+			margin-top: 10px;
 		}
 
 		#ziggeo_messenger {
@@ -444,11 +444,23 @@ INDEX:
 
 	/* Dashboard so image is smaller */
 	.toplevel_page_ziggeo_video .wp-menu-image img {
-	    height: 24px;
-	    position: relative;
-	    top: -4px;
+		height: 24px;
+		position: relative;
+		top: -4px;
 	}
 
+	/* To support the light color scheme */
+	/*body.admin-color-light a[href$="page=ziggeo_video"] img {
+		background-image: radial-gradient(black, transparent,transparent);
+		background-position: -4px 4px;
+		background-size: 36px 36px;
+	}
+	body.admin-color-light .opensub a[href$="page=ziggeo_video"] img {
+		background: none;
+	}*/
+	body.admin-color-light a[href$="page=ziggeo_video"] {
+		background: rgb(180,180,180);
+	}
 
 
 /************************************************

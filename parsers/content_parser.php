@@ -20,6 +20,11 @@ function ziggeo_p_filters_init() {
 //We are updating this in such a way that we will keep the old calls, so that we have backwards compatibility, but in the same time, we are adding another call that will check for us if there are any tags matching new templates. We must do it like this, since using regex we will be able to find this in all locations that we want, while if we use shortcode, it will only work (out of the box) if the shortcode is within the section covered by 'the_content' filter.
 function ziggeo_p_content_filter($content) {
 
+	//This way we are making it work fine with WPv5 saving where we would parse the content while we should not (like saving the post)
+	if(is_rest()) {
+		return content;
+	}
+
 	//use add_filter('ziggeo_content_filter_pre', 'your-function-name') to change the content on fly before any checks
 	// for your Ziggeo templates
 	// it needs to return modified $content.
@@ -30,9 +35,11 @@ function ziggeo_p_content_filter($content) {
 	$content = preg_replace_callback("|\\[ziggeo(.*)\\](.*)\\[/ziggeo(.*)\\]|", 'ziggeo_p_content_parse_templates', $content);
 
 	//finally we do a check for the latest way of doing it only.
+	// fallback so some specific cases
 	$content = preg_replace_callback("|\\[ziggeo(.*)\\]|", 'ziggeo_p_content_parse_templates', $content);
 
 	//check to make sure that we get even [ziggeo calls without end bracket and show the embedding matching the call as much as possible instead of an error on a page
+	// fallback so some specific cases
 	$content = preg_replace_callback("|\\[ziggeo*([^\s\<]+)|", 'ziggeo_p_content_parse_templates', $content);
 
 	//use add_filter('ziggeo_content_filter_post', 'your-function-name') to change the content on fly after checking it
@@ -50,8 +57,7 @@ function ziggeo_p_content_parse_templates($matches)
 	//if this is detected, we re-do the call by modifying the parameters and re-calling this function
 	//handles: [ziggeo]token[/ziggeo], [ziggeoplayer]TOKEN[/ziggeoplayer], [ziggeorecorder]
 
-	if(isset($matches, $matches[3]))
-	{
+	if(isset($matches, $matches[3]) && trim($matches[3]) !== '') {
 		//In case this is not set up right, which can happen in some cases
 		// such as [ziggeo]e8c1ae11cf40d579e9bb38d4e0c55fa7[/ziggeo]
 		if($matches[3] === '') {
@@ -144,9 +150,10 @@ function ziggeo_p_content_parse_templates($matches)
 		'ziggeoform' => array () //!uses different parameters //@update to be moved*/
 	);
 
+	//Lets remove that last bracket
+
 	//This should be active for new templates only
-	if(isset($matches, $matches[1]) )
-	{
+	if(isset($matches, $matches[1]) ) {
 		$savedVideo = false;
 
 		//Quick check to see if we have video= in there or not..
@@ -260,6 +267,8 @@ function ziggeo_p_content_parse_templates($matches)
 
 					//initial parameters (raw if you will)
 					$parameters = substr($fullMatch, strlen($template_options[$i]['name'])+1, -1);
+
+					$parameters = str_replace(']', '', $parameters);
 
 					//properly handled parameters
 					$parameters = $template_options[$i]['func_pre']($parameters);

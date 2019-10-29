@@ -45,9 +45,9 @@ function ziggeo_a_s_t_text() {
 				<?php
 					$list = ziggeo_p_templates_index();
 					if($list) {
-						foreach($list as $template => $value)
+						foreach($list as $template_id => $template_code)
 						{
-							?><li><?php echo $template; ?> <span class="delete">x</span><span class="edit" data-template="<?php echo $value; ?>"><?php _e('edit'); ?></span></li><?php
+							?><li><?php echo $template_id; ?> <span class="delete">x</span><span class="edit" data-template="<?php echo $template_code; ?>"><?php _e('edit'); ?></span></li><?php
 						}
 					}
 					else {

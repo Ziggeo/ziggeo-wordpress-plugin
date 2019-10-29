@@ -34,24 +34,25 @@ defined('ABSPATH') or die();
 	else {
 		//Lets see if it is gutenber or not
 		add_action('admin_enqueue_scripts', function() {
-			if( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() ) { 
-				//We want to actally include or call a specific function at this time
-				?>
-					<script>window.addEventListener('load', function() { ziggeoSetupNewWPToolbar(); });</script>
-				<?php
 
-				//Handling the AJAX request
-				add_filter('ziggeo_ajax_call', function($result, $operation) {
-
-					if($operation === 'admin_post_toolbar') {
-						ziggeo_p_pre_editor(true);
-						wp_die();
-					}
-
-					return $result;
-				}, 10, 2);
-			}
+			//This is only for the gutenberg plugin (the 4.9 version..)
+			//if( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() ) { 
+			//We want to actally include or call a specific function at this time
+			?>
+				<script>window.addEventListener('load', function() { ziggeoSetupNewWPToolbar(); });</script>
+			<?php
 		});
+
+		//Handling the AJAX request
+		add_filter('ziggeo_ajax_call', function($result, $operation) {
+
+			if($operation === 'admin_post_toolbar') {
+				ziggeo_p_pre_editor(true);
+				wp_die();
+			}
+
+			return $result;
+		}, 10, 2);
 
 	}
 

@@ -28,7 +28,7 @@ function ziggeo_a_s_validation($input) {
 		//integrations tab
 			'integrations' => true,
 		//experts tab
-			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true
+			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true, 'templates_clear' => true
 	);
 
 	//DEVS: Should we add any hooks here to add your own options into the main settings? Let us know.
@@ -134,6 +134,12 @@ function ziggeo_a_s_validation($input) {
 		ziggeo_p_templates_add_all($final_templates, 'files');
 	}
 
+	//Do we want to clear out the templates? (WHY? - please let us know)
+	if(isset($options['templates_clear']) && $options['templates_clear'] === 'clear') {
+		ziggeo_p_templates_remove_all();
+
+		unset($options['templates_clear']);
+	}
 
 	//Everything has been done, lets show messages or do any background tasks if needed 
 
@@ -298,6 +304,7 @@ function ziggeo_a_s_v_templates_handler($options) {
 		}
 		//edit old template
 		elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
+
 			//old ID, new ID, template structure
 			if( ziggeo_p_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']) ) {
 				$ajax_status['message'] = 'updated';

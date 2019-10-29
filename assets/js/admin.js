@@ -13,18 +13,21 @@
 //		* ziggeoPUIFeedbackRemoval()
 //		* ziggeoPUIMessenger()
 // 3. Templates Editor
+//		* ziggeoGetEditor()
 //		3.1. Templates
 //			* ziggeoPUITemplatesManageInit()
 //			* ziggeoPUIManageTemplate()
 //			* ziggeoPUITemplatesManage()
 //			* ziggeoPUITemplatesChange()
 //			* ziggeoPUITemplatesTurnIntoNew()
+//			* ziggeoTemplatesBase()
 //		3.2. Parameters
 //			* ziggeoPUIParametersQuickAddInit()
 //			* ziggeoPUIParametersShownInit()
 //			* ziggeoPUIParametersQuickAdd()
 //			* ziggeoPUIParametersAddSimple()
 //			* ziggeoPUIParametersShownToggle()
+//			* ziggeoParameterPresent()
 // 4. Integrations
 //		4.1 Integrations Tab
 //			* ziggeoPUIIntegrationStatus()
@@ -77,11 +80,24 @@
 
 	//Registering onload needed to have everything run smoothly.. :)
 	jQuery(document).ready( function() {
+
+		//Lets do this only if we are in the admin panel of our plugin
+		if(document.getElementById('ziggeo-tab_id_general')) {
 			ziggeoPUIParametersQuickAddInit();
 			ziggeoPUITemplatesManageInit();
 			ziggeoPUIParametersShownInit();
 			//lets always do this last
 			ziggeoPUIHooksInit();
+
+			//Lets check if we have any integrations and show message if not:
+			if(document.getElementsByClassName('ziggeo_integrations_list')[0].children.length == 0) {
+				var _li = document.createElement('li');
+				_li.innerHTML = 'Search for "Ziggeo" in Wordpress plugins repository to find other plugins that provide you integrations (bridges) between Ziggeo and other plugins.';
+				document.getElementsByClassName('ziggeo_integrations_list')[0].appendChild(_li);
+			}
+
+		}
+
 	});
 
 	//All the hooks that we want to set up right away as page is loaded are added here, which is better than leaving hooks "out in the open", as this makes them fire when everything is ready
@@ -92,7 +108,6 @@
 
 		//a check in case the class is not defined (can happen in instances where header is not outputted by WP like customize page).
 		if(typeof ZiggeoWP === 'undefined') {
-			console.log('happened');
 			return false;
 		}
 
@@ -171,7 +186,7 @@
 		//Hook when simple templates editor is activated
 		ZiggeoWP.hooks.set('dashboard_template_editor_simple_shown', 'ziggeo-template-editing', function(data) {
 			document.getElementById('ziggeo-embedding-parameters-adv').style.display = 'none';
-			document.getElementById('ziggeo_templates_editor').style.display = 'none';
+			ziggeoGetEditor().style.display = 'none';
 
 			var embedding_params = document.getElementById('ziggeo-embedding-parameters-easy');
 
@@ -185,6 +200,7 @@
 				embedding_params.style.display = 'none';
 			}
 		});
+
 		//@Remove in next version
 		ZiggeoWP.hooks.set('dashboard_template_editor_simple_shown', 'videowallsz-template-editing', function(data) {
 			document.getElementById('ziggeo-wall-parameters-adv').style.display = 'none';
@@ -202,7 +218,7 @@
 		//Hook when advanced templates editor is activated
 		ZiggeoWP.hooks.set('dashboard_template_editor_advanced_shown', 'ziggeo-template-editing', function(data) {
 			document.getElementById('ziggeo-embedding-parameters-easy').style.display = 'none';
-			document.getElementById('ziggeo_templates_editor').style.display = 'block';
+			ziggeoGetEditor().style.display = 'block';
 
 			var embedding_params = document.getElementById('ziggeo-embedding-parameters-adv');
 
@@ -216,6 +232,7 @@
 				embedding_params.style.display = 'none';
 			}
 		});
+
 		//@REMOVE in next version
 		ZiggeoWP.hooks.set('dashboard_template_editor_advanced_shown', 'videowallsz-template-editing', function(data) {
 			document.getElementById('ziggeo-wall-parameters-easy').style.display = 'none';
@@ -230,6 +247,68 @@
 			}
 		});
 
+		//Hook for fom being saved (when in templates editor)
+		//Grab all of the values from the simple editor fields and put them into the editor to make it possible to grab them
+		ZiggeoWP.hooks.set('ziggeo_editor_save_templates', 'ziggeo_save_defaults', function(data) {
+			var editor = ziggeoGetEditor();
+
+			if(editor.value === '') {
+				var data_string = ziggeoTemplatesBase() + ' ';
+			}
+			else {
+				var data_string = editor.value + ' ';
+			}
+
+			//Grab all available easy editor screens (core + videowalls + your own?)
+			var easy_params_holder = document.querySelectorAll('#ziggeo_parameters_simple_section [id*="-parameters-easy"]');
+
+			for(i = 0, l = easy_params_holder.length; i < l; i++) {
+
+				//We only really do this for the section that is not hidden
+				if(easy_params_holder[i].style.display !== 'none') {
+					var fields = easy_params_holder[i].querySelectorAll('.ziggeo-field');
+
+					for(j = 0, c = fields.length; j < c; j++) {
+						//Param details
+						var param_name = fields[j].children[0].innerHTML;
+						var param_type = fields[j].children[1].children[0].getAttribute('type');
+						var param_value = '';
+
+						if(param_type === 'number' || param_type === 'text') {
+
+							if(fields[j].children[1].children[0].value !== '') {
+								param_value = fields[j].children[1].children[0].value;
+							}
+						}
+						else if(param_type === 'checkbox') {
+							if(fields[j].children[1].children[0].checked) {
+								param_value = true;
+							}
+							else {
+								param_value = false;
+							}
+						}
+						else if(param_type === 'enum') {
+							param_value = fields[j].children[1].children[0].options[fields[j].children[1].children[0].selectedIndex].value;
+						}
+
+						//Check if this value is already within the editor
+						//false means we need to add it
+						if(ziggeoParameterPresent(editor.value, param_name) === false) {
+							//Place it all into the string that will be remembered
+							if(param_value !== '') {
+								data_string += param_name + "='" + param_value + "' ";
+							}
+						}
+
+					}
+
+					//Add to editor
+					editor.value = data_string;
+				}
+			}
+
+		});
 	}
 
 	//Function to help with onboarding
@@ -342,6 +421,156 @@
 // 3. TEMPLATES EDITOR FUNCTIONS               //
 /////////////////////////////////////////////////
 
+	//Returns the reference to the templates editor
+	function ziggeoGetEditor() {
+		//Using this so that we do not need to remember the ID and can change it in one place
+		return document.getElementById('ziggeo_templates_editor');
+	}
+
+	//returns Ziggeo template ID that was set or empty string if it was not set at all
+	function ziggeoGetTemplateID() {
+		var _t = document.getElementById('ziggeo_templates_id');
+
+		if(_t) {
+			return _t.value.replace(/\ /g, '_');
+		}
+
+		return '';
+	}
+
+	//Helps us set the template ID properly
+	function ziggeoSetTemplateID(new_id) {
+		var _t = document.getElementById('ziggeo_templates_id');
+
+		if(_t) {
+			_t.value = new_id.replace(/\ /g, '_');
+			return true;
+		}
+
+		return false;
+	}
+
+	function ziggeoTemplateGetTempateObject() {
+		return (ZiggeoWP.template_object) ? ZiggeoWP.template_object : null;
+	}
+
+	function ziggeoTemplateSetTemplateObject(code) {
+		//Parse the code
+
+		//code == "[ziggeovideowall wall_design='mosaic_grid' videos_to_show='' show show_videos='all']"
+		var params_groups = code.split(' ');
+		var params = {};
+
+		var id = params_groups[0];
+
+		for(i = 1, l = params_groups.length; i < l; i++) {
+			var tmp = params_groups[i].split('=');
+
+			if(tmp[1]) {
+				params[tmp[0]] = tmp[0];
+			}
+			else {
+				params[tmp[0]] = 'true';
+			}
+		}
+
+		//save the object
+		ZiggeoWP.template_object = {id: id, params: params};
+	}
+
+	function ziggeoTemplatesEditorSetText(msg) {
+		var editor = ziggeoGetEditor();
+
+		if(msg === null || typeof msg === 'undefined') {
+			msg = '';
+		}
+
+		editor.value = msg;
+	}
+
+	//Selects the given parameter in the textarea editor. If the always_highlight is true, it will either select value or the parameter if it is bool, otherwise it will only select the value when possible
+	function ziggeoTemplatesEditorSelectText(parameter, always_highlight) {
+		var editor = ziggeoGetEditor();
+		var location = ziggeoParameterPresent(editor.value, parameter);
+
+		//If the parameter is not there, just exit
+		if(location == -1) {
+			return false;
+		}
+
+		var end = editor.value.indexOf(' ', location+2);
+
+		if(end == -1) {
+			end = editor.value.length;
+		}
+
+		editor.focus();
+		editor.setSelectionRange(location , end);
+	}
+
+	//Allows us to change the value of a given parameter
+	function ziggeoTemplateChangeParam(template, param, new_value, type) {
+		//We do not need to recreate the code, just remove param
+		template = ziggeoTemplateRemoveParam(template, param);
+
+		//did it have ]?
+		var was_finalized = false;
+
+		//Now lets add the parameter in
+		//This way even if it was not present, we add it which is desired
+		if(template.indexOf(']') > -1) {
+			template = template.replace(']', '');
+			was_finalized = true;
+		}
+
+		//Just so that we do not make it have a large amount of whitespace
+		template = template.trim();
+
+		if(type === 'bool' && ( new_value === '' || new_value === 'on' || new_value === true)) {
+			template += ' ' + param;
+		}
+		else if(type === 'string' || type === 'array' || type === 'enum') {
+			template += ' ' + param + "='" + new_value + "'";
+		}
+		else {//it is int
+			template += ' ' + param + '=' + new_value;
+		}
+
+		//Do we need to add back the ]?
+		if(was_finalized) {
+			template += ']';
+		}
+
+		return template;
+	}
+
+	//find and remove the parameter in the code we got and return the final template code
+	function ziggeoTemplateRemoveParam(template, param) {
+
+		var location = ziggeoParameterPresent(template, param);
+
+		//If the parameter is not found, we can just return the template code
+		if(location === false) {
+			return template;
+		}
+
+		var end_of_param = template.indexOf(' ', location+2);
+
+		//In case when the parameter is last in string (no space after)
+		if(end_of_param == -1) {
+			end_of_param = template.length;
+
+			if(template.indexOf(']') > -1) {
+				end_of_param = template.indexOf(']');
+			}
+		}
+
+		//At this point it means that we do have the parameter present
+		template = template.substr(0, location) + template.substr(end_of_param);
+
+		return template;
+	}
+
 	// 3.1 Templates
 	/////////////////
 
@@ -381,6 +610,7 @@
 	function ziggeoPUIManageTemplate(operation, data, ref) {
 		var obj = {};
 
+		//Operations are defined for some actions like delete template
 		if(typeof operation !== 'undefined' && operation !== null && typeof data !== 'undefined') {
 			obj.operation = encodeURI(operation);
 			obj.template_id = encodeURI(data.id);
@@ -388,9 +618,12 @@
 			obj.manager = encodeURI(data.manager);
 		}
 		else {
+			//We are saving the template
+			ZiggeoWP.hooks.fire('ziggeo_editor_save_templates', {});
+
 			obj.operation = 'settings_manage_template';
-			obj.template_id = encodeURI(document.getElementById('ziggeo_templates_id').value);
-			obj.template_code = encodeURI(document.getElementById('ziggeo_templates_editor').value);
+			obj.template_id = encodeURI(ziggeoGetTemplateID());
+			obj.template_code = encodeURI(ziggeoGetEditor().value);
 			obj.manager = encodeURI(document.getElementById('ziggeo_templates_manager').value);
 		}
 
@@ -414,6 +647,7 @@
 					item.textContent = e.template_id + ' ';
 
 					/*
+					* Had to be removed for some reason
 					var _sdel = document.createElement('span');
 					_sdel.className = 'delete';
 					_sdel.textContent = 'x';
@@ -434,11 +668,16 @@
 				}
 			}
 			else {
+				ziggeoDevReport('Managing templates: ' + e, 'error');
 				ziggeoPUIMessenger().push('Something unexpected happened', 'error');
 			}
 		});
 
-		//@here. add nice notification box and clear out the fields
+		//Reset the screen
+		document.getElementById('ziggeo_templates_manager').value = '';
+		ziggeoSetTemplateID('');
+		ziggeoTemplatesEditorSetText( ziggeoTemplatesBase() );
+
 	}
 
 	//Function to manage templates. Holds both edit and delete functionality
@@ -474,8 +713,8 @@
 				elem.value = txt;
 
 				//Since it is removal, we want to remove all data in this field..
-				document.getElementById('ziggeo_templates_editor').value = "";
-				document.getElementById('ziggeo_templates_id').value = "";
+				ziggeoGetEditor().value = "";
+				ziggeoSetTemplateID('');
 
 				//Just about to remove the template
 				ZiggeoWP.hooks.fire('dashboard_templates_post_removal', {});
@@ -490,21 +729,30 @@
 			elem.value = txt;
 
 			//Add value to template ID field
-			document.getElementById('ziggeo_templates_id').value = txt;
+			ziggeoSetTemplateID(txt);
 
 			//Add value to templates editor field
-			var editor = document.getElementById('ziggeo_templates_editor');
-			editor.value = selected.getAttribute('data-template');
+			var editor = ziggeoGetEditor();
+
+			//The code to work with in the background
+			ziggeoTemplateSetTemplateObject(selected.getAttribute('data-template').replace(/\\'/g, "'"));
+
+			//The code that is shown
+			editor.value = selected.getAttribute('data-template').replace(/\\'/g, "'");
 
 			var template_base = editor.value.substr(0, editor.value.indexOf(' ') );
 
 			var templates_select = document.getElementById('ziggeo_shorttags_list');
 
 			//set up the dropdown to show the right value
-			//the following would work, however in some cases it will not (when "[ziggeo" is used as base)
-			//document.getElementById('ziggeo_shorttags_list').value = template_base;
-			// so instead we set it as player by default and go from there
-			templates_select.value = '[ziggeoplayer';
+			if(templates_select.value !== '[ziggeo ' && template_base !== '') {
+				//the following would work, however in some cases it will not (when "[ziggeo" is used as base)
+				document.getElementById('ziggeo_shorttags_list').value = template_base;
+			}
+			else {
+				// so instead we set it as player by default and go from there
+				templates_select.value = '[ziggeoplayer';
+			}
 
 			for(i = 0, c = templates_select.options.length; i < c; i++) {
 				if(templates_select.options[i].value === template_base) {
@@ -540,7 +788,7 @@
 		var selected = sel.options[sel.selectedIndex].value;
 		
 		//Lets grab the currently set value if any from the templates editor
-		var editor = document.getElementById('ziggeo_templates_editor');
+		var editor = ziggeoGetEditor();
 
 		var hook_values = {
 			template: selected, //will it be player ([ziggeoplayer), recorder..
@@ -567,6 +815,21 @@
 		document.getElementById('ziggeo_templates_manager').value = '';
 		//hide the button to turn it into a new template..
 		document.getElementById('ziggeo_templates_turn_to_new').style.display = 'none';
+	}
+
+	//Gets the parameter base that we should use in editor, or returns the one to use
+	//>> specific can be 'player' or 'recorder' which then passes back the template base
+	// that you should use to start your template with
+	// When no paramateter is passed it will retrieve the editor template and return that
+	function ziggeoTemplatesBase(specific) {
+		if(specific) {
+			//@here, would like to do this as hooks so you can add your own
+			// until specifically asked for will leave as is
+		}
+		else {
+			var editor_template = document.getElementById('ziggeo_shorttags_list');
+			return editor_template.options[editor_template.selectedIndex].value;
+		}
 	}
 
 
@@ -611,7 +874,7 @@
 	// > event
 	function ziggeoPUIParametersQuickAdd(event, is_simple) {
 		//Reference to textarea
-		var editor = document.getElementById('ziggeo_templates_editor');
+		var editor = ziggeoGetEditor();
 
 		//Reference to clicked attribute
 		var current = event.currentTarget;
@@ -622,16 +885,31 @@
 		//the value to add.. (always empty in advanced view, often filled out in simple setup)
 		var parameter_value = '';
 
-		//equal sign helpers
-		var equal_start = '';
-		var equal_end = '';
-
-		//is simple or advanced editor used?
-		//var is_simple = true; //only since it will be default..
-
 		//to know what we are working with..
 		// can be `string, array` (both as strings), integer, float or bool
 		var parameter_type = current.getAttribute('data-equal');
+
+		//At this point we could just check the object, instead of working with the code...
+
+		var template_obj = ziggeoTemplateGetTempateObject();
+
+		if(template_obj) {
+			//Do we already have this parameter?
+			if(template_obj[parameter_title]) {
+				if(template_obj[parameter_title] !== current.value) {
+					//A change has been made to the value of the parameter
+					template_obj[parameter_title] = current.value;
+				}
+			}
+			else {
+				//This parameter is being added for the first time
+				template_obj[parameter_title] = current.value;
+			}
+		}
+		else {
+			//The template was not created so far
+		}
+
 
 		//to support the simple setup
 		if(is_simple) {
@@ -644,181 +922,37 @@
 				//effectively going further, this should be seen as array..
 				parameter_type = 'array';
 			}
+			else if(parameter_type === 'bool') {
+				parameter_value = current.checked;
+			}
 		}
 
 		if(parameter_type === 'string' || parameter_type === 'array') {
-			equal_start = "='";
-			equal_end = "'";
 
 			//We should clean up the string..
 			parameter_value = parameter_value.replace(/\'/g, '&apos;');
 			parameter_value = parameter_value.replace(/\"/g, '&quot;');
 		}
-		else if(parameter_type === 'int' || parameter_type === 'float') {
-			equal_start = "=";
-		}
 
-		//If we got boolean value we do not want to add it multiple times..
-		if(parameter_type === 'bool') {
-			//since we will be adding the value into the editor, we want to keep it clean..
-			parameter_value = '';
 
-			//Allows us to check the location of the parameter, if it is already added
-			var parameter_location = editor.value.indexOf( ' ' + parameter_title + ' ' );
-
-			//It was not added so far..
-			if(parameter_location === -1) {
-				//just in case it is not followed by the space, rather the closing bracket (if it was last entry)
-				if(editor.value.indexOf( ' ' + parameter_title + ']' ) > -1) {
-					parameter_location = editor.value.indexOf( ' ' + parameter_title + ']' );
-				}
+		//In case it is advanced, we look if we should select or add it..
+		if(!is_simple) {
+			//in advanced editor we also select the right section
+			if(ziggeoTemplatesEditorSelectText(parameter_title, true) !== false) {
+				//If we made the selection, it existed so we just return from here
+				return;
 			}
 		}
-		//if the parameter is non bool value..
-		else {
-			//Allows us to check the location of the parameter, if it is already added
-			var parameter_location = editor.value.indexOf( ' ' + parameter_title + '=' );
-		}
 
-		//Did we already add the same parameter? Might be good to check it out so that we do not add it again, just do
-		// custom cursor/caret positioning
-		if( parameter_location > -1 ) {
-			if(parameter_type !== 'bool') {
-				var start = parameter_location + parameter_title.length + 2;
-			}
-			else {
-				var start = parameter_location;
-			}
+		//Lets add the parameter
+		editor.value = ziggeoTemplateChangeParam(editor.value,
+													parameter_title,
+													parameter_value,
+													parameter_type
+		);
 
-			//Are we working with a string attribute?
-			if(parameter_type === 'string' || parameter_type === 'array') {
-				//Yes, its a string, lets check it out then:
-				var end = editor.value.indexOf( "' ", parameter_location+1); //adding plus 1 since we were searching for whitespace as
-																	// well (to know that attribute started and is not part
-																	// of the other parameter..)            
-			}
-			else {
-				var end = editor.value.indexOf( ' ', parameter_location+1); //adding plus 1 since we were searching for whitespace as
-																	// well (to know that attribute started and is not part
-																	// of the other parameter..)            
-			}
-
-			//What if we had removed the quote?
-			var quote_check = editor.value.indexOf( "'", parameter_location+1);
-
-			//We got to the end of the editor value and did not find space, so this is the last parameter..
-			if(end === -1) {
-				//we need to check for ', ] and = to know the correct positioning at this time
-				if(editor.value[editor.value.length-1] === "]") {
-					end = editor.value.length-1;
-				}
-				else if(editor.value[editor.value.length-1] === "'") {
-					end = editor.value.length;
-				}
-				else { //if(editor.value[editor.value.length-1] === "=") {
-					end = editor.value.length;
-				}
-			}
-
-			//are we adding string parameter?
-			if(parameter_type === 'string' || parameter_type === 'array')
-			{
-				//we got a string based parameter, lets change the start and end..    
-				if(quote_check < 0) { // we need to add quotes as well..
-					start++;
-					editor.value = editor.value.substr(0, start) + "'' " + editor.value.substr(end);
-					end++;
-				}
-				else {
-					start++;
-					end = editor.value.indexOf( "'", quote_check+1);               
-				}
-			}
-
-			//If it is the simple editor, we would replace the value
-			if(is_simple) {
-				//lets check if we got empty string as value. If we did, we can remove it if it is not bool
-				if(parameter_type !== 'bool' && parameter_value === '') {
-					start = start - (parameter_title.length + 1);
-
-					//we need to remove 1 one count from the start for the string and array types (yet not for ints..)
-					if(parameter_type === 'string' || parameter_type === 'array') {
-						start--;
-					}
-
-					end++;
-					editor.value = editor.value.substring(0, start) + editor.value.substring(end);
-				}
-				else {
-					//replaces the value with the new value			
-					editor.value = editor.value.substring(0, start) + parameter_value + editor.value.substring(end);
-				}
-
-				//just to remove any additional whitespaces that should not be there..still we want the last one there
-				editor.value = editor.value.trim() + ' ';
-			}
-			// ...while if it is advanced editor we will highlight it instead so that it is easy to manually change it..
-			else {
-				editor.focus();
-				editor.setSelectionRange( start , end );
-		
-			}
-
-			return false;
-		}
-		//It was not added before, we need to add it now..
-		else {
-			//If we are editing the template, we will have it closed every time.. so lets make sure that we do not add
-			// values after the closing bracket..
-			if(editor.value[editor.value.length-1] === "]") {
-				editor.value = editor.value.substr(0, editor.value.length-1) + ' ' + parameter_title +
-								equal_start + parameter_value + equal_end + ' ]';
-			}
-			//If the space is not the last character (after which we are adding new text), we should add it to avoid
-			// combined parameters
-			else if(editor.value[editor.value.length-1] !== " ") {
-				if(is_simple || parameter_type === 'bool') {
-					editor.value += ' ' + parameter_title +
-									equal_start + parameter_value + equal_end + ' ';
-				}
-				else {
-					editor.value += ' ' + parameter_title +
-									equal_start + parameter_value + equal_end;
-				}
-			}
-			//If it is space that we are adding the parameter after we can continue
-			else {
-				if(is_simple) {
-					editor.value += ' ' + parameter_title +
-									equal_start + parameter_value + equal_end + ' ';
-				}
-				else {
-					editor.value += ' ' + parameter_title +
-									equal_start + parameter_value + equal_end;
-				}
-			}
-
-			if(is_simple !== true) {
-				//Set the focus to the editor
-				editor.focus();
-
-				//Lets find where we want the cursor / caret to be positioned at
-				if(editor.value[editor.value.length-1] === "]") {
-					//Did we just add a string based parameter?
-					if(editor.value[editor.value.length-2] === "'") {
-						editor.setSelectionRange(editor.value.length-2, editor.value.length-2);
-					}
-					else {
-						editor.setSelectionRange(editor.value.length-1, editor.value.length-1);
-					}
-				}
-				else if(editor.value[editor.value.length-1] === "'") {
-					editor.setSelectionRange(editor.value.length-1, editor.value.length-1);
-				}
-				else {
-					editor.setSelectionRange(editor.value.length, editor.value.length);
-				}
-			}
+		if(!is_simple) {
+			ziggeoTemplatesEditorSelectText(parameter_title, true);
 		}
 
 		return true;
@@ -869,6 +1003,37 @@
 
 	}
 
+	//Checks if the parameter is present or not. If it is, it returns the position otherwise false 
+	function ziggeoParameterPresent(code, parameter) {
+		var location = false;
+
+		//Most paramters has the equal to value so this is first check
+		location = code.indexOf(' ' + parameter + '=');
+
+			//Did we find it?
+			if(location > -1) {
+				return location;
+			}
+
+		//common for boolean true values
+		location = code.indexOf(' ' + parameter + ' ');
+
+			//Did we find it?
+			if(location > -1) {
+				return location;
+			}
+
+		//indicator of the parameter being at the very end of the string
+		location = code.indexOf(' ' + parameter + ']');
+
+			//Did we find it?
+			if(location > -1) {
+				return location;
+			}
+
+		//The parameter is not part of the code checked
+		return false;
+	}
 
 
 
@@ -900,9 +1065,11 @@
 		var _t = document.getElementsByClassName('edit-post-header-toolbar');
 
 		if(_t && _t.length > 0) {
+			//Gutenberg is here and available
 			_t = _t[0];
 		}
 		else {
+			//The old editor..
 			return false;
 		}
 
@@ -934,8 +1101,7 @@
 			ziggeoShowOverlayWithRecorder();
 
 			ZiggeoWP.hooks.set('ziggeo_overlay_popup_on_verify', 'ziggeo_post_recorder', function(recorder) {
-				//in case we want to force not to use the mce
-				window.parent.send_to_editor('[ziggeoplayer]' + recorder.get('video') + '[/ziggeoplayer]');
+				ziggeoInsertTextToPostEditor('[ziggeoplayer]' + recorder.get('video') + '[/ziggeoplayer]')
 
 				//Since video is submitted, lets make sure that this is shown a bit differently - pointed out more..
 				document.getElementById('ziggeo-overlay-close').style['background-color'] = "orangeRed";

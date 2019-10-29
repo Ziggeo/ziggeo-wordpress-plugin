@@ -29,7 +29,7 @@ function ziggeo_p_assets_global() {
 
 	if(apply_filters('ziggeo_assets_pre_local_load', true)) {
 		//local assets
-		wp_register_script('ziggeo-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js', array());
+		wp_register_script('ziggeo-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js', array("jquery"));
 		wp_enqueue_script('ziggeo-plugin-js');
 		wp_register_style('ziggeo-styles-css', ZIGGEO_ROOT_URL . 'assets/css/styles.css', array());
 		wp_enqueue_style('ziggeo-styles-css');
@@ -39,6 +39,7 @@ function ziggeo_p_assets_global() {
 }
 
 function ziggeo_p_assets_admin() {
+
 	//Enqueue admin panel scripts
 	wp_register_script('ziggeo-admin-js', ZIGGEO_ROOT_URL . 'assets/js/admin.js', array("jquery"));
 	wp_enqueue_script('ziggeo-admin-js');

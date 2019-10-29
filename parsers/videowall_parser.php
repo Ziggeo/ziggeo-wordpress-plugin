@@ -3,10 +3,6 @@
 //Checking if WP is running or if this is a direct call..
 defined('ABSPATH') or die();
 
-//===============================================================================
-// @REMOVE IN NEXT VERSION OF PLUGIN
-//===============================================================================
-
 
 if(!function_exists('videowallsz_content_parse_videowall')) {
 
