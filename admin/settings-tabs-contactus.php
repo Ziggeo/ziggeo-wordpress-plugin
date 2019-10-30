@@ -61,6 +61,47 @@ function ziggeo_a_s_c_text() {
 	function ziggeo_a_s_c_zchat_field() {
 		//Waiting for Zopim support to give green light..
 		//got green light, add at the end of implementation
-		//make it easy to turn it off.
+		//Possible things with Zopim
+		//https://api.zopim.com/files/meshim/widget/controllers/LiveChatAPI-js.html
+		
+		echo _x('You should see a button showing "Help" in the bottom right corner at this point.', 'ziggeo');
+		?>
+		<script>
+			window.zEmbed||(function(){
+				var queue = [];
+
+				window.zEmbed = function() {
+					queue.push(arguments);
+				}
+
+				window.zE = window.zE || window.zEmbed;
+				document.zendeskHost = 'ziggeo.zendesk.com';
+				document.zEQueue = queue;
+			}());
+
+			window.zEmbed(function () {
+				$zopim(function () {
+					/*$zopim.livechat.cookieLaw.comply();      
+					$zopim.livechat.cookieLaw.setDefaultImplicitConsent();
+*/
+					<?php
+						$current_user = ziggeo_p_get_current_user();
+						$name = $current_user->user_login;
+						$email = $current_user->user_email;
+
+						global $wp_version;
+					?>
+					$zopim.livechat.setName('<?php echo $name; ?>');
+					$zopim.livechat.setEmail('<?php echo $email ?>');
+					$zopim.livechat.addTags('wordpress', 'plugin');
+
+					$zopim.livechat.setOnChatStart(function() {
+						$zopim.livechat.say('Helpful info:\nOur WordPress version is "<?php echo $wp_version; ?>" and our Wordpress plugin version is: <?php echo ziggeo_get_version(); ?>');
+					});
+				});
+			});
+		</script>
+		<script src="https://assets.zendesk.com/embeddable_framework/main.js" data-ze-csp="true" async defer></script>
+		<?php
 	}
 ?>
