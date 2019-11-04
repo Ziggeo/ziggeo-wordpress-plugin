@@ -94,12 +94,40 @@ function ziggeo_p_page_header() {
 			}
 		};
 
+		<?php
+			//Lets check everything so that our header is pre-set with defaults and
+			// only the over rides are output. Also helps pre-define recommended settings
+			$str_auth = (isset($options, $options['use_auth']) &&
+						$options['use_auth'] === 'true') ?
+						',' . "\n" . 'auth: true' : '';
+			$str_webrtc_mobile = (isset($options, $options['webrtc_for_mobile']) &&
+						$options['webrtc_for_mobile'] === 'true') ?
+						',' . "\n" . 'webrtc_on_mobile: true' : '';
+			$str_webrtc_streaming = (isset($options, $options['webrtc_streaming']) &&
+						$options['webrtc_streaming'] === 'true') ?
+						',' . "\n" . 'webrtc_streaming: true' : '';
+			$str_webrtc_streaming_needed = (isset($options, $options['webrtc_streaming_needed']) &&
+						$options['webrtc_streaming_needed'] === 'true') ?
+						',' . "\n" . 'webrtc_streaming_if_necessary: true' : '';
+			$str_debug = (isset($options, $options['use_debugger']) &&
+						$options['use_debugger'] === 'true') ? ',\ndebug: true' : '';
+		?>
+
 		//Set the V2 application
 		var ziggeo_app = new ZiggeoApi.V2.Application({
-			token: "<?php echo (( isset($options, $options['token']) ) ? $options['token'] : "" ); ?>",
-			auth: <?php echo ( (isset($options, $options['use_auth'])) ? $options['use_auth'] : 'false' ); ?>,
-			webrtc_streaming: <?php echo ( (isset($options, $options['use_webrtc_streaming'])) ? $options['use_webrtc_streaming'] : 'false' ); ?>,
-			debug: <?php echo ( (isset($options, $options['use_debugger'])) ? $options['use_debugger'] : 'false' ); ?>
+			token: "<?php echo (( isset($options, $options['token']) ) ? $options['token'] : "" ); ?>"<?php
+
+				echo $str_auth;
+				echo $str_webrtc_mobile;
+				echo $str_webrtc_streaming;
+				echo $str_webrtc_streaming_needed;
+				echo $str_debug;
+			/*
+			auth: <?php echo (  ? $options['use_auth'] : 'false' ); ?>,
+			webrtc_streaming: <?php echo ( (isset($options, $options['webrtc_streaming']) && $options['webrtc_streaming'] === true) ? 'true' : 'false' ); ?>,
+			webrtc_on_mobile: <?php echo ( (isset($options, $options['webrtc_for_mobile']) && $options['webrtc_for_mobile'] === true) ? 'true' : 'false' ); ?>,
+			webrtc_streaming_if_necessary: <?php echo ( (isset($options, $options['webrtc_streaming_needed']) && $options['webrtc_streaming_needed'] === true) ? 'true' : 'false' ); ?>,
+			debug: <?php echo ( (isset($options, $options['use_debugger'])) ? $options['use_debugger'] : 'false' ); */?>
 		});
 		<?php
 			//Language options

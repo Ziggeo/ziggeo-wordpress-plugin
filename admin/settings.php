@@ -196,6 +196,27 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_expert');
 
+		//Use native camera apps or WebRTC (if availble) on mobile devices?
+		add_settings_field('ziggeo_webrtc_for_mobile',
+							__('Want to use WebRTC for mobile?', 'ziggeo'),
+							'ziggeo_a_s_e_webrtc_for_mobile',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
+		//Use WebRTC Streaming?
+		add_settings_field('ziggeo_webrtc_streaming',
+							__('Want to use WebRTC Streaming (can change quality)?', 'ziggeo'),
+							'ziggeo_a_s_e_webrtc_streaming',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
+		//Use WebRTC Streaming?
+		add_settings_field('ziggeo_webrtc_streaming_needed',
+							__('Turn on WebRTC Streaming (when needed only)', 'ziggeo'),
+							'ziggeo_a_s_e_webrtc_streaming_when_needed',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
 		/* - set of for next version
 		//@ADD option to turn on the SDK, if done, then we could tell them which version to download as well and from where and how to manually add it
 		// * This would be preferred over adding the SDK manually as part of the plugin itself

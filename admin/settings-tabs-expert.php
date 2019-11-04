@@ -82,6 +82,63 @@ function ziggeo_a_s_e_text() {
 		<?php
 	}
 
+	function ziggeo_a_s_e_webrtc_for_mobile() {
+		$options = get_option('ziggeo_video');
+
+		$webrtc_on = ' selected ';
+		$webrtc_off = '';
+
+		if(isset($options['webrtc_for_mobile']) && $options['webrtc_for_mobile'] == 'off') {
+			$webrtc_on = '';
+			$webrtc_off = ' selected ';
+		}
+		?>
+		<select id="ziggeo_webrtc_for_mobile" name="ziggeo_video[webrtc_for_mobile]">
+			<option value="true"<?php echo $webrtc_on; ?>>Turn On</option>
+			<option value="false"<?php echo $webrtc_off; ?>>Turn off</option>
+		</select>
+		<label for="ziggeo_webrtc_for_mobile"><?php _e('This option allows you to turn on WebRTC recording on mobile devices instead of using native recording (recommended for mobile solutions)', 'ziggeo'); ?></label>
+		<?php	
+	}
+
+	function ziggeo_a_s_e_webrtc_streaming() {
+		$options = get_option('ziggeo_video');
+
+		$webrtc_streaming_on = '';
+		$webrtc_streaming_off = ' selected ';
+
+		if(isset($options['webrtc_streaming']) && $options['webrtc_streaming'] == 'on') {
+			$webrtc_streaming_on = ' selected ';
+			$webrtc_streaming_off = '';
+		}
+		?>
+		<select id="ziggeo_webrtc_streaming" name="ziggeo_video[webrtc_streaming]">
+			<option value="true"<?php echo $webrtc_streaming_on; ?>>Turn On</option>
+			<option value="false"<?php echo $webrtc_streaming_off; ?>>Turn off</option>
+		</select>
+		<label for="ziggeo_webrtc_streaming"><?php _e('Uploads start as soon as you start recording. Min length of 10 seconds and the quality will be changed based on currently available internet speed. Use only if you know why you need it', 'ziggeo'); ?></label>
+		<?php	
+	}
+
+	function ziggeo_a_s_e_webrtc_streaming_when_needed() {
+		$options = get_option('ziggeo_video');
+
+		$webrtc_streaming_needed_on = ' selected ';
+		$webrtc_streaming_needed_off = '';
+
+		if(isset($options['webrtc_streaming_needed']) && $options['webrtc_streaming_needed'] == 'off') {
+			$webrtc_streaming_needed_on = '';
+			$webrtc_streaming_needed_off = ' selected ';
+		}
+		?>
+		<select id="ziggeo_webrtc_streaming_needed" name="ziggeo_video[webrtc_streaming_needed]">
+			<option value="true"<?php echo $webrtc_streaming_needed_on; ?>>Turn On</option>
+			<option value="false"<?php echo $webrtc_streaming_needed_off; ?>>Turn off</option>
+		</select>
+		<label for="ziggeo_webrtc_streaming_needed"><?php _e('WebRTC Streaming only for browsers that otherwise do not support WebRTC (browsers with specific/incomplete WebRTC implementations of WebRTC)', 'ziggeo'); ?></label>
+		<?php	
+	}
+
 	/*
 	//@ADD - set for next version
 	function ziggeo_a_s_e_private_token_field() {
