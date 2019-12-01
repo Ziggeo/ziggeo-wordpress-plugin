@@ -51,6 +51,7 @@ function ziggeo_p_content_filter($content) {
 }
 
 //This works like shortcode functions do, allowing us to capture the codes through various filters and parse them as needed.
+//TODO: This needs to be broken up and simplified.
 function ziggeo_p_content_parse_templates($matches)
 {
 	//The new templates called the old way..[ziggeoplayer]TOKEN[/ziggeoplayer]
@@ -99,10 +100,45 @@ function ziggeo_p_content_parse_templates($matches)
 		}
 
 		$index = stripos($matches[0], ' video=');
-		$tmp .=  substr($matches[0], $index, stripos($matches[0], ' ', $index+1) );
+
+		if($index === false) {
+			//RegEx will put the token in here
+			if(isset($matches[2])) {
+				$tmp .= ' video="' . $matches[2] . '"';
+			}
+			//We could come here if someone put code where it should not be
+			else {
+				//Was the comment made by admin
+				$comment = get_comment();
+
+				if ( $comment->user_id && $user = get_userdata( $comment->user_id ) ) {
+					if(isset($user->caps['administrator']) && $user->caps['administrator'] === true) {
+						$tmp = $matches[0];
+					}
+					else {
+						$tmp = '';
+					}
+				}
+				else {
+					$tmp = '';
+				}
+			}
+		}
+		else {
+			$tmp .=  substr($matches[0], $index, stripos($matches[0], ' ', $index+1) );
+		}
+
+		//We should not output anything if $tmp is empty, however want the admin to be able to see it properly
+		if($tmp === '' && !is_admin()) {
+			return '';
+		}
+		elseif($tmp === '' && is_admin()) {
+			return __('[UNSAFE EMBEDDING REMOVED] Click edit to see its code.', 'ziggeo');
+		}
 
 		$matches[0] = $tmp;
 		$matches[1] = 'ignore';
+
 	}
 	//For now it is else, in future, we can expend this to include other filters.
 	else {
@@ -153,7 +189,7 @@ function ziggeo_p_content_parse_templates($matches)
 	//Lets remove that last bracket
 
 	//This should be active for new templates only
-	if(isset($matches, $matches[1]) ) {
+	if(isset($matches, $matches[1])) {
 		$savedVideo = false;
 
 		//Quick check to see if we have video= in there or not..
@@ -181,7 +217,7 @@ function ziggeo_p_content_parse_templates($matches)
 
 		//It could be an empty list.. if it is, then we should apply defaults to the same and just send it up..
 		if($parameters === "") {
-			return '<ziggeorecorder ' . ZIGGEO_DEFAULTS_RECORDER . ' ziggeo-tags="' .
+			$ret = '<ziggeorecorder ' . ZIGGEO_DEFAULTS_RECORDER . ' ziggeo-tags="' .
 					implode(',', $presets['ziggeorecorder']['tags']) .
 					'"></ziggeorecorder>';
 		}
@@ -292,77 +328,79 @@ function ziggeo_p_content_parse_templates($matches)
 			}
 		}
 
-		//If there are any custom tags within the parameters (such as %POST_TITLE% and alike) lets change them into right values
-		$parameters = ziggeo_p_parse_custom_tags($parameters);
-		//Lets determine if it is ID/name of a template and call it
-		if( $template = ziggeo_p_template_exists( $parameters ) ) {
+		//If any further processing is needed
+		if($ret === '') {
+			//If there are any custom tags within the parameters (such as %POST_TITLE% and alike) lets change them into right values
+			$parameters = ziggeo_p_parse_custom_tags($parameters);
+			//Lets determine if it is ID/name of a template and call it
+			if( $template = ziggeo_p_template_exists( $parameters ) ) {
 
-			//Lets check if we sent the video along with template name, and if we did, lets give it back its video.
-			if($savedVideo) {
+				//Lets check if we sent the video along with template name, and if we did, lets give it back its video.
+				if($savedVideo) {
 
-				if( stripos($template, ' video=') ) {
-					$template = str_ireplace( array('video=""', "video=''"), ' ' . $savedVideo . ' ', $template);
-				}
-				else {
-					if(stripos($template, ']') > -1) {
-						$template = str_replace( ']', ' ' . $savedVideo . ']', $template);
+					if( stripos($template, ' video=') ) {
+						$template = str_ireplace( array('video=""', "video=''"), ' ' . $savedVideo . ' ', $template);
 					}
 					else {
-						$template .= ' ' . $savedVideo . ']';
+						if(stripos($template, ']') > -1) {
+							$template = str_replace( ']', ' ' . $savedVideo . ']', $template);
+						}
+						else {
+							$template .= ' ' . $savedVideo . ']';
+						}
+					}
+				}
+
+				//At this time the parameters holds the template ID not parameters and template is having the the template loaded with tags and everything..
+				$ret = ziggeo_p_content_parse_templates(array($template, $template));
+			}
+			//if it is not a template name, it is likely parameters list, so just post it 'as is'..
+			else {
+				//This is the actual processing ;)
+
+				//Lets check if we sent the video along with template name, and if we did, lets give it back its video.
+				if($savedVideo) {
+					$parameters .= ' ' . $savedVideo;
+				}
+
+				if( isset($presets[$tag]) ) {
+					$template = ziggeo_p_parameter_processing($presets[$tag], $parameters, true);
+				}
+				else {
+					$template = ziggeo_p_parameter_processing(array(), $parameters, true);
+				}
+
+				//we re-utilize the template_options to do a final parsing
+				for($i = 0, $c = count($template_options); $i < $c; $i++ ) {
+					if( $tag === $template_options[$i]['name'] ) {
+
+						$ret = $template_options[$i]['func_final']($template);
+
+						//so we only find one of them
+						break;
+					}
+				}
+
+				// --- VIDEO PLAYER, RECORDER or UPLOADER ---
+				// ------------------------------------------
+
+				if($ret === '') {
+
+					//Apply ziggeo prefixes - only needed for <ziggeo> code
+					$template = ziggeo_p_parameter_prep($template);
+
+					if( isset($options, $options['beta']) || $tag === 'ziggeoplayer' ) { 
+						$ret = '<ziggeoplayer ziggeo-theme="modern" ' . $template . '></ziggeoplayer>';
+					}
+					else {
+						$ret = '<ziggeorecorder ' . $template . '></ziggeorecorder>';
 					}
 				}
 			}
-
-			//At this time the parameters holds the template ID not parameters and template is having the the template loaded with tags and everything..
-			$ret = ziggeo_p_content_parse_templates(array($template, $template));
 		}
-		//if it is not a template name, it is likely parameters list, so just post it 'as is'..
-		else {
-			//This is the actual processing ;)
-
-			//Lets check if we sent the video along with template name, and if we did, lets give it back its video.
-			if($savedVideo) {
-				$parameters .= ' ' . $savedVideo;
-			}
-
-			if( isset($presets[$tag]) ) {
-				$template = ziggeo_p_parameter_processing($presets[$tag], $parameters, true);
-			}
-			else {
-				$template = ziggeo_p_parameter_processing(array(), $parameters, true);
-			}
-
-			//we re-utilize the template_options to do a final parsing
-			for($i = 0, $c = count($template_options); $i < $c; $i++ ) {
-				if( $tag === $template_options[$i]['name'] ) {
-
-					$ret = $template_options[$i]['func_final']($template);
-
-					//so we only find one of them
-					break;
-				}
-			}
-
-			// --- VIDEO PLAYER, RECORDER or UPLOADER ---
-			// ------------------------------------------
-
-			if($ret === '') {
-
-				//Apply ziggeo prefixes - only needed for <ziggeo> code
-				$template = ziggeo_p_parameter_prep($template);
-
-				if( isset($options, $options['beta']) || $tag === 'ziggeoplayer' ) { 
-					$ret = '<ziggeoplayer ziggeo-theme="modern" ' . $template . '></ziggeoplayer>';
-				}
-				else {
-					$ret = '<ziggeorecorder ' . $template . '></ziggeorecorder>';
-				}
-			}
-
-		}
-
-		return $ret;
 	}
+
+	return $ret;
 }
 
 ?>
