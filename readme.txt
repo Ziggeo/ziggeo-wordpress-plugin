@@ -2,7 +2,7 @@
 Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
-Tested up to: 5.2.4
+Tested up to: 5.3
 Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -235,29 +235,22 @@ This is done through your Integrations tab, however we do suggest checking out t
 2. Templates tab
 3. Integrations tab
 4. Contact us tab
+5. Expert Settings tab
 
 = Templates =
-5. Working with templates - nice layout of parameters and their description
-6. Working with templates - managing templates
-7. Working with templates - editing templates
-8. Working with templates - beta templates (if you are not on beta by default)
+6. Working with templates - nice layout of parameters and their description
+7. Working with templates - managing templates
+8. Working with templates - editing templates
 9. Working with templates - videowall templates setup
-10. videowall (defaults - page numbers)
-11. videowall (defaults with slidewall turned on)
 
 = Global Defaults =
-12. Your old setup is now used as fallback
+10. Your old setup is now used as fallback
 
 = Comments =
-13. More options for comments.
+11. More options for comments.
 
 = Editing Post =
-14. TinyMCE button
-
-= Integrations =
-15. Ziggeo Video Field in Gravity Forms builder
-16. Selecting template in Gravity Forms builder
-17. Saved result tokens from the form submission
+12. Editor buttons
 
 
 == Bridges to new places ==
