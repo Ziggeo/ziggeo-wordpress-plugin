@@ -32,10 +32,6 @@
 //		4.1 Integrations Tab
 //			* ziggeoPUIIntegrationStatus()
 //
-// 5. Functions to be removed in next version
-//		* ziggeoPUIIntegrationAJAX()
-//		* ziggeo_integration_gravityforms_admin_select()
-//
 
 
 
@@ -348,7 +344,13 @@
 		feedback.checked = true;
 
 		//submit the form
-		document.forms[0].submit();
+		if(typeof document.forms[0].submit === 'function') {
+			document.forms[0].submit();
+		}
+		else {
+			//For the button itself
+			document.forms[0].submit.click();
+		}
 		return true;
 		//when reloaded, we will use the add_settings_error to show a nice thank you for that with some restyling done by CSS for that specific thank you.
 	}
