@@ -3,7 +3,43 @@
 //Checking if WP is running or if this is a direct call..
 defined('ABSPATH') or die();
 
+//Prepare the headers information
+function ziggeo_p_assets_get_raw() {
+
+	$options = get_option('ziggeo_video');
+
+	//use add_filter('ziggeo_assets_init', 'your-function-name') to change the options on fly if wanted
+	// it needs to return modified $options array.
+	$options = apply_filters('ziggeo_assets_init_raw', $options);
+
+	if(isset($options, $options['use_version'], $options['use_revision'])) {
+		$use = $options['use_version'] . '-' . $options['use_revision'];
+	}
+	else {
+		$use = 'v1-stable';
+	}
+
+	$result = [
+		'ziggeo'	=> [
+			'js'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.js',
+			'css'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css'
+		],
+		'local'		=> [
+			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js',
+			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles.css'
+		]
+	];
+
+	return $result;
+}
+
+//Function that prepares the headers information for Wordpress page load
 function ziggeo_p_assets_global() {
+
+	//To make sure that we are parsing this only once
+	if(defined('ZIGGEO_PARSED_ASSETS')) {
+		return;
+	}
 
 	$options = get_option('ziggeo_video');
 
@@ -36,6 +72,8 @@ function ziggeo_p_assets_global() {
 	}
 
 	do_action('ziggeo_assets_post');
+
+	define('ZIGGEO_PARSED_ASSETS', true);
 }
 
 function ziggeo_p_assets_admin() {

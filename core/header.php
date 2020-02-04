@@ -5,6 +5,11 @@ defined('ABSPATH') or die();
 
 
 function ziggeo_p_page_header() {
+
+	if(defined('ZIGGEO_PARSED_HEADER')) {
+		return;
+	}
+
 	$options = get_option('ziggeo_video');
 
 	//use add_filter('ziggeo_setting_header_code', 'your-function-name') to change the options on fly if wanted
@@ -113,22 +118,23 @@ function ziggeo_p_page_header() {
 						$options['use_debugger'] === 'true') ? ',\ndebug: true' : '';
 		?>
 
-		//Set the V2 application
-		var ziggeo_app = new ZiggeoApi.V2.Application({
-			token: "<?php echo (( isset($options, $options['token']) ) ? $options['token'] : "" ); ?>"<?php
+		//function to get app options
+		function ziggeoGetApplicationOptions() {
+
+			return {
+				token: "<?php echo (( isset($options, $options['token']) ) ? $options['token'] : "" ); ?>"<?php
 
 				echo $str_auth;
 				echo $str_webrtc_mobile;
 				echo $str_webrtc_streaming;
 				echo $str_webrtc_streaming_needed;
 				echo $str_debug;
-			/*
-			auth: <?php echo (  ? $options['use_auth'] : 'false' ); ?>,
-			webrtc_streaming: <?php echo ( (isset($options, $options['webrtc_streaming']) && $options['webrtc_streaming'] === true) ? 'true' : 'false' ); ?>,
-			webrtc_on_mobile: <?php echo ( (isset($options, $options['webrtc_for_mobile']) && $options['webrtc_for_mobile'] === true) ? 'true' : 'false' ); ?>,
-			webrtc_streaming_if_necessary: <?php echo ( (isset($options, $options['webrtc_streaming_needed']) && $options['webrtc_streaming_needed'] === true) ? 'true' : 'false' ); ?>,
-			debug: <?php echo ( (isset($options, $options['use_debugger'])) ? $options['use_debugger'] : 'false' ); */?>
-		});
+				?>
+			}
+		}
+
+		//Set the V2 application
+		var ziggeo_app = new ZiggeoApi.V2.Application( ziggeoGetApplicationOptions() );
 		<?php
 			//Language options
 			//@add translations options here
@@ -149,6 +155,8 @@ function ziggeo_p_page_header() {
 	</script>
 	<!-- Ziggeo API code - END -->
 	<?php
+
+	define('ZIGGEO_PARSED_HEADER', true);
 }
 
 add_action('wp_head', "ziggeo_p_page_header");

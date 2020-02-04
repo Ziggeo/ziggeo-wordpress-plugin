@@ -390,16 +390,3 @@ INDEX:
 				border-top-left-radius: 5px;
 				margin-left: 2px;
 			}
-	/* JW Video player in v1 is not comfortable playing in such a small size.. this helps it do it right */
-	#candidate_video-emb .jwcontrolbar .jwgroup.jwleft .jwplay button {
-		max-width: 20px;
-		padding: 0;
-		width: 20px;
-	}
-	#candidate_video-emb .jwcontrolbar .jwgroup.jwcenter {
-		left: 30px !important;
-		width: 100px;
-	}
-	#candidate_video-emb .jwcontrolbar .jwgroup.jwright button {
-		padding: 0;
-	}

@@ -83,29 +83,9 @@ function ziggeo_a_s_t_text() {
 		</div>
 		<?php
 
-		//Lets make it easy to change (add or remove) the list of options that are available
-		$templates = array(
-			array(
-				'value' => '[ziggeoplayer',
-				'string' => __('Ziggeo Player', 'ziggeo')
-			),
-			array(
-				'value' => '[ziggeorecorder',
-				'string' => __('Ziggeo Recorder', 'ziggeo')
-			),
-			array(
-				'value' => '[ziggeorerecorder',
-				'string' => __('Ziggeo ReRecorder', 'ziggeo')
-			),
-			array(
-				'value' => '[ziggeouploader',
-				'string' => __('Ziggeo Uploader', 'ziggeo')
-			)
-		);
-
 		//use add_filter('ziggeo_setting_available_templates', 'your-function-name') to change the options on fly if wanted
 		// it needs to return modified $templates array.
-		$templates = apply_filters('ziggeo_setting_available_templates', $templates);
+		$templates = apply_filters('ziggeo_setting_available_templates', array());
 
 		// We are showing the list of available templates to start from
 		?>

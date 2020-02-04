@@ -32,7 +32,13 @@
 //		4.1 Integrations Tab
 //			* ziggeoPUIIntegrationStatus()
 //
-
+// 5. WP Editor
+//		* ziggeoSetupNewWPToolbar()
+//		* ziggeoSetupOverlayRecorder()
+//		* ziggeoSetupOverlayTemplates)_
+// 6. Cleanup and preparation functions
+//		* ziggeoCleanTextValues()
+//		* ziggeoRestoreTextValues()
 
 
 
@@ -932,8 +938,7 @@
 		if(parameter_type === 'string' || parameter_type === 'array') {
 
 			//We should clean up the string..
-			parameter_value = parameter_value.replace(/\'/g, '&apos;');
-			parameter_value = parameter_value.replace(/\"/g, '&quot;');
+			parameter_value = ziggeoCleanTextValues(parameter_value);
 		}
 
 
@@ -1039,6 +1044,7 @@
 
 
 
+
 /////////////////////////////////////////////////
 // 4. INTEGRATIONS                             //
 /////////////////////////////////////////////////
@@ -1058,8 +1064,9 @@
 
 
 
+
 /////////////////////////////////////////////////
-// 5. WP Editor                                //
+// 5. WP EDITOR                                //
 /////////////////////////////////////////////////
 
 	function ziggeoSetupNewWPToolbar() {
@@ -1123,4 +1130,33 @@
 			ziggeoShowOverlayWithTemplatesList(null, true);
 			// the templates should be retrieved over AJAX so we can grab the latest ones even if new are added while working on the post
 		});
+	}
+
+
+
+
+/////////////////////////////////////////////////
+// 6. CLEANUP AND PREPARATION FUNCTIONS        //
+/////////////////////////////////////////////////
+
+	//This is to allow us to remove characters that would cause issues while saving or showing the info
+	function ziggeoCleanTextValues(value) {
+		//replace '
+		value = value.replace(/\'/g, '&apos;');
+
+		//replace "
+		value = value.replace(/\"/g, '&quot;');
+
+		return value;
+	}
+
+	//Used to remove entities and put them as original characters instead, so it looks right
+	function ziggeoRestoreTextValues(value) {
+		//restore '
+		value = value.replace(/\&apos\;/g, "'");
+
+		//restore "
+		value = value.replace(/\&quot\;/g, '"');
+
+		return value;
 	}

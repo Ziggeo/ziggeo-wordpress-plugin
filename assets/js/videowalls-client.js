@@ -3,50 +3,24 @@
 
 // Index
 //*******
-//	1. Events
-//		1.1. DOM ready
-//	2. General functionality
-//		2.1. videowallszUIVideoWallShow()
-//		2.2. videowallszUIVideoWallNoVideos()
-//		2.2. videowallszUISetupAutoplay()
-//	3. Endless Walls
-//		3.1. videowallszUIVideoWallEndlessAddVideos()
-//		3.2. videowallszUIVideoWallEndlessOnScroll()
-//	4. "Static" Walls
-//		4.1. videowallszUIVideoWallPagedAddVideos()
-//		4.2. videowallszUIVideoWallPagedShowPage()
-//	5. Polyfill
-//		5.1. .matches
-//		5.1. .closest
+//	1. General functionality
+//		1.1. videowallszUIVideoWallShow()
+//		1.2. videowallszUIVideoWallNoVideos()
+//		1.3. videowallszUISetupAutoplay()
+//		1.4. videowallszCreateWall()
+//	2. Endless Walls
+//		2.1. videowallszUIVideoWallEndlessAddVideos()
+//		2.2. videowallszUIVideoWallEndlessOnScroll()
+//	3. "Static" Walls
+//		3.1. videowallszUIVideoWallPagedAddVideos()
+//		3.2. videowallszUIVideoWallPagedShowPage()
+//	4. Polyfill
+//		4.1. .matches
+//		4.2. .closest
 
 
 /////////////////////////////////////////////////
-// 1. EVENTS
-/////////////////////////////////////////////////
-
-	//This is to make sure that the walls is added to the ZiggeoWP object. Needed until the core plugin no longer has the videowall codes.
-	//When the system is loaded
-	jQuery(document).ready( function() {
-		//Sanity check - we do need the core Ziggeo plugin to be active
-		if(typeof ZiggeoWP === 'undefined') {
-			return false;
-		}
-
-		if(typeof ZiggeoWP.videowalls === 'undefined') {
-			ZiggeoWP.videowalls = {
-				//the array to hold all videowall
-				//under each videowall data would be loaded_data for specific wall since each can have different data
-				walls: [],
-				endless: ''
-			};
-		}
-	});
-
-
-
-
-/////////////////////////////////////////////////
-// 2. GENERAL FUNCTIONALITY
+// 1. GENERAL FUNCTIONALITY
 /////////////////////////////////////////////////
 
 	//in case there are multiple walls on the same page, we want to be sure not to cause issues.
@@ -396,11 +370,53 @@
 		}
 	}
 
+	//Function to create the video wall cleanly
+	if(typeof videowallszCreateWall !== 'function') {
+		function videowallszCreateWall(id, wall_object, counter) {
+
+			//Sanity check - we do need the core Ziggeo plugin to be active
+			if(typeof ZiggeoWP === 'undefined') {
+				if(isNaN(counter)) {
+					counter = 1;
+				}
+
+				if(counter >= 4) {
+					return false;
+				}
+
+				setTimeout(function(){
+					videowallszCreateWall(id, wall_object, counter++);
+				}, 2000);
+				return false;
+			}
+
+			if(typeof ZiggeoWP.videowalls === 'undefined') {
+				ZiggeoWP.videowalls = {
+					//the array to hold all videowall
+					//under each videowall data would be loaded_data for specific wall since each can have different data
+					walls: {},
+					endless: ''
+				};
+			}
+			else {
+				//We add one by one in case it is not there
+				if(typeof ZiggeoWP.videowalls.walls === 'undefined') {
+					ZiggeoWP.videowalls.walls = {};
+				}
+				if(typeof ZiggeoWP.videowalls.endless === 'undefined') {
+					ZiggeoWP.videowalls.endless = '';
+				}
+			}
+
+			ZiggeoWP.videowalls.walls[id] = wall_object;
+		}
+	}
+
 
 
 
 /////////////////////////////////////////////////
-// 3. ENDLESS WALLS
+// 2. ENDLESS WALLS
 /////////////////////////////////////////////////
 
 	// function to handle the video walls without the pagination, having the endless scroll implementation base..
@@ -614,7 +630,7 @@
 
 
 /////////////////////////////////////////////////
-// 4. "STATIC" WALLS
+// 3. "STATIC" WALLS
 /////////////////////////////////////////////////
 
 	// function to handle the video walls with the pagination
@@ -816,15 +832,16 @@
 
 
 /////////////////////////////////////////////////
-// 5. POLYFILL
+// 4. POLYFILL
 /////////////////////////////////////////////////
 
-	//Polyfill for .closest()
+	//Polyfill for .matches()
 	if (!Element.prototype.matches) {
 		Element.prototype.matches = Element.prototype.msMatchesSelector || 
 									Element.prototype.webkitMatchesSelector;
 	}
 
+	//Polyfill for .closest()
 	if (!Element.prototype.closest) {
 		Element.prototype.closest = function(s) {
 			var el = this;

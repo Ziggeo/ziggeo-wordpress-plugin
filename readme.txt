@@ -3,8 +3,9 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.3
-Stable tag: 2.0
+Stable tag: 2.1
 License: GPLv2 or later
+Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin allows you to bring video to your Wordpress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.
@@ -267,12 +268,16 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
+= 2.1 =
+Fixing SVN issue
+Few minor updates to the code
+
+== Changelog ==
+
 = 2.0 =
 * Overhaul bringing new possibilities
 * Hooks and examples of how to use them
 * Support for very latest of Ziggeo
-
-== Changelog ==
 
 = 1.15 =
 * Added option to have integrations to other plugins

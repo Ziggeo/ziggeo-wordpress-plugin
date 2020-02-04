@@ -222,6 +222,39 @@ add_action('ziggeo_toolbar_button', function($ajax) {
 });
 
 
+//Add the initial templates
+add_filter('ziggeo_setting_available_templates', function($templates) {
+	//Lets make it easy to change (add or remove) the list of options that are available
+	$templates = array(
+		array(
+			'value' => '[ziggeoplayer',
+			'string' => __('Ziggeo Player', 'ziggeo')
+		),
+		array(
+			'value' => '[ziggeorecorder',
+			'string' => __('Ziggeo Recorder', 'ziggeo')
+		),
+		array(
+			'value' => '[ziggeorerecorder',
+			'string' => __('Ziggeo ReRecorder', 'ziggeo')
+		),
+		array(
+			'value' => '[ziggeouploader',
+			'string' => __('Ziggeo Uploader', 'ziggeo')
+		)
+	);
+
+	return $templates;
+}, 1);
+
+//Remove duplicates if any are present
+add_filter('ziggeo_setting_available_templates', function($templates) {
+
+	//It is fine to edits some entry for some reason, however we do not want duplicates to be present
+	$templates = array_unique($templates, SORT_REGULAR);
+
+	return $templates;
+}, 100);
 
 //================================================================================================
 // @REMOVE - to be removed from here in future versions
@@ -500,7 +533,7 @@ add_action('ziggeo_add_to_ziggeowp_object', function() {
 	?>
 	videowalls: {
 		endless: '',
-		walls: []
+		walls: {}
 	},
 	<?php
 });

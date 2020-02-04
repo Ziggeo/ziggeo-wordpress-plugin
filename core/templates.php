@@ -272,6 +272,30 @@ defined('ABSPATH') or die();
 		return $ret;
 	}
 
+	//returns the list of templates and their code if they match the desired type of template, otherwise empty array
+	function ziggeo_p_templates_index_type($template_type) {
+		//get all templates
+		$templates = ziggeo_p_templates_index();
+
+		//default
+		$result = array();
+
+		//Go through list and get only the ones matching template type
+		if($templates) {
+
+			foreach ($templates as $template_id => $template_code) {
+				if(stripos($template_code, $template_type) > -1) {
+					$result[] = array(
+						'id'	=> $template_id,
+						'code'	=> $template_code
+					);
+				}
+			}
+		}
+
+		return $result;
+	}
+
 	//Checks if the template with specified ID exists or not
 	function ziggeo_p_template_exists($id, $opposite = false) { 
 		//If we do not pass anything we do not want to parse the templates..

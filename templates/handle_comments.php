@@ -62,10 +62,6 @@ function ziggeo_p_setup_comments() {
 	//Getting our options
 	$options = get_option('ziggeo_video');
 
-	//we only include code if needed
-	include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_recorder.php');
-	include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_player.php');
-
 	$template_recorder = ziggeo_get_recorder_code('comments');
 	$template_player = ziggeo_get_player_code('comments');
 

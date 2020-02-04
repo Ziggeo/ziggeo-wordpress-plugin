@@ -76,7 +76,7 @@ function ziggeo_p_check_code_is_v1($code, $fullcode = false) {
 //You can override this function. If you do, it is recommended to keep the same hooks, otherwise some things might not work any more
 if(!function_exists('ziggeo_template_v1_to_v2')) {
 
-//@TODO: Lets add some hooks..
+	//@TODO: Lets add some hooks..
 	function ziggeo_template_v1_to_v2($code) {
 
 		//if changing, it is important to note that first in one array corresponds to first in second array
