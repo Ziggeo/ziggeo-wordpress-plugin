@@ -1,196 +1,114 @@
 === Ziggeo ===
-Contributors: oliverfriedmann, baned
-Donate link: https://ziggeo.com/
-Tags: video, comments, posts, video comments, crowdsourced video, crowdsourced video plugin, page, recorder, user generated content, user generated content plugin, user generated video, video comments, video posts, video recorder, video recording, video reviews, video submission, video submission plugin, video testimonial plugin, video testimonials, video upload, video widget, webcam, webcam recorder
+Contributors: oliverfriedmann, baned, carloscsz409
+Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
-Tested up to: 4.5.3
-Stable tag: 1.15
+Tested up to: 5.3
+Stable tag: 2.1
 License: GPLv2 or later
+Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you to do video posts and accept video comments through use of powerful Ziggeo API.
+This plugin allows you to bring video to your Wordpress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.
+
+== Who is this plugin for? ==
+
+Are you looking to showcase some videos?
+This plugin can help with that!
+
+Are you looking to have themed galleries of videos on your website?
+This plugin can help with that!
+
+Want to allow people to submit their own videos?
+Yup, this can also be done by this plugin.
+
+Want to submit a post and attach video in it?
+This plugin can handle it.
+
+Want people to reply with video comments?
+Yup, you guessed it right. This is the plugin for you!
+
+Want to know quickly what it can do?
+There are plenty of features:
+1. Screen Recording
+2. Webcam recording
+3. Playback from powerful Ziggeo servers and CDN or from your WP directory, S3, etc.
+4. Mobile friendly
+5. Easy to setup and use
+6. Ready to use themes for your player and recorder yet easy to restyle
+7. AI powered video analysis
+8. AI powered audio transcription
+9. AI powered (Not) Safe to use filter
+10. Filter effects (Instagram like effects and watermarks / logos)
+
+..and many many more features. Check them all out at [https://ziggeo.com/features/](https://ziggeo.com/features/)
 
 
-== Description ==
+== Quick Description ==
 
-You can use this plugin to spice up your blog with video posts. Simply start by creating a new post, click on the *Record Video* button and take a video of yourself. It'll then be shown to your audience once your post goes live.
+You can use this plugin to spice up your blog, community, professional website or store with video posts. Want so share a video of yourself? Simply start by creating a new post, click on the *Record Video* button and take a video of yourself or your screen. It will then be shown to your audience once your post goes live.
 
-You can also invite people to leave video comments. Folks will have the option to either leave a traditional text comment or take a short video of themselves that'll be viewable by everybody on your site.
+Want to allow your community to share videos between them? Utilize this plugin and its various hooks and accomplish just that. Just as easy we have additional ways to integrate into community plugins such as bbPress or BuddyPress. Read more about it in the helper plugins section.
 
-The plugin is based on the Ziggeo API which allows you to integrate video recording and playback with only two lines of code in your site, service or app.
+You can also invite people to leave video comments. Folks will have the option to either leave a traditional text comment or take a short video of themselves. These comments might be viewable by everybody on your site, or not, depending on your own setup.
+
+The plugin is based on the powerful Ziggeo API. While it is easy to add by yourself, this plugin adds it for you. All that you are left to do is to click around and set it all up (very simple and quite quick).
 
 = Why Ziggeo? =
 
-Ziggeo video playback and recording is built upon its own framework which allows you to record and play videos on various platforms without thinking about the video type specific to browsers or technology available on platform while in the same time unifying the design of your video player and recorder.
+Ziggeo video playback and recording is built upon its own framework. It allows you to record and play videos on various platforms out of the box. Stop thinking about the video type specific to browsers or technology available on specific platform. Ziggeo API is unifying the design of your video player and recorder and makes all processes just flow.
 
-Ziggeo is designed to do that using same calls and methods while our backend works out all of the specifics for you. And plugin? Well, plugin just packs the power of Ziggeo and allows you to have the same on your WordPress website in just few clicks, regardless if you are looking for video recorder, video player or video gallery.
+Ziggeo is designed to do that using same calls and methods while our backend works out all of the specifics for you. And plugin? Well, plugin just packs the power of Ziggeo and allows you to have the same on your WordPress website in just few clicks, regardless if you are looking for video/screen (or both) recorder, video player or video gallery.
 
 = Support =
 
 We provide active support to all that have any questions or need any assistance with our plugin or our service.
-To submit your questions simply go to our [Help Center](https://support.ziggeo.com/hc/en-us)
+To submit your questions simply go to our [Help Center](https://support.ziggeo.com/hc/en-us). This version is also packing contact us page into our plugin so feel free to use that one as well.
 
 = Recording =
 
-You control the length of the videos, the tags associated with the same (by default we pre-set the tags to "wordpress", username of the submitter as reported by WordPress and (new) where the video was made - "post"/"comment" )
+Enable yourself and others on your website to be pro video makers. You are in control of everything that is important to you! The length, resolution, the final look, logo or no logo, tags and much more. All that and just few clicks required!
 
-Recordings can be processed on our end to include any effects or filters that you have previously set, while you are still using only few lines of human readable short codes.
+Recordings will then be uploaded and processed on our end. This makes them meet industry standards and allows you to include any effects or filters that you have previously set. All that from that easy to set easy to read text you wrote down or clicked to get.
 
-Recording videos is as simple as:
-
-`
-[ziggeo]
-`
-
-- This will load our default video recorder and if any defaults are set through plugin, they would be used.
-
-If you create template with name 'mytemplate', which includes video_profile, effects_profile, width, height and tags, instead of these few lines:
-
-`
-<ziggeo ziggeo-video_profile="_my_video_profile"
-        ziggeo-effect_profile='my_effects'
-        ziggeo-width=640
-        ziggeo-height=480
-        ziggeo-tags='mytag1,mytag2'>
-</ziggeo>
-`
-
-You can simply use the following, even shorter call:
-
-`
-[ziggeo mytemplate]
-`
+See our forum for tons of ways to quickly customize and [create different recorders](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin)
 
 = Playback =
 
-You just tell us the video that you wish to play and how you want it to look - full customization possible - allowing your videos to blend into your WordPress website and to amaze your website visitors.
+1, 2 or 500 videos, all up to you. Our player can do it for you. We know you want to spend your with your website / service / store and just have videos that work. Not only do they work, they make it all come together with Ziggeo.
 
-A sample of your video player call was as simple as:
+You just tell us the video that you wish to play and how you want it to look - full customization possible! Allowing your videos to blend into your WordPress website and to amaze your website visitors.
 
-`
-[ziggeo]VIDEO_TOKEN[/ziggeo]
-`
-
-This is still the same, but you can also use the following:
-
-`
-[ziggeoplayer video="VIDEO_TOKEN"]
-`
-
-or
-
-`
-[ziggeo video="VIDEO_TOKEN"]
-`
-
-All of them will load a player on your website. Want to customize it? With templates, your WordPress video player is created by simply adding the following:
-
-- seeing that myVideoPlayer is the name of the template:
-
-`
-[ziggeoplayer myVideoPlayer video="VIDEO_TOKEN"]
-`
-
-Do you love simple [ziggeo] tag instead? That is OK. It will work like that as well. Just change it to:
-
-`
-[ziggeo myVideoPlayer video="VIDEO_TOKEN"]
-`
-
-- Starting with version 1.13 you can also view your videos in video wall template. To see more about it, do check out its section bellow.
+See our forum for tons of ways to quickly customize and [create different players](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin)
 
 = Video Uploads =
 
-You want to allow uploads? Want to turn them into playable videos right after uploading? This has never been easier - you simply set the recorder to allow uploads, or use our predefined uploading template (*[ziggeouploader]*) and you are good to go.
-All videos uploaded through the same would be possible to be played back for you.
+Interested or looking for a fast way to upload videos to a storage for later use? Want to allow yourself easiness? Maybe want to allow it for your website visitors in a secure manner? This is it, you need Ziggeo, and this is the plugin to help you make it super easy to do.
 
-Instead of setting up the Ziggeo embedding to allow video uploads to your WordPress plugin you can also simply call the uploader (plugin) template as so:
-
-`
-[ziggeouploader]
-`
-
-Do you want to style it to some specific setup? That is possible, simply set it up with a template as so (seeing that our "uploads" is the name of the template):
-
-`
-[ziggeouploader uploads]
-`
-
-As with video player and Ziggeo video recorder, you can set up your uploader using the base template:
-
-`
-[ziggeo uploads]
-`
+See our forum for tons of ways to quickly customize and [create different uploaders](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin)
 
 = Video Wall =
 
-Were you interested in having an option not only to collect videos in your comments, but to show them as well? Something like a video gallery?
+Are you after having a big video gallery? Gallery of different styles and ways they work? Well video wall is the best place to look into.
 
-Well, if you are thinking "oh, that would be so nice" - we hear you! We also want to say that that is exactly what we did. As per your requests, we have thought of a way to introduce video walls that work with just a few lines in any part of your post or page.
+In our effort to make the plugin easy, simple and lightweight we have created a new plugin that is addition to this one. In this version we still support video walls and in future version it will be brought through additional bridge plugin.
 
-So what happens is that you add a call to your video wall template like so:
-
-`
-[ziggeovideowall myTemplate]
-`
-
-As you do, your post will show the wall as per template setup, which means that you could do one of the following:
-1. Show video gallery / video wall as soon as the page finishes loading
-1. Request for video to be posted as a comment on the post to see the video wall
-1. Show a message if no videos are present - or show another template instead.
-
-* Yes, you read that correctly. If you show your video wall, and you want to show a template within it - that is possible allowing you to quickly add more videos.
-
-By default the video wall will show you the videos made on the specific post (the one it is on), however if you wish to show videos from other posts or that are not associated yet with your WordPress, you can do that as well through videos_to_show parameter.
-
-You can read more about Video Wall templates on the following useful links:
-[Introduction to VideoWall on our blog](http://blog.ziggeo.com/2016/06/13/videowall-the-best-way-to-easily-show-a-video-gallery-on-your-wordpress-based-website/)
-and
-[Introduction to showing videos from other post on our forum](https://support.ziggeo.com/hc/en-us/community/posts/212117427-VideoWall-parameters-introducing-new-changes)
+You can read more [about videowall plugin here](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
 
 = Templates =
 
-Ziggeo plugin is now powered by templates allowing you to quickly set up the template in the "template builder" part of the plugin and then simply reference from your posts, pages and comments. There is no limit in the amount of templates you can have and it is up to you how you will use them.
+Ziggeo plugin is powered by templates. This means that next to using our codes as you would usually use, you can also use shortcode. This allows you to quickly set up the template in the "template builder" part of the plugin.
 
-You can also set default templates for your comments - for playback and recording so we got you covered there as well.
+Once you do you simply reference the template from your posts, pages and comments. There is no limit in the amount of templates you can have and it is up to you how you will use them.
 
-You have already seen some of the examples above, and to see their full power, you should definitely check them out for size.
-
-= How templates work =
-
-Templates are an easy way for you to set your parameters for recorder, player or uploader (at this time) and set it only in one place. In the same time this is done through a simple to use 'tool' next to the templates editor.
-
-When the embedding is detected in your posts, pages or comments, our plugin will go through it and find what you wanted to show and how you wanted to show it.
-
-There are several base templates:
-
-1. Any embedding
- `[ziggeo]`
-
-2. Ziggeo Video Player
- `[ziggeoplayer]`
-
-3. Ziggeo Video Recorder
- `[ziggeorecorder]`
-
-4. Ziggeo Video ReRecorder
- `[ziggeorerecorder]`
-
-5. Ziggeo Video Uploader base
- `[ziggeouploader]`
-
-6. Ziggeo Video Wall base (Video Gallery)
- `[ziggeovideowall]`
-
-The only reason why we created them is to allow you to use a simple tag in your post to specify what you are after with specific parameters being loaded for you.
-
-Please check FAQ section for some of the questions related to the same.
+You can see [how the templates work](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin) and about the template editor.
 
 = Improvements and Feedback =
 
-If you experience any issues with the plugin, please let us know. You can do that through options shown in plugins *Contact Us* tab, or if you were in contact with us before, just let us know in the same manner as before, or over our [Ziggeo Forum in WordPress Plugin section](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
+Have some feedback? Have some questions? You can do that through options shown in plugins *Contact Us* tab.
 
-We value your suggestions in regards to all aspects of our service and plugin as well, so use this and don't be afraid to help us help you.
+Prefer other ways? Check out [Ziggeo Forum in WordPress Plugin section](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
+
+We value your suggestions in regards to all aspects of our service and plugin.
 
 == Installation ==
 
@@ -211,15 +129,15 @@ There are several ways to power your WordPress with video recording and video pl
 
 == Frequently asked questions ==
 
-= How to show videos to only some people when using WordPress Groups plugin? =
+= How to add embedding to only some people when using WordPress Groups plugin? =
 
-This is the plugin: [WordPress Groups plugin](https://wordpress.org/plugins/groups/)
+[WordPress Groups plugin](https://wordpress.org/plugins/groups/) has the feature you are after. Wanna hear some more good news? Our plugin works with theirs as well ;)
 
 You would be able to do that either by using:
 
 `
 [groups_member group="YourLimitedGroup"]
- [ziggeo][/ziggeo]
+ [ziggeorecorder][/ziggeorecorder]
 [/groups_member]
 `
 
@@ -227,30 +145,40 @@ or by using
 
 `
 [groups_non_member group="YourLimitedGroup"]
- [ziggeo][/ziggeo]
+ [ziggeorecorder][/ziggeorecorder]
 [/groups_non_member]
 `
 
-= Is using templates better than using previous method of embedding? =
+`
+ [ziggeorecorder][/ziggeorecorder]
+`
+* This can be any code you want to use.
 
-Do you happen to have hundreds of posts with Ziggeo embeddings?
-What if you wanted to change all of them? Well, if your first thought was about opening each and every one of those great posts on your websites or thinking about the SQL statements that you would use, stop. With templates that is not the case. You can just edit the template and that is it, all posts get updated with that one edit! How amazing is that?
+= What way should we use to embed Ziggeo embedding? =
 
-It is of course up to you to decide which method works best for you - this is just an option that you can use if you need it.
+Do you happen to have hundreds of posts with Ziggeo embeddings? Want to use same one for all of them? The best way would be to use templates. You then have a single place to edit the templates.
+
+Are you using some specific plugin that provides you with some extras (like widgets) where you want to add the code, yet template is not working there? Well some widgets do not use / provide ways to process things in them, so our JS and HTML code will work.
 
 = What happens when you delete the template? =
 
-Well, the template will no longer be found and used, however the defaults that you have set under your *General* tab are what we will use to show your videos / recorder.
+Well, the template will no longer be found and used, however the defaults that you have set under your *General* tab are what we will use to show your videos / recorder instead.
 
 = What happens if we delete all templates and did not have any defaults set? =
 
 Even if unlikely to happen, we thought about that and are always using our own defaults in case we can not find anything else.
 
+This is the load process:
+1. Our defaults
+2. + our WP plugin defaults
+3. + your defaults
+4. + your template code
+
 = How are templates stored? =
 
-By default we try to write them into a file. This has some concerns that you should be aware of if you are on shared hosting, but otherwise it means that there are no extra DB calls made when saving and reading templates (it is faster). See the *We are getting the error that the template can not be saved* segment for more.
+They are stored in DB. If you want, there is also an option to use files instead. Completely up to you and both will work just the same.
 
-= We are getting the error that the template can not be saved =
+= We are using files and getting the error that the template can not be saved =
 
 That simply means that you are using different 'user' to run WordPress and a different one to create files. To work around this all you should do is to:
 
@@ -262,17 +190,13 @@ That simply means that you are using different 'user' to run WordPress and a dif
 
 In order to store data in files and read the same on-fly without loosing the data once the plugin is updated, we are storing the data in another folder - `ziggeo-userData`. That means that we have moved the actual data from the plugin itself. As such `ziggeo` directory holds the plugin functionality code and `ziggeo-userData` holds the data saved by the plugin.
 
-This is probably a good place to mention that we are still keeping the data that we previously did in your database, it is just that new data is moved from it.
+This is happening only if you are using files.
 
-= Why are the options on General tab hiding and showing when we move our mouse? =
+= We have used [ziggeo] before should we update our code to [ziggeoplayer] and [ziggeorecorder]?
 
-We added a lot of changes to this version and we are planning on adding more. In order to keep it all clean and simple we made few style decisions which we hope you will like, where the option explanation will only show itself once you are over it and for the rest of the time your dashboard is nice and clean.
+When we do changes we look to support older versions of our service as well as our plugin. As such our plugin still supports the [ziggeo] codes. The new codes for templates make it much easier for you to know what it is right away as you look the code.
 
-= What happens when we set template for recording on a template base for playing videos, or some other combination? =
-
-We try to detect what you might want to do. As such, even if you are using tag that is not specific to the template we will try to do what we can with it, but the template base will prevail.
-
-We do however recommend that you set up any number of templates that you might want to have and use each as desired to make sure that all is loaded per your preferences.
+It also makes it easy for others (like yourself) to add your own type of template.
 
 = Is there a way to load templates without going to settings to see their names? =
 
@@ -286,13 +210,7 @@ Yes. To add the template you use *Ziggeo Video Aid* button in the toolbar. To ge
 
 = We have few plugins that show the Post editing toolbar in public as well and do not want Ziggeo button to be shown as well =
 
-It is not. We have added a check to see if it is opened in public or by admin and show it only when it seems to be opened by admin. If you do have some specific plugin installed and by some chance it shows it in non admin places for you, just let us know, we will check it and add support for that plugin as well.
-
-= What is "Turn into beta" option in templates tab? =
-
-If you want to use beta everywhere, the global options are the way to go with. However if you want to use beta calls on some templates only (which is for example available to your developers only, or your testers), the best option would be to use the template. Once you click on the button, it will add a custom tag to indicate that it is beta embedding.
-
-Clicking on it again will stop it from being 'beta'.
+It is not shown there. We have added a check to see if it is opened in public or by admin and show it only when it seems to be opened by admin. If you do have some specific plugin installed and by some chance it shows it in non admin places for you, just let us know, we will check it and add support for that plugin as well.
 
 = Can we re-style our videowall / video gallery? =
 
@@ -307,19 +225,9 @@ Yes. There are few classes that you can use in your video walls
 
 You can of course use your own CSS code, and with classes available for each element of the videowall this should be something very simple.
 
-= Why there are some videos that can not be loaded in VideoWall? =
-
-If you notice in your console the following error: `NetworkError: 403 Forbidden - link to video snapshot` or if you check the link directly and you see `This video is currently under moderation` it means that your video wall was able to load the video, however you have checked `Client cannot view unaccepted videos` in your dashboard - that is why you are shown the same.
-
-If you are still not sure about how to resolve that, just let us know.
-
-= We open a page with video wall, however no videos are shown even with video wall set to load right away =
-
-To show videos you need to have videos on that specific page. This is done to allow you to show any videos from within your Ziggeo account that are specific to the post you are currently on. To show some videos, you can record your video in the post, or by recording it in the comments. All others that are added as video comments will be shown after new recording is made (to those that do it) or for all those that come to your page (depending on your setup).
-
 = How do we enable integrations? =
 
-This is done through your Integrations tab, however we do suggest checking out the *Integrations* tab above for more details specific to integrations.
+This is done through your Integrations tab, however we do suggest checking out the *Other Notes* tab above for more details specific to integrations.
 
 
 == Screenshots ==
@@ -328,71 +236,48 @@ This is done through your Integrations tab, however we do suggest checking out t
 2. Templates tab
 3. Integrations tab
 4. Contact us tab
+5. Expert Settings tab
 
 = Templates =
-5. Working with templates - nice layout of parameters and their description
-6. Working with templates - managing templates
-7. Working with templates - editing templates
-8. Working with templates - beta templates (if you are not on beta by default)
+6. Working with templates - nice layout of parameters and their description
+7. Working with templates - managing templates
+8. Working with templates - editing templates
 9. Working with templates - videowall templates setup
-10. videowall (defaults - page numbers)
-11. videowall (defaults with slidewall turned on)
 
 = Global Defaults =
-12. Your old setup is now used as fallback
+10. Your old setup is now used as fallback
 
 = Comments =
-13. More options for comments.
+11. More options for comments.
 
 = Editing Post =
-14. TinyMCE button
-
-= Integrations =
-15. Ziggeo Video Field in Gravity Forms builder
-16. Selecting template in Gravity Forms builder
-17. Saved result tokens from the form submission
+12. Editor buttons
 
 
-== Integrations ==
+== Bridges to new places ==
 
-Since version 1.15 the integrations are available. It is now rather easy to get the Ziggeo video and power of its API into various other plugins and make your goals easy to accomplish on your WordPress website.
+Ever since v1.15 we wanted to allow you to bring Ziggeo to any place of your website. With the v2.0 this is possible even further.
 
-What integration means is that you can use our own created integrations or you could even create your own and if you want, share it with the others on our forum under [WordPress forum](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
+We have made a lot of hooks available for you to use them and change what and how happens. It also allows you to extend the functionality further.
 
-The way the integrations work is as follows:
+Now we wanted to bring you few examples next to this, so we created several bridges that combine our plugin with other plugins you have asked for. They are available as additional plugins that you install.
 
-1. We make a quick check if the integration could work based on the required details given in the code of each integration module
-2. If it can work we give you the option of making it active or disabling it - so the entire code module for integration only fires if you want it
-3. what happens when integration is active is all up to the integration itself
+Originally you would have all of them and could enable/disable them through our plugin. Now you only grab the ones of interest to you. Plus they offer a great source of examples how you can bring Ziggeo to any other plugin of your choice.
 
-As a first integration, we are introducing *Gravity Forms* integration. You will of course need the Gravity Forms installed on your system and our tests have been made with version 2.0 to version 2.0.2. It uses the latest recommended code and as such should work properly for many new versions to come (as is) and we will keep it updated.
-
-It allows you to add any template that you have created to your Gravity Form.
-
-So in just a few clicks, you can turn your Gravity Form into a form accepting videos, or a Gravity Form with video gallery, all up to you!
-
-= Integrations FAQ =
-*Q:* What happens to Ziggeo form fields if Gravity Forms integration is disabled at a later time?
-*A:* If you disable the integration, you will be stopping it from working, and as such it would show only the parts created by Gravity Forms - such as form label. Everything else will no longer be shown, on admin, in preview nor on publick side.
-
-*Q:* Can we create our own integrations?
-*A:* Sure! Just let us know on our forum [under WordPress plugin topic](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin). and we would be happy to help you get started. It is also a place where we will be posting the steps on how to do it soon as well.
-
-*Q:* How do we add Ziggeo Video Field to our Gravity Form?
-*A:* To do it, you should open a form in the Gravity Forms builder. Once you do, open the `Advanced fields` section and you should see the *Ziggeo Video Field* in the same.
-
-*Q:* Can we give you our feedback?
-*A:* Of course! We welcome all feedback and suggestions, that is how we got to here, so do share with us your thoughts.
-
-
+Visit the following page to see all of [our bridge plugins](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
 
 == Upgrade notice ==
 
-= 1.15 =
-* Introducing - Integrations
-* Available Integration: GravityForms
+= 2.1 =
+Fixing SVN issue
+Few minor updates to the code
 
 == Changelog ==
+
+= 2.0 =
+* Overhaul bringing new possibilities
+* Hooks and examples of how to use them
+* Support for very latest of Ziggeo
 
 = 1.15 =
 * Added option to have integrations to other plugins
