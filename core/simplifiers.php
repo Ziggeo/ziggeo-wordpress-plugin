@@ -190,4 +190,56 @@ if(!function_exists('ziggeo_template_v1_to_v2')) {
 function ziggeo_get_version() {
 	return ZIGGEO_VERSION;
 }
+
+//Strip new lines for spaces
+function ziggeo_line_min($code) {
+	return str_replace(array("\n", "\t"), ' ', $code);
+}
+
+//This is to allow us to remove characters that would cause issues while saving or showing the info
+if(!function_exists('ziggeo_clean_text_values')) {
+
+	function ziggeo_clean_text_values($text, $replace_array = null) {
+		//replace '
+		$text = str_replace("'", '&apos;', $text);
+
+		//replace "
+		$text = str_replace('"', '&quot;', $text);
+
+		//In case we want to do some additional switching, we use this array
+		//array( ['from' => 'VALUE', 'to' => 'VALUE'] )
+		if($replace_array !== null) {
+			for($i = 0, $c = count($replace_array); $i < $c; $i++) {
+				$text = str_ireplace($replace_array[$i]['from'], $replace_array[$i]['to'], $text);
+			}
+		}
+
+		return $text;
+	}
+}
+
+//Used to remove entities and put them as original characters instead, so it looks right
+if(!function_exists('ziggeo_restore_text_values')) {
+
+	function ziggeo_restore_text_values($text, $restore_array = null) {
+		//restore '
+		$text = str_replace("'", '&apos;', $text);
+
+		//restore "
+		$text = str_replace('"', '&quot;', $text);
+
+		//In case we want to do some additional switching, we use this array
+		//array( ['from' => 'VALUE', 'to' => 'VALUE'] )
+		if($restore_array !== null) {
+			for($i = 0, $c = count($restore_array); $i < $c; $i++) {
+				$text = str_ireplace($restore_array[$i]['from'], $restore_array[$i]['to'], $text);
+			}
+		}
+
+		return $text;
+	}
+}
+
+
+
 ?>

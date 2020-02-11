@@ -15,9 +15,9 @@
 // 3. API
 //		3.1. ziggeoAPIGetVideo()
 //		3.2. ziggeoAPIGetVideosData()
-// 4. Functions to be removed in next version
-//		3.1. @UPDATE THIS
-
+// 4. Cleanup and preparation functions
+//		* ziggeoCleanTextValues()
+//		* ziggeoRestoreTextValues()
 
 
 
@@ -410,3 +410,46 @@
 	}
 	*/
 
+
+
+
+
+
+/////////////////////////////////////////////////
+// 4. CLEANUP AND PREPARATION FUNCTIONS        //
+/////////////////////////////////////////////////
+
+	//This is to allow us to remove characters that would cause issues while saving or showing the info
+	function ziggeoCleanTextValues(value, replace_array) {
+		//replace '
+		value = value.replace(/\'/g, '&apos;');
+
+		//replace "
+		value = value.replace(/\"/g, '&quot;');
+
+		if(typeof replace_array !== 'undefined') {
+			//go through array and replace additional characters
+		}
+
+		return value;
+	}
+
+	//Used to remove entities and put them as original characters instead, so it looks right
+	function ziggeoRestoreTextValues(value, restore_array) {
+		//restore '
+		value = value.replace(/\&apos\;/g, "'");
+
+		//restore "
+		value = value.replace(/\&quot\;/g, '"');
+
+		//Be mindful of what you are using to search for, you might want or need to escape special characters..
+		if(typeof restore_array !== 'undefined') {
+			//go through array and replace additional characters
+			for(i = 0, c = restore_array.length; i < c; i++) {
+				value = value.replace(new RegExp(restore_array[i].from, "g"), restore_array[i].to);
+				//dyn regex: Thank you acdcjunior https://stackoverflow.com/a/17886301
+			}
+		}
+
+		return value;
+	}
