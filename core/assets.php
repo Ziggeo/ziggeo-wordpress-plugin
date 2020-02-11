@@ -19,16 +19,21 @@ function ziggeo_p_assets_get_raw() {
 		$use = 'v1-stable';
 	}
 
+	$ver = '?version=' . ZIGGEO_VERSION;
+
 	$result = [
-		'ziggeo'	=> [
-			'js'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.js',
-			'css'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css'
-		],
-		'local'		=> [
-			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js',
-			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles.css'
-		]
+		array(
+			'js'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.js' . $ver,
+			'css'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css' . $ver
+		),
+		array(
+			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js' . $ver,
+			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles.css' . $ver
+		)
 	];
+
+	//Allowing to add additional URLs
+	$result = apply_filters('ziggeo_assets_init_raw_post', $result);
 
 	return $result;
 }
@@ -54,20 +59,22 @@ function ziggeo_p_assets_global() {
 		$use = 'v1-stable';
 	}
 
+	$ver = '?version=' . ZIGGEO_VERSION;
+
 	if(apply_filters('ziggeo_assets_pre_server_load', true)) {
 		//server assets
-		wp_register_script('ziggeo-js', 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.js', array());
+		wp_register_script('ziggeo-js', 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.js' . $ver, array());
 		wp_enqueue_script('ziggeo-js');
-		wp_register_style('ziggeo-css', 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css', array());
+		wp_register_style('ziggeo-css', 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css' . $ver, array());
 		wp_enqueue_style('ziggeo-css');
 	}
 
 
 	if(apply_filters('ziggeo_assets_pre_local_load', true)) {
 		//local assets
-		wp_register_script('ziggeo-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js', array("jquery"));
+		wp_register_script('ziggeo-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js' . $ver, array("jquery"));
 		wp_enqueue_script('ziggeo-plugin-js');
-		wp_register_style('ziggeo-styles-css', ZIGGEO_ROOT_URL . 'assets/css/styles.css', array());
+		wp_register_style('ziggeo-styles-css', ZIGGEO_ROOT_URL . 'assets/css/styles.css' . $ver, array());
 		wp_enqueue_style('ziggeo-styles-css');
 	}
 

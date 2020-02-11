@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.3
-Stable tag: 2.1
+Stable tag: 2.2
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -268,11 +268,17 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.1 =
-Fixing SVN issue
-Few minor updates to the code
+= 2.2 =
+* Template names fix - The names will be saved as lowercase, names will be checked so empty names are not present
+* Additional functions to help other plugins to integrate with (get assets, clean values, etc.)
+* Tested to work with our plugins that integrate to Gravity Forms, WPForms, Videowalls, bbPress, Job Manager
+* Better handling for your own template designs in editor
 
 == Changelog ==
+
+= 2.1 =
+* Fixing SVN issue
+* Few minor updates to the code
 
 = 2.0 =
 * Overhaul bringing new possibilities

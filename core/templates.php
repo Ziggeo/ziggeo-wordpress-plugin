@@ -43,6 +43,15 @@ defined('ABSPATH') or die();
 	//Adds new templates to the currently existing ones
 	function ziggeo_p_templates_add($id, $value, $specific = '') {
 
+		//Few fixes to ID in special cases when they might be needed
+		//Check if the id is empty
+		if(trim($id) === '') {
+			$id = "ziggeo_template_" . rand(20, 3000);
+		}
+
+		//Lets right away put the ID into lowercase
+		$id = strtolower($id);
+
 		$options = get_option('ziggeo_video');
 
 		if( ( ($specific !== '' && $specific !== 'db') || $specific === 'files' ) ||

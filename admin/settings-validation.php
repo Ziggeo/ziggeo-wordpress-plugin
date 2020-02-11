@@ -122,8 +122,8 @@ function ziggeo_a_s_validation($input) {
 		if( is_array($file_templates) ) {
 			//All is good, lets do it
 			foreach ($file_templates as $key => $value) {
-				if(!isset($final_templates[$key])) {
-					$final_templates[$key] = $value;
+				if(!isset($final_templates[strtolower($key)])) {
+					$final_templates[strtolower($key)] = $value;
 				}
 			}
 		}
@@ -158,15 +158,6 @@ function ziggeo_a_s_validation($input) {
 	if(!isset($options['version'])) {
 		//plugin settings were not declared so far, so we do not need to convert from old version
 		$options['version'] = ZIGGEO_VERSION;
-	}
-	//It is existing, we are just making it the current version. It is before this call that we should do any action when needed for specific version.
-	elseif($options['version'] != ZIGGEO_VERSION) {
-		//we have some version saved, however it is not the current one..
-		//handle switch to v2
-		if(include_once(ZIGGEO_ROOT_PATH . '/admin/switch.php')) {
-			ziggeo_p_switch_over();
-			$options['version'] = ZIGGEO_VERSION;
-		}
 	}
 
 	return $options;
