@@ -13,26 +13,33 @@ if(!function_exists('ziggeo_get_player_code')) {
 		$template_params = false;
 		$template_player = false;
 
+		$t_player_config = '';
+
+		if(isset($options["player_config"])) {
+			$t_player_config = $options["player_config"];
+		}
+
 		//hook allowing people to change the template if they wanted
-		do_action('ziggeo_get_template_player_default', $options["player_config"]);
+		$t_player_config = apply_filters('ziggeo_get_template_player_default', $t_player_config);
 
 		//Player defaults to be used in comments.
-		$player_code = ( isset($options["player_config"]) &&
-						!empty($options["player_config"]) ) ? $options["player_config"] : ZIGGEO_DEFAULTS_PLAYER;
+		$player_code = ( !empty($t_player_config) ) ? $t_player_config : ZIGGEO_DEFAULTS_PLAYER;
 
 		if($location === "comments") {
 
-			//hook to change the comments player template on fly..
-			do_action('ziggeo_get_template_player_comments', $options['comments_player_template']);
+			$t_player_comment_config = '';
+
+			if(isset($options["comments_player_template"])) {
+				$t_player_comment_config = $options["comments_player_template"];
+			}
+
+			//hook to change the comments player template name on the fly..
+			$t_player_comment_config = apply_filters('ziggeo_get_template_player_comments', $t_player_comment_config);
 
 			//Just so that we know if we are using template or not..
-			$template_player = ( isset($options['comments_player_template']) &&
-								!empty($options["comments_player_template"]) );
-
-			//Final player template that we will be using
-			if($template_player) {
-				//DB holds the name of template, so we need to retrieve the parameters from the same based on the name.
-				$template_params = ziggeo_p_template_params($options['comments_player_template']);
+			if(!empty($t_player_comment_config)) {
+				$template_player = true;
+				$template_params = ziggeo_p_template_params($t_player_comment_config);
 			}
 		}
 		elseif($location === 'integrations') {

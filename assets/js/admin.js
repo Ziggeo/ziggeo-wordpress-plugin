@@ -31,12 +31,12 @@
 // 4. Integrations
 //		4.1 Integrations Tab
 //			* ziggeoPUIIntegrationStatus()
-//
 // 5. WP Editor
 //		* ziggeoSetupNewWPToolbar()
 //		* ziggeoSetupOverlayRecorder()
 //		* ziggeoSetupOverlayTemplates()
-
+// 6. Notifications
+//		* ziggeoNotificationManage()
 
 
 /////////////////////////////////////////////////
@@ -95,6 +95,11 @@
 				document.getElementsByClassName('ziggeo_integrations_list')[0].appendChild(_li);
 			}
 
+		}
+
+		//Happens only if we are on notifications pages
+		if(document.getElementById('ziggeo-notifications')) {
+			ziggeoPUINotificationsInit();
 		}
 
 	});
@@ -1126,5 +1131,59 @@
 			//open a modal window showing a list of all templates
 			ziggeoShowOverlayWithTemplatesList(null, true);
 			// the templates should be retrieved over AJAX so we can grab the latest ones even if new are added while working on the post
+		});
+	}
+
+
+
+
+/////////////////////////////////////////////////
+// 6. NOTIFICATIONS                            //
+/////////////////////////////////////////////////
+
+	function ziggeoPUINotificationsInit() {
+		var list = document.getElementById('ziggeo_notifications_list');
+
+		var okeys = list.querySelectorAll('.ok');
+
+		for(i = 0, c = okeys.length; i < c; i++) {
+			okeys[i].addEventListener('click', function(e) {
+				ziggeoNotificationManage(e.currentTarget.parentElement.getAttribute('data-id'), 'OK');
+			});
+		}
+
+		var hides = list.querySelectorAll('.hide');
+
+		for(i = 0, c = hides.length; i < c; i++) {
+			hides[i].addEventListener('click', function(e) {
+				ziggeoNotificationManage(e.currentTarget.parentElement.getAttribute('data-id'), 'HIDE');
+			});
+		}
+	}
+
+	function ziggeoNotificationManage(id, status) {
+
+		var obj = {
+			'operation':'notification_handler',
+			'id': id,
+			'status': status
+		}
+
+		ziggeoAjax(obj, function(result) {
+			if(result === 'true') {
+				var _element = document.querySelector('#ziggeo_notifications_list li[data-id="' + id + '"]');
+
+				if(status === 'OK') {
+					_element.className = 'message ok';
+					_element.getElementsByClassName('ok')[0].style.display = 'none';
+				}
+				else if(status === 'HIDE') {
+					_element.className += ' hidden';
+					_element.innerHTML = '';
+				}
+			}
+			else {
+				
+			}
 		});
 	}

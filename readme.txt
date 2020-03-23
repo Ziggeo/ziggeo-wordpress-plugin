@@ -268,13 +268,18 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
+= 2.3 =
+* Added filters when retrieving the default codes for player and recorder, allowing you to dynamically modify them
+* Added Notifications system and admin page allowing plugin to report things to admin
+* Introduced new way we handle plugin settings
+
+== Changelog ==
+
 = 2.2 =
 * Template names fix - The names will be saved as lowercase, names will be checked so empty names are not present
 * Additional functions to help other plugins to integrate with (get assets, clean values, etc.)
 * Tested to work with our plugins that integrate to Gravity Forms, WPForms, Videowalls, bbPress, Job Manager
 * Better handling for your own template designs in editor
-
-== Changelog ==
 
 = 2.1 =
 * Fixing SVN issue

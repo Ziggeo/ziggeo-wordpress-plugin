@@ -4,7 +4,7 @@ Plugin Name: Ziggeo Video Posts and Comments
 Plugin URI: https://ziggeo.com/integrations/wordpress
 Description: Plugin for adding videos to your website quickly and easily. It is powered by Ziggeo and allows you to add video posts and video comments and so much more.
 Author: Ziggeo
-Version: 2.2
+Version: 2.3
 Author URI: https://ziggeo.com
 Text Domain: ziggeo
 */
@@ -30,7 +30,7 @@ define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . '../ziggeo-userData/');
 define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
 
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
-define('ZIGGEO_VERSION', '2.2');
+define('ZIGGEO_VERSION', '2.3');
 
 //Best to state default code in one location, then just call for it when needed.
 
@@ -94,6 +94,7 @@ include_once(ZIGGEO_ROOT_PATH . 'admin/onboard-helper-missing-token.php');
 include_once(ZIGGEO_ROOT_PATH . 'parsers/file_parser.php'); //integrations require file parser..
 
 include_once(ZIGGEO_ROOT_PATH . 'core/integrations.php');
+include_once(ZIGGEO_ROOT_PATH . 'core/notifications.php');
 
 include_once(ZIGGEO_ROOT_PATH . 'admin/plugins.php');
 include_once(ZIGGEO_ROOT_PATH . 'admin/oembed.php');
@@ -117,5 +118,6 @@ include_once(ZIGGEO_ROOT_PATH . 'core/rest.php');
 //Expose functions for integrations and custom codes
 include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_recorder.php');
 include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_player.php');
+
 
 ?>

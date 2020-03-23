@@ -8,21 +8,21 @@ function ziggeo_p_admin_init() {
 	//Register settings
 	register_setting('ziggeo_video', 'ziggeo_video', 'ziggeo_a_s_validation');
 
-	//Add all sections in order of desired appearance
-	// for styling purposes -start-
-	add_settings_section('ziggeo_video_tabss', '', 'ziggeo_a_s_tabs_s_html', 'ziggeo_video');
-	// templates tab
-	add_settings_section('ziggeo_video_templates', '', 'ziggeo_a_s_t_text', 'ziggeo_video');
-	// general tab
-	add_settings_section('ziggeo_video_main', '', 'ziggeo_a_s_g_text', 'ziggeo_video');
-	// integrations tab
-	add_settings_section('ziggeo_video_integrations', '', 'ziggeo_a_s_i_text', 'ziggeo_video');
-	// contact us tab
-	add_settings_section('ziggeo_video_contact', '', 'ziggeo_a_s_c_text', 'ziggeo_video');
-	//Experts tab
-	add_settings_section('ziggeo_video_expert', '', 'ziggeo_a_s_e_text', 'ziggeo_video');
-	// for styling purposes -end-
-	add_settings_section('ziggeo_video_tabse', '', 'ziggeo_a_s_tabs_e_html', 'ziggeo_video');
+		//Add all sections in order of desired appearance
+		// for styling purposes -start-
+		add_settings_section('ziggeo_video_tabss', '', 'ziggeo_a_s_tabs_s_html', 'ziggeo_video');
+		// templates tab
+		add_settings_section('ziggeo_video_templates', '', 'ziggeo_a_s_t_text', 'ziggeo_video');
+		// general tab
+		add_settings_section('ziggeo_video_main', '', 'ziggeo_a_s_g_text', 'ziggeo_video');
+		// integrations tab
+		add_settings_section('ziggeo_video_integrations', '', 'ziggeo_a_s_i_text', 'ziggeo_video');
+		// contact us tab
+		add_settings_section('ziggeo_video_contact', '', 'ziggeo_a_s_c_text', 'ziggeo_video');
+		//Experts tab
+		add_settings_section('ziggeo_video_expert', '', 'ziggeo_a_s_e_text', 'ziggeo_video');
+		// for styling purposes -end-
+		add_settings_section('ziggeo_video_tabse', '', 'ziggeo_a_s_tabs_e_html', 'ziggeo_video');
 
 	//Add sections settings
 	//----------------------
@@ -242,6 +242,7 @@ function ziggeo_p_admin_init() {
 							'ziggeo_a_s_e_sync_field',
 							'ziggeo_video',
 							'ziggeo_video_expert');
+
 }
 
 add_action('admin_init', 'ziggeo_p_admin_init');
@@ -311,12 +312,30 @@ add_action('admin_menu', function() {
 
 	//Settings sub menu
 	add_submenu_page(
-		'ziggeo_video',					//parent slug
-		'Ziggeo Video Settings',		//page title
-		'Settings',						//menu title
-		'manage_options',				//min capability to view
-		'ziggeo_video',					//menu slug
-		'ziggeo_a_s_page'				//function
+		'ziggeo_video',								//parent slug
+		'Ziggeo Video Settings',					//page title
+		'Settings',									//menu title
+		'manage_options',							//min capability to view
+		'ziggeo_video',								//menu slug
+		'ziggeo_a_s_page'							//function
+	);
+
+	// Get notifications count
+	$n_count = ziggeo_notifications_count();
+	$n_title_extra = '';
+
+	if($n_count > 0) {
+		$n_title_extra = ' <span class="ziggeo-counter">' . $n_count . '</span>';
+	}
+
+	//Notifications sub menu
+	add_submenu_page(
+		'ziggeo_video',								//parent slug
+		'Notifications',							//page title
+		'Notifications' . $n_title_extra,			//menu title
+		'manage_options',							//min capability to view
+		'ziggeo_notifications',						//menu slug
+		'ziggeo_a_n_page'							//function
 	);
 
 	//Videos
@@ -344,6 +363,10 @@ function ziggeo_a_s_page() {
 	else {
 		include_once(dirname(__FILE__) . "/settings_page.php");
 	}
+}
+
+function ziggeo_a_n_page() {
+	include_once(ZIGGEO_ROOT_PATH . "admin/notifications_page.php");
 }
 
 ?>

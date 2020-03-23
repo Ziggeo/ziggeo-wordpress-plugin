@@ -13,12 +13,12 @@ function ziggeo_p_get_current_user() {
 	}
 	else {
 		global $current_user;
-		get_currentuserinfo();        
+		get_currentuserinfo();
 	}
 
 	//allows to change the user dynamically if needed for some tests.
-	// you would do it by calling add_action('ziggeo_get_user_modify', 'your-function');
-	do_action('ziggeo_get_user_modify', $current_user);
+	// you would do it by calling add_filter('ziggeo_get_user_modify', 'your-function');
+	$current_user = apply_filters('ziggeo_get_user_modify', $current_user);
 
 	return $current_user;
 }
@@ -240,6 +240,80 @@ if(!function_exists('ziggeo_restore_text_values')) {
 	}
 }
 
+// Returns all plugin settings or defaults if not existing
+function ziggeo_get_plugin_options($specific = null) {
+	$options = get_option('ziggeo_video');
 
+	//in case we need to get the defaults
+	if($options === false || $options === '') {
+		// the defaults need to be applied
+		$options = array(
+			'version'						=> 1,
+			'templates_id'					=> '',
+			//'templates_editor'
+			//'templates_manager'
+			'feedback'						=> '',
+			'token'							=> '',
+			'recorder_config'				=> '',
+			'player_config'					=> '',
+			'disable_video_comments'		=> '',
+			'disable_text_comments'			=> '',
+			'comments_recorder_template'	=> '',
+			'comments_player_template'		=> '',
+			'video_and_text'				=> '',
+			'comment_roles'					=> '',
+			'integrations'					=> '',
+			'default_lang'					=> 'auto',
+			'dev_mode'						=> ZIGGEO_YES,
+			'p_token'						=> '',
+			'e_token'						=> '',
+			'templates_save_to'				=> 'db',
+			//'templates_clear'				=> '',
+			'webrtc_for_mobile'				=> ZIGGEO_YES,
+			'webrtc_streaming'				=> ZIGGEO_NO,
+			'webrtc_streaming_needed'		=> ZIGGEO_YES,
+			'use_debugger'					=> ZIGGEO_NO
+		);
+	}
+
+	// In case we are after a specific one.
+	if($specific !== null) {
+		if(isset($options[$specific])) {
+			return $options[$specific];
+		}
+	}
+	else {
+		return $options;
+	}
+
+	return false;
+}
+
+// Returns all notifications or defaults if not existing
+function ziggeo_get_notifications($specific = null) {
+	$notifications = get_option('ziggeo_notifications');
+
+	//in case we need to get the defaults
+	//if($notifications === false || $notifications === '' || (strlen($notifications) < 10)) {
+	if($notifications === false || $notifications === '' || !isset($notifications['list'])) {
+		// the defaults need to be applied
+		$notifications = array(
+			'list'		=> array(),
+			'last_id'	=> 0
+		);
+	}
+
+	// In case we are after a specific one.
+	if($specific !== null) {
+		if(isset($notifications[$specific])) {
+			return $notifications[$specific];
+		}
+	}
+	else {
+		return $notifications;
+	}
+
+	return false;
+}
 
 ?>

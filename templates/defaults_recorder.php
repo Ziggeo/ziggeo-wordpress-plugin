@@ -13,27 +13,35 @@ if(!function_exists('ziggeo_get_recorder_code')) {
 		$template_params = false;
 		$template_recorder = false;
 
-		//hook allowing people to change the template if they wanted
-		do_action('ziggeo_get_template_recorder_default', $options["recorder_config"]);
+		$t_recorder_config = '';
 
-		//Recorder defaults if others are not specified
-		$recorder_code = ( isset($options["recorder_config"]) &&
-							!empty($options["recorder_config"])) ? $options["recorder_config"] : ZIGGEO_DEFAULTS_RECORDER;
+		if(isset($options["recorder_config"])) {
+			$t_recorder_config = $options["recorder_config"];
+		}
+
+		//hook allowing people to change the template if they wanted
+		$t_recorder_config = apply_filters('ziggeo_get_template_recorder_default', $t_recorder_config);
+
+		//Player defaults to be used in comments.
+		$player_code = ( !empty($t_recorder_config) ) ? $t_recorder_config : ZIGGEO_DEFAULTS_RECORDER;
 
 		if($location === "comments") {
 
-			//hook to change the comments recorder template on fly..
-			do_action('ziggeo_get_template_recorder_comments', $options['comments_recorder_template']);
+			$t_recorder_comment_config = '';
+
+			if(isset($options["comments_recorder_template"])) {
+				$t_recorder_comment_config = $options["comments_recorder_template"];
+			}
+
+			//hook to change the comments player template name on the fly..
+			$t_recorder_comment_config = apply_filters('ziggeo_get_template_recorder_comments', $t_recorder_comment_config);
 
 			//Just so that we know if we are using template or not..
-			$template_recorder = ( isset($options['comments_recorder_template'])  &&
-								!empty($options["comments_recorder_template"]) );
-
-			//Final recorder template that we will be using
-			if($template_recorder) {
-				//DB holds the name of template, so we need to retrieve the parameters from the same based on the name.
-				$template_params = ziggeo_p_template_params($options['comments_recorder_template']);
+			if(!empty($t_recorder_comment_config)) {
+				$template_recorder = true;
+				$template_params = ziggeo_p_template_params($t_recorder_comment_config);
 			}
+
 		}
 		elseif($location === 'integrations') {
 			//Just so that we know if we are using template or not..

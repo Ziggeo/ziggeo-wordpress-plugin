@@ -39,7 +39,13 @@ defined('ABSPATH') or die();
 			//if( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() ) { 
 			//We want to actally include or call a specific function at this time
 			?>
-				<script>window.addEventListener('load', function() { ziggeoSetupNewWPToolbar(); });</script>
+				<script>
+					window.addEventListener('load', function() {
+						if(typeof ziggeoSetupNewWPToolbar === 'function') {
+							ziggeoSetupNewWPToolbar();
+						}
+					});
+				</script>
 			<?php
 		});
 

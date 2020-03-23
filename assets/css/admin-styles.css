@@ -421,6 +421,66 @@ INDEX:
 
 
 /************************************************
+	2. DASHBOARD (PLUGIN NOTIFICATIONS)
+************************************************/
+
+	#ziggeo_notifications_list .message {
+		border: 0;
+		box-sizing: border-box;
+		box-shadow: 2px 2px 4px 2px silver;
+		padding: 10px 110px 10px 10px;
+		display: list-item;
+		list-style: decimal outside;
+		margin: 10px;
+		position: relative;
+	}
+
+	#ziggeo_notifications_list .message:nth-child(2n) {
+		box-shadow: 2px 2px 4px 2px gray;
+	}
+
+	#ziggeo_notifications_list .message.notice {
+		background-image: linear-gradient(90deg, transparent, transparent, #eeeecf);
+	}
+
+	#ziggeo_notifications_list .message.error {
+		background-image: linear-gradient(90deg, transparent, transparent, #fbcdcd);
+	}
+
+	#ziggeo_notifications_list .message.ok {
+		box-shadow: 2px 2px 4px 2px lightgray;
+	}
+
+	#ziggeo_notifications_list .message > div {
+		border: 1px solid gray;
+		padding: 10px;
+		margin: 0;
+		box-sizing: border-box;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 50px;
+		background-image: linear-gradient(white, silver);
+		text-align: center;
+		cursor: pointer;
+	}
+	#ziggeo_notifications_list .message > div:hover {
+		background-image: linear-gradient(silver, white);
+	}
+	#ziggeo_notifications_list .message > div.ok {
+		right: 50px;
+	}
+	#ziggeo_notifications_list .message > div.hide {
+		right: 0px;
+	}
+	#ziggeo_notifications_list .message.hidden {
+		height: 4px;
+		padding: 0px;
+		list-style: none;
+		box-shadow: 0px 0px 1px 1px gray;
+	}
+
+/************************************************
 	2. GLOBAL STYLES
 ************************************************/
 
@@ -460,6 +520,24 @@ INDEX:
 	}*/
 	body.admin-color-light a[href$="page=ziggeo_video"] {
 		background: rgb(180,180,180);
+	}
+
+	/* Showing count Wordpress style */
+	#adminmenu .ziggeo-counter {
+		display: inline-block;
+		vertical-align: top;
+		box-sizing: border-box;
+		margin: 1px 0 -1px 2px;
+		padding: 0 5px;
+		min-width: 18px;
+		height: 18px;
+		border-radius: 9px;
+		background-color: #ca4a1f;
+		color: #fff;
+		font-size: 11px;
+		line-height: 1.6;
+		text-align: center;
+		z-index: 26;
 	}
 
 

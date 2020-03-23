@@ -220,6 +220,11 @@ function ziggeo_p_content_parse_templates($matches)
 			$ret = '<ziggeorecorder ' . ZIGGEO_DEFAULTS_RECORDER . ' ziggeo-tags="' .
 					implode(',', $presets['ziggeorecorder']['tags']) .
 					'"></ziggeorecorder>';
+
+			// Check for HTTP pages when recorder is used
+			if(isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
+				ziggeo_notification_create(__( 'Looks like video recorder will be used on HTTP page. Most browser vendors will try to block or criple access to camera. Please switch to HTTPS. Page: "' . $_SERVER['REQUEST_URI'] . '"' , 'ziggeo'));
+			}
 		}
 
 		//There is something for us to do, so lets determine what is our starting tag at this stage since later we will use it if it is template and if it is not
