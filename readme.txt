@@ -272,6 +272,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added filters when retrieving the default codes for player and recorder, allowing you to dynamically modify them
 * Added Notifications system and admin page allowing plugin to report things to admin
 * Introduced new way we handle plugin settings
+* Fixed a bug on REST requests - thank you Maxie C.
 
 == Changelog ==
 

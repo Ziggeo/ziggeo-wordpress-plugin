@@ -22,7 +22,7 @@ function ziggeo_p_content_filter($content) {
 
 	//This way we are making it work fine with WPv5 saving where we would parse the content while we should not (like saving the post)
 	if(is_rest()) {
-		return content;
+		return $content;
 	}
 
 	//use add_filter('ziggeo_content_filter_pre', 'your-function-name') to change the content on fly before any checks
