@@ -106,8 +106,7 @@ if(!function_exists('ziggeo_comment_vat_js_code')) {
 
 					recorder.on('verified' , function() {
 						//show video upon recording of the same
-						console.log('verified');
-						console.log("[ziggeoplayer]" + recorder.get('video') + "[/ziggeoplayer]");
+						//console.log("[ziggeoplayer]" + recorder.get('video') + "[/ziggeoplayer]");
 						elems.textarea.val("[ziggeoplayer]" + recorder.get('video') + "[/ziggeoplayer]");
 					});
 				}, 1000);
