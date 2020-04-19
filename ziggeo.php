@@ -95,6 +95,7 @@ include_once(ZIGGEO_ROOT_PATH . 'parsers/file_parser.php'); //integrations requi
 
 include_once(ZIGGEO_ROOT_PATH . 'core/integrations.php');
 include_once(ZIGGEO_ROOT_PATH . 'core/notifications.php');
+include_once(ZIGGEO_ROOT_PATH . 'core/videoslist.php');
 
 include_once(ZIGGEO_ROOT_PATH . 'admin/plugins.php');
 include_once(ZIGGEO_ROOT_PATH . 'admin/oembed.php');

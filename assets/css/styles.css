@@ -103,6 +103,19 @@ INDEX:
 		clear: both;
 	}
 
+	.ziggeo-ctrl-btn {
+		background-image: linear-gradient(#53c7f4, #335af4);
+		border: 1px solid gray;
+		border-radius: 4px;
+		color: white;
+		padding: 4px 10px;
+		font-weight: bold;
+		cursor: pointer;
+	}
+	.ziggeo-ctrl-btn.disabled {
+		background-image: linear-gradient(lightgray, gray);
+		pointer-events: none;
+	}
 
 
 

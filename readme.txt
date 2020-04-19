@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.3
-Stable tag: 2.2
+Stable tag: 2.3
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -92,7 +92,7 @@ Are you after having a big video gallery? Gallery of different styles and ways t
 
 In our effort to make the plugin easy, simple and lightweight we have created a new plugin that is addition to this one. In this version we still support video walls and in future version it will be brought through additional bridge plugin.
 
-You can read more [about videowall plugin here](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
+You can read more [about videowall plugin here](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin) or grab it [from Wordpress repository here](https://wordpress.org/plugins/videowalls-for-ziggeo/).
 
 = Templates =
 
@@ -101,6 +101,16 @@ Ziggeo plugin is powered by templates. This means that next to using our codes a
 Once you do you simply reference the template from your posts, pages and comments. There is no limit in the amount of templates you can have and it is up to you how you will use them.
 
 You can see [how the templates work](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin) and about the template editor.
+
+= Video List =
+
+Moderate your videos through your Wordpress dashboard. The Video List page now allows you to see different types of videos right in in your Wordpress website. With the quick possibility of approving and rejecting them you can quickly and from within Wordpress fulfill your workflows.
+
+You will see new counter shown when a video is recorded on your Wordpress page, to help you notice it.
+
+= Notifications =
+
+Notifications page has been created. It provides you with a way to get notified about different errors or good pointers that can happen with your Wordpress website. This makes it easy for you to find out if some page needs to be updated for some reason, or if there is some other info that can help you.
 
 = Improvements and Feedback =
 
@@ -273,6 +283,9 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added Notifications system and admin page allowing plugin to report things to admin
 * Introduced new way we handle plugin settings
 * Fixed a bug on REST requests - thank you Maxie C.
+* Added Video Listing page for admins to see all videos, sort them and moderate them
+* Added global AJAX request to allow us to detect for videos recorded on WP pages. Available as a hook for your code.
+* IMPORTANT: Removed support for videowalls as announced since 2.0 Please use Videowalls plugin instead
 
 == Changelog ==
 

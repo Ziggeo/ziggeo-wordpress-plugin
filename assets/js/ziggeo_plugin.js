@@ -3,22 +3,25 @@
 // INDEX
 //********
 // 1. Popups and overlays
-//		1.1. ziggeoShowOverlay()
-//		1.2. ziggeoRemoveOverlay()
-//		1.3. ziggeoShowOverlayWithRecorder()
-//		1.4. ziggeoShowOverlayWithPlayer()
-//		1.5. ziggeoTemplatesListPrepCode()
-//		1.6. ziggeoShowOverlayWithTemplatesList()
+//		* ziggeoShowOverlay()
+//		* ziggeoRemoveOverlay()
+//		* ziggeoShowOverlayWithRecorder()
+//		* ziggeoShowOverlayWithPlayer()
+//		* ziggeoTemplatesListPrepCode()
+//		* ziggeoShowOverlayWithTemplatesList()
 // 2. Helper functions
-//		2.1. ziggeoDevReport()
-//		2.2. ziggeoAjax()
+//		* ziggeoDevReport()
+//		* ziggeoAjax()
+//		* ziggeoInsertTextToPostEditor()
 // 3. API
-//		3.1. ziggeoAPIGetVideo()
-//		3.2. ziggeoAPIGetVideosData()
+//		* ziggeoAPIGetVideo()
+//		* ziggeoAPIGetVideosData()
+//		* ziggeoDAPIRegisterVideos()
 // 4. Cleanup and preparation functions
 //		* ziggeoCleanTextValues()
 //		* ziggeoRestoreTextValues()
-
+// 5. Events
+//		* jQuery.ready()
 
 
 /////////////////////////////////////////////////
@@ -250,6 +253,8 @@
 	}
 
 
+
+
 /////////////////////////////////////////////////
 // 2. HELPER FUNCTIONS                         //
 /////////////////////////////////////////////////
@@ -288,7 +293,9 @@
 		data.ajax_nonce = ZiggeoWP.ajax_nonce;
 
 		jQuery.post(ajaxurl, data, function(response) {
-			callback(response);
+			if(typeof callback !== 'undefined') {
+				callback(response);
+			}
 		});
 	}
 
@@ -311,6 +318,8 @@
 			ziggeoDevReport('Unsupported editor detected. Can not pass the message that should be passed', 'error');
 		}
 	}
+
+
 
 
 /////////////////////////////////////////////////
@@ -346,7 +355,7 @@
 		});
 	}
 
-	//ziggeoAPIGetVideosCount(
+	//ziggeoAPIGetVideosData(
 	//	{}, //Index (search) object stating what you are searching for
 	//	function(data) { console.log('success, we found something'); console.log(data); },
 	//	function(data) { console.log('success, however nothing was found'); console.log(data); },
@@ -366,12 +375,28 @@
 
 			if(data.length > 0) {
 				if(typeof callback_on_data !== 'undefined') {
-					callback_on_data(data);
+					if(typeof callback_on_data === 'function') {
+						callback_on_data(data);
+					}
+					else if(typeof window[callback_on_data] === 'function') {
+						window[callback_on_data](data);
+					}
+					else {
+						ziggeoDevReport('Could not call: ' + callback_on_data);
+					}
 				}
 			}
 			else {
-				if(typeof callback_on_data !== 'undefined') {
-					callback_no_data(data);
+				if(typeof callback_no_data !== 'undefined') {
+					if(typeof callback_no_data === 'function') {
+						callback_no_data(data);
+					}
+					else if(typeof window[callback_no_data] === 'function') {
+						window[callback_no_data](data);
+					}
+					else {
+						ziggeoDevReport('Could not call: ' + callback_no_data);
+					}
 				}
 			}
 		});
@@ -410,7 +435,16 @@
 	}
 	*/
 
+	//DAPI / Dashboard API
 
+	//Funtion that helps us mention that there is some new video recorded on Wordpress
+	function ziggeoDAPIRegisterVideos(token) {
+		ziggeoAjax({
+			operation: 'video_verified',
+			recorded_video: true,
+			token: token
+		});
+	}
 
 
 
@@ -453,3 +487,16 @@
 
 		return value;
 	}
+
+
+
+
+/////////////////////////////////////////////////
+// 5. EVENTS                                   //
+/////////////////////////////////////////////////
+
+	jQuery(document).ready( function() {
+		ziggeo_app.embed_events.on("verified", function (embedding) {
+			ziggeoDAPIRegisterVideos(embedding.get('video'));
+		});
+	});

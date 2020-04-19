@@ -36,7 +36,27 @@
 //		* ziggeoSetupOverlayRecorder()
 //		* ziggeoSetupOverlayTemplates()
 // 6. Notifications
+//		* ziggeoPUINotificationsInit()
 //		* ziggeoNotificationManage()
+// 7. Videos Page
+//		* ziggeoPUIVideosInit()
+//		* ziggeoPUIVideosFilter()
+//		* ziggeoVideosFindByTag()
+//		* ziggeoPUIVideosNoVideos()
+//		* ziggeoPUIVideosHasVideos()
+//		* ziggeoPUIVideosHasVideosApproved()
+//		* ziggeoPUIVideosHasVideosPending()
+//		* ziggeoPUIVideosHasVideosRejected()
+//		* ziggeoPUIVideosCreateTools()
+//		* ziggeoPUIVideosCreateInfoSection()
+//		* ziggeoVideosApprove()
+//		* ziggeoVideosReject()
+//		* ziggeoVideosRemove()
+//		* ziggeoVideosGetURL()
+//		* ziggeoPUIVideosFilterReset()
+//		* ziggeoPUIVideosPageCreateNavigation()
+//		* ziggeoPUIVideosPageSwitch()
+//		* ziggeoPUIVideosPageCounter()
 
 
 /////////////////////////////////////////////////
@@ -102,6 +122,15 @@
 			ziggeoPUINotificationsInit();
 		}
 
+		//Happens only if on videos page
+		if(document.getElementById('ziggeo-videos-filter')) {
+			ziggeoPUIVideosInit();
+
+			//Clear videos counter at this time
+			ziggeoAjax({
+				operation: 'video_verified_seen'
+			});
+		}
 	});
 
 	//All the hooks that we want to set up right away as page is loaded are added here, which is better than leaving hooks "out in the open", as this makes them fire when everything is ready
@@ -1186,4 +1215,546 @@
 				
 			}
 		});
+	}
+
+
+
+
+/////////////////////////////////////////////////
+// 7. VIDEOS PAGE                              //
+/////////////////////////////////////////////////
+
+	function ziggeoPUIVideosInit() {
+		var _placeholder = document.getElementById('ziggeo-videos-filter');
+		var _moderation_filter = _placeholder.querySelector('.moderation');
+		var _tags_filter = _placeholder.querySelector('.tags');
+		var _sort_filter = _placeholder.querySelector('.sort');
+		var _apply = _placeholder.querySelector('.ziggeo-ctrl-btn');
+
+		//Disable on default
+		_apply.className += ' disabled';
+		ZiggeoWP.video_list_current = 1;
+
+		_moderation_filter.addEventListener('change', function() {
+			//enable
+			_apply.className = _apply.className.replace('disabled', '');
+		});
+
+		_sort_filter.addEventListener('change', function() {
+			//enable
+			_apply.className = _apply.className.replace('disabled', '');
+		});
+
+		_tags_filter.addEventListener('change', function() {
+			//enable
+			_apply.className = _apply.className.replace('disabled', '');
+		});
+
+		_apply.addEventListener('click', function (event){
+			_apply.className += ' disabled';
+			ziggeoPUIVideosFilter(true);
+		});
+
+		ziggeoPUIVideosFilter(true);
+	}
+
+	//Handles the "Searching..." screen or "Not Found", etc.
+	function ziggeoPUIVideosMessage(text, type, action) {
+
+		if(action === 'hide') {
+			var _screen = document.getElementById('ziggeo-videos-screen');
+			_screen.parentElement.removeChild(_screen);
+			return true;
+		}
+
+		var _placeholder = document.getElementById('ziggeo-videos');
+
+		_placeholder.innerHTML = '';
+
+		var _screen = document.createElement('div');
+		_screen.id = 'ziggeo-videos-screen';
+
+		_msg = document.createElement('div');
+		_msg.innerHTML = text;
+
+		if(type === 'error') {
+			_screen.className = 'error';
+		}
+		else { //type === 'info'
+		}
+
+		_screen.appendChild(_msg);
+		_placeholder.appendChild(_screen);
+	}
+
+	function ziggeoPUIVideosFilter(clear, skip) {
+		var _filter_placeholder = document.getElementById('ziggeo-videos-filter');
+		var _videos_placeholder = document.getElementById('ziggeo-videos');
+		var _token_filter = _filter_placeholder.querySelector('.token');
+
+		if(clear === true) {
+			ziggeoPUIVideosMessage('Searching...');
+		}
+
+		//If there is some token in there, let's just search for one video and ignore other fields
+		if(_token_filter.value !== '') {
+			_videos_placeholder.setAttribute('_clear', true);
+
+			ziggeoAPIGetVideo(_token_filter.value,
+								function(video) {
+									if(video) {
+										ziggeoPUIVideosHasVideos([video]);
+									}
+									else {
+										ziggeoPUIVideosNoVideos();
+									}
+								},
+								function(err) {
+									if(err.indexOf(404) > -1) {
+										ziggeoPUIVideosNoVideos();
+									}
+									else if(err.indexOf(401) > -1 || err.indexOf(403) > -1) {
+										//TODO
+									}
+									else {
+										ziggeoDevReport(err, 'error');
+										//Also add some error happened info
+									}
+
+								}, null);
+			return true;
+		}
+
+		_videos_placeholder.setAttribute('_clear', clear);
+
+		var _moderation_filter = _filter_placeholder.querySelector('.moderation');
+		var _tags_filter = _filter_placeholder.querySelector('.tags');
+		var _sort_filter = _filter_placeholder.querySelector('.sort');
+
+		var query_obj = {};
+
+		//Limit will be default of 50 however this can be changed up to 100
+		query_obj.limit = 100; //10 per page, this tells us there is more.
+
+		//Skip allows us to do pagination. It would work together with limit. For now this should be handled automatically and left at 0 here
+		if(typeof skip !== 'undefined') {
+			query_obj.skip = skip;
+		}
+
+		//If we want to get the oldest first, we would reverse the data, for now we want newest first
+		if(_sort_filter.value === 'old') {
+			query_obj.reverse = true;
+		}
+
+		//Allows getting ready or those in processing. Makes no sense to use here, so skipping
+		//query_obj.states = 'ready';
+
+		if(_tags_filter.value !== '') {
+			//It needs to be comma separated so we replace all spaces with comma
+			query_obj.tags = _tags_filter.value.replace(/\ /g, ',');
+		}
+
+		//No action needed if all
+		if(_moderation_filter.value == 'approved') {
+			//Go through the list of videos and then list them if approved
+			ziggeoAPIGetVideosData(query_obj,
+									function(videos) {
+										ziggeoPUIVideosHasVideosApproved(videos);
+									},
+									'ziggeoPUIVideosNoVideos',
+									function(err) {
+										ziggeoDevReport(err, 'error');
+									},
+									null);
+		}
+		else if(_moderation_filter.value == 'pending') {
+			//Go through the list of videos and then list them if not approved
+			ziggeoAPIGetVideosData(query_obj,
+									'ziggeoPUIVideosHasVideosPending',
+									'ziggeoPUIVideosNoVideos',
+									function(err) {
+										ziggeoDevReport(err, 'error');
+									},
+									null);
+		}
+		else if(_moderation_filter.value == 'rejected') {
+			//Go through the list of videos and then list them if not approved
+			ziggeoAPIGetVideosData(query_obj,
+									'ziggeoPUIVideosHasVideosRejected',
+									'ziggeoPUIVideosNoVideos',
+									function(err) {
+										ziggeoDevReport(err, 'error');
+									},
+									null);
+		}
+		else {
+			ziggeoAPIGetVideosData(query_obj,
+									'ziggeoPUIVideosHasVideos',
+									'ziggeoPUIVideosNoVideos',
+									function(err) {
+										ziggeoDevReport(err, 'error');
+									},
+									null);
+		}
+
+		ziggeoPUIVideosPageCounter(query_obj);
+	}
+
+	function ziggeoVideosFindByTag(tag) {
+
+		var _filter_placeholder = document.getElementById('ziggeo-videos-filter');
+
+		ziggeoPUIVideosFilterReset();
+
+		_filter_placeholder.querySelector('.tags').value = tag;
+
+		ziggeoPUIVideosFilter(true);
+	}
+
+	//Used for cases where no videos are found on initial request
+	function ziggeoPUIVideosNoVideos() {
+		ziggeoPUIVideosMessage('We searched however nothing was found.');
+	}
+
+	//Used for cases where videos have been found and we need to create the list
+	function ziggeoPUIVideosHasVideos(videos, clear) {
+		var _placeholder = document.getElementById('ziggeo-videos');
+
+		ziggeoPUIVideosMessage(null, null, 'hide');
+
+		//We will not be making pages in the real sense, however will not need to use the API if we already have the "page" in the cache
+		if(typeof ZiggeoWP.video_list === 'undefined' || _placeholder.getAttribute('_clear')) {
+			ZiggeoWP.video_list = [];
+		}
+
+		if(clear !== false) {
+			//We now add the new videos to the existing videos if any
+			ZiggeoWP.video_list = ZiggeoWP.video_list.concat(videos);
+		}
+
+		_placeholder.innerHTML = '';
+		
+
+		var _tools = ziggeoPUIVideosCreateTools();
+		//var _v_info = ziggeoPUIVideosCreateInfoSection(); //TODO
+
+		var current = 0;
+
+		if(ZiggeoWP.video_list_current > 1) {
+			current = (ZiggeoWP.video_list_current - 1) * 10;
+		}
+
+		for(i = 0, c = (videos.length > 10) ? 10 : videos.length; i < c; i++) {
+			_item = document.createElement('div');
+			_item.className = 'video_list_item';
+
+			_item.setAttribute('video_ref', current);
+
+			//_item.appendChild(_v_info.cloneNode(true));
+
+			//Set the info
+			//_v_info.querySelector('.video_title').value = videos[i].title;
+			//_v_info.querySelector('.video_desc').value = videos[i].description;
+
+			_p_player = document.createElement('div');
+
+			if(videos[i].approved === true) {
+				_p_player.className = 'player approved';
+			}
+			else if(videos[i].approved === false) {
+				_p_player.className = 'player rejected';
+			}
+			else {
+				_p_player.className = 'player pending';
+			}
+
+			var player = new ZiggeoApi.V2.Player({
+				element: _p_player,
+				attrs: {
+					width: 320,
+					height: 180,
+					theme: "modern",
+					themecolor: "blue",
+					video: videos[i].token,
+					popup: true,
+					'popup-width': 640,
+					'popup-height': 480
+				}
+			});
+
+
+			_item.appendChild(_p_player);
+			player.activate();
+
+			var _length = document.createElement('div');
+			_length.className = 'video_length';
+			_length.innerHTML = videos[i].duration + 's';
+			_p_player.appendChild(_length);
+
+			_item.appendChild(_tools.cloneNode(true));
+
+			//Add video info
+			var _info = document.createElement('div');
+			_info.className = 'info';
+
+				var _token = document.createElement('div');
+				_token.innerHTML = 'Token: ' +  videos[i].token;
+				_info.appendChild(_token);
+
+				var _tags = document.createElement('div');
+				_tags.className = 'tags-field';
+				if(videos[i].tags) {
+					for(_i = 0, _c = videos[i].tags.length; _i < _c; _i++) {
+						var _tag = document.createElement('span');
+						_tag.className = 'tag';
+						_tag.innerHTML = videos[i].tags[_i];
+						_tag.title = 'Search for videos with "' + videos[i].tags[_i] + '"';
+						_tags.appendChild(_tag);
+					}
+				}
+				_info.appendChild(_tags);
+
+			_item.appendChild(_info);
+
+			_placeholder.appendChild(_item);
+			current++;
+		}
+
+		ziggeoPUIVideosPageCreateNavigation(ZiggeoWP.video_list_current);
+
+		//Now attach the events on all tools - @TODO for pagination so only new items are added
+		jQuery('#ziggeo-videos .ziggeo-btn-approve').on('click', function(event){
+			ziggeoVideosApprove(event.currentTarget);
+		});
+
+		jQuery('#ziggeo-videos .ziggeo-btn-reject').on('click', function(event){
+			ziggeoVideosReject(event.currentTarget);
+		});
+
+		jQuery('#ziggeo-videos .ziggeo-btn-link').on('click', function(event){
+			ziggeoVideosGetURL(event.currentTarget);
+		});
+
+		jQuery('#ziggeo-videos .ziggeo-btn-delete').on('click', function(event){
+			ziggeoVideosRemove(event.currentTarget);
+		});
+
+		jQuery('#ziggeo-videos .info .tag').on('click', function(event){
+			ziggeoVideosFindByTag(event.currentTarget.innerHTML);
+		});
+	}
+
+	//This is a proxy for ziggeoPUIVideosHasVideos. It first checks the videos, then sends them there
+	function ziggeoPUIVideosHasVideosApproved(videos) {
+		var clean_videos = [];
+
+		for(i = 0, c = videos.length; i < c; i++) {
+			if(videos[i].approved === true) {
+				clean_videos.push(videos[i]);
+			}
+		}
+
+		if(clean_videos.length === 0) {
+			//We should at this point either request new videos or we should show a message
+		}
+
+		//Show the videos
+		ziggeoPUIVideosHasVideos(clean_videos);
+	}
+
+	//This is a proxy for ziggeoPUIVideosHasVideos. It first checks the videos, then sends them there
+	function ziggeoPUIVideosHasVideosPending(videos) {
+		var pending_videos = [];
+
+		for(i = 0, c = videos.length; i < c; i++) {
+			if(videos[i].approved === null || videos[i].approved === '') {
+				pending_videos.push(videos[i]);
+			}
+		}
+
+		if(pending_videos.length === 0) {
+			//We should at this point either request new videos or we should show a message
+		}
+
+		//Show the videos
+		ziggeoPUIVideosHasVideos(pending_videos);
+	}
+
+	//This is a proxy for ziggeoPUIVideosHasVideos. It first checks the videos, then sends them there
+	function ziggeoPUIVideosHasVideosRejected(videos) {
+		var moderated_videos = [];
+
+		for(i = 0, c = videos.length; i < c; i++) {
+			if(videos[i].approved === false) {
+				moderated_videos.push(videos[i]);
+			}
+		}
+
+		if(moderated_videos.length === 0) {
+			//We should at this point either request new videos or we should show a message
+		}
+
+		//Show the videos
+		ziggeoPUIVideosHasVideos(moderated_videos);
+	}
+
+	//Function to create the buttons that allow us to handle videos in video listing page
+	function ziggeoPUIVideosCreateTools() {
+		var _tools = document.createElement('div');
+		_tools.className = 'toolsbar';
+
+		var _approve = document.createElement('div');
+		_approve.className = 'ziggeo-btn-approve dashicons-thumbs-up';
+		_approve.title = 'Approve';
+		_tools.appendChild(_approve);
+
+		var _reject = document.createElement('div');
+		_reject.className = 'ziggeo-btn-reject dashicons-thumbs-down';
+		_reject.title = 'Reject';
+		_tools.appendChild(_reject);
+
+		var _link = document.createElement('div');
+		_link.className = 'ziggeo-btn-link dashicons-admin-links';
+		_link.title = 'Get link';
+		_tools.appendChild(_link);
+
+		var _delete = document.createElement('div');
+		_delete.className = 'ziggeo-btn-delete dashicons-no';
+		_delete.title = 'Remove';
+		_tools.appendChild(_delete);
+
+		return _tools;
+	}
+
+	//Function to create the fields with video title and description
+	function ziggeoPUIVideosCreateInfoSection() {
+		var _v_info = document.createElement('div');
+		_v_info.className = 'video_details';
+
+		var _lbl_title = document.createElement('label');
+		_lbl_title.innerHTML = 'Video Title: ';
+
+		var _input_title = document.createElement('input');
+		_input_title.className = 'video_title';
+		_lbl_title.appendChild(_input_title);
+
+		var _lbl_desc = document.createElement('label');
+		_lbl_desc.innerHTML = 'Video Description: ';
+
+		var _input_desc = document.createElement('textarea');
+		_input_desc.className = 'video_desc';
+		_lbl_desc.appendChild(_input_desc);
+
+		_v_info.appendChild(_lbl_title);
+		_v_info.appendChild(_lbl_desc);
+
+		return _v_info;
+	}
+
+	//Function to approve the videos. This type of setup allows you to extend it! You will need to have your script loaded before ours.
+	if(typeof ziggeoVideosApprove !== 'function') {
+		function ziggeoVideosApprove(element_ref) {
+			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
+
+			ZiggeoApi.Videos.update( ZiggeoWP.video_list[_video_ref].token, {
+				'approved': true
+			});
+
+			element_ref.parentElement.parentElement.firstElementChild.className = 'player approved';
+		}
+	}
+
+	//Function to reject the videos. This type of setup allows you to extend it! You will need to have your script loaded before ours.
+	if(typeof ziggeoVideosReject !== 'function') {
+		function ziggeoVideosReject(element_ref) {
+			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
+
+			ZiggeoApi.Videos.update(ZiggeoWP.video_list[_video_ref].token, {
+				'approved': false
+			});
+
+			element_ref.parentElement.parentElement.firstElementChild.className = 'player rejected';
+		}
+	}
+
+	//Function to reject the videos. This type of setup allows you to extend it! You will need to have your script loaded before ours.
+	if(typeof ziggeoVideosRemove !== 'function') {
+		function ziggeoVideosRemove(element_ref) {
+			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
+
+			//This will not work through JS, we can still try (would need the auth token for this)
+			ZiggeoApi.Videos.destroy(ZiggeoWP.video_list[_video_ref].token);
+		}
+	}
+
+	//Function to reject the videos. This type of setup allows you to extend it! You will need to have your script loaded before ours.
+	if(typeof ziggeoVideosGetURL !== 'function') {
+		function ziggeoVideosGetURL(element_ref) {
+			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
+
+			//alert('URL for video is: https://' + ZiggeoWP.video_list[_video_ref].embed_video_url);
+			alert('URL for video is: https://ziggeo.io/p/' + ZiggeoWP.video_list[_video_ref].token);
+		}
+	}
+
+	//A quick way to clear out all fields
+	function ziggeoPUIVideosFilterReset() {
+		var _placeholder = document.getElementById('ziggeo-videos-filter');
+		_placeholder.querySelector('.token').value = '';
+		_placeholder.querySelector('.moderation').value = 'all';
+		_placeholder.querySelector('.tags').value = '';
+		_placeholder.querySelector('.sort').value = 'new';
+	}
+
+	//Creates the page navigation buttons
+	function ziggeoPUIVideosPageCreateNavigation(page_num) {
+
+		var _nav = document.getElementById('ziggeo-videos-nav');
+		_nav.className = _nav.className.replace('disabled', '');
+		//Clear it up
+		_nav.innerHTML = '';
+
+		for(i = 0, c = Math.floor(ZiggeoWP.video_list.length / 10); i < c; i++) {
+			var _btn = document.createElement('div');
+			_btn.className = 'ziggeo-ctrl-btn';
+
+			if(i+1 === page_num) {
+				_btn.className += ' disabled';
+			}
+
+			_btn.innerHTML = i+1;
+
+			_nav.appendChild(_btn);
+		}
+
+		ZiggeoWP.video_list_current = page_num;
+
+		//Set the event
+		jQuery('#ziggeo-videos-nav .ziggeo-ctrl-btn').on('click', function( event ) {
+			ziggeoPUIVideosPageSwitch(event.currentTarget.innerHTML * 1);
+		});
+	}
+
+	//Function that helps us move through pages
+	function ziggeoPUIVideosPageSwitch(page_num) {
+
+		ziggeoPUIVideosMessage('Taking you to a new page...');
+		document.getElementById('ziggeo-videos-nav').className += ' disabled';
+		document.getElementById('ziggeo-videos').removeAttribute('_clear');
+
+		ZiggeoWP.video_list_current = page_num;
+
+		//Detect if we have enough of the videos to show page, or if we need to get more.
+		if(page_num * 10 > ZiggeoWP.video_list.length) {
+			ziggeoPUIVideosFilter(false, page_num * 10);
+		}
+		else {
+			page_num--;
+			ziggeoPUIVideosHasVideos(ZiggeoWP.video_list.slice(page_num*10, page_num*10+10), false);
+		}
+	}
+
+	//Function to update the count of videos found and shown
+	function ziggeoPUIVideosPageCounter(query_obj) {
+		//Requires the PHP SDK to be added. Happy to add if it is asked for it
 	}

@@ -328,6 +328,13 @@ add_action('admin_menu', function() {
 		$n_title_extra = ' <span class="ziggeo-counter">' . $n_count . '</span>';
 	}
 
+	$v_count = ziggeo_videoslist_count();
+	$v_title_extra = '';
+
+	if($v_count > 0) {
+		$v_title_extra = ' <span class="ziggeo-counter">' . $v_count . '</span>';
+	}
+
 	//Notifications sub menu
 	add_submenu_page(
 		'ziggeo_video',								//parent slug
@@ -336,6 +343,15 @@ add_action('admin_menu', function() {
 		'manage_options',							//min capability to view
 		'ziggeo_notifications',						//menu slug
 		'ziggeo_a_n_page'							//function
+	);
+	//Videos List sub menu
+	add_submenu_page(
+		'ziggeo_video',								//parent slug
+		'Videos List',								//page title
+		'Videos List' . $v_title_extra,				//menu title
+		'manage_options',							//min capability to view
+		'ziggeo_videoslist',						//menu slug
+		'ziggeo_a_v_page'							//function
 	);
 
 	//Videos
@@ -361,12 +377,15 @@ function ziggeo_a_s_page() {
 		<?php
 	}
 	else {
-		include_once(dirname(__FILE__) . "/settings_page.php");
+		include_once(dirname(__FILE__) . '/page_settings.php');
 	}
 }
 
 function ziggeo_a_n_page() {
-	include_once(ZIGGEO_ROOT_PATH . "admin/notifications_page.php");
+	include_once(ZIGGEO_ROOT_PATH . 'admin/page_notifications.php');
 }
 
+function ziggeo_a_v_page() {
+	include_once(ZIGGEO_ROOT_PATH . 'admin/page_videos.php');
+}
 ?>

@@ -316,4 +316,17 @@ function ziggeo_get_notifications($specific = null) {
 	return false;
 }
 
+//Get videos that were recorded on WP side
+function ziggeo_get_video_notices() {
+	$videos = get_option('ziggeo_videos_count');
+
+	//in case we need to get the defaults
+	if($videos === false || $videos === '') {
+		// the defaults need to be applied
+		$videos = 0;
+	}
+
+	return $videos;
+}
+
 ?>
