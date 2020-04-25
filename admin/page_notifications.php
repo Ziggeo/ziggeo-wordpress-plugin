@@ -58,6 +58,11 @@ function ziggeo_a_n_text() {
 					<?php
 				}
 			}
+			if($c === 0) {
+				?>
+				<li><?php _e('Skyes are clear and all is good - no notifications found', 'ziggeo'); ?></li>
+				<?php
+			}
 			?>
 		</ol>
 	</div>

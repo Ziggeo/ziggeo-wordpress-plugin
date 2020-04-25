@@ -27,6 +27,7 @@ function ziggeo_p_page_header() {
 
 			//Ajax nonce
 			ajax_nonce: "<?php echo wp_create_nonce('ziggeo_ajax_nonce'); ?>",
+			ajax_url: "<?php echo admin_url('admin-ajax.php'); ?>",
 			//Hooks object
 			hooks: {
 				_hooks: {},

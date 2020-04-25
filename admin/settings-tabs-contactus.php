@@ -81,9 +81,6 @@ function ziggeo_a_s_c_text() {
 
 			window.zEmbed(function () {
 				$zopim(function () {
-					/*$zopim.livechat.cookieLaw.comply();      
-					$zopim.livechat.cookieLaw.setDefaultImplicitConsent();
-*/
 					<?php
 						$current_user = ziggeo_p_get_current_user();
 						$name = $current_user->user_login;

@@ -286,6 +286,9 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added Video Listing page for admins to see all videos, sort them and moderate them
 * Added global AJAX request to allow us to detect for videos recorded on WP pages. Available as a hook for your code.
 * IMPORTANT: Removed support for videowalls as announced since 2.0 Please use Videowalls plugin instead
+* Added better support for AJAX requests
+* Added a field for server auth token
+
 
 == Changelog ==
 

@@ -49,12 +49,21 @@ function ziggeo_p_on_update($options = null) {
 		ziggeo_p_templates_add_all($templates);
 	}
 
+	//Make a check to see if we need to add any new options - their default values
+	$defaults = ziggeo_get_plugin_options_defaults();
 
+	//Using this method, we actually allow some new options to be added and saved even if they are not made through our plugin.
+	foreach($options as $option => $value) {
+		$defaults[$option] = $value;
+	}
 
+	//This way all defaults are applied as well as the old settings are kept.
+	$options = $defaults;
 
 	//In the end we also update the version
 	//NOTE: This should always be last
 	$options['version'] = ZIGGEO_VERSION;
+
 	update_option('ziggeo_video', $options);
 }
 

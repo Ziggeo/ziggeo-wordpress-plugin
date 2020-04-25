@@ -240,46 +240,59 @@ if(!function_exists('ziggeo_restore_text_values')) {
 	}
 }
 
+function ziggeo_get_plugin_options_defaults() {
+	$defaults = array(
+		'version'							=> 1,
+		'templates_id'						=> '',
+		//'templates_editor'
+		//'templates_manager'
+		'feedback'							=> '',
+		'token'								=> '',
+		'recorder_config'					=> '',
+		'player_config'						=> '',
+		'disable_video_comments'			=> '',
+		'disable_text_comments'				=> '',
+		'comments_recorder_template'		=> '',
+		'comments_player_template'			=> '',
+		'video_and_text'					=> '',
+		'comment_roles'						=> '',
+		'integrations'						=> '',
+		'integrations_recorder_template'	=> '',
+		'default_lang'						=> 'auto',
+		'dev_mode'							=> ZIGGEO_YES,
+		'p_token'							=> '',
+		'e_token'							=> '',
+		'templates_save_to'					=> 'db',
+		//'templates_clear'					=> '',
+		'webrtc_for_mobile'					=> ZIGGEO_YES,
+		'webrtc_streaming'					=> ZIGGEO_NO,
+		'webrtc_streaming_needed'			=> ZIGGEO_YES,
+		'use_debugger'						=> ZIGGEO_NO,
+		'sauth_token'						=> ''
+	);
+
+	return $defaults;
+}
+
 // Returns all plugin settings or defaults if not existing
 function ziggeo_get_plugin_options($specific = null) {
 	$options = get_option('ziggeo_video');
 
+	$defaults = ziggeo_get_plugin_options_defaults();
+
 	//in case we need to get the defaults
 	if($options === false || $options === '') {
 		// the defaults need to be applied
-		$options = array(
-			'version'						=> 1,
-			'templates_id'					=> '',
-			//'templates_editor'
-			//'templates_manager'
-			'feedback'						=> '',
-			'token'							=> '',
-			'recorder_config'				=> '',
-			'player_config'					=> '',
-			'disable_video_comments'		=> '',
-			'disable_text_comments'			=> '',
-			'comments_recorder_template'	=> '',
-			'comments_player_template'		=> '',
-			'video_and_text'				=> '',
-			'comment_roles'					=> '',
-			'integrations'					=> '',
-			'default_lang'					=> 'auto',
-			'dev_mode'						=> ZIGGEO_YES,
-			'p_token'						=> '',
-			'e_token'						=> '',
-			'templates_save_to'				=> 'db',
-			//'templates_clear'				=> '',
-			'webrtc_for_mobile'				=> ZIGGEO_YES,
-			'webrtc_streaming'				=> ZIGGEO_NO,
-			'webrtc_streaming_needed'		=> ZIGGEO_YES,
-			'use_debugger'					=> ZIGGEO_NO
-		);
+		$options = $defaults;
 	}
 
 	// In case we are after a specific one.
 	if($specific !== null) {
 		if(isset($options[$specific])) {
 			return $options[$specific];
+		}
+		elseif(isset($defaults[$specific])) {
+			return $defaults[$specific];
 		}
 	}
 	else {
@@ -293,20 +306,25 @@ function ziggeo_get_plugin_options($specific = null) {
 function ziggeo_get_notifications($specific = null) {
 	$notifications = get_option('ziggeo_notifications');
 
+	$defaults = array(
+		'list'		=> array(),
+		'last_id'	=> 0
+	);
+
 	//in case we need to get the defaults
 	//if($notifications === false || $notifications === '' || (strlen($notifications) < 10)) {
 	if($notifications === false || $notifications === '' || !isset($notifications['list'])) {
 		// the defaults need to be applied
-		$notifications = array(
-			'list'		=> array(),
-			'last_id'	=> 0
-		);
+		$notifications = $defaults;
 	}
 
 	// In case we are after a specific one.
 	if($specific !== null) {
 		if(isset($notifications[$specific])) {
 			return $notifications[$specific];
+		}
+		elseif(isset($defaults[$specific])) {
+			return $defaults[$specific];
 		}
 	}
 	else {
@@ -327,6 +345,13 @@ function ziggeo_get_video_notices() {
 	}
 
 	return $videos;
+}
+
+// Function to output if select field is selected or not. Used mostly in the admin files.
+function ziggeo_echo_selected($var_to_check, $value_to_have) {
+	if($var_to_check === $value_to_have) {
+		echo ' selected="selected" ';
+	}
 }
 
 ?>

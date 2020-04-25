@@ -64,11 +64,10 @@ function ziggeo_p_assets_global() {
 	if(apply_filters('ziggeo_assets_pre_server_load', true)) {
 		//server assets
 		wp_register_script('ziggeo-js', 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.js' . $ver, array());
-		wp_enqueue_script('ziggeo-js');
+		wp_enqueue_script('ziggeo-js', array('jquery'));
 		wp_register_style('ziggeo-css', 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css' . $ver, array());
 		wp_enqueue_style('ziggeo-css');
 	}
-
 
 	if(apply_filters('ziggeo_assets_pre_local_load', true)) {
 		//local assets

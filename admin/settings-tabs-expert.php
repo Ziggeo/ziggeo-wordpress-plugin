@@ -180,5 +180,19 @@ function ziggeo_a_s_e_text() {
 		<?php
 	}
 
+	//Server Auth token
+	function ziggeo_a_s_e_server_auth_token_field() {
+		$options = get_option('ziggeo_video');
+
+		if(!isset($options['sauth_token']) ) {
+			$options['sauth_token'] = '';
+		}
+
+		?>
+		<input id="ziggeo_app_etoken" name="ziggeo_video[sauth_token]" size="50" type="text"
+			placeholder="<?php _ex('Your server auth token goes here', 'placeholder for server auth token', 'ziggeo'); ?>"
+			value="<?php echo $options['sauth_token']; ?>" />
+		<?php
+	}
 
 ?>

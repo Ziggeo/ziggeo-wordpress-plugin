@@ -11,8 +11,6 @@ defined('ABSPATH') or die();
 		<?php
 		wp_nonce_field('ziggeo_nonce_action', 'ziggeo_notifications_nonce');
 		settings_errors();
-		//settings_fields('ziggeo_videos');
-		//do_settings_sections('ziggeo_videos');
 		ziggeo_a_v_text();
 		?>
 	</form>

@@ -28,7 +28,7 @@ function ziggeo_a_s_validation($input) {
 		//integrations tab
 			'integrations' => true,
 		//experts tab
-			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true
+			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true
 	);
 
 	//DEVS: Should we add any hooks here to add your own options into the main settings? Let us know.

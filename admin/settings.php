@@ -236,6 +236,13 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video_expert');
 		*/
 
+		// Ziggeo Server Auth token
+		add_settings_field('ziggeo_server_auth_token',
+							__('Ziggeo Server Auth Token', 'ziggeo'),
+							'ziggeo_a_s_e_server_auth_token_field',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
 		//Sync the templates
 		add_settings_field('ziggeo_expert_sync',
 							__('Sync saved templates in file and database', 'ziggeo'),

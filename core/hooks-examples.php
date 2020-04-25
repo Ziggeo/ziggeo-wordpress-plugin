@@ -551,4 +551,14 @@ add_action('ziggeo_manage_template_options_pre', function($existing_templates) {
 	return $existing_templates;
 });
 */
+
+add_action('ziggeo_add_to_ziggeowp_object', function() {
+
+	if(is_admin() && current_user_can('moderate_comments')) {
+	?>
+	server_auth: "<?php echo ziggeo_get_plugin_options('sauth_token'); ?>",
+	<?php
+	}
+});
+
 ?>

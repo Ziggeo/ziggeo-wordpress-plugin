@@ -1682,8 +1682,18 @@
 		function ziggeoVideosRemove(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
-			//This will not work through JS, we can still try (would need the auth token for this)
-			ZiggeoApi.Videos.destroy(ZiggeoWP.video_list[_video_ref].token);
+			if(ZiggeoWP.server_auth && ZiggeoWP.server_auth !== '') {
+
+				ZiggeoApi.Videos.destroy(ZiggeoWP.video_list[_video_ref].token,
+					{ 'server_auth': ZiggeoWP.server_auth } ).success( function() {
+						element_ref.style.visibility = 'hidden';
+					});
+			}
+			else {
+				//This will not work through JS without server auth.., we can still try (would need the auth token for this)
+				ZiggeoApi.Videos.destroy(ZiggeoWP.video_list[_video_ref].token);
+			}
+
 		}
 	}
 

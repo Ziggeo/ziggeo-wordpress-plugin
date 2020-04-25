@@ -292,6 +292,10 @@
 		data.action = 'ziggeo_ajax';
 		data.ajax_nonce = ZiggeoWP.ajax_nonce;
 
+		if(typeof ajaxurl === 'undefined') {
+			var ajaxurl = ZiggeoWP.ajax_url;
+		}
+
 		jQuery.post(ajaxurl, data, function(response) {
 			if(typeof callback !== 'undefined') {
 				callback(response);
