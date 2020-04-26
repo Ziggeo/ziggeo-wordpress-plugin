@@ -11,8 +11,7 @@
 		2. is it used in recorder
 		3. is it used in rerecorder
 		4. is it used in uploader
-		5. is it used in videowall
-		6. is it common (common goes into simple and uncommon goes to advanced (which has all))
+		5. is it common (common goes into simple and uncommon goes to advanced (which has all))
 
 */
 

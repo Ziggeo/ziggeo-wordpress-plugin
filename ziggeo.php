@@ -75,8 +75,6 @@ include_once(ZIGGEO_ROOT_PATH . 'parsers/player_parser.php');
 include_once(ZIGGEO_ROOT_PATH . 'parsers/recorder_parser.php');
 //passing rerecorders
 include_once(ZIGGEO_ROOT_PATH . 'parsers/rerecorder_parser.php');
-//parsing videoWalls
-include_once(ZIGGEO_ROOT_PATH . 'parsers/videowall_parser.php');
 //parsing uploaders
 include_once(ZIGGEO_ROOT_PATH . 'parsers/uploader_parser.php');
 

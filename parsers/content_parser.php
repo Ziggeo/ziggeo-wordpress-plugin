@@ -182,7 +182,6 @@ function ziggeo_p_content_parse_templates($matches)
 						'height' => 240*/
 					)/*,
 		//These are to be done later...
-		'ziggeovideowall' => array (), //!uses different parameters //@update to be moved
 		'ziggeoform' => array () //!uses different parameters //@update to be moved*/
 	);
 

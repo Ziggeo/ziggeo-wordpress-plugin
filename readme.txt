@@ -222,19 +222,6 @@ Yes. To add the template you use *Ziggeo Video Aid* button in the toolbar. To ge
 
 It is not shown there. We have added a check to see if it is opened in public or by admin and show it only when it seems to be opened by admin. If you do have some specific plugin installed and by some chance it shows it in non admin places for you, just let us know, we will check it and add support for that plugin as well.
 
-= Can we re-style our videowall / video gallery? =
-
-Yes. There are few classes that you can use in your video walls
-`.ziggeo_videoWall` - To style videowall template (video gallery if you prefer) 
-`.ziggeo_wall_title` - To style the wall title if any is given
-`.ziggeo_wallpage` - to style video wall pages
-`.ziggeo_wallpage > ziggeo` - to style the embedings within the video wall (from here standard Ziggeo embedding CSS codes will work properly)
-`.ziggeo_wallpage_number` - to style the page number buttons
-`.ziggeo_videowall_slide_previous` - to style the < (previous arrow)
-`.ziggeo_videowall_slide_next` - to style > (next arrow)
-
-You can of course use your own CSS code, and with classes available for each element of the videowall this should be something very simple.
-
 = How do we enable integrations? =
 
 This is done through your Integrations tab, however we do suggest checking out the *Other Notes* tab above for more details specific to integrations.
@@ -252,16 +239,15 @@ This is done through your Integrations tab, however we do suggest checking out t
 6. Working with templates - nice layout of parameters and their description
 7. Working with templates - managing templates
 8. Working with templates - editing templates
-9. Working with templates - videowall templates setup
 
 = Global Defaults =
-10. Your old setup is now used as fallback
+9. Your old setup is now used as fallback
 
 = Comments =
-11. More options for comments.
+10. More options for comments.
 
 = Editing Post =
-12. Editor buttons
+11. Editor buttons
 
 
 == Bridges to new places ==

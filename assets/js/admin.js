@@ -173,49 +173,6 @@
 			}
 		});
 
-		//@REMOVE IN NEXT VERSION
-		ZiggeoWP.hooks.set(_hooks, 'videowallsz-template-change', function(data) {
-			switch(data.template) {
-				//If it is video wall we want to show its parameters
-				case '[ziggeovideowall': {
-					
-					var wallInfo = document.getElementById('ziggeo_videowall_info');
-					wallInfo.style.display = 'inline-block';
-
-					data.editor.value = data.template + ' ';
-
-					if(data.editor_type == 'advanced') {
-						document.getElementById('ziggeo-wall-parameters-adv').style.display = 'block';
-					}
-					else {
-						document.getElementById('ziggeo-wall-parameters-easy').style.display = 'block';
-					}
-
-					break;
-				}
-				default: {
-					
-					var wallInfo = document.getElementById('ziggeo_videowall_info');
-					wallInfo.style.display = 'none';
-
-					if(data.editor_type == 'advanced') {
-						document.getElementById('ziggeo-wall-parameters-adv').style.display = 'none';
-					}
-					else {
-						document.getElementById('ziggeo-wall-parameters-easy').style.display = 'none';
-					}
-				}
-			}
-		});
-		//Hooks to change the template editor in admin dashboard [END]
-
-		//Hook to remove the videowall warning [START] * TO BE @REMOVED IN NEXT VERSION
-		ZiggeoWP.hooks.set('dashboard_templates_editing', 'videowallsz-template-editing', function() {
-			var wallInfo = document.getElementById('ziggeo_videowall_info');
-			wallInfo.style.display = 'none';
-		});
-		//Hook to remove the videowall warning [END]
-
 		//Hook when simple templates editor is activated
 		ZiggeoWP.hooks.set('dashboard_template_editor_simple_shown', 'ziggeo-template-editing', function(data) {
 			document.getElementById('ziggeo-embedding-parameters-adv').style.display = 'none';
@@ -234,20 +191,6 @@
 			}
 		});
 
-		//@Remove in next version
-		ZiggeoWP.hooks.set('dashboard_template_editor_simple_shown', 'videowallsz-template-editing', function(data) {
-			document.getElementById('ziggeo-wall-parameters-adv').style.display = 'none';
-
-			var wall_params = document.getElementById('ziggeo-wall-parameters-easy');
-
-			if(data.template_base == '[ziggeovideowall') {
-				wall_params.style.display = 'block';
-			}
-			else {
-				wall_params.style.display = 'none';
-			}
-		});
-
 		//Hook when advanced templates editor is activated
 		ZiggeoWP.hooks.set('dashboard_template_editor_advanced_shown', 'ziggeo-template-editing', function(data) {
 			document.getElementById('ziggeo-embedding-parameters-easy').style.display = 'none';
@@ -263,20 +206,6 @@
 			}
 			else {
 				embedding_params.style.display = 'none';
-			}
-		});
-
-		//@REMOVE in next version
-		ZiggeoWP.hooks.set('dashboard_template_editor_advanced_shown', 'videowallsz-template-editing', function(data) {
-			document.getElementById('ziggeo-wall-parameters-easy').style.display = 'none';
-
-			var wall_params = document.getElementById('ziggeo-wall-parameters-adv');
-
-			if(data.template_base == '[ziggeovideowall') {
-				wall_params.style.display = 'block';
-			}
-			else {
-				wall_params.style.display = 'none';
 			}
 		});
 

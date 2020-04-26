@@ -96,29 +96,3 @@ function ziggeo_p_assets_admin() {
 add_action('wp_enqueue_scripts', "ziggeo_p_assets_global");
 add_action('admin_enqueue_scripts', "ziggeo_p_assets_global");
 add_action('admin_enqueue_scripts', "ziggeo_p_assets_admin");
-
-
-//==================================================================================
-// @REMOVE in future versions
-//==================================================================================
-
-//links to the background image, since CSS can not be hard coded (and make it work everywhere)
-if(!function_exists('videowallsz_css_video_wall')) {
-	function videowallsz_css_video_wall() {
-		$css = '';
-		//use add_filter('videowallsz_assets_videowall_css', 'your-function-name') to add any CSS codes that you want to have present on pages
-		$css = apply_filters('videowallsz_assets_videowall_css', $css);
-
-		?>
-		<style type="text/css">
-			.ziggeo_videowall_slide_previous {
-				background-image: url("<?php echo ZIGGEO_ROOT_URL . 'assets/images/arrow-previous.png'; ?>");
-			}
-			.ziggeo_videowall_slide_next {
-				background-image: url("<?php echo ZIGGEO_ROOT_URL . 'assets/images/arrow-next.png'; ?>");
-			}
-			<?php echo $css; ?>
-		</style>
-		<?php
-	}
-}

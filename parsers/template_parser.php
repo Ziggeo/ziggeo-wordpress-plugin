@@ -168,13 +168,4 @@ function ziggeo_content_parse_with_token_only($template, $token, $type) {
 	return ziggeo_p_content_parse_templates( array($full, $params) );
 }
 
-//=============================================================================
-// @REMOVE IN THE FUTURE VERSION OF OUR PLUGIN
-//=============================================================================
-
-//The file will be removed as well. Please use the Video Wall plugin instead 
-include_once('videowall_template_parser.php');
-
-
-
 ?>
