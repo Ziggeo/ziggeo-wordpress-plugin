@@ -83,7 +83,7 @@ function ziggeo_p_content_parse_templates($matches)
 	$filter = current_filter();
 
 	//We will need to check few options from the DB..
-	$options = get_option('ziggeo_video');
+	$options = ziggeo_get_plugin_options();
 
 	//Lets add a tag to the video, that the same is not only a wordpress video, but that it is also one made in
 	// comments ;)

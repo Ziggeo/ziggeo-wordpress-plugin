@@ -12,7 +12,7 @@ function ziggeo_a_s_validation($input) {
 	/////////
 
 	//We will first grab the old values, then add to them, or simply replace them where needed..
-	$options = get_option('ziggeo_video');
+	$options = ziggeo_get_plugin_options();
 
 	//List of all options that we accept
 	$allowed_options = array(

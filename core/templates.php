@@ -41,7 +41,7 @@ defined('ABSPATH') or die();
 /////////////////////////////////////////////////
 
 	//Adds new templates to the currently existing ones
-	function ziggeo_p_templates_add($id, $value, $specific = '') {
+	function ziggeo_p_templates_add($id, $value, $specific = null) {
 
 		//Few fixes to ID in special cases when they might be needed
 		//Check if the id is empty
@@ -52,10 +52,9 @@ defined('ABSPATH') or die();
 		//Lets right away put the ID into lowercase
 		$id = strtolower($id);
 
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('templates_save_to');
 
-		if( ( ($specific !== '' && $specific !== 'db') || $specific === 'files' ) ||
-			( isset($options['templates_save_to']) && $options['templates_save_to'] === "files" ) ) {
+		if( $specific === 'files' || ($specific === null && $option === "files" )) {
 
 			//path to userData directory 
 			$dir = ZIGGEO_DATA_ROOT_PATH;
@@ -68,8 +67,7 @@ defined('ABSPATH') or die();
 				//We should exit with a message. We should not create the file, rather admin should manually create it with permissions they want, then we just use the same file..
 				return false;
 			}
-			else
-			{
+			else {
 				if($current = ziggeo_p_file_read($file)) {
 					//This way the new data updates the old one, if array keys match..
 					//@TODO - the name should be unique, so do we want to record an error for our customer to know that they had used the name that was previously used in some other template, or do we just overwrite it? -> report otherwise leave as is.
@@ -95,11 +93,10 @@ defined('ABSPATH') or die();
 	}
 
 	//If calling this function be careful, it will remove all other templates!
-	function ziggeo_p_templates_add_all($templates, $specific = '') {
-		$options = get_option('ziggeo_video');
+	function ziggeo_p_templates_add_all($templates, $specific = null) {
+		$option = ziggeo_get_plugin_options('templates_save_to');
 
-		if( ( ($specific !== '' && $specific !== 'db') || $specific === 'files' ) ||
-			( isset($options['templates_save_to']) && $options['templates_save_to'] === "files" ) ) {
+		if( $specific === 'files' || ($specific === null && $option === "files" )) {
 
 			//path to userData directory 
 			$dir = ZIGGEO_DATA_ROOT_PATH;
@@ -116,7 +113,6 @@ defined('ABSPATH') or die();
 		}
 		//else save to DB, which is now a new default
 		else {
-
 			return update_option('ziggeo_templates', $templates);
 		}
 	}
@@ -125,16 +121,15 @@ defined('ABSPATH') or die();
 	function ziggeo_p_templates_update($old_id, $id, $content) {
 		$updated = array();
 
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('templates_save_to');
 
-		if( isset($options['templates_save_to']) && $options['templates_save_to'] === "files" ) {
+		if( $option === "files" ) {
 			//path to custom templates file
 			$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
 			//grab all
 			if($current = ziggeo_p_file_read($file)) {
-				foreach($current as $template => $value)
-				{
+				foreach($current as $template => $value) {
 					//find old
 					if($template === $old_id) {
 						//update old
@@ -153,18 +148,16 @@ defined('ABSPATH') or die();
 		else {
 			$existing_templates = get_option('ziggeo_templates');
 
-			foreach($existing_templates as $existing => $value)
-			{
+			foreach($existing_templates as $existing => $value) {
 
 				//find old
 				if($existing === $old_id) {
 					//update old
-
 					$updated[$id] = $content;
 
 					//@HERE do we remove the old ID then?
 				}
-				else{
+				else {
 					$updated[$existing] = $value;
 				}
 			}
@@ -179,16 +172,15 @@ defined('ABSPATH') or die();
 	function ziggeo_p_templates_remove($id) {
 		$updated = array();
 
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('templates_save_to');
 
-		if( isset($options['templates_save_to']) && $options['templates_save_to'] === "files" ) {
+		if( $option === "files" ) {
 			//path to custom templates file
 			$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
 			//grab all
 			if($current = ziggeo_p_file_read($file)) {
-				foreach($current as $template => $value)
-				{
+				foreach($current as $template => $value) {
 					//find old and skip it
 					if( ($template !== $id) && (trim($template) !== $id) ) {
 						$updated[$template] = $value;
@@ -203,8 +195,7 @@ defined('ABSPATH') or die();
 		else {
 			$existing_templates = get_option('ziggeo_templates');
 
-			foreach($existing_templates as $existing => $value)
-			{
+			foreach($existing_templates as $existing => $value) {
 				//find and skip
 				if($existing !== $id) {
 					$updated[$existing] = $value;
@@ -236,11 +227,11 @@ defined('ABSPATH') or die();
 	//Searches for all existing templates. Returns the list or false if none
 	function ziggeo_p_templates_index($opposite = false, $specific = '') {
 
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('templates_save_to');
 		$ret = null;
 
 		//to make it easier to check with opposite parameter
-		$is_files = (isset($options['templates_save_to']) && $options['templates_save_to'] === "files") ? true : false;
+		$is_files = ($option === "files") ? true : false;
 
 		if($specific !== '') {
 			if($specific === 'files') {
@@ -331,6 +322,7 @@ defined('ABSPATH') or die();
 		//if we did not find it, lets just return false..
 		return false;
 	}
+
 
 
 

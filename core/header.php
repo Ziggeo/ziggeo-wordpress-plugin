@@ -10,7 +10,7 @@ function ziggeo_p_page_header() {
 		return;
 	}
 
-	$options = get_option('ziggeo_video');
+	$options = ziggeo_get_plugin_options();
 
 	//use add_filter('ziggeo_setting_header_code', 'your-function-name') to change the options on fly if wanted
 	// it needs to return modified $options array.
@@ -103,27 +103,18 @@ function ziggeo_p_page_header() {
 		<?php
 			//Lets check everything so that our header is pre-set with defaults and
 			// only the over rides are output. Also helps pre-define recommended settings
-			$str_auth = (isset($options, $options['use_auth']) &&
-						$options['use_auth'] === 'true') ?
-						',' . "\n" . 'auth: true' : '';
-			$str_webrtc_mobile = (isset($options, $options['webrtc_for_mobile']) &&
-						$options['webrtc_for_mobile'] === 'true') ?
-						',' . "\n" . 'webrtc_on_mobile: true' : '';
-			$str_webrtc_streaming = (isset($options, $options['webrtc_streaming']) &&
-						$options['webrtc_streaming'] === 'true') ?
-						',' . "\n" . 'webrtc_streaming: true' : '';
-			$str_webrtc_streaming_needed = (isset($options, $options['webrtc_streaming_needed']) &&
-						$options['webrtc_streaming_needed'] === 'true') ?
-						',' . "\n" . 'webrtc_streaming_if_necessary: true' : '';
-			$str_debug = (isset($options, $options['use_debugger']) &&
-						$options['use_debugger'] === 'true') ? ',\ndebug: true' : '';
+			$str_auth = ($options['use_auth'] === ZIGGEO_YES) ? ',' . "\n" . 'auth: true' : '';
+			$str_webrtc_mobile = ($options['webrtc_for_mobile'] === ZIGGEO_YES) ? ',' . "\n" . 'webrtc_on_mobile: true' : '';
+			$str_webrtc_streaming = ($options['webrtc_streaming'] === ZIGGEO_YES) ? ',' . "\n" . 'webrtc_streaming: true' : '';
+			$str_webrtc_streaming_needed = ($options['webrtc_streaming_needed'] === ZIGGEO_YES) ? ',' . "\n" . 'webrtc_streaming_if_necessary: true' : '';
+			$str_debug = ($options['use_debugger'] === ZIGGEO_YES) ? ',' . "\n" . 'debug: true' : '';
 		?>
 
 		//function to get app options
 		function ziggeoGetApplicationOptions() {
 
 			return {
-				token: "<?php echo (( isset($options, $options['token']) ) ? $options['token'] : "" ); ?>"<?php
+				token: "<?php echo $options['token']; ?>"<?php
 
 				echo $str_auth;
 				echo $str_webrtc_mobile;
@@ -142,14 +133,14 @@ function ziggeo_p_page_header() {
 			<?php
 				//Language options
 				//@add translations options here
-				if(isset($options, $options['default_lang']) && $options['default_lang'] !== "auto") {
+				if($options['default_lang'] !== "auto") {
 					?>
 					ZiggeoApi.V2.Locale.setLocale("<?php echo $options['default_lang']; ?>");
 					<?php
 				}
 
 				//developer feature
-				if(isset($options, $options['dev_mode'])) {
+				if($options['dev_mode']) {
 					//This allows you to get some additional feedback into the console. Turning off this option is recommended in the production (not needed), since that will hide any info from the browser / dev console.
 					?>
 					var ziggeo_dev = <?php echo ($options['dev_mode'] === ZIGGEO_YES) ? 'true' : 'false'; ?>;

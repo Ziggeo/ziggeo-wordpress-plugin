@@ -6,7 +6,7 @@ defined('ABSPATH') or die();
 //Prepare the headers information
 function ziggeo_p_assets_get_raw() {
 
-	$options = get_option('ziggeo_video');
+	$options = ziggeo_get_plugin_options();
 
 	//use add_filter('ziggeo_assets_init', 'your-function-name') to change the options on fly if wanted
 	// it needs to return modified $options array.
@@ -46,7 +46,7 @@ function ziggeo_p_assets_global() {
 		return;
 	}
 
-	$options = get_option('ziggeo_video');
+	$options = ziggeo_get_plugin_options();
 
 	//use add_filter('ziggeo_assets_init', 'your-function-name') to change the options on fly if wanted
 	// it needs to return modified $options array.

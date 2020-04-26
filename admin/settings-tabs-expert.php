@@ -19,15 +19,13 @@ function ziggeo_a_s_e_text() {
 	//Useful for localhost or live dev environments, not for production servers
 	function ziggeo_a_s_e_development_mode_field() {
 
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('dev_mode');
 
-		if(isset($options['dev_mode']) && $options['dev_mode'] === ZIGGEO_YES) {
-			$current = ZIGGEO_YES;
+		if($option === ZIGGEO_YES) {
 			$yes_additional = 'selected';
 			$no_additional = '';
 		}
 		else {
-			$current = ZIGGEO_NO;
 			$no_additional = 'selected';
 			$yes_additional = '';
 		}
@@ -49,16 +47,15 @@ function ziggeo_a_s_e_text() {
 	//  creation is removed in favor of security over ease of use.
 	function ziggeo_a_s_e_templates_save_to_field() {
 
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('templates_save_to');
 
 		$e_db = ' selected ';
 		$e_files = '';
 
-		if(isset($options['templates_save_to']) && $options['templates_save_to'] == 'files') {
+		if($option == 'files') {
 			$e_db = '';
 			$e_files = ' selected ';
 		}
-
 
 		?>
 		<select id="ziggeo_templates_save_to" name="ziggeo_video[templates_save_to]">
@@ -70,9 +67,6 @@ function ziggeo_a_s_e_text() {
 	}
 
 	function ziggeo_a_s_e_clear_templates() {
-
-		$options = get_option('ziggeo_video');
-
 		?>
 		<select id="ziggeo_templates_clear" name="ziggeo_video[templates_clear]">
 			<option value="leave">Leave it</option>
@@ -83,12 +77,12 @@ function ziggeo_a_s_e_text() {
 	}
 
 	function ziggeo_a_s_e_webrtc_for_mobile() {
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('webrtc_for_mobile');
 
 		$webrtc_on = ' selected ';
 		$webrtc_off = '';
 
-		if(isset($options['webrtc_for_mobile']) && $options['webrtc_for_mobile'] == 'off') {
+		if($option === ZIGGEO_NO) {
 			$webrtc_on = '';
 			$webrtc_off = ' selected ';
 		}
@@ -102,12 +96,12 @@ function ziggeo_a_s_e_text() {
 	}
 
 	function ziggeo_a_s_e_webrtc_streaming() {
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('webrtc_streaming');
 
 		$webrtc_streaming_on = '';
 		$webrtc_streaming_off = ' selected ';
 
-		if(isset($options['webrtc_streaming']) && $options['webrtc_streaming'] == 'on') {
+		if($option === ZIGGEO_YES) {
 			$webrtc_streaming_on = ' selected ';
 			$webrtc_streaming_off = '';
 		}
@@ -121,12 +115,12 @@ function ziggeo_a_s_e_text() {
 	}
 
 	function ziggeo_a_s_e_webrtc_streaming_when_needed() {
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('webrtc_streaming_needed');
 
 		$webrtc_streaming_needed_on = ' selected ';
 		$webrtc_streaming_needed_off = '';
 
-		if(isset($options['webrtc_streaming_needed']) && $options['webrtc_streaming_needed'] == 'off') {
+		if($option === ZIGGEO_NO) {
 			$webrtc_streaming_needed_on = '';
 			$webrtc_streaming_needed_off = ' selected ';
 		}
@@ -142,30 +136,21 @@ function ziggeo_a_s_e_text() {
 	/*
 	//@ADD - set for next version
 	function ziggeo_a_s_e_private_token_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['p_token']) ) {
-			$options['p_token'] = '';
-		}
+		$option = ziggeo_get_plugin_options('p_token');
 
 		?>
 		<input id="ziggeo_app_ptoken" name="ziggeo_video[p_token]" size="50" type="text"
 			placeholder="<?php _ex('Your private token goes here', 'placeholder for private token', 'ziggeo'); ?>"
-			value="<?php echo $options['p_token']; ?>" />
+			value="<?php echo $option; ?>" />
 		<?php
 	}
 
 	function ziggeo_a_s_e_encryption_token_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['e_token']) ) {
-			$options['e_token'] = '';
-		}
-
+		$option = ziggeo_get_plugin_options('e_token');
 		?>
 		<input id="ziggeo_app_etoken" name="ziggeo_video[e_token]" size="50" type="text"
 			placeholder="<?php _ex('Your encryption token goes here', 'placeholder for encryption token', 'ziggeo'); ?>"
-			value="<?php echo $options['e_token']; ?>" />
+			value="<?php echo $option; ?>" />
 		<?php
 	}
 	*/
@@ -182,16 +167,12 @@ function ziggeo_a_s_e_text() {
 
 	//Server Auth token
 	function ziggeo_a_s_e_server_auth_token_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['sauth_token']) ) {
-			$options['sauth_token'] = '';
-		}
+		$option = ziggeo_get_plugin_options('sauth_token');
 
 		?>
 		<input id="ziggeo_app_etoken" name="ziggeo_video[sauth_token]" size="50" type="text"
 			placeholder="<?php _ex('Your server auth token goes here', 'placeholder for server auth token', 'ziggeo'); ?>"
-			value="<?php echo $options['sauth_token']; ?>" />
+			value="<?php echo $option; ?>" />
 		<?php
 	}
 

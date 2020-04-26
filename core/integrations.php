@@ -70,11 +70,11 @@ function ziggeo_integration_is_enabled($slug = null) {
 		return false;
 	}
 
-	$opts = get_option('ziggeo_video');
+	$integrations = ziggeo_get_plugin_options('integrations');
 
-	if(isset($opts['integrations'], $opts['integrations'][$slug])) {
+	if(isset($integrations[$slug])) {
 		//It is present in settings
-		$status = $opts['integrations'][$slug]['active'];
+		$status = $integrations[$slug]['active'];
 
 		if($status === false || $status === 'false') {
 			return false;

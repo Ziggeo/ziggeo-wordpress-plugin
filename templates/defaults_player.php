@@ -9,7 +9,7 @@ defined('ABSPATH') or die();
 if(!function_exists('ziggeo_get_player_code')) {
 	function ziggeo_get_player_code($location) {
 
-		$options = get_option('ziggeo_video');
+		$options = ziggeo_get_plugin_options();
 		$template_params = false;
 		$template_player = false;
 

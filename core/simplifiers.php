@@ -242,7 +242,7 @@ if(!function_exists('ziggeo_restore_text_values')) {
 
 function ziggeo_get_plugin_options_defaults() {
 	$defaults = array(
-		'version'							=> 1,
+		'version'							=> ZIGGEO_VERSION,
 		'templates_id'						=> '',
 		//'templates_editor'
 		//'templates_manager'
@@ -255,9 +255,10 @@ function ziggeo_get_plugin_options_defaults() {
 		'comments_recorder_template'		=> '',
 		'comments_player_template'			=> '',
 		'video_and_text'					=> '',
-		'comment_roles'						=> '',
+		'comment_roles'						=> 0,
 		'integrations'						=> '',
 		'integrations_recorder_template'	=> '',
+		'integrations_player_template'		=> '',
 		'default_lang'						=> 'auto',
 		'dev_mode'							=> ZIGGEO_YES,
 		'p_token'							=> '',
@@ -267,6 +268,7 @@ function ziggeo_get_plugin_options_defaults() {
 		'webrtc_for_mobile'					=> ZIGGEO_YES,
 		'webrtc_streaming'					=> ZIGGEO_NO,
 		'webrtc_streaming_needed'			=> ZIGGEO_YES,
+		'use_auth'							=> ZIGGEO_NO,
 		'use_debugger'						=> ZIGGEO_NO,
 		'sauth_token'						=> ''
 	);

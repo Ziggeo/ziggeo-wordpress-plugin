@@ -9,7 +9,7 @@ defined('ABSPATH') or die();
 //Shows instructions on how to manually get API app token and starts the general tab frame (closing the one before it)
 function ziggeo_a_s_g_text() {
 
-	$options = get_option('ziggeo_video');
+	$option = ziggeo_get_plugin_options('token');
 
 	?>
 	</div>
@@ -17,8 +17,7 @@ function ziggeo_a_s_g_text() {
 	<?php
 
 	//Only show the instructions if the token is not already set
-	if( !isset($options, $options['token']) || ( isset($options['token']) && trim($options['token']) === '') )
-	{
+	if( trim($option) === '') {
 		?>
 		<p>
 			<?php echo __('Get your Ziggeo API application token from following locations:', 'ziggeo') .
@@ -38,9 +37,7 @@ function ziggeo_a_s_g_text() {
 
 	//Token input
 	function ziggeo_a_s_g_app_token_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['token']) )  { $options['token'] = ''; }
+		$options = ziggeo_get_plugin_options();
 
 		?>
 		<input id="ziggeo_app_token" name="ziggeo_video[token]" size="50" type="text" placeholder="<?php _ex('Your app token goes here', 'placeholder for APP token', 'ziggeo'); ?>" value="<?php echo $options['token']; ?>" />
@@ -48,13 +45,12 @@ function ziggeo_a_s_g_text() {
 
 		//Lets check feedback. We will keep it hidden on the form so that we can show it in a nice manner ;)
 		// (not as some other option)
-		if( !isset($options, $options['feedback']) || ( isset($options['feedback']) && $options['feedback'] !== "1" ) ) {
+		if( $options['feedback'] !== ZIGGEO_YES ) {
 			
 			//We wil also not show it right away, but only if the customer had some time to check it out, so at least a token should be set.
 			
 			//Only show the instructions if the token is not already set
-			if( isset($options, $options['token']) && trim($options['token']) !== '' )
-			{
+			if( trim($options['token']) !== '' ) {
 				?>
 				<div class="ziggeo_hidden">
 					<input id="ziggeo_feedback" name="ziggeo_video[feedback]" type="checkbox" value="1">
@@ -82,14 +78,7 @@ function ziggeo_a_s_g_text() {
 	//https://ziggeo.com/features/language-support
 	function ziggeo_a_s_g_default_language() {
 
-		$options = get_option('ziggeo_video');
-
-		if(isset($options['default_lang'])) {
-			$lang = $options['default_lang'];
-		}
-		else {
-			$lang = 'auto';
-		}
+		$lang = ziggeo_get_plugin_options('default_lang');
 
 		$languages = array(
 			'auto'	=> 'Auto',
@@ -148,23 +137,19 @@ function ziggeo_a_s_g_text() {
 
 	//Default recorder templates to be used by integrations
 	function ziggeo_a_s_g_default_integrations_recorder_field() {
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('integrations_recorder_template');
 
-		if( !isset($options, $options['integrations_recorder_template']) ) {
-			$options['integrations_recorder_template'] = false;
-		}
 		?>
 		<select id="integrations_recorder_template" name="ziggeo_video[integrations_recorder_template]">
 			<option value=""><?php _ex('Default', 'dropdown option of default/unchanged value', 'ziggeo'); ?></option>
 			<?php
 				$list = ziggeo_p_templates_index();
 				if($list) {
-					foreach($list as $template => $value)
-					{
-						if( $template === $options['integrations_recorder_template'] ) {
+					foreach($list as $template => $value) {
+						if( $template === $option ) {
 							?><option value="<?php echo $template; ?>" selected><?php echo $template; ?></option><?php
 						}
-						else{
+						else {
 							?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
 						}
 					}
@@ -187,15 +172,11 @@ function ziggeo_a_s_g_text() {
 
 	//Allows us to select if video comments are accepted on a post where comments are enabled
 	function ziggeo_a_s_g_accept_video_comments_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['disable_video_comments']) ) {
-			$options['disable_video_comments'] = '';
-		}
+		$option = ziggeo_get_plugin_options('disable_video_comments');
 
 		?>
 		<input id="ziggeo_video_comments" name="ziggeo_video[disable_video_comments]" type="checkbox" value="1"
-			<?php echo checked( 1, $options['disable_video_comments'], false ); ?> />
+			<?php echo checked( 1, $option, false ); ?> />
 		<label for="ziggeo_video_comments">
 			<?php _e('By default the comments will get activated with the feature to add videos as comments (check this to disable it)', 'ziggeo');
 			?>
@@ -205,13 +186,11 @@ function ziggeo_a_s_g_text() {
 
 	//Show video (and it is required) and the WordPress comment field next to it
 	function ziggeo_a_s_g_video_comments_required_with_text() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['video_and_text']) ) { $options['video_and_text'] = ''; }
+		$option = ziggeo_get_plugin_options('video_and_text');
 
 		?>
 		<input id="ziggeo_video_and_text" name="ziggeo_video[video_and_text]" type="checkbox" value="1"
-			<?php echo checked( 1, $options['video_and_text'], false ); ?> />
+			<?php echo checked( 1, $option, false ); ?> />
 		<label for="ziggeo_video_and_text">
 			<?php _e('Set video comment to be required, but allow your visitors to leave some text for you as well (next to video)', 'ziggeo');
 			?>
@@ -221,9 +200,8 @@ function ziggeo_a_s_g_text() {
 
 	//Recorder template option to be used in comments
 	function ziggeo_a_s_g_video_comments_default_recorder_field() {
-		$options = get_option('ziggeo_video');
+		$option = ziggeo_get_plugin_options('comments_recorder_template');
 
-		if( !isset($options, $options['comments_recorder_template']) ) { $options['comments_recorder_template'] = false; }
 		?>
 		<select id="ziggeo_video_comments_template_recorder" name="ziggeo_video[comments_recorder_template]">
 			<option value=""><?php _ex('Default', 'dropdown option of default/unchanged value', 'ziggeo'); ?></option>
@@ -232,7 +210,7 @@ function ziggeo_a_s_g_text() {
 			if($list) {
 				foreach($list as $template => $value)
 				{
-					if( $template === $options['comments_recorder_template'] ) {
+					if( $template === $option ) {
 						?><option value="<?php echo $template; ?>" selected><?php echo $template; ?></option><?php
 					}
 					else{
@@ -251,8 +229,7 @@ function ziggeo_a_s_g_text() {
 
 	//Player template option to be used in comments
 	function ziggeo_a_s_g_video_comments_default_player_field() {
-		$options = get_option('ziggeo_video');
-		if( !isset($options, $options['comments_player_template']) ) { $options['comments_player_template'] = false; }
+		$option = ziggeo_get_plugin_options('comments_player_template');
 
 		?>
 		<select id="ziggeo_video_comments_template_player" name="ziggeo_video[comments_player_template]">
@@ -260,14 +237,8 @@ function ziggeo_a_s_g_text() {
 			<?php
 				$list = ziggeo_p_templates_index();
 				if($list) {
-					foreach($list as $template => $value)
-					{
-						if( $template === $options['comments_player_template'] ) {
-							?><option value="<?php echo $template; ?>" selected><?php echo $template; ?></option><?php                                              
-						}
-						else {
-							?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php                                               
-						}
+					foreach($list as $template => $value) {
+						?><option value="<?php echo $template; ?>" <?php ziggeo_echo_selected($template, $option); ?>><?php echo $template; ?></option><?php
 					}
 				}
 			?>
@@ -278,13 +249,11 @@ function ziggeo_a_s_g_text() {
 
 	//Allows us to set so that text comments are available or disabled. Useful if one wants to have only video comments. Applied only if comments are enabled.
 	function ziggeo_a_s_g_accept_video_comments_only_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['disable_text_comments']) )  { $options['disable_text_comments'] = ''; }
+		$option = ziggeo_get_plugin_options('disable_text_comments');
 
 		?>
 		<input id="ziggeo_text_comments" name="ziggeo_video[disable_text_comments]" type="checkbox" value="1"
-			<?php echo checked( 1, $options['disable_text_comments'], false ); ?> />
+			<?php echo checked( 1, $option, false ); ?> />
 		<label for="ziggeo_text_comments">
 			<?php _e('Want to have video comments only? Check this to set it as such ( leave unchecked to allow video and text comments ).', 'ziggeo');
 			?>
@@ -293,9 +262,7 @@ function ziggeo_a_s_g_text() {
 	}
 
 	function ziggeo_a_s_g_video_comments_required_roles() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['comment_roles']) )  { $options['comment_roles'] = ''; }
+		$option = ziggeo_get_plugin_options('comment_roles');
 
 		//Roles:
 		//SuperAdmin = 6
@@ -307,31 +274,15 @@ function ziggeo_a_s_g_text() {
 		//Everyone (guest) = 0 || ""
 		?>
 		<select id="ziggeo_video_comments_roles" name="ziggeo_video[comment_roles]">
-			<option value="0"
-				<?php echo ( $options['comment_roles'] == "" || $options['comment_roles'] == 0 ) ? "selected" : "" ?>>
+			<option value="0" <?php ziggeo_echo_selected('', $option) . ziggeo_echo_selected(0, $option); ?>>
 				<?php _ex('Everyone is allowed', 'WP roles','ziggeo'); ?></option>
-			<option value="1"
-				<?php
-					echo ( $options['comment_roles'] == 1 ) ? " selected " : ""
-				?>><?php _ex('Subscribers', 'WP roles', 'ziggeo'); ?>
+			<option value="1" <?php ziggeo_echo_selected(1, $option); ?>><?php _ex('Subscribers', 'WP roles', 'ziggeo'); ?>
 			</option>
-			<option value="2"
-				<?php
-					echo ( $options['comment_roles'] == 2 ) ? " selected " : ""
-				?>><?php _ex('Contributors', 'WP roles', 'ziggeo'); ?></option>
-			<option value="3"
-				<?php
-					echo ( $options['comment_roles'] == 3 ) ? " selected " : ""
-				?>><?php _ex('Authors', 'WP roles', 'ziggeo'); ?></option>
-			<option value="4"
-				<?php echo ( $options['comment_roles'] == 4 ) ? " selected " : ""
-				?>><?php _ex('Editors', 'WP roles', 'ziggeo'); ?></option>
-			<option value="5"
-				<?php echo ( $options['comment_roles'] == 5 ) ? " selected " : ""
-				?>><?php _ex('Admins', 'WP roles', 'ziggeo'); ?></option>
-			<option value="6"
-				<?php echo ( $options['comment_roles'] == 6 ) ? " selected " : ""
-				?>><?php _ex('Super Admins', 'WP roles', 'ziggeo'); ?></option>
+			<option value="2" <?php ziggeo_echo_selected(2, $option); ?>><?php _ex('Contributors', 'WP roles', 'ziggeo'); ?></option>
+			<option value="3" <?php ziggeo_echo_selected(3, $option); ?>><?php _ex('Authors', 'WP roles', 'ziggeo'); ?></option>
+			<option value="4" <?php ziggeo_echo_selected(4, $option); ?>><?php _ex('Editors', 'WP roles', 'ziggeo'); ?></option>
+			<option value="5" <?php ziggeo_echo_selected(5, $option); ?>><?php _ex('Admins', 'WP roles', 'ziggeo'); ?></option>
+			<option value="6" <?php ziggeo_echo_selected(6, $option); ?>><?php _ex('Super Admins', 'WP roles', 'ziggeo'); ?></option>
 		</select>
 		<label for="ziggeo_video_comments_roles">
 			<?php _e('By selecting some role you allow people with the same role and higher one to use video comments, while it is disabled for everyone else (with lower capabilities).', 'ziggeo'); ?>
@@ -350,27 +301,23 @@ function ziggeo_a_s_g_text() {
 
 	//Used as defaults - fallbacks :)
 	function ziggeo_a_s_g_fallback_recorder_config_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['recorder_config']) )        { $options['recorder_config'] = ''; }
+		$option = ziggeo_get_plugin_options('recorder_config');
 
 		?>
 		<input id="ziggeo_recorder_config" name="ziggeo_video[recorder_config]" size="50" type="text"
 			placeholder="<?php _e('Ziggeo Recorder Config (leave blank for default settings)', 'ziggeo'); ?>"
-			value="<?php echo $options['recorder_config']; ?>" />
+			value="<?php echo $option; ?>" />
 		<?php
 	}
 
 	//Used as defaults - fallbacks :)
 	function ziggeo_a_s_g_fallback_player_config_field() {
-		$options = get_option('ziggeo_video');
-
-		if(!isset($options['player_config']) )  { $options['player_config'] = ''; }
+		$option = ziggeo_get_plugin_options('player_config');
 
 		?>
 		<input id="ziggeo_player_config" name="ziggeo_video[player_config]" size="50" type="text"
 			placeholder="<?php _e('Ziggeo Player Config (leave blank for default settings)','ziggeo'); ?>"
-			value="<?php echo $options['player_config']; ?>" />
+			value="<?php echo $option; ?>" />
 		<?php
 	}
 ?>
