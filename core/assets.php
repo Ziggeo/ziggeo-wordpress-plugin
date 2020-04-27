@@ -21,7 +21,7 @@ function ziggeo_p_assets_get_raw() {
 
 	$ver = '?version=' . ZIGGEO_VERSION;
 
-	$result = [
+	$result = array(
 		array(
 			'js'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.js' . $ver,
 			'css'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css' . $ver
@@ -30,7 +30,7 @@ function ziggeo_p_assets_get_raw() {
 			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js' . $ver,
 			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles.css' . $ver
 		)
-	];
+	);
 
 	//Allowing to add additional URLs
 	$result = apply_filters('ziggeo_assets_init_raw_post', $result);

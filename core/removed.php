@@ -18,67 +18,83 @@ defined('ABSPATH') or die();
 //		* videowallsz_videowall_parameter_values()
 //
 
-//Only have this if the videowalls version is not available - meaning that the plugin is not activated or installed
-if(!defined('VIDEOWALLSZ_VERSION')) {
+add_action('plugins_loaded', function() {
 
-	//Plugin page: https://wordpress.org/plugins/videowalls-for-ziggeo/
-	//
+	//Only have this if the videowalls version is not available - meaning that the plugin is not activated or installed
+	if(!defined('VIDEOWALLSZ_VERSION')) {
 
-	// FILE: /parsers/videowall_parser.php
-	////////////////////////////////////////
+		//Plugin page: https://wordpress.org/plugins/videowalls-for-ziggeo/
+		//
 
-	//Function to get the start and end of the videowall
-	function videowallsz_get_wall_placeholder($inline_styles) {
-		$msg = 'Function `videowallsz_get_wall_placeholder` was called on page "' . 
-				esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
-				' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
-				'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
-				'https://wordpress.org/plugins/videowalls-for-ziggeo/';
-		ziggeo_notification_create($msg, 'error');
+		// FILE: /parsers/videowall_parser.php
+		////////////////////////////////////////
+
+		//Function to get the start and end of the videowall
+		function videowallsz_get_wall_placeholder($inline_styles) {
+			$msg = 'Function `videowallsz_get_wall_placeholder` was called on page "' . 
+					esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
+					' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
+					'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
+					'https://wordpress.org/plugins/videowalls-for-ziggeo/';
+			ziggeo_notification_create($msg, 'error');
+		}
+
+		//$post_code - to see if we should post the code to the page or return it back
+		function videowallsz_content_parse_videowall($template, $post_code = true) {
+			$msg = 'Function `videowallsz_content_parse_videowall` was called on page "' . 
+					esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
+					' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
+					'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
+					'https://wordpress.org/plugins/videowalls-for-ziggeo/';
+			ziggeo_notification_create($msg, 'error');
+		}
+
+		function videowallsz_prep_parameters_videowall($raw_parameters = null) {
+			$msg = 'Function `videowallsz_prep_parameters_videowall` was called on page "' . 
+					esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
+					' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
+					'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
+					'https://wordpress.org/plugins/videowalls-for-ziggeo/';
+			ziggeo_notification_create($msg, 'error');
+		}
+
+		// FILE: /parsers/videowall_template_parser.php
+		/////////////////////////////////////////////////
+
+		function videowallsz_videowall_parameter_values($toParse) {
+			$msg = 'Function `videowallsz_videowall_parameter_values` was called on page "' . 
+					esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
+					' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
+					'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
+					'https://wordpress.org/plugins/videowalls-for-ziggeo/';
+			ziggeo_notification_create($msg, 'error');
+		}
+
+		// FILE: /core/assets.php
+
+		function videowallsz_css_video_wall() {
+			$msg = 'Function `videowallsz_css_video_wall` was called on page "' . 
+					esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
+					' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
+					'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
+					'https://wordpress.org/plugins/videowalls-for-ziggeo/';
+			ziggeo_notification_create($msg, 'error');
+		}
+
+		// FILE: /core/hooks-examples.php
+
+		//add videowall parameter into the list of content parsers available
+		add_action('ziggeo_manage_template_options_pre', function($existing_templates) {
+			$existing_templates[] = array(
+										'name'			=> 'ziggeovideowall',
+										'func_pre'		=> 'videowallsz_prep_parameters_videowall',
+										'func_final'	=> 'videowallsz_content_parse_videowall'
+			);
+
+			return $existing_templates;
+		});
+
 	}
-
-	//$post_code - to see if we should post the code to the page or return it back
-	function videowallsz_content_parse_videowall($template, $post_code = true) {
-		$msg = 'Function `videowallsz_content_parse_videowall` was called on page "' . 
-				esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
-				' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
-				'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
-				'https://wordpress.org/plugins/videowalls-for-ziggeo/';
-		ziggeo_notification_create($msg, 'error');
-	}
-
-	function videowallsz_prep_parameters_videowall($raw_parameters = null) {
-		$msg = 'Function `videowallsz_prep_parameters_videowall` was called on page "' . 
-				esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
-				' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
-				'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
-				'https://wordpress.org/plugins/videowalls-for-ziggeo/';
-		ziggeo_notification_create($msg, 'error');
-	}
-
-	// FILE: /parsers/videowall_template_parser.php
-	/////////////////////////////////////////////////
-
-	function videowallsz_videowall_parameter_values($toParse) {
-		$msg = 'Function `videowallsz_videowall_parameter_values` was called on page "' . 
-				esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
-				' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
-				'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
-				'https://wordpress.org/plugins/videowalls-for-ziggeo/';
-		ziggeo_notification_create($msg, 'error');
-	}
-
-	// FILE: /core/assets.php
-
-	function videowallsz_css_video_wall() {
-		$msg = 'Function `videowallsz_css_video_wall` was called on page "' . 
-				esc_url_raw($_SERVER['REQUEST_URI']) . '"' .
-				' Nothing happened, however to use VideoWalls you will need to download Videowalls Plugin.' .
-				'You can get it by searching for "Videowalls For Ziggeo" or by going to this link: ' .
-				'https://wordpress.org/plugins/videowalls-for-ziggeo/';
-		ziggeo_notification_create($msg, 'error');
-	}
-
-}
+});
 
 ?>

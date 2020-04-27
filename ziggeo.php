@@ -118,5 +118,9 @@ include_once(ZIGGEO_ROOT_PATH . 'core/rest.php');
 include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_recorder.php');
 include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_player.php');
 
+// The file that holds all functions that are removed from plugin, to give us a chance to show notification
+// Functions would be kept for few versions
+include_once(ZIGGEO_ROOT_PATH . '/core/removed.php');
+
 
 ?>
