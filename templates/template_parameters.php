@@ -51,8 +51,23 @@ function ziggeo_template_write_simple_parameters_list() {
 
 				$to_attach[] = 'ziggeo-template-field-' . $addition . $field;
 
+				$used_by = '';
+
+				if($params['used_by_player']) {
+					$used_by .= ' player';
+				}
+				if($params['used_by_recorder']) {
+					$used_by .= ' recorder';
+				}
+				if($params['used_by_rerecorder']) {
+					$used_by .= ' rerecorder';
+				}
+				if($params['used_by_uploader']) {
+					$used_by .= ' uploader';
+				}
+
 				?>
-				<div class="ziggeo-field">
+				<div class="ziggeo-field" data-type="<?php echo $used_by; ?>">
 					<div title="<?php echo $params['description'] ?>"><?php echo $field ?></div>
 					<div>
 						<?php
@@ -225,6 +240,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> false
@@ -235,6 +251,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> 640
@@ -245,6 +262,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> 480
@@ -255,6 +273,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> 640
@@ -265,19 +284,10 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> 480
-		),
-		'responsive' => array(
-			'type'					=> 'bool',
-			'description'			=> __('Boolean value that allows you to make embedding capture the full size of the bounding box (applied on load only).', 'ziggeo'),
-			'used_by_player'		=> true,
-			'used_by_recorder'		=> true,
-			'used_by_rerecorder'	=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
-			'default_value'			=> true
 		),
 		'popup' => array(
 			'type'					=> 'bool', //data-equal=""
@@ -285,6 +295,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> false
@@ -295,6 +306,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -305,6 +317,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -313,8 +326,9 @@ function ziggeo_get_template_parameters_list() {
 			'type'					=> 'string', //data-equal="=''"
 			'description'			=> __('String representation of a video token or video key.', 'ziggeo'),
 			'used_by_player'		=> true,
-			'used_by_recorder'		=> true,
+			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -325,6 +339,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> false
@@ -335,19 +350,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
-			'default_value'			=> ''
-		),
-		'modes' => array(
-			'type'					=> 'array',
-			'description'			=> __('Array value determining how the embedding is used. Possible values are "recorder", "player", "rerecorder" For more modes, separate values with comma.', 'ziggeo'),
-			'used_by_player'		=> false,
-			'used_by_recorder'		=> true,
-			'used_by_rerecorder'	=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
-			'v1_only'				=> true,
 			'default_value'			=> ''
 		),
 		'tags' => array(
@@ -356,6 +361,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -366,6 +372,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -376,19 +383,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
-			'default_value'			=> ''
-		),
-		'perms' => array(
-			'type'					=> 'array',
-			'description'			=> __('Array value with video permissions that you could apply: "<span title="Enables uploading of videos for your customer">allowupload</span>", "<span title="Disables recording of video">forbidrecord</span>", "<span title="Disables switching between uploading and recording">forbidswitch</span>", "<span title="Disables rerecording completely">forbidrerecord</span>", "<span title="Overwrites the video if a video with the same key already exists">forceoverwrite</span>".', 'ziggeo'),
-			'used_by_player'		=> false,
-			'used_by_recorder'		=> true,
-			'used_by_rerecorder'	=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
-			'v1_only'				=> true,
 			'default_value'			=> ''
 		),
 		'skipinitial' => array(
@@ -397,6 +394,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -407,6 +405,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -417,6 +416,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> true
@@ -427,6 +427,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> true
@@ -437,6 +438,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -447,6 +449,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -457,6 +460,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -467,6 +471,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -477,6 +482,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> 0 //Equal to unlimited
@@ -487,6 +493,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> 3
@@ -497,6 +504,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -507,27 +515,18 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
 		),
-		'id' => array(
-			'type'					=> 'string',
-			'description'			=> __('String value representing desired ID of embedding element so that it can be looked up using JavaScript code.', 'ziggeo'),
-			'used_by_player'		=> true,
-			'used_by_recorder'		=> true,
-			'used_by_rerecorder'	=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
-			'v1_only'				=> true,
-			'default_value'			=> ''
-		),
-		'immediate_playback' => array(
+		'localplayback' => array(
 			'type'					=> 'bool',
 			'description'			=> __('Boolean value to tell if the video should start playing right away after recording.', 'ziggeo'),
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'v1_only'				=> true,
@@ -539,6 +538,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -549,6 +549,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -559,6 +560,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -569,6 +571,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -579,6 +582,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> 0 //equal to unlimited
@@ -589,6 +593,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> 0 //same as no expiration
@@ -599,6 +604,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -609,6 +615,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -617,8 +624,9 @@ function ziggeo_get_template_parameters_list() {
 			'type'					=> 'integer',
 			'description'			=> __('Integer value setting the optimal width of the stream.', 'ziggeo'),
 			'used_by_player'		=> true,
-			'used_by_recorder'		=> true,
-			'used_by_rerecorder'	=> true,
+			'used_by_recorder'		=> false,
+			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -627,8 +635,9 @@ function ziggeo_get_template_parameters_list() {
 			'type'					=> 'integer',
 			'description'			=> __('Integer value setting the optimal height of the stream.', 'ziggeo'),
 			'used_by_player'		=> true,
-			'used_by_recorder'		=> true,
-			'used_by_rerecorder'	=> true,
+			'used_by_recorder'		=> false,
+			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -636,9 +645,10 @@ function ziggeo_get_template_parameters_list() {
 		'title' => array(
 			'type'					=> 'string',
 			'description'			=> __('String value to set title of the video being recorded.', 'ziggeo'),
-			'used_by_player'		=> true,
+			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -646,9 +656,10 @@ function ziggeo_get_template_parameters_list() {
 		'description' => array(
 			'type'					=> 'string',
 			'description'			=> __('String value to set the description of the video.', 'ziggeo'),
-			'used_by_player'		=> true,
+			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> true,
 			'default_value'			=> ''
@@ -659,6 +670,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> ''
@@ -669,6 +681,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -679,6 +692,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> 0 //no limit
@@ -689,6 +703,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -696,9 +711,10 @@ function ziggeo_get_template_parameters_list() {
 		'nofullscreen' => array(
 			'type'					=> 'bool',
 			'description'			=> __('Boolean value to disable fullscreen option in player.', 'ziggeo'),
-			'used_by_player'		=> false,
+			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -706,9 +722,10 @@ function ziggeo_get_template_parameters_list() {
 		'stretch' => array(
 			'type'					=> 'bool',
 			'description'			=> __('Boolean value to set the player to play video in full width (regardless if hight gets cut or not).', 'ziggeo'),
-			'used_by_player'		=> false,
+			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> false,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> false
@@ -716,9 +733,10 @@ function ziggeo_get_template_parameters_list() {
 		'theme' => array(
 			'type'					=> 'string',
 			'description'			=> __('String value of the name of the theme that you wish to have applied to your player.', 'ziggeo'),
-			'used_by_player'		=> false,
+			'used_by_player'		=> true,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
 			'advanced'				=> true,
 			'simple'				=> false,
 			'default_value'			=> 'modern'

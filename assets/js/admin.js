@@ -144,6 +144,10 @@
 			return false;
 		}
 
+		//Set the parameters shown based on currently selected value (on page load)
+		var _sel = document.getElementById('ziggeo_shorttags_list');
+		ziggeoTemplatesEditorEasyParametersCheck( _sel.options[_sel.selectedIndex].value.replace('[ziggeo', ''));
+
 		ZiggeoWP.hooks.set(_hooks, 'ziggeo-template-change', function(data) {
 			switch(data.template) {
 				case '[ziggeoplayer': {}
@@ -158,6 +162,8 @@
 					else {
 						document.getElementById('ziggeo-embedding-parameters-easy').style.display = 'block';
 					}
+
+					ziggeoTemplatesEditorEasyParametersCheck(data.template.replace('[ziggeo', ''));
 
 					break;
 				}
@@ -185,6 +191,8 @@
 				data.template_base == '[ziggeorerecorder' ||
 				data.template_base == '[ziggeouploader') {
 				embedding_params.style.display = 'block';
+
+				ziggeoTemplatesEditorEasyParametersCheck(data.template_base.replace('[ziggeo', ''));
 			}
 			else {
 				embedding_params.style.display = 'none';
@@ -537,6 +545,23 @@
 		template = template.substr(0, location) + template.substr(end_of_param);
 
 		return template;
+	}
+
+	function ziggeoTemplatesEditorEasyParametersCheck(base) {
+
+		var embedding_params = document.getElementById('ziggeo-embedding-parameters-easy');
+
+		//Change what options are shown based on the template_base
+		var _fields = embedding_params.querySelectorAll('.ziggeo-field');
+
+		for(i = 0, c = _fields.length; i < c; i++) {
+			if(_fields[i].getAttribute('data-type').indexOf(' ' + base) > -1) {
+				_fields[i].style.display = '';
+			}
+			else {
+				_fields[i].style.display = 'none';
+			}
+		}
 	}
 
 	// 3.1 Templates
