@@ -219,6 +219,16 @@ function ziggeo_get_template_parameters_list() {
 
 	//parameters that are part of the Ziggeo API / Ziggeo service
 	$system_parameters = array(
+		'allowscreen' => array(
+			'type'					=> 'bool',
+			'description'			=> __('Allows you to activate screen recording in your recorder.', 'ziggeo'),
+			'used_by_player'		=> false,
+			'used_by_recorder'		=> true,
+			'used_by_rerecorder'	=> true,
+			'advanced'				=> true,
+			'simple'				=> true,
+			'default_value'			=> false
+		),
 		'width' => array(
 			'type'					=> 'integer',
 			'description'			=> __('Integer value representing the width of player or recorder that you are setting this for. This will not change the width of recording, just of the video screen size', 'ziggeo'),

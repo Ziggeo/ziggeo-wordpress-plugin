@@ -56,7 +56,7 @@ function ziggeo_p_on_update($options = null) {
 		ziggeo_p_templates_add_all($templates);
 	}
 
-	// 2.6
+	// 2.3
 	// Info: Apply the fix for the values of some options so all use ZIGGEO_ constants
 	if(version_compare($options['version'], '2.6', '<')) {
 		if(isset($options['webrtc_for_mobile']) && $options['webrtc_for_mobile'] === 'off') {

@@ -274,6 +274,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * IMPORTANT: Removed support for videowalls as announced since 2.0 Please use Videowalls plugin instead
 * Added better support for AJAX requests
 * Added a field for server auth token
+* Added option for screen recording and `ziggeo_echo_application_settings` hook to add options for Ziggeo application initialization even if they are not yet supported by the Wordpress plugin.
 
 
 == Changelog ==

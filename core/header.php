@@ -121,6 +121,10 @@ function ziggeo_p_page_header() {
 				echo $str_webrtc_streaming;
 				echo $str_webrtc_streaming_needed;
 				echo $str_debug;
+
+				//Action to add your own codes into application creation. This could be used for adding screen recording plugins, URL to flash and any other setting that might not be available in our Wordpress plugin yet is available by Ziggeo system itself.
+				//DO NOT use this for your own options. Instead use ZiggeoWP for that.
+				do_action('ziggeo_echo_application_settings');
 				?>
 			}
 		}

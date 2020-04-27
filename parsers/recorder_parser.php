@@ -52,6 +52,7 @@ function ziggeo_p_template_is_recorder($template) {
 		'input_bind',
 		'form_accept',
 		//v2
+		'allowscreen',
 		'skipinitial',
 		'faceoutline',
 		'display-timer',
