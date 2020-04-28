@@ -1638,16 +1638,20 @@
 
 			if(ZiggeoWP.server_auth && ZiggeoWP.server_auth !== '') {
 
-				ZiggeoApi.Videos.destroy(ZiggeoWP.video_list[_video_ref].token,
-					{ 'server_auth': ZiggeoWP.server_auth } ).success( function() {
-						element_ref.style.visibility = 'hidden';
-					});
-			}
-			else {
-				//This will not work through JS without server auth.., we can still try (would need the auth token for this)
-				ZiggeoApi.Videos.destroy(ZiggeoWP.video_list[_video_ref].token);
-			}
+				var request = ziggeo_app.videos.destroy( ZiggeoWP.video_list[_video_ref].token,
+														{ 'server_auth': ZiggeoWP.server_auth });
 
+				request.success( function() {
+					element_ref = element_ref.parentElement.parentElement;
+					element_ref.style.transition = '4s all ease-in-out';
+    				element_ref.style.maxHeight = '0px';
+    				element_ref.style.backgroundColor = 'red';
+
+    				setTimeout(function() {
+    					element_ref.parentElement.removeChild(element_ref);
+    				}, 3800);
+				});
+			}
 		}
 	}
 

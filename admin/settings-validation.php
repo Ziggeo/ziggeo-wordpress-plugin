@@ -28,7 +28,12 @@ function ziggeo_a_s_validation($input) {
 		//integrations tab
 			'integrations' => true,
 		//experts tab
-			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true
+			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true, 'use_auth' => true
+	);
+
+	//Needed for checkboxes otherwise we would clear them
+	$clear_if_not_set = array(
+		'disable_video_comments' => true, 'disable_text_comments' => true, 'video_and_text' => true, 'use_auth' => true
 	);
 
 	//DEVS: Should we add any hooks here to add your own options into the main settings? Let us know.
@@ -42,17 +47,15 @@ function ziggeo_a_s_validation($input) {
 	//Clear out the input array of all things that we already have saved, leaving just the ones that we need to update.
 	if(is_array($options)) {
 		//Going through all updated settings so that we can update all that need to be so
-		foreach($allowed_options as $option => $value)
-		{
+		foreach($allowed_options as $option => $value) {
 			if(isset($input[$option])) {
 				$options[$option] = $input[$option];
 				//We have used the option, now lets not have it available any more
 				unset($input[$option]);
 			}
-			else {
-				if($option !== 'feedback') { //since this is the one that we do not want to disable...
-					$options[$option] = '';
-				}
+			elseif(isset($clear_if_not_set[$option])) {
+				//Fields we should clear out if not set (checkboxes)
+				$options[$option] = ZIGGEO_NO;
 			}
 		}
 	}
@@ -71,7 +74,8 @@ function ziggeo_a_s_validation($input) {
 		}
 	}
 	else {
-		return false; //nothing to do here..
+		//return false; //nothing to do here..
+		return $options;
 	}
 
 	// General tab settings
@@ -152,7 +156,6 @@ function ziggeo_a_s_validation($input) {
 			'<script type="text/javascript">setTimeout( function() {var box = document.getElementById("ziggeo_feedback-thankYOU"); if(box) {box.parentNode.removeChild(box);}}, 5000 );</script></div>',
 			'updated');
 	}
-
 
 	//adding version in the DB as well so that we can know when plugin is updated and do any required actions..
 	if(!isset($options['version'])) {

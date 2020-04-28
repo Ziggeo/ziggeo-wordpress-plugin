@@ -243,6 +243,12 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_expert');
 
+		add_settings_field('ziggeo_auth',
+							__('Activate Ziggeo Auth system', 'ziggeo'),
+							'ziggeo_a_s_e_auth_system',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
 		//Sync the templates
 		add_settings_field('ziggeo_expert_sync',
 							__('Sync saved templates in file and database', 'ziggeo'),

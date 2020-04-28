@@ -273,8 +273,10 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added global AJAX request to allow us to detect for videos recorded on WP pages. Available as a hook for your code.
 * IMPORTANT: Removed support for videowalls as announced since 2.0 Please use Videowalls plugin instead
 * Added better support for AJAX requests
+* Added auth init option
 * Added a field for server auth token
 * Added option for screen recording and `ziggeo_echo_application_settings` hook to add options for Ziggeo application initialization even if they are not yet supported by the Wordpress plugin.
+* Fixed validation error that would clear some values
 
 
 == Changelog ==

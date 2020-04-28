@@ -170,9 +170,19 @@ function ziggeo_a_s_e_text() {
 		$option = ziggeo_get_plugin_options('sauth_token');
 
 		?>
-		<input id="ziggeo_app_etoken" name="ziggeo_video[sauth_token]" size="50" type="text"
+		<input id="ziggeo_sauth_token" name="ziggeo_video[sauth_token]" size="50" type="text"
 			placeholder="<?php _ex('Your server auth token goes here', 'placeholder for server auth token', 'ziggeo'); ?>"
 			value="<?php echo $option; ?>" />
+		<?php
+	}
+
+	//Activate / Deactivate the auth token system
+	function ziggeo_a_s_e_auth_system() {
+		$option = ziggeo_get_plugin_options('use_auth');
+
+		?>
+		<input id="ziggeo_use_auth" name="ziggeo_video[use_auth]" type="checkbox" value="1"
+			<?php echo checked( ZIGGEO_YES, $option, false ); ?> />
 		<?php
 	}
 

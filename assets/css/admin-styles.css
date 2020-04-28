@@ -493,6 +493,7 @@ INDEX:
 	.video_list_item {
 		background-image: linear-gradient(transparent, white);
 		position: relative;
+		max-height: 400px; /* Really only needed for sliding */
 	}
 	.video_list_item > .player {
 		width: 40%;
