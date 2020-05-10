@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.3
-Stable tag: 2.3
+Stable tag: 2.3.1
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,7 +264,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.3 =
+= 2.3.1 =
 * Added filters when retrieving the default codes for player and recorder, allowing you to dynamically modify them
 * Added Notifications system and admin page allowing plugin to report things to admin
 * Introduced new way we handle plugin settings
@@ -277,7 +277,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added a field for server auth token
 * Added option for screen recording and `ziggeo_echo_application_settings` hook to add options for Ziggeo application initialization even if they are not yet supported by the Wordpress plugin.
 * Fixed validation error that would clear some values
-
+* Fixed comments error that would happen with v2.3
+* Fixed defaults recorder typos which would result in recorder not being shown
 
 == Changelog ==
 

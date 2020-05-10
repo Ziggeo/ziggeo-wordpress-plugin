@@ -69,7 +69,7 @@ function ziggeo_p_setup_comments() {
 		ziggeo_comment_vrto_js_code($template_recorder, $template_player);
 	}
 	//If video comments are not disabled...
-	elseif( $options["disable_video_comments"] !== ZIGGEO_YES)) {
+	elseif( $options["disable_video_comments"] !== ZIGGEO_YES) {
 
 		include_once(ZIGGEO_ROOT_PATH . '/templates/comments_video_used.php');
 

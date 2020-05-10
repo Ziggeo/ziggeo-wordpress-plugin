@@ -22,8 +22,8 @@ if(!function_exists('ziggeo_get_recorder_code')) {
 		//hook allowing people to change the template if they wanted
 		$t_recorder_config = apply_filters('ziggeo_get_template_recorder_default', $t_recorder_config);
 
-		//Player defaults to be used in comments.
-		$player_code = ( !empty($t_recorder_config) ) ? $t_recorder_config : ZIGGEO_DEFAULTS_RECORDER;
+		//Recorder defaults to be used in comments.
+		$recorder_code = ( !empty($t_recorder_config) ) ? $t_recorder_config : ZIGGEO_DEFAULTS_RECORDER;
 
 		if($location === "comments") {
 
@@ -33,7 +33,7 @@ if(!function_exists('ziggeo_get_recorder_code')) {
 				$t_recorder_comment_config = $options["comments_recorder_template"];
 			}
 
-			//hook to change the comments player template name on the fly..
+			//hook to change the comments recorder template name on the fly..
 			$t_recorder_comment_config = apply_filters('ziggeo_get_template_recorder_comments', $t_recorder_comment_config);
 
 			//Just so that we know if we are using template or not..

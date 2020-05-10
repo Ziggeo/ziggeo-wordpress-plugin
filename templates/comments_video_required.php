@@ -47,7 +47,7 @@ function ziggeo_p_default_handle_vrto_comments($recorder_code, $player_code) {
 	</div>
 	<div id="comments-text-container"></div>
 	<?php
-	return $code;
+	//return $code;
 }
 
 // ziggeoParseCommentVRTO = Parse Comments when Video is Required and Text is Optional
