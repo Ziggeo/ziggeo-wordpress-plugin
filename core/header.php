@@ -152,6 +152,33 @@ function ziggeo_p_page_header() {
 				}
 			?>
 		}
+		else {
+			//Fallback for strange cases when the ziggeo.js does not get loaded yet the above is executed.
+			jQuery(document).ready( function() {
+				//Final check in case it was blocked (like some plugins do)
+				if(typeof ZiggeoApi !== 'undefined') {
+					//Set the V2 application
+					window.ziggeo_app = new ZiggeoApi.V2.Application( ziggeoGetApplicationOptions() );
+					<?php
+						//Language options
+						//@add translations options here
+						if($options['default_lang'] !== "auto") {
+							?>
+							ZiggeoApi.V2.Locale.setLocale("<?php echo $options['default_lang']; ?>");
+							<?php
+						}
+
+						//developer feature
+						if($options['dev_mode']) {
+							//This allows you to get some additional feedback into the console. Turning off this option is recommended in the production (not needed), since that will hide any info from the browser / dev console.
+							?>
+							var ziggeo_dev = <?php echo ($options['dev_mode'] === ZIGGEO_YES) ? 'true' : 'false'; ?>;
+							<?php
+						}
+					?>
+				}
+			});
+		}
 	</script>
 	<!-- Ziggeo API code - END -->
 	<?php

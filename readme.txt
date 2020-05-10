@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.3
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,6 +264,11 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
+= 2.3.2 =
+* Added a wait for ZiggeoApi just in case when due to load it might cause error.
+
+== Changelog ==
+
 = 2.3.1 =
 * Added filters when retrieving the default codes for player and recorder, allowing you to dynamically modify them
 * Added Notifications system and admin page allowing plugin to report things to admin
@@ -279,8 +284,6 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Fixed validation error that would clear some values
 * Fixed comments error that would happen with v2.3
 * Fixed defaults recorder typos which would result in recorder not being shown
-
-== Changelog ==
 
 = 2.2 =
 * Template names fix - The names will be saved as lowercase, names will be checked so empty names are not present
