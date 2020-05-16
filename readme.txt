@@ -2,7 +2,7 @@
 Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
-Tested up to: 5.3
+Tested up to: 5.4.1
 Stable tag: 2.3.2
 License: GPLv2 or later
 Requires PHP: 5.2.4
