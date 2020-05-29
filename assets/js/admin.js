@@ -100,6 +100,17 @@
 	//Registering onload needed to have everything run smoothly.. :)
 	jQuery(document).ready( function() {
 
+		//Are we within the post editor
+		if(document.querySelector('.block-editor') !== null) {
+
+			//The new builder uses JS to build stuff, so not much is ready on load...
+			setTimeout(function() {
+				if(typeof ziggeoSetupNewWPToolbar === 'function') {
+					ziggeoSetupNewWPToolbar();
+				}
+			}, 4000); //Why 4 seconds? No reason, just seemed as enough of time for things to load up :)
+		}
+
 		//Lets do this only if we are in the admin panel of our plugin
 		if(document.getElementById('ziggeo-tab_id_general')) {
 			ziggeoPUIParametersQuickAddInit();

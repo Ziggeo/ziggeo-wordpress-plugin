@@ -500,7 +500,9 @@
 /////////////////////////////////////////////////
 
 	jQuery(document).ready( function() {
-		ziggeo_app.embed_events.on("verified", function (embedding) {
-			ziggeoDAPIRegisterVideos(embedding.get('video'));
-		});
+		if(typeof ziggeo_app !== 'undefined') {
+			ziggeo_app.embed_events.on("verified", function (embedding) {
+				ziggeoDAPIRegisterVideos(embedding.get('video'));
+			});
+		}
 	});

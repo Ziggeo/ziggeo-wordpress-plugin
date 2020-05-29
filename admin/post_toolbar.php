@@ -33,21 +33,7 @@ defined('ABSPATH') or die();
 	}
 	else {
 		//Lets see if it is gutenber or not
-		add_action('admin_enqueue_scripts', function() {
-
-			//This is only for the gutenberg plugin (the 4.9 version..)
-			//if( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() ) { 
-			//We want to actally include or call a specific function at this time
-			?>
-				<script>
-					window.addEventListener('load', function() {
-						if(typeof ziggeoSetupNewWPToolbar === 'function') {
-							ziggeoSetupNewWPToolbar();
-						}
-					});
-				</script>
-			<?php
-		});
+		//Code from here moved to admin.js
 
 		//Handling the AJAX request
 		add_filter('ziggeo_ajax_call', function($result, $operation) {
