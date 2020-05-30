@@ -5,11 +5,11 @@ defined('ABSPATH') or die();
 
 ?>
 <div>
-	<h2>Notifications</h2>
+	<h2>Video List</h2>
 
 	<form action="options.php" method="post">
 		<?php
-		wp_nonce_field('ziggeo_nonce_action', 'ziggeo_notifications_nonce');
+		wp_nonce_field('ziggeo_nonce_action', 'ziggeo_videos_list_nonce');
 		settings_errors();
 		ziggeo_a_v_text();
 		?>
@@ -57,11 +57,4 @@ function ziggeo_a_v_text() {
 	<?php
 }
 
-	function ziggeo_a_n_change_notification_status() {
-		?>
-		<div style="display:none;">
-			<input id="ziggeo_notification_change" value="" name="ziggeo_notifications[notification_action]">
-		</div>
-		<?php
-	}
 ?>

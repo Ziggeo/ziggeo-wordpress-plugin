@@ -85,6 +85,42 @@ function ziggeo_p_on_update($options = null) {
 		}
 	}
 
+	// 2.3.4
+	// Info: Turns out the fileds were not change right in the dashboard, final update for that.
+	if(version_compare($options['version'], '2.3.4', '<')) {
+		if(isset($options['webrtc_for_mobile']) &&
+			( $options['webrtc_for_mobile'] === false || $options['webrtc_for_mobile'] === 'false') ) {
+			$options['webrtc_for_mobile'] = ZIGGEO_NO;
+		}
+		else {
+			$options['webrtc_for_mobile'] = ZIGGEO_YES;
+		}
+
+		if(isset($options['webrtc_streaming']) &&
+			( $options['webrtc_streaming'] === true || $options['webrtc_streaming'] === 'true') ) {
+			$options['webrtc_streaming'] = ZIGGEO_YES;
+		}
+		else {
+			$options['webrtc_streaming'] = ZIGGEO_NO;
+		}
+
+		if(isset($options['webrtc_streaming_needed']) &&
+			( $options['webrtc_streaming_needed'] === false || $options['webrtc_streaming_needed'] === 'false') ) {
+			$options['webrtc_streaming_needed'] = ZIGGEO_NO;
+		}
+		else {
+			$options['webrtc_streaming_needed'] = ZIGGEO_YES;
+		}
+
+		if(isset($options['use_auth']) &&
+			( $options['use_auth'] === false || $options['use_auth'] === 'false') ) {
+			$options['use_auth'] = ZIGGEO_NO;
+		}
+		else {
+			$options['use_auth'] = ZIGGEO_YES;
+		}
+	}
+
 	//Using this method, we actually allow some new options to be added and saved even if they are not made through our plugin.
 	foreach($options as $option => $value) {
 		$defaults[$option] = $value;

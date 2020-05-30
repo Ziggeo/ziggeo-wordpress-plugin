@@ -103,11 +103,31 @@ function ziggeo_p_page_header() {
 		<?php
 			//Lets check everything so that our header is pre-set with defaults and
 			// only the over rides are output. Also helps pre-define recommended settings
-			$str_auth = ($options['use_auth'] === ZIGGEO_YES) ? ',' . "\n" . 'auth: true' : '';
-			$str_webrtc_mobile = ($options['webrtc_for_mobile'] === ZIGGEO_YES) ? ',' . "\n" . 'webrtc_on_mobile: true' : '';
-			$str_webrtc_streaming = ($options['webrtc_streaming'] === ZIGGEO_YES) ? ',' . "\n" . 'webrtc_streaming: true' : '';
-			$str_webrtc_streaming_needed = ($options['webrtc_streaming_needed'] === ZIGGEO_YES) ? ',' . "\n" . 'webrtc_streaming_if_necessary: true' : '';
-			$str_debug = ($options['use_debugger'] === ZIGGEO_YES) ? ',' . "\n" . 'debug: true' : '';
+			$str_auth = '';
+			$str_webrtc_mobile = '';
+			$str_webrtc_streaming = '';
+			$str_webrtc_streaming_needed = '';
+			$str_debug = '';
+
+			if($options['use_auth'] === ZIGGEO_YES) {
+				$str_auth = ',' . "\n\t" . 'auth: true';
+			}
+
+			if($options['webrtc_for_mobile'] === ZIGGEO_YES) {
+				$str_webrtc_mobile = ',' . "\n\t" . 'webrtc_on_mobile: true';
+			}
+
+			if($options['webrtc_streaming'] === ZIGGEO_YES) {
+				$str_webrtc_streaming = ',' . "\n\t" . 'webrtc_streaming: true';
+			}
+
+			if($options['webrtc_streaming_needed'] === ZIGGEO_YES) {
+				$str_webrtc_streaming_needed = ',' . "\n\t" . 'webrtc_streaming_if_necessary: true';
+			}
+
+			if($options['use_debugger'] === ZIGGEO_YES) {
+				$str_debug = ',' . "\n\t" . 'debug: true';
+			}
 		?>
 
 		//function to get app options

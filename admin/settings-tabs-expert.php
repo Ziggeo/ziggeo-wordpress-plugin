@@ -88,8 +88,8 @@ function ziggeo_a_s_e_text() {
 		}
 		?>
 		<select id="ziggeo_webrtc_for_mobile" name="ziggeo_video[webrtc_for_mobile]">
-			<option value="true"<?php echo $webrtc_on; ?>>Turn On</option>
-			<option value="false"<?php echo $webrtc_off; ?>>Turn off</option>
+			<option value="<?php echo ZIGGEO_YES; ?>"<?php echo $webrtc_on; ?>>Turn On</option>
+			<option value="<?php echo ZIGGEO_NO; ?>"<?php echo $webrtc_off; ?>>Turn off</option>
 		</select>
 		<label for="ziggeo_webrtc_for_mobile"><?php _e('This option allows you to turn on WebRTC recording on mobile devices instead of using native recording (recommended for mobile solutions)', 'ziggeo'); ?></label>
 		<?php	
@@ -107,8 +107,8 @@ function ziggeo_a_s_e_text() {
 		}
 		?>
 		<select id="ziggeo_webrtc_streaming" name="ziggeo_video[webrtc_streaming]">
-			<option value="true"<?php echo $webrtc_streaming_on; ?>>Turn On</option>
-			<option value="false"<?php echo $webrtc_streaming_off; ?>>Turn off</option>
+			<option value="<?php echo ZIGGEO_YES; ?>"<?php echo $webrtc_streaming_on; ?>>Turn On</option>
+			<option value="<?php echo ZIGGEO_NO; ?>"<?php echo $webrtc_streaming_off; ?>>Turn off</option>
 		</select>
 		<label for="ziggeo_webrtc_streaming"><?php _e('Uploads start as soon as you start recording. Min length of 10 seconds and the quality will be changed based on currently available internet speed. Use only if you know why you need it', 'ziggeo'); ?></label>
 		<?php	
@@ -126,8 +126,8 @@ function ziggeo_a_s_e_text() {
 		}
 		?>
 		<select id="ziggeo_webrtc_streaming_needed" name="ziggeo_video[webrtc_streaming_needed]">
-			<option value="true"<?php echo $webrtc_streaming_needed_on; ?>>Turn On</option>
-			<option value="false"<?php echo $webrtc_streaming_needed_off; ?>>Turn off</option>
+			<option value="<?php echo ZIGGEO_YES; ?>"<?php echo $webrtc_streaming_needed_on; ?>>Turn On</option>
+			<option value="<?php echo ZIGGEO_NO; ?>"<?php echo $webrtc_streaming_needed_off; ?>>Turn off</option>
 		</select>
 		<label for="ziggeo_webrtc_streaming_needed"><?php _e('WebRTC Streaming only for browsers that otherwise do not support WebRTC (browsers with specific/incomplete WebRTC implementations of WebRTC)', 'ziggeo'); ?></label>
 		<?php	
