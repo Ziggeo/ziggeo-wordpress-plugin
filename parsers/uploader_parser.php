@@ -15,6 +15,10 @@ if(!function_exists('ziggeo_content_parse_uploader')) {
 	}
 }
 
+//Shortcode handling for Ziggeo Uploader
+add_shortcode( 'ziggeouploader', function($attrs) {
+	return ziggeo_p_shortcode_handler('[ziggeouploader', $attrs);
+});
 
 function ziggeo_p_template_is_uploader($template) {
 

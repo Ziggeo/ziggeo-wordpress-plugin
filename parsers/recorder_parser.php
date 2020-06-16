@@ -16,6 +16,12 @@ if(!function_exists('ziggeo_content_parse_recorder')) {
 	}
 }
 
+//Shortcode handling for Ziggeo Recorder
+add_shortcode( 'ziggeorecorder', function($attrs) {
+	return ziggeo_p_shortcode_handler('[ziggeorecorder', $attrs);
+});
+
+
 function ziggeo_p_template_is_recorder($template) {
 
 	$recorderParams = array(

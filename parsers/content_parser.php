@@ -17,6 +17,26 @@ function ziggeo_p_filters_init() {
 	add_filter('thesis_comment_text', 'ziggeo_p_content_filter');
 }
 
+//Add support for the shortcodes
+function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
+
+	define('ZIGGEO_SHORTCODE_RUN', true);
+
+	$attrs_str = '';
+
+	//We have to combine the attrs array into key + value
+	foreach($attrs as $key => $value) {
+		$attrs_str .= ' ' . $key . "='" . $value . "'";
+	}
+
+	return ziggeo_p_content_filter($tag . $attrs_str . ']');
+}
+
+//Old and general Ziggeo shortcode support
+add_shortcode( 'ziggeo', function($attrs) {
+	return ziggeo_p_shortcode_handler('[ziggeo', $attrs);
+});
+
 //We are updating this in such a way that we will keep the old calls, so that we have backwards compatibility, but in the same time, we are adding another call that will check for us if there are any tags matching new templates. We must do it like this, since using regex we will be able to find this in all locations that we want, while if we use shortcode, it will only work (out of the box) if the shortcode is within the section covered by 'the_content' filter.
 function ziggeo_p_content_filter($content) {
 
@@ -28,7 +48,9 @@ function ziggeo_p_content_filter($content) {
 	//use add_filter('ziggeo_content_filter_pre', 'your-function-name') to change the content on fly before any checks
 	// for your Ziggeo templates
 	// it needs to return modified $content.
-	$content = apply_filters('ziggeo_content_filter_pre', $content);
+	if(!defined('ZIGGEO_SHORTCODE_RUN')) {
+		$content = apply_filters('ziggeo_content_filter_pre', $content);
+	}
 
 	//matching new templates with old way of calling them in case someone does the same..
 	//handles [ziggeo]token[/ziggeo]
@@ -45,15 +67,16 @@ function ziggeo_p_content_filter($content) {
 	//use add_filter('ziggeo_content_filter_post', 'your-function-name') to change the content on fly after checking it
 	// for your Ziggeo templates
 	// it needs to return modified $content.
-	$content = apply_filters('ziggeo_content_filter_post', $content);
+	if(!defined('ZIGGEO_SHORTCODE_RUN')) {
+		$content = apply_filters('ziggeo_content_filter_post', $content);
+	}
 
 	return $content;
 }
 
 //This works like shortcode functions do, allowing us to capture the codes through various filters and parse them as needed.
 //TODO: This needs to be broken up and simplified.
-function ziggeo_p_content_parse_templates($matches)
-{
+function ziggeo_p_content_parse_templates($matches) {
 	//The new templates called the old way..[ziggeoplayer]TOKEN[/ziggeoplayer]
 	//if this is detected, we re-do the call by modifying the parameters and re-calling this function
 	//handles: [ziggeo]token[/ziggeo], [ziggeoplayer]TOKEN[/ziggeoplayer], [ziggeorecorder]

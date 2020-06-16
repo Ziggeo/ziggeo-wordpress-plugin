@@ -13,6 +13,10 @@ if(!function_exists('ziggeo_content_parse_player')) {
 	}
 }
 
+//Shortcode handling for Ziggeo Player
+add_shortcode( 'ziggeoplayer', function($attrs) {
+	return ziggeo_p_shortcode_handler('[ziggeoplayer', $attrs);
+});
 
 //checks if the given template is player or not..
 function ziggeo_p_template_is_player($template) {

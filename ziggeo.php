@@ -4,7 +4,7 @@ Plugin Name: Ziggeo Video Posts and Comments
 Plugin URI: https://ziggeo.com/integrations/wordpress
 Description: Plugin for adding videos to your website quickly and easily. It is powered by Ziggeo and allows you to add video posts and video comments and so much more.
 Author: Ziggeo
-Version: 2.3.4
+Version: 2.4
 Author URI: https://ziggeo.com
 Text Domain: ziggeo
 */
@@ -30,7 +30,7 @@ define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . '../ziggeo-userData/');
 define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
 
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
-define('ZIGGEO_VERSION', '2.3.4');
+define('ZIGGEO_VERSION', '2.4');
 
 //Best to state default code in one location, then just call for it when needed.
 
@@ -86,20 +86,24 @@ include_once(ZIGGEO_ROOT_PATH . 'core/assets.php');
 include_once(ZIGGEO_ROOT_PATH . 'core/templates.php');
 
 //codes for setting values and the dashboard part.
-include_once(ZIGGEO_ROOT_PATH . 'admin/settings.php');
+if(is_admin() === true) {
+	include_once(ZIGGEO_ROOT_PATH . 'admin/settings.php');
+	include_once(ZIGGEO_ROOT_PATH . 'admin/menu.php');
 
-include_once(ZIGGEO_ROOT_PATH . 'admin/onboard-helper-missing-token.php');
+	include_once(ZIGGEO_ROOT_PATH . 'admin/onboard-helper-missing-token.php');
+
+	include_once(ZIGGEO_ROOT_PATH . 'admin/plugins.php');
+	include_once(ZIGGEO_ROOT_PATH . 'admin/oembed.php');
+
+	//Add post and page editor toolbar
+	include_once(ZIGGEO_ROOT_PATH . 'admin/post_toolbar.php');
+}
+
 include_once(ZIGGEO_ROOT_PATH . 'parsers/file_parser.php'); //integrations require file parser..
 
 include_once(ZIGGEO_ROOT_PATH . 'core/integrations.php');
 include_once(ZIGGEO_ROOT_PATH . 'core/notifications.php');
 include_once(ZIGGEO_ROOT_PATH . 'core/videoslist.php');
-
-include_once(ZIGGEO_ROOT_PATH . 'admin/plugins.php');
-include_once(ZIGGEO_ROOT_PATH . 'admin/oembed.php');
-
-//Add post and page editor toolbar
-include_once(ZIGGEO_ROOT_PATH . 'admin/post_toolbar.php');
 
 //addd some examples by showing our hooks that are actually in use by us
 include_once(ZIGGEO_ROOT_PATH . 'core/hooks-examples.php');
@@ -121,6 +125,5 @@ include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_player.php');
 // The file that holds all functions that are removed from plugin, to give us a chance to show notification
 // Functions would be kept for few versions
 include_once(ZIGGEO_ROOT_PATH . '/core/removed.php');
-
 
 ?>

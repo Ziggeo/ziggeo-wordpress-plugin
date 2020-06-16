@@ -16,6 +16,11 @@ if(!function_exists('ziggeo_content_parse_rerecorder')) {
 	}
 }
 
+//Shortcode handling for Ziggeo Re-Recorder
+add_shortcode( 'ziggeorerecorder', function($attrs) {
+	return ziggeo_p_shortcode_handler('[ziggeorerecorder', $attrs);
+});
+
 function ziggeo_p_template_is_rerecorder($template) {
 
 	$rerecorderParams = array(

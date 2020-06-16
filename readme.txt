@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.4.1
-Stable tag: 2.3.4
+Stable tag: 2.4
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,10 +264,14 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.3.4 =
-* Dropdown values in the dashboard reflected true state of settings, however the values were in wrong format, causing some settings to not be added to the page. This way they now are.
+= 2.4 =
+* Added support for do_shortcodes() for all core template types
+* New constant used when shortcodes are run ZIGGEO_SHORTCODE_RUN allowing you to check for the same (since some actions and hooks might be sending you different info or will not fire).
 
 == Changelog ==
+
+= 2.3.4 =
+* Dropdown values in the dashboard reflected true state of settings, however the values were in wrong format, causing some settings to not be added to the page. This way they now are.
 
 = 2.3.3 =
 * Changed the way we output scripts to page in order to work better in different pages when specific setup is present that would cause codes to be out before they should be.
