@@ -1,0 +1,44 @@
+{
+	"ziggeo-core": {
+		"url": {
+			"wordpress": "https://wordpress.org/plugins/ziggeo/",
+			"github": "https://github.com/Ziggeo/ziggeo-wordpress-plugin"
+		}
+	},
+	"videowalls-for-ziggeo": {
+		"url": {
+			"wordpress": "https://wordpress.org/plugins/videowalls-for-ziggeo/",
+			"github": "https://github.com/Ziggeo/ziggeo-wp-videowalls-for-ziggeo"
+		}
+	},
+	"ziggeo-video-for-bbpress": {
+		"url": {
+			"wordpress": "https://wordpress.org/plugins/ziggeo-video-for-bbpress/",
+			"github": "https://github.com/Ziggeo/ziggeo-wp-video-for-bbpress"
+		}
+	},
+	"ziggeo-video-for-job-manager": {
+		"url": {
+			"wordpress": "https://wordpress.org/plugins/ziggeo-video-for-job-manager/",
+			"github": "https://github.com/Ziggeo/ziggeo-video-for-jm-resume-manager"
+		}
+	},
+	"ziggeo-video-for-wpforms": {
+		"url": {
+			"wordpress": "",
+			"github": "https://github.com/Ziggeo/ziggeo-wp-video-for-wpforms"
+		}
+	},
+	"ziggeo-video-for-ninja-forms": {
+		"url": {
+			"wordpress": "",
+			"github": "https://github.com/Ziggeo/ziggeo-wp-video-for-ninja-forms"
+		}
+	},
+	"ziggeo-video-for-gravity-forms": {
+		"url": {
+			"wordpress": "",
+			"github": "https://github.com/Ziggeo/ziggeo-video-for-gravity-forms"
+		}
+	}
+}
