@@ -270,6 +270,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added a new way of showing addons as well as to make it easy for you to add your own through our new Addons page. Reach out to us to have your plugin 'advertised' in our plugin.
 * Added initial support for the PHP SDK page once included. Preparing to add it in a way that does not stop anyone
 * Added logo for our addons listing
+* Made it easier to recognize the videos of different status per Natasha's recommendation
 
 == Changelog ==
 

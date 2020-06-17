@@ -605,6 +605,14 @@ INDEX:
 		pointer-events: none;
 		background-image: linear-gradient(silver, gray);
 	}
+	.approved + .toolsbar .ziggeo-btn-approve {
+		background-color: green;
+		color: white;
+	}
+	.rejected + .toolsbar .ziggeo-btn-reject {
+		background-color: red;
+		color: white;
+	}
 
 
 
