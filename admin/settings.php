@@ -311,68 +311,6 @@ function ziggeo_a_s_tabs_e_html() {
 // Validation functions
 include_once( ZIGGEO_ROOT_PATH . 'admin/settings-validation.php' );
 
-add_action('admin_menu', function() {
-
-	add_menu_page(
-		'Ziggeo Video',								//page title
-		'Ziggeo Video',								//menu title
-		'manage_options',							//capability
-		'ziggeo_video',								//menu slug
-		'ziggeo_a_s_page',							//function
-		ZIGGEO_ROOT_URL . 'assets/images/icon.png', //icon url
-		68											//65 - plugins 70 - users
-	);
-
-	//Settings sub menu
-	add_submenu_page(
-		'ziggeo_video',								//parent slug
-		'Ziggeo Video Settings',					//page title
-		'Settings',									//menu title
-		'manage_options',							//min capability to view
-		'ziggeo_video',								//menu slug
-		'ziggeo_a_s_page'							//function
-	);
-
-	// Get notifications count
-	$n_count = ziggeo_notifications_count();
-	$n_title_extra = '';
-
-	if($n_count > 0) {
-		$n_title_extra = ' <span class="ziggeo-counter">' . $n_count . '</span>';
-	}
-
-	$v_count = ziggeo_videoslist_count();
-	$v_title_extra = '';
-
-	if($v_count > 0) {
-		$v_title_extra = ' <span class="ziggeo-counter">' . $v_count . '</span>';
-	}
-
-	//Notifications sub menu
-	add_submenu_page(
-		'ziggeo_video',								//parent slug
-		'Notifications',							//page title
-		'Notifications' . $n_title_extra,			//menu title
-		'manage_options',							//min capability to view
-		'ziggeo_notifications',						//menu slug
-		'ziggeo_a_n_page'							//function
-	);
-	//Videos List sub menu
-	add_submenu_page(
-		'ziggeo_video',								//parent slug
-		'Videos List',								//page title
-		'Videos List' . $v_title_extra,				//menu title
-		'manage_options',							//min capability to view
-		'ziggeo_videoslist',						//menu slug
-		'ziggeo_a_v_page'							//function
-	);
-
-	//Videos
-
-
-	//for backwards compatibility
-	add_options_page('Ziggeo Video', '<img src="' . ZIGGEO_ROOT_URL . 'assets/images/icon.png" style="height: 1em; position: relative; top: 0.1em; padding-right: 0.2em;">Ziggeo Video', 'manage_options', 'ziggeo_video', 'ziggeo_a_s_page');
-}, 8);
 
 function ziggeo_a_s_page() {
 
@@ -401,4 +339,13 @@ function ziggeo_a_n_page() {
 function ziggeo_a_v_page() {
 	include_once(ZIGGEO_ROOT_PATH . 'admin/page_videos.php');
 }
+
+function ziggeo_a_sdk_page() {
+	include_once(ZIGGEO_ROOT_PATH . 'admin/page_sdk.php');
+}
+
+function ziggeo_a_addons_page() {
+	include_once(ZIGGEO_ROOT_PATH . 'admin/page_addons.php');
+}
+
 ?>

@@ -2,7 +2,7 @@
 Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Stable tag: 2.4
 License: GPLv2 or later
 Requires PHP: 5.2.4
@@ -267,6 +267,9 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 = 2.4 =
 * Added support for do_shortcodes() for all core template types
 * New constant used when shortcodes are run ZIGGEO_SHORTCODE_RUN allowing you to check for the same (since some actions and hooks might be sending you different info or will not fire).
+* Added a new way of showing addons as well as to make it easy for you to add your own through our new Addons page. Reach out to us to have your plugin 'advertised' in our plugin.
+* Added initial support for the PHP SDK page once included. Preparing to add it in a way that does not stop anyone
+* Added logo for our addons listing
 
 == Changelog ==
 

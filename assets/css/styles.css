@@ -111,10 +111,30 @@ INDEX:
 		padding: 4px 10px;
 		font-weight: bold;
 		cursor: pointer;
+		text-align: center;
 	}
 	.ziggeo-ctrl-btn.disabled {
 		background-image: linear-gradient(lightgray, gray);
 		pointer-events: none;
+	}
+
+	.ziggeo-ctrl-btn.selected {
+		background-image: linear-gradient(#335af4, #53c7f4);
+		background-color: lightgray;
+		background-blend-mode: overlay;
+		pointer-events: none;
+	}
+
+	.ziggeo-ctrl-group {
+		border: 4px double lightgray;
+		padding: 10px;
+		box-sizing: border-box;
+		border-radius: 10px;
+		margin: 10px 0;
+	}
+
+	.ziggeo-ctrl-group label {
+		display: block;
 	}
 
 

@@ -11,9 +11,13 @@ INDEX:
 		1.3. Integrations tab
 		1.4. Contact Us tab
 		1.5. Expert Settings tab
-	3. Global styles
-	4. Post and page editors
-	5. Third party or modules CSS (TO BE REMOVED IN FUTURE VERSIONS)
+	2. Dashboard (notifications)
+	3. Dashboard (video listing)
+	4. Dashboard (SDK)
+	5. Dashboard (Addons)
+	6. Global styles
+	7. Post and page editors
+	8. Third party or modules CSS (TO BE REMOVED IN FUTURE VERSIONS)
 */
 
 /************************************************
@@ -421,7 +425,7 @@ INDEX:
 
 
 /************************************************
-	2. DASHBOARD (PLUGIN NOTIFICATIONS)
+	2. DASHBOARD (NOTIFICATIONS)
 ************************************************/
 
 	#ziggeo_notifications_list .message {
@@ -604,8 +608,99 @@ INDEX:
 
 
 
+
 /************************************************
-	4. GLOBAL STYLES
+	4. DASHBOARD (SDK)
+************************************************/
+
+	.ziggeo_adm_client_auth_simplifiers .ziggeo-ctrl-group {
+		width: 50%;
+		display: inline-block;
+	}
+
+	@media all (max-width: 800) {
+		.ziggeo_adm_client_auth_simplifiers .ziggeo-ctrl-group {
+			width: 100%;
+		}
+	}
+
+	.ziggeo_adm_client_auth_simplifiers label {
+		width: 40%;
+		display: inline-block;
+	}
+	.ziggeo_adm_client_auth_simplifiers label + input {
+		width: 58%;
+		display: inline-block;
+		box-sizing: border-box;
+	}
+
+
+
+
+/************************************************
+	5. DASHBOARD (ADDONS)
+************************************************/
+
+	#ziggeo_addons_updates {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.ziggeo_integrations_card {
+		width: 48%;
+		overflow: hidden;
+		border: 2px groove white;
+		border-radius: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		margin: 10px 0.8%;
+		display: inline-block;
+		position: relative;
+	}
+
+	.ziggeo_integrations_card h3 {
+		text-align: center;
+	}
+
+	.ziggeo_integrations_card .ziggeo-ctrl-btn {
+		position: absolute;
+		right: 10px;
+		bottom: 10px;
+	}
+
+	.ziggeo_integrations_card img {
+		width: 100%;
+		border: 1px solid lightgray;
+		box-shadow: 8px 8px 20px 0px gray;
+	}
+
+	.addon_description {
+		margin-bottom: 40px;
+		margin-top: 10px;
+		padding: 10px;
+		font-size: 1.2em;
+		line-height: 1.4em;
+		box-sizing: border-box;
+	}
+
+	.addon_version {
+		padding: 4px 8px;
+		border: 2px groove white;
+		border-radius: 10px;
+	}
+
+	.ziggeo-addons-update-available {
+		width: 40px;
+		height: 40px;
+		content: "\f463";
+	}
+
+
+
+
+/************************************************
+	6. GLOBAL STYLES
 ************************************************/
 
 	b.message, b.warning {
@@ -664,11 +759,48 @@ INDEX:
 		z-index: 26;
 	}
 
+	/* Admin menu */
+	[href="admin.php?page=ziggeo_addons"] hr {
+		border-bottom: 2px dashed gray;
+	}
+	.ziggeo-wp-menu-space {
+		display: inline-block;
+		width: 20px;
+	}
+	.ziggeo-wp-menu-title {
+		text-align: left;
+		display: inline-block;
+		width: calc(100% - 22px);
+		box-sizing: border-box;
+		font-size: 0.9em;
+		line-height: 1.2em;
+	}
+	li.ziggeo_addons {
+		transition-duration: 4s;
+		transition-delay: 2s;
+	}
+	li.ziggeo_addons:hover {
+		transition-delay: 0.1s;
+	}
+	li.ziggeo_addons ~ li {
+		height: 20px;
+		overflow: hidden;
+		transition-property: height;
+		transition-duration: 4s;
+		transition-delay: 2s;
+	}
+	.toplevel_page_ziggeo_video:focus-within li.ziggeo_addons ~ li,
+	li.ziggeo_addons:hover ~ li, li.ziggeo_addons ~ li:hover {
+		height: 40px;
+		transition-duration: 0.2s;
+		transition-delay: 0.1s;
+	}
+
 
 
 
 /************************************************
-	5. POST AND PAGE EDITORS
+	7. POST AND PAGE EDITORS
 ************************************************/
 
 	/* Toolbar */
@@ -741,7 +873,7 @@ INDEX:
 
 
 /************************************************
-	6. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
+	8. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
 ************************************************/
 
 	/* Gravity Forms specific CSS */

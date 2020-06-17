@@ -57,7 +57,9 @@
 //		* ziggeoPUIVideosPageCreateNavigation()
 //		* ziggeoPUIVideosPageSwitch()
 //		* ziggeoPUIVideosPageCounter()
-
+// 8. Addons page
+//		* ziggeoPUIAddonsInit()
+//		* ziggeoPUIAddonsSwitch()
 
 /////////////////////////////////////////////////
 // 1. DASHBOARD                                //
@@ -141,6 +143,10 @@
 			ziggeoAjax({
 				operation: 'video_verified_seen'
 			});
+		}
+
+		if(document.getElementById('ziggeo-addons-nav')) {
+			ziggeoPUIAddonsInit();
 		}
 	});
 
@@ -1737,3 +1743,50 @@
 	function ziggeoPUIVideosPageCounter(query_obj) {
 		//Requires the PHP SDK to be added. Happy to add if it is asked for it
 	}
+
+
+
+/////////////////////////////////////////////////
+// 8. ADDONS PAGE                              //
+/////////////////////////////////////////////////
+
+	function ziggeoPUIAddonsInit() {
+
+		var _nav = document.getElementById('ziggeo-addons-nav')
+
+		_nav.querySelector('[data-section="installed"]').addEventListener('click', function() {
+			ziggeoPUIAddonsSwitch('ziggeo_addons_installed', '[data-section="installed"]');
+		});
+
+		_nav.querySelector('[data-section="updates"]').addEventListener('click', function() {
+			ziggeoPUIAddonsSwitch('ziggeo_addons_update', '[data-section="updates"]');
+		});
+
+		_nav.querySelector('[data-section="store"]').addEventListener('click', function() {
+			ziggeoPUIAddonsSwitch('ziggeo_addons_store', '[data-section="store"]');
+		});
+
+	}
+
+	function ziggeoPUIAddonsSwitch(show, in_nav) {
+
+		var _installed = document.getElementById('ziggeo_addons_installed');
+		_installed.style.display = 'none';
+
+		var _update = document.getElementById('ziggeo_addons_update');
+		_update.style.display = 'none';
+
+		var _store = document.getElementById('ziggeo_addons_store');
+		_store.style.display = 'none';
+
+		_show = document.getElementById(show);
+		_show.style.display = 'block';
+
+		var _nav = document.getElementById('ziggeo-addons-nav')
+
+		_nav.querySelector('.selected').className = _nav.querySelector('.selected').className .replace(' selected', '');
+
+		_nav.querySelector(in_nav).className += ' selected';
+	}
+
+
