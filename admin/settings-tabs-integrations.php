@@ -16,7 +16,13 @@ function ziggeo_a_s_i_text() {
 		<p><?php __('Have something you want to see here and it is not yet shown? Let us know!', 'ziggeo'); ?></p>
 
 	<ul class="ziggeo_integrations_list">
-		<?php do_action('ziggeo_list_integration'); ?>
+		<?php
+			$integrations_installed = apply_filters('ziggeo_list_integration', array());
+			for($i = 0, $c = count($integrations_installed); $i < $c; $i++) {
+				ziggeo_integration_present_me($integrations_installed[$i]);
+			}
+		?>
+		<?php //do_action('ziggeo_list_integration'); ?>
 	</ul>
 
 	<?php
