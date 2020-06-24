@@ -443,7 +443,7 @@
 		return false;
 	}
 
-	function ziggeoTemplateGetTempateObject() {
+	function ziggeoTemplateGetTemplateObject() {
 		return (ZiggeoWP.template_object) ? ZiggeoWP.template_object : null;
 	}
 
@@ -487,7 +487,7 @@
 		var location = ziggeoParameterPresent(editor.value, parameter);
 
 		//If the parameter is not there, just exit
-		if(location == -1) {
+		if(location === false) {
 			return false;
 		}
 
@@ -495,6 +495,13 @@
 
 		if(end == -1) {
 			end = editor.value.length;
+		}
+
+		//To handle the cases where we have value
+		var tmp_val = editor.value.indexOf('=', location+2)+1;
+
+		if(tmp_val <= end) {
+			location = tmp_val;
 		}
 
 		editor.focus();
@@ -889,43 +896,45 @@
 		//Reference to clicked attribute
 		var current = event.currentTarget;
 
-		//the parameter name (like width, or height, etc.)
-		var parameter_title = current.innerHTML;
-
-		//the value to add.. (always empty in advanced view, often filled out in simple setup)
-		var parameter_value = '';
+		//Let's get the parameter title and value
+		if(is_simple) {
+			var parameter_title = current.parentElement.parentElement.children[0].innerHTML;
+			var parameter_value = current.value;
+		}
+		else {
+			var parameter_title = current.innerHTML;
+			var parameter_value = '';
+		}
 
 		//to know what we are working with..
 		// can be `string, array` (both as strings), integer, float or bool
 		var parameter_type = current.getAttribute('data-equal');
 
 		//At this point we could just check the object, instead of working with the code...
-
-		var template_obj = ziggeoTemplateGetTempateObject();
+		var template_obj = ziggeoTemplateGetTemplateObject();
 
 		if(template_obj) {
 			//Do we already have this parameter?
 			if(template_obj[parameter_title]) {
-				if(template_obj[parameter_title] !== current.value) {
+				if(template_obj[parameter_title] !== parameter_value) {
 					//A change has been made to the value of the parameter
-					template_obj[parameter_title] = current.value;
+					template_obj[parameter_title] = parameter_value;
 				}
 			}
 			else {
 				//This parameter is being added for the first time
-				template_obj[parameter_title] = current.value;
+				template_obj[parameter_title] = parameter_value;
 			}
 		}
 		else {
 			//The template was not created so far
+			template_obj = {};
+			template_obj[parameter_title] = parameter_value;
 		}
 
 
 		//to support the simple setup
 		if(is_simple) {
-			parameter_title = current.parentElement.parentElement.children[0].innerHTML;
-			parameter_value = current.value;
-
 			if(parameter_type === 'enum') {
 				//if enum type, our value actually needs to be captured from the selected option..
 				parameter_value = current.options[current.selectedIndex].value;
@@ -963,6 +972,9 @@
 		if(!is_simple) {
 			ziggeoTemplatesEditorSelectText(parameter_title, true);
 		}
+
+		//Save the template object
+		ziggeoTemplateSetTemplateObject(editor.value);
 
 		return true;
 	}
@@ -1021,7 +1033,7 @@
 
 			//Did we find it?
 			if(location > -1) {
-				return location;
+				return location+1;
 			}
 
 		//common for boolean true values
@@ -1029,7 +1041,7 @@
 
 			//Did we find it?
 			if(location > -1) {
-				return location;
+				return location+1;
 			}
 
 		//indicator of the parameter being at the very end of the string
@@ -1037,7 +1049,7 @@
 
 			//Did we find it?
 			if(location > -1) {
-				return location;
+				return location+1;
 			}
 
 		//The parameter is not part of the code checked
