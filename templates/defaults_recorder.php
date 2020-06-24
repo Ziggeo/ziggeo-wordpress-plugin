@@ -49,7 +49,7 @@ if(!function_exists('ziggeo_get_recorder_code')) {
 								!empty($options["integrations_recorder_template"]) );
 
 			if($template_recorder) {
-				$template_prams = apply_filter('ziggeo_get_template_recorder_integrations', $options['integrations_recorder_template']);
+				$template_params = apply_filter('ziggeo_get_template_recorder_integrations', $options['integrations_recorder_template']);
 			}
 		}
 

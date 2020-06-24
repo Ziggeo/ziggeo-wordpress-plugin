@@ -48,7 +48,7 @@ if(!function_exists('ziggeo_get_player_code')) {
 								!empty($options["integrations_player_template"]) );
 
 			if($template_player) {
-				$template_prams = apply_filter('ziggeo_get_template_player_integrations', $options['integrations_player_template']);
+				$template_params = apply_filter('ziggeo_get_template_player_integrations', $options['integrations_player_template']);
 			}
 		}
 
