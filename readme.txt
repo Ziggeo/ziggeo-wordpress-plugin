@@ -272,6 +272,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added logo for our addons listing
 * Made it easier to recognize the videos of different status per Natasha's recommendation
 * Fixed typo spotted by Natasha that cause your own hooks to not make much of a difference in the code output. Affecting those using `ziggeo_get_template_recorder_integrations` and `ziggeo_get_template_player_integrations` filters.
+* Added new user tags for easy substitute in templates per Karan's suggestion. You can now use `%USER_ID%`, `%USER_NAME_FIRST%`, `%USER_NAME_LAST%`, `%USER_NAME_FULL%`, `%USER_NAME_DISPLAY%`, `%USER_EMAIL%` and `%USER_USERNAME%` in your templates.
 
 == Changelog ==
 

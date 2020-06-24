@@ -126,22 +126,42 @@ add_filter('ziggeo_template_parsing_tag_set', function($locationTag, $filter) {
 //Custom tags support examples
 
 //to change %PAGE_TITLE% into actual title of the current page
+//This one fires every time the content is checked for Ziggeo data, before the Ziggeo info is found and even if Ziggeo is not included. So not the best way to do it (performance wise). Leaving it here in case it helps someone because in some cases you might actually want to do it at this time
 add_filter('ziggeo_content_filter_pre', function ($content) {
 	$content = str_ireplace('%PAGE_TITLE%', get_the_title(), $content);
 
 	return $content;
 });
 
-//to change the %CURRENT_ID% placeholder into the post ID
-add_filter('ziggeo_content_filter_pre', function ($content) {
+//Another custom tags support for %CURRENT_ID% for POST ID. 
+add_filter('ziggeo_custom_tags_processing', function($codes) {
+	if(stripos($codes, '%CURRENT_ID%') > -1 || stripos($codes, `%PAGE_ID%`) > -1) {
+		global $wp_query;
 
-	global $wp_query;
+		$post_ID = $wp_query->get_queried_object_id();
+		$content = str_replace('%CURRENT_ID%', $post_ID, $content);	
+		$content = str_replace('%PAGE_ID%', $post_ID, $content);	
+	}
 
-	$post_ID = $wp_query->get_queried_object_id();
+	return $codes;
+});
 
-	$content = str_replace('%CURRENT_ID%', $post_ID, $content);	
+//Adding support for the USER details
+add_filter('ziggeo_custom_tags_processing', function($codes) {
 
-	return $content;
+	$user_details = ziggeo_p_get_current_user();
+
+	//IMPORTANT: It will be 0 for all non logged in users
+	$codes = str_ireplace('%USER_ID%', $user_details->ID, $codes);
+	$codes = str_ireplace('%USER_NAME_FIRST%', $user_details->user_firstname, $codes);
+	$codes = str_ireplace('%USER_NAME_LAST%', $user_details->user_lastname, $codes);
+	$codes = str_ireplace('%USER_NAME_FULL%', $user_details->user_lastname . ' ' .
+												$user_details->user_firstname, $codes);
+	$codes = str_ireplace('%USER_NAME_DISPLAY%', $user_details->display_name, $codes);	//displayname
+	$codes = str_ireplace('%USER_EMAIL%', $user_details->user_email, $codes);
+	$codes = str_ireplace('%USER_USERNAME%', $user_details->user_login, $codes);		//username
+
+	return $codes;
 });
 
 
