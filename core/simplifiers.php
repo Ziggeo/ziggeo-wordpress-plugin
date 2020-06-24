@@ -356,4 +356,11 @@ function ziggeo_echo_selected($var_to_check, $value_to_have) {
 	}
 }
 
+// Helper function for integration detecting our embeddings and then adding the 
+function ziggeo_p_integrations_field_add_custom_tag($field, $code_addition) {
+	$_slice_point = stripos($field, ' ', stripos($field, '<ziggeo'));
+	$field = substr($field, 0, $_slice_point) . ' ' . $code_addition . ' ' . substr($field, $_slice_point);
+
+	return $field;
+}
 ?>
