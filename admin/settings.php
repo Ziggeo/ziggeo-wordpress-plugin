@@ -256,6 +256,20 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_expert');
 
+		//Set version to use
+		add_settings_field('ziggeo_expert_version',
+							__('Set the version you wish to use', 'ziggeo'),
+							'ziggeo_a_s_e_version_to_use',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
+		//Set revision to use
+		add_settings_field('ziggeo_expert_revision',
+							__('Set the revision you wish to use', 'ziggeo'),
+							'ziggeo_a_s_e_revision_to_use',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
 }
 
 add_action('admin_init', 'ziggeo_p_admin_init');

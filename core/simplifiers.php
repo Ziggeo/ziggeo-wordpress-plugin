@@ -270,7 +270,9 @@ function ziggeo_get_plugin_options_defaults() {
 		'webrtc_streaming_needed'			=> ZIGGEO_YES,
 		'use_auth'							=> ZIGGEO_NO,
 		'use_debugger'						=> ZIGGEO_NO,
-		'sauth_token'						=> ''
+		'sauth_token'						=> '',
+		'use_version'						=> 'v1',
+		'use_revision'						=> 'stable'
 	);
 
 	return $defaults;

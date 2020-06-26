@@ -186,4 +186,26 @@ function ziggeo_a_s_e_text() {
 		<?php
 	}
 
+	//Custom Version
+	function ziggeo_a_s_e_version_to_use() {
+		$option = ziggeo_get_plugin_options('use_version');
+
+		?>
+		<select id="ziggeo_use_version" name="ziggeo_video[use_version]">
+			<option value="v1" <?php ziggeo_echo_selected($option, 'v1'); ?>>v1</option>
+			<option value="v2" <?php ziggeo_echo_selected($option, 'v2'); ?>>v2</option>
+		</select>
+		<?php
+	}
+
+	//Custom Revision
+	function ziggeo_a_s_e_revision_to_use() {
+		$option = ziggeo_get_plugin_options('use_revision');
+
+		?>
+		<input id="ziggeo_use_revision" name="ziggeo_video[use_revision]" type="text" value="<?php echo $option; ?>">
+		<label for="ziggeo_use_revision"><?php _e('Please add in following format "rXY". So if you wish to use revision 35 you would set it as r35. Alternatively use word "stable" to load the revision we mark with stable tag (default).'); ?></label>
+		<?php
+	}
+
 ?>

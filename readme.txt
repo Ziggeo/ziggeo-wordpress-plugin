@@ -276,6 +276,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added `ziggeo_p_integrations_field_add_custom_tag` to help add custom attributes / codes within the embedding code. Useful to add class, id or some other attribute and you have the parsed template code. Mostly for integrations.
 * Fixed an issue where the advanced editor would not add the parameter into the editor nor select the value if one was present.
 * Added buttons to prune and clear the notifications for administrators. Prune allows you to remove all duplicates so you can see only single notification about something, while clear just clears them all out.
+* Added the options for version and revision into the settings section (under Expert Settings) allowing easier change of both version and revision.
 
 == Changelog ==
 
