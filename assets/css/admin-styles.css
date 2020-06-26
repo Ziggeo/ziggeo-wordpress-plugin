@@ -483,6 +483,11 @@ INDEX:
 		list-style: none;
 		box-shadow: 0px 0px 1px 1px gray;
 	}
+	.ziggeo_notifications_admin_tools {
+		padding: 10px;
+		margin: 10px;
+		box-sizing: border-box;
+	}
 
 
 

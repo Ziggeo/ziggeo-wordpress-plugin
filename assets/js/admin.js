@@ -1171,6 +1171,21 @@
 				ziggeoNotificationManage(e.currentTarget.parentElement.getAttribute('data-id'), 'HIDE');
 			});
 		}
+
+		//Admin tools if shown
+		var _prune = document.getElementById('ziggeo_notifications_prune');
+
+		if(_prune) {
+			var _clear = document.getElementById('ziggeo_notifications_clear');
+
+			_prune.addEventListener('click', function(e) {
+				ziggeoNotificationManage('all', 'PRUNE');
+			});
+
+			_clear.addEventListener('click', function(e) {
+				ziggeoNotificationManage('all', 'CLEAR');
+			});
+		}
 	}
 
 	function ziggeoNotificationManage(id, status) {
@@ -1179,23 +1194,29 @@
 			'operation':'notification_handler',
 			'id': id,
 			'status': status
-		}
+		};
 
 		ziggeoAjax(obj, function(result) {
 			if(result === 'true') {
-				var _element = document.querySelector('#ziggeo_notifications_list li[data-id="' + id + '"]');
 
-				if(status === 'OK') {
-					_element.className = 'message ok';
-					_element.getElementsByClassName('ok')[0].style.display = 'none';
+				if(status === 'HIDE' || status === 'OK') {
+					var _element = document.querySelector('#ziggeo_notifications_list li[data-id="' + id + '"]');
+
+					if(status === 'OK') {
+						_element.className = 'message ok';
+						_element.getElementsByClassName('ok')[0].style.display = 'none';
+					}
+					else if(status === 'HIDE') {
+						_element.className += ' hidden';
+						_element.innerHTML = '';
+					}
 				}
-				else if(status === 'HIDE') {
-					_element.className += ' hidden';
-					_element.innerHTML = '';
+				else if(status === 'PRUNE' || status === 'CLEAR') {
+					location.reload();
 				}
 			}
 			else {
-				
+				ziggeoDevReport('Unable to handle the notifications request');
 			}
 		});
 	}

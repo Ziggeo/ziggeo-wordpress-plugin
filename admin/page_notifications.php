@@ -34,9 +34,21 @@ function ziggeo_a_n_text() {
 	$notifications['list'] = array_reverse($notifications['list']);
 
 	?>
+	<p><?php _e('All of the notifications we captured are shown here.', 'ziggeo'); ?></p>
+	<?php
+		if(current_user_can('activate_plugins')) {
+			?>
+			<div class="ziggeo_notifications_admin_tools">
+				<span id="ziggeo_notifications_prune" class="ziggeo-ctrl-btn">Prune<i>i<div>Use this to prune (remove) all duplicate entries.</div></i></span>
+				<span id="ziggeo_notifications_clear" class="ziggeo-ctrl-btn">Clear<i>i<div>Use this to clear all notifications.</div></i></span>
+			</div>
+			<?php
+		}
+	?>
 	<div class="ziggeo-frame" id="ziggeo-notifications">
-		<p><?php __('All of the notifications would be shown here.', 'ziggeo'); ?></p>
-		<p><?php __('If you are dev, please use this to notify admins of suggestions, update and errors, no purchase related notifications.', 'ziggeo'); ?></p>
+		<?php
+			//If you are dev, please use this to notify admins of suggestions, update and errors, no purchase related notifications.
+		?>
 
 		<ol id="ziggeo_notifications_list">
 			<?php

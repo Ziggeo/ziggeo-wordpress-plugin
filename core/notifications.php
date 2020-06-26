@@ -7,7 +7,7 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 		if(isset($_POST['id'], $_POST['status'])) {
 
 			$id = (int)($_POST['id']);
-			$status = ($_POST['status'] === 'OK') ? 'OK' : 'HIDE';
+			$status = $_POST['status'];
 
 			$rez = ziggeo_notification_manage($id, $status);
 		}
@@ -52,18 +52,37 @@ function ziggeo_notification_remove($notification_id) {
 function ziggeo_notification_manage($notification_id, $status) {
 
 	$notification_id = (int)($notification_id);
-	$status = ($status === 'OK') ? 'OK' : 'HIDE';
+
+	if($status !== 'OK' && $status !== 'HIDE' && $status !== 'PRUNE' && $status !== 'CLEAR') {
+		return false;
+	}
+
 	$found = false;
 
 	//$notifications = get_option('ziggeo_notifications');
 	$notifications = ziggeo_get_notifications();
 
-	for($i = 0, $c = count($notifications['list']); $found !== true; $i++) {
+	//Make it unique
+	if($status === 'PRUNE' || $status === 'CLEAR') {
+		//Let us check if this is admin 
+		if(current_user_can('activate_plugins')) {
+			if($status === 'CLEAR') {
+				$notifications = false; //To clear it in a way that will make it easy for other codes to understand it
+				$found = true;
+			}
+			else {
+				$notifications['list'] = array_unique($notifications['list']);
+				$found = true;
+			}
+		}
+	}
+	else {
+		for($i = 0, $c = count($notifications['list']); $found !== true; $i++) {
+			if($notifications['list'][$i]['id'] === $notification_id) {
+				$notifications['list'][$i]['status'] = $status;
 
-		if($notifications['list'][$i]['id'] === $notification_id) {
-			$notifications['list'][$i]['status'] = $status;
-
-			$found = true;
+				$found = true;
+			}
 		}
 	}
 
