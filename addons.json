@@ -40,5 +40,11 @@
 			"wordpress": "",
 			"github": "https://github.com/Ziggeo/ziggeo-video-for-gravity-forms"
 		}
+	},
+	"ziggeo-video-for-fluent-forms": {
+		"url": {
+			"wordpress": "",
+			"github": "https://github.com/Ziggeo/ziggeo-wp-video-for-fluent-forms"
+		}
 	}
 }

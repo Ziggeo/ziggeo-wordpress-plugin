@@ -1,7 +1,7 @@
 {
 	"wp": {
 		"required": "3.0.1",
-		"tested": "5.4.1",
+		"tested": "5.4.2",
 		"repo_url": "https://wordpress.org/plugins/ziggeo/",
 		"alternative_repo_url": "https://github.com/Ziggeo/ziggeo-wordpress-plugin"
 	},
