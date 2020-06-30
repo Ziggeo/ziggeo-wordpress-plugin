@@ -4,7 +4,7 @@ Plugin Name: Ziggeo Video Posts and Comments
 Plugin URI: https://ziggeo.com/integrations/wordpress
 Description: Plugin for adding videos to your website quickly and easily. It is powered by Ziggeo and allows you to add video posts and video comments and so much more.
 Author: Ziggeo
-Version: 2.4
+Version: 2.4.1
 Author URI: https://ziggeo.com
 Text Domain: ziggeo
 */

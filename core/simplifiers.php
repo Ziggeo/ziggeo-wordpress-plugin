@@ -365,4 +365,29 @@ function ziggeo_p_integrations_field_add_custom_tag($field, $code_addition) {
 
 	return $field;
 }
+
+//Create the toolbar
+function ziggeo_p_pre_editor($ajax = false) {
+	?>
+	<div id="ziggeo-post-editor-toolbar">
+		<?php echo do_action('ziggeo_toolbar_button', $ajax); ?>
+	</div>
+	<?php
+}
+
+//Creates the button in the toolbar, allowing us to quickly create uniform buttons
+function ziggeo_create_toolbar_button($id='', $title = '', $icon='video-alt', $visible = true, $type = 'button') {
+
+	$code = '<a href="#" id="' . $id . '" class="button" title="' . $title . '" ';
+	if($visible !== true) {
+		$code .= ' style="display:none;" ';
+	}
+	$code .= ' onclick="return false;"';
+	$code .= '>';
+	$code .= '<span class="dashicons dashicons-' . $icon . '"></span> ' . $title . ' </a>';
+
+	return $code;
+}
+
+
 ?>

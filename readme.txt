@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.4.2
-Stable tag: 2.4
+Stable tag: 2.4.1
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,6 +264,12 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
+= 2.4.1 =
+* Note: Please check changelog for 2.4 if you are updating from older version
+* Moved some functions to resolve the issue where people using bbPress would have an error instead of toolbar shown.
+
+== Changelog ==
+
 = 2.4 =
 * Added support for do_shortcodes() for all core template types
 * New constant used when shortcodes are run ZIGGEO_SHORTCODE_RUN allowing you to check for the same (since some actions and hooks might be sending you different info or will not fire).
@@ -277,8 +283,6 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Fixed an issue where the advanced editor would not add the parameter into the editor nor select the value if one was present.
 * Added buttons to prune and clear the notifications for administrators. Prune allows you to remove all duplicates so you can see only single notification about something, while clear just clears them all out.
 * Added the options for version and revision into the settings section (under Expert Settings) allowing easier change of both version and revision.
-
-== Changelog ==
 
 = 2.3.4 =
 * Dropdown values in the dashboard reflected true state of settings, however the values were in wrong format, causing some settings to not be added to the page. This way they now are.
