@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.4.2
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,11 +264,14 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
+= 2.4.2 =
+* Notifications prune and clear are set to be disabled on click, to prevent clicking on the same multiple times while waiting for the server to respond.
+
+== Changelog ==
+
 = 2.4.1 =
 * Note: Please check changelog for 2.4 if you are updating from older version
 * Moved some functions to resolve the issue where people using bbPress would have an error instead of toolbar shown.
-
-== Changelog ==
 
 = 2.4 =
 * Added support for do_shortcodes() for all core template types

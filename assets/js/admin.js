@@ -1179,10 +1179,14 @@
 			var _clear = document.getElementById('ziggeo_notifications_clear');
 
 			_prune.addEventListener('click', function(e) {
+				_prune.className += ' disabled';
+				_clear.className += ' disabled';
 				ziggeoNotificationManage('all', 'PRUNE');
 			});
 
 			_clear.addEventListener('click', function(e) {
+				_prune.className += ' disabled';
+				_clear.className += ' disabled';
 				ziggeoNotificationManage('all', 'CLEAR');
 			});
 		}
