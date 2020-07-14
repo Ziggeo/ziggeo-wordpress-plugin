@@ -162,6 +162,33 @@ function ziggeo_a_s_g_text() {
 		<?php
 	}
 
+	//Default player templates to be used by integrations
+	function ziggeo_a_s_g_default_integrations_player_field() {
+		$option = ziggeo_get_plugin_options('integrations_player_template');
+
+		?>
+		<select id="integrations_player_template" name="ziggeo_video[integrations_player_template]">
+			<option value=""><?php _ex('Default', 'dropdown option of default/unchanged value', 'ziggeo'); ?></option>
+			<?php
+				$list = ziggeo_p_templates_index();
+				if($list) {
+					foreach($list as $template => $value) {
+						if( $template === $option ) {
+							?><option value="<?php echo $template; ?>" selected><?php echo $template; ?></option><?php
+						}
+						else {
+							?><option value="<?php echo $template; ?>"><?php echo $template; ?></option><?php
+						}
+					}
+				}
+			?>
+		</select>
+		<label for="integrations_player_template">
+			<?php __('Set up which template should integrations pick up and use.', 'ziggeo'); ?>
+		</label>
+		<?php
+	}
+
 	//Used for styling purposes only.
 	function ziggeo_a_s_g_comments_html() {
 		?>

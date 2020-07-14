@@ -135,10 +135,17 @@ function ziggeo_p_admin_init() {
 								'ziggeo_video',
 								'ziggeo_video_main');
 
-			//Preferred template that should be used by integrations
+			//Preferred template that should be used by integrations when creating recorder
 			add_settings_field('ziggeo_recorder_integrations_default',
 								__('Ziggeo Recorder for Integrations', 'ziggeo'),
 								'ziggeo_a_s_g_default_integrations_recorder_field',
+								'ziggeo_video',
+								'ziggeo_video_main');
+
+			//Preferred tempalte that should be used by integrations when they are creating players
+			add_settings_field('ziggeo_player_integrations_default',
+								__('Ziggeo Player for Integrations', 'ziggeo'),
+								'ziggeo_a_s_g_default_integrations_player_field',
 								'ziggeo_video',
 								'ziggeo_video_main');
 

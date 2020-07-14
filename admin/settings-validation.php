@@ -24,7 +24,7 @@ function ziggeo_a_s_validation($input) {
 			'token' => true,
 			'recorder_config' => true, 'player_config' => true, 'disable_video_comments' => true, 'disable_text_comments' => true,
 			'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
-			'comment_roles' => true, 'integrations_recorder_template' => true, 'default_lang' => true,
+			'comment_roles' => true, 'integrations_recorder_template' => true, 'integrations_player_template' => true, 'default_lang' => true,
 		//integrations tab
 			'integrations' => true,
 		//experts tab
