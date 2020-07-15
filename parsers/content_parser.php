@@ -401,7 +401,7 @@ function ziggeo_p_content_parse_templates($matches) {
 				for($i = 0, $c = count($template_options); $i < $c; $i++ ) {
 					if( $tag === $template_options[$i]['name'] ) {
 
-						$ret = $template_options[$i]['func_final']($template);
+						$ret = $template_options[$i]['func_final']($template, false);
 
 						//so we only find one of them
 						break;

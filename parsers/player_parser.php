@@ -7,9 +7,17 @@ defined('ABSPATH') or die();
 if(!function_exists('ziggeo_content_parse_player')) {
 
 //@TODO: Lets add few hooks into this
-	function ziggeo_content_parse_player($code) {
-		//return the HTML code
-		return '<ziggeoplayer ' . ziggeo_template_v1_to_v2(ziggeo_p_parameter_prep($code)) . '></ziggeoplayer>';
+	function ziggeo_content_parse_player($code, $post_code = true) {
+
+		$result = '<ziggeoplayer ' . ziggeo_template_v1_to_v2(ziggeo_p_parameter_prep($code)) . '></ziggeoplayer>';
+
+		if($post_code === true) {
+			echo $result;
+		}
+		else {
+			//return the HTML code
+			return $result;
+		}
 	}
 }
 
