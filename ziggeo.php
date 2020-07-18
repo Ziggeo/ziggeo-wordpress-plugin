@@ -77,6 +77,8 @@ include_once(ZIGGEO_ROOT_PATH . 'parsers/recorder_parser.php');
 include_once(ZIGGEO_ROOT_PATH . 'parsers/rerecorder_parser.php');
 //parsing uploaders
 include_once(ZIGGEO_ROOT_PATH . 'parsers/uploader_parser.php');
+//parsing widgets
+include_once(ZIGGEO_ROOT_PATH . 'parsers/widget_parser.php');
 
 //header codes that create v2 application
 include_once(ZIGGEO_ROOT_PATH . 'core/header.php');
