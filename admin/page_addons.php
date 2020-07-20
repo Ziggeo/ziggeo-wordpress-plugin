@@ -52,37 +52,12 @@ function ziggeo_a_addons_text() {
 
 	?>
 	<div class="ziggeo-addons-toolbar" id="ziggeo-addons-nav">
-		<span class="ziggeo-ctrl-btn selected" data-section="installed">Installed</span>
+		<span class="ziggeo-ctrl-btn selected" data-section="store">Addon Store</span>
+		<span class="ziggeo-ctrl-btn" data-section="installed">Installed</span>
 		<span class="ziggeo-ctrl-btn" data-section="updates">Update Available</span>
-		<span class="ziggeo-ctrl-btn" data-section="store">Addon Store</span>
 	</div>
 
-	<ul id="ziggeo_addons_installed" class="ziggeo_integrations_cards">
-		<p><?php __('Showing you all of the integrations that you have installed.', 'ziggeo'); ?></p>
-		<?php
-			for($i = 0, $c = count($integrations_installed); $i < $c; $i++) {
-				ziggeo_integration_present_me_cards($integrations_installed[$i]);
-			}
-		?>
-	</ul>
-
-	<ul id="ziggeo_addons_update" style="display:none;">
-		<p><?php __('Only the plugins that you have installed and new version is available will be shown here.', 'ziggeo'); ?></p>
-		<?php
-
-			for($i = 0, $c = count($integrations_installed); $i < $c; $i++) {
-				//This should always be the case, however during development it can be helpful having this check :)
-				if(isset($integrations_in_store[$integrations_installed[$i]['slug']])) {
-					if(version_compare($integrations_installed[$i]['version'],
-										$integrations_in_store[$integrations_installed[$i]['slug']]['plugin']['version'] , '<') ) {
-						ziggeo_integration_present_me_cards($integrations_installed[$i], '<div class="ziggeo-addons-update-available"></div>');
-					}
-				}
-			}
-		?>
-	</ul>
-
-	<ul id="ziggeo_addons_store" style="display:none;">
+	<ul id="ziggeo_addons_store">
 		<?php
 		if(!$integrations_in_store) {
 			?><b>There was an error retrieving the data</b><?php
@@ -115,6 +90,36 @@ function ziggeo_a_addons_text() {
 				<?php
 			}
 		}
+		?>
+	</ul>
+
+	<ul id="ziggeo_addons_installed" class="ziggeo_integrations_cards" style="display:none;">
+		<p><?php __('Showing you all of the integrations that you have installed.', 'ziggeo'); ?></p>
+		<?php
+			for($i = 0, $c = count($integrations_installed); $i < $c; $i++) {
+				ziggeo_integration_present_me_cards($integrations_installed[$i]);
+			}
+		?>
+	</ul>
+
+	<ul id="ziggeo_addons_update" style="display:none;">
+		<p><?php __('Only the plugins that you have installed and new version is available will be shown here.', 'ziggeo'); ?></p>
+		<?php
+			$found = 0;
+			for($i = 0, $c = count($integrations_installed); $i < $c; $i++) {
+				//This should always be the case, however during development it can be helpful having this check :)
+				if(isset($integrations_in_store[$integrations_installed[$i]['slug']])) {
+					if(version_compare($integrations_installed[$i]['version'],
+										$integrations_in_store[$integrations_installed[$i]['slug']]['plugin']['version'] , '<') ) {
+						$found++;
+						ziggeo_integration_present_me_cards($integrations_installed[$i], '<div class="ziggeo-addons-update-available"></div>');
+					}
+				}
+			}
+
+			if($found === 0) {
+				echo '<p class="ziggeo_addons_all_updated">' . __('Everything seems to be up to date :)', 'ziggeo') . '</p>';
+			}
 		?>
 	</ul>
 

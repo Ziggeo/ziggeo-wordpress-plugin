@@ -709,6 +709,15 @@ INDEX:
 		content: "\f463";
 	}
 
+	.ziggeo_addons_all_updated {
+		border: 4px solid lightblue;
+		padding: 20px;
+		text-align: center;
+		font-size: 2em;
+		box-sizing: border-box;
+		border-radius: 0 0 10px 10px;
+	}
+
 
 
 
