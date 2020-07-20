@@ -14,7 +14,7 @@
 		"contributors": "oliverfriedmann, baned, carloscsz409",
 		"tags": "video, video service, record video, video playback, gallery, ziggeo",
 		"description": "This plugin allows you to bring video to your Wordpress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.",
-		"latest_update": "Dropdown values in the dashboard reflected true state of settings, however the values were in wrong format, causing some settings to not be added to the page. This way they now are.",
+		"latest_update": "Improvements for notifications and addons page together with parsing improvements and adding parsing of content within widgets",
 		"info_url": "https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/info.json",
 		"addon_url": "https://ziggeo.com/integrations/wordpress",
 		"docs_url": "https://ziggeo.com/docs/integrations/wordpress/"
