@@ -23,9 +23,9 @@ function ziggeo_p_get_current_user() {
 	return $current_user;
 }
 
-function ziggeo_p_parse_custom_tags($content) {
+function ziggeo_p_parse_custom_tags($content, $location = 'core') {
 
-	$content = apply_filters('ziggeo_custom_tags_processing', $content);
+	$content = apply_filters('ziggeo_custom_tags_processing', $content, $location);
 
 	//return all of the parsed content
 	return $content;

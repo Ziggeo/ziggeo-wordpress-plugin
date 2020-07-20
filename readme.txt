@@ -269,6 +269,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added the option for default player for the integrations allowing you to simply choose the template you wish to use right from the settings.
 * Added a change in how we do parsing so that the content does not "move" where before it could end up "moving" itself out of place in certain scenarios.
 * Added support for parsing templates in widget title and widget content. All videos recorded within the widget, will also get a "widget", "widget_title" or "widget_content" tag as well as the unique ID of the widget, allowing you to easily find those videos.
+* Added location info when parsing custom tags, in case that is needed when parsing
 
 == Changelog ==
 
