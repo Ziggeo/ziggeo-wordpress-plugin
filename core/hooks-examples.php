@@ -135,7 +135,7 @@ add_filter('ziggeo_content_filter_pre', function ($content) {
 
 //Another custom tags support for %CURRENT_ID% for POST ID. 
 add_filter('ziggeo_custom_tags_processing', function($codes) {
-	if(stripos($codes, '%CURRENT_ID%') > -1 || stripos($codes, `%PAGE_ID%`) > -1) {
+	if(stripos($codes, '%CURRENT_ID%') > -1 || stripos($codes, '%PAGE_ID%') > -1) {
 		global $wp_query;
 
 		$post_ID = $wp_query->get_queried_object_id();
