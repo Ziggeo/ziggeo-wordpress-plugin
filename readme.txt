@@ -266,6 +266,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 = 2.4.3 =
 * Improved tags parsing where wrong type of quote was used causing PHP Notice being raised about it. Thank you Igor for reporting it.
+* Added improvment to widgets parsing where hooks used fired while the expected core functionality was not available. The imporvement makes the code work only when it is available.
 
 == Changelog ==
 
