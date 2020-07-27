@@ -4,7 +4,7 @@
 defined('ABSPATH') or die();
 
 //add_filter('widget_title', 'ziggeo_content_filter');
-add_filter('widget_title', function($title, $instance, $id_base) {
+add_filter('widget_title', function($title = null, $instance = null, $id_base = 'no_id') {
 
 	$title = ziggeo_p_content_filter($title);
 

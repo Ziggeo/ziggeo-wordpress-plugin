@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.4.2
-Stable tag: 2.4.3
+Stable tag: 2.4.4
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,11 +264,14 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
+= 2.4.4 =
+* Improved widgets parser to help when not all of the expected data is passed to it. Videos received from a widget that did not pass all details will be marked with "no_id" tag.
+
+== Changelog ==
+
 = 2.4.3 =
 * Improved tags parsing where wrong type of quote was used causing PHP Notice being raised about it. Thank you Igor for reporting it.
 * Added improvment to widgets parsing where hooks used fired while the expected core functionality was not available. The imporvement makes the code work only when it is available.
-
-== Changelog ==
 
 = 2.4.2 =
 * Notifications prune and clear are set to be disabled on click, to prevent clicking on the same multiple times while waiting for the server to respond.
