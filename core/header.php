@@ -84,10 +84,18 @@ function ziggeo_p_page_header() {
 				//will check all of the hooks and fire them one after another
 				fire: function(hook_name, data) {
 					if( typeof(ZiggeoWP.hooks._hooks[hook_name]) != 'undefined') {
+
+						var i, c; //leave this or "i" will be broken
+
 						for(i = 0, c = ZiggeoWP.hooks._hooks[hook_name].length; i < c; i++) {
 							//final sanity if the function is still available..
 							if( typeof(ZiggeoWP.hooks._hooks[hook_name][i]) != 'undefined') {
-								ZiggeoWP.hooks._hooks[hook_name][i].func(data);
+								try {
+									ZiggeoWP.hooks._hooks[hook_name][i].func(data);
+								}
+								catch(error) {
+									ziggeoDevReport(error, 'error');
+								}
 							}
 						}
 					}
