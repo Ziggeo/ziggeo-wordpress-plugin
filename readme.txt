@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.4.2
-Stable tag: 2.5
+Stable tag: 2.6
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,9 +264,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.5 =
-* Improved JS Hooks fire/trigger handler.
-* Moved the changelog info to a new file, reducing the size of readme file.
+= 2.6 =
+* Fixed: One of the hook examples had undeclared value notice shown. This update resolves it.
 
 == Changelog ==
 
