@@ -118,9 +118,10 @@ add_filter('ziggeo_template_parsing_tag_set', function($locationTag, $filter) {
 		$id = get_the_ID();
 
 		$locationTag .= ',post_' . $id;
-
-		return $locationTag;
 	}
+
+	//NOTE: We might change it in some cases, however we always need to return it.
+	return $locationTag;
 }, 10, 2);
 
 //Custom tags support examples
