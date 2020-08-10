@@ -39,7 +39,6 @@ function ziggeo_p_page_header() {
 				//priority	=> what priority should the function fire at (@ADD - not yet added)
 				set: function(hook_name, f_key, f_unction, priority) {
 
-
 					if(typeof(hook_name) == 'object') {
 						for(i = 0, c = hook_name.length; i < c; i++) {
 							this.set(hook_name[i], f_key, f_unction, priority);
@@ -48,53 +47,59 @@ function ziggeo_p_page_header() {
 						return true;
 					}
 
+					if(typeof(priority) === 'undefined' || priority === null || isNaN(priority) || priority > 100) {
+						//Core < 10 (anything that has to run first)
+						//normal/default === 10
+						//late > 10 (anything that should run last)
+						priority = 10;
+					}
+
 					//have we already set this one?
-					if( typeof(ZiggeoWP.hooks._hooks[hook_name]) != 'undefined') {
-						for(i2 = 0, c2 = ZiggeoWP.hooks._hooks[hook_name].length; i2 < c2; i2++) {
-							if(ZiggeoWP.hooks._hooks[hook_name][i2].key === f_key) {
+					if( typeof ZiggeoWP.hooks._hooks[hook_name] != 'undefined' &&
+						typeof ZiggeoWP.hooks._hooks[hook_name][priority] != 'undefined') {
+
+						for(i2 = 0, c2 = ZiggeoWP.hooks._hooks[hook_name][priority].length; i2 < c2; i2++) {
+							if(ZiggeoWP.hooks._hooks[hook_name][priority][i2].key === f_key) {
 								return false;
 							}
 						}
 					}
 
-					/*if(typeof(priority) === 'undefined') {
-						priority = 0; //0 equals last, other numbers indicate its position
-					}*/
+					if(typeof(ZiggeoWP.hooks._hooks[hook_name]) == 'undefined') {
+						ZiggeoWP.hooks._hooks[hook_name] = {};
+					}
 
-					//if(priority == 0) {
-						if(typeof(ZiggeoWP.hooks._hooks[hook_name]) == 'undefined') {
-							ZiggeoWP.hooks._hooks[hook_name] = [];
-						}
+					if(typeof ZiggeoWP.hooks._hooks[hook_name][priority] === 'undefined') {
+						ZiggeoWP.hooks._hooks[hook_name][priority] = [];
+					}
 
-						//if(typeof(ZiggeoWP.hooks._hooks[hook_name][f_unction]) == 'undefined') {
-							ZiggeoWP.hooks._hooks[hook_name].push( {key: f_key, func: f_unction} );
-							//all set and good, so lets return true
-							return true;
-						//}
+					ZiggeoWP.hooks._hooks[hook_name][priority].push( {key: f_key, func: f_unction} );
 
-						//if it comes to here, hook was already set, so lets not add it one more time..
-						//we indicate this by returning false.
-						//return false;
-					//}
-					//else {
-						//@ADD in next revision, we do not need priority for now
-					//}
+					//all set and good, so lets return true
+					return true;
 				},
 
 				//will check all of the hooks and fire them one after another
-				fire: function(hook_name, data) {
+				fire: function(hook_name, __data) {
 					if( typeof(ZiggeoWP.hooks._hooks[hook_name]) != 'undefined') {
 
 						var i, c; //leave this or "i" will be broken
 
-						for(i = 0, c = ZiggeoWP.hooks._hooks[hook_name].length; i < c; i++) {
-							//final sanity if the function is still available..
-							if( typeof(ZiggeoWP.hooks._hooks[hook_name][i]) != 'undefined') {
-								try {
-									ZiggeoWP.hooks._hooks[hook_name][i].func(data);
-								}
-								catch(error) {
-									ziggeoDevReport(error, 'error');
+						for(priority in ZiggeoWP.hooks._hooks[hook_name]) {
+
+							for(i = 0, c = ZiggeoWP.hooks._hooks[hook_name][priority].length; i < c; i++) {
+
+								//final sanity if the function is still available..
+								if( typeof(ZiggeoWP.hooks._hooks[hook_name][priority][i]) != 'undefined') {
+									try {
+										//__data is passed by reference. This allows you to modify it in one of the hooks
+										// It also means that you should not use __data or it will clear entire object.
+										//ZiggeoWP.hooks._hooks[hook_name][i].func(__data);
+										ZiggeoWP.hooks._hooks[hook_name][priority][i].func(__data);
+									}
+									catch(error) {
+										ziggeoDevReport(error, 'error');
+									}
 								}
 							}
 						}

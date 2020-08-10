@@ -266,7 +266,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 = 2.6 =
 * Fixed: One of the hook examples had undeclared value notice shown. This update resolves it.
-* Fixed the filter which was used to get tags, however ended up clearing the tags
+* Fixed: The filter which was used to get tags, however ended up clearing the tags
+* Improvement: Added priority to JS hooks to allow us to set when something should fire
 
 == Changelog ==
 
