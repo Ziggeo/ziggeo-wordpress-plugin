@@ -1,9 +1,5 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
-= 2.5 =
-* Improved JS Hooks fire/trigger handler.
-* Moved the changelog info to a new file, reducing the size of readme file.
-
 = 2.4.4 =
 * Improved widgets parser to help when not all of the expected data is passed to it. Videos received from a widget that did not pass all details will be marked with "no_id" tag.
 
