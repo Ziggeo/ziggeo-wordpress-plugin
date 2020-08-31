@@ -247,7 +247,7 @@
 		info.textContent = 'You can hover over template name to preview its code.' +
 							'Once you find template you want to insert click to lock it.' +
 							'Then click on "Insert" button.' +
-							'You can always change your mind by clicking "Cancel".'
+							'You can always change your mind by clicking "Cancel".' +
 							'Hint: press Shift or Alt when clicking Insert to insert template code';
 		list_holder.appendChild(info);
 	}

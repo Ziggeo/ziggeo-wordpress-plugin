@@ -270,6 +270,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Improvement: Added priority to JS hooks to allow us to set when something should fire
 * Improved JS Hooks fire/trigger handler.
 * Moved the changelog info to a new file, reducing the size of readme file.
+* Fixed a bug that showed up when running system that minimizes the files of all plugins.
 
 == Changelog ==
 
