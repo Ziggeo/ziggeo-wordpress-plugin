@@ -1662,9 +1662,7 @@
 		function ziggeoVideosApprove(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
-			ZiggeoApi.Videos.update( ZiggeoWP.video_list[_video_ref].token, {
-				'approved': true
-			});
+			ziggeo_app.videos.update(ZiggeoWP.video_list[_video_ref].token, { 'approved': true });
 
 			element_ref.parentElement.parentElement.firstElementChild.className = 'player approved';
 		}
@@ -1675,9 +1673,7 @@
 		function ziggeoVideosReject(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
-			ZiggeoApi.Videos.update(ZiggeoWP.video_list[_video_ref].token, {
-				'approved': false
-			});
+			ziggeo_app.videos.update(ZiggeoWP.video_list[_video_ref].token, { 'approved': false });
 
 			element_ref.parentElement.parentElement.firstElementChild.className = 'player rejected';
 		}
