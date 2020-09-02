@@ -99,6 +99,19 @@ if(is_admin() === true) {
 
 	//Add post and page editor toolbar
 	include_once(ZIGGEO_ROOT_PATH . 'admin/post_toolbar.php');
+
+	$app_token = ziggeo_get_plugin_options('token');
+
+	if($app_token === '') {
+		add_action( 'admin_notices', function() {
+			?>
+			<div class="error notice">
+				<p><?php _e( 'You will need to grab your Application token to be able to use Ziggeo plugin. Please <a href="https://ziggeo.com/signin">sign in to your account</a> and grab the same (use plugin\'s <a href="' . esc_url( get_admin_url(null, 'admin.php?page=ziggeo_video')) . '">Contact Us tab</a> if you need any help)', 'ziggeo' ); ?></p>
+			</div>
+			<?php
+		});
+	}
+
 }
 
 include_once(ZIGGEO_ROOT_PATH . 'parsers/file_parser.php'); //integrations require file parser..

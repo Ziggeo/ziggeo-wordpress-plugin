@@ -273,6 +273,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Fixed a bug that showed up when running system that minimizes the files of all plugins.
 * Videolist is now using stretchheight parameter for better playback of portrait videos and no longer uses popups
 * All API calls are now using V2 flavor.
+* Improvement: If API token is not present a warning is shown, to help guide you to plugin settings and allow you to quickly and easily start using our plugin
 
 == Changelog ==
 
