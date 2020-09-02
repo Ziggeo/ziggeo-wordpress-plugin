@@ -271,6 +271,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Improved JS Hooks fire/trigger handler.
 * Moved the changelog info to a new file, reducing the size of readme file.
 * Fixed a bug that showed up when running system that minimizes the files of all plugins.
+* Videolist is now using stretchheight parameter for better playback of portrait videos and no longer uses popups
 
 == Changelog ==
 

@@ -1484,9 +1484,7 @@
 					theme: "modern",
 					themecolor: "blue",
 					video: videos[i].token,
-					popup: true,
-					'popup-width': 640,
-					'popup-height': 480
+					'stretchheight': true
 				}
 			});
 
