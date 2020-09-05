@@ -27,6 +27,9 @@ function ziggeo_p_assets_get_raw() {
 			'css'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css' . $ver
 		),
 		array(
+			'js'	=> 'https://imasdk.googleapis.com/js/sdkloader/ima3.js' . $ver
+		),
+		array(
 			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js' . $ver,
 			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles.css' . $ver
 		)
@@ -67,8 +70,14 @@ function ziggeo_p_assets_global() {
 		wp_enqueue_script('ziggeo-js', array('jquery'));
 		wp_register_style('ziggeo-css', 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css' . $ver, array());
 		wp_enqueue_style('ziggeo-css');
-	}
 
+		//In case VAST is used we will have a URL here
+		if(!empty($options['vast_adserver'])) {
+			wp_register_script('vast-google-js', 'https://imasdk.googleapis.com/js/sdkloader/ima3.js' . $ver, array());
+			wp_enqueue_script('vast-google-js');
+		}
+
+	}
 	if(apply_filters('ziggeo_assets_pre_local_load', true)) {
 		//local assets
 		wp_register_script('ziggeo-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js' . $ver, array("jquery"));

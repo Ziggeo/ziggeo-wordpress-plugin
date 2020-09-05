@@ -1,5 +1,16 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.5 =
+* Fixed: One of the hook examples had undeclared value notice shown. This update resolves it.
+* Fixed: The filter which was used to get tags, however ended up clearing the tags
+* Improvement: Added priority to JS hooks to allow us to set when something should fire
+* Improved JS Hooks fire/trigger handler.
+* Moved the changelog info to a new file, reducing the size of readme file.
+* Fixed a bug that showed up when running system that minimizes the files of all plugins.
+* Videolist is now using stretchheight parameter for better playback of portrait videos and no longer uses popups
+* All API calls are now using V2 flavor.
+* Improvement: If API token is not present a warning is shown, to help guide you to plugin settings and allow you to quickly and easily start using our plugin
+
 = 2.4.4 =
 * Improved widgets parser to help when not all of the expected data is passed to it. Videos received from a widget that did not pass all details will be marked with "no_id" tag.
 

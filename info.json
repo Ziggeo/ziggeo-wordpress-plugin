@@ -8,7 +8,7 @@
 	"plugin": {
 		"name": "ziggeo-core",
 		"title": "Ziggeo Video Posts and Comments",
-		"version": "2.5",
+		"version": "2.6",
 		"author": "Ziggeo",
 		"logo": "https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/assets/images/logo.png",
 		"contributors": "oliverfriedmann, baned, carloscsz409",

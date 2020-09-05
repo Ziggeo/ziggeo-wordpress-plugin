@@ -24,7 +24,7 @@ function ziggeo_a_s_validation($input) {
 			'token' => true,
 			'recorder_config' => true, 'player_config' => true, 'disable_video_comments' => true, 'disable_text_comments' => true,
 			'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
-			'comment_roles' => true, 'integrations_recorder_template' => true, 'integrations_player_template' => true, 'default_lang' => true,
+			'comment_roles' => true, 'integrations_recorder_template' => true, 'integrations_player_template' => true, 'default_lang' => true, 'vast_adserver' => true, 'vast_skipafter' => true, 'vast_muted' => true, 'vast_ad_title' => true, 'vast_ad_description' => true, 'vast_ad_id' => true, 'vast_ad_advertiser' => true,
 		//integrations tab
 			'integrations' => true,
 		//experts tab
@@ -33,7 +33,11 @@ function ziggeo_a_s_validation($input) {
 
 	//Needed for checkboxes otherwise we would clear them
 	$clear_if_not_set = array(
-		'disable_video_comments' => true, 'disable_text_comments' => true, 'video_and_text' => true, 'use_auth' => true
+		'disable_video_comments'    => true,
+		'disable_text_comments'     => true,
+		'video_and_text'            => true,
+		'use_auth'                  => true,
+		'vast_muted'                => true
 	);
 
 	//DEVS: Should we add any hooks here to add your own options into the main settings? Let us know.

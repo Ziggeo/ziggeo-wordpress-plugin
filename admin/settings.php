@@ -149,7 +149,63 @@ function ziggeo_p_admin_init() {
 								'ziggeo_video',
 								'ziggeo_video_main');
 
-		//Integrations tab (lists integrations and allows to turn them on or off)
+		//-VAST section-
+			add_settings_field('ziggeo_vast_global',
+		                       '',
+		                       'ziggeo_a_s_g_vast_global_field',
+		                       'ziggeo_video',
+		                       'ziggeo_video_main');
+
+			// AdServer URL
+			add_settings_field('ziggeo_vast_adserver',
+		                       __('VAST 3.0 AdServer URL', 'ziggeo'),
+		                       'ziggeo_a_s_g_vast_adserver_field',
+		                       'ziggeo_video',
+		                       'ziggeo_video_main');
+
+			// skipAfter value (seconds)
+			add_settings_field('ziggeo_vast_skipafter',
+			                   __('After what time should Skip button be shown?', 'ziggeo'),
+			                   'ziggeo_a_s_g_vast_skipafter_field',
+			                   'ziggeo_video',
+			                   'ziggeo_video_main');
+
+			// muted
+			add_settings_field('ziggeo_vast_muted',
+			                   __('Should the ad start muted?', 'ziggeo'),
+			                   'ziggeo_a_s_g_vast_muted_field',
+			                   'ziggeo_video',
+			                   'ziggeo_video_main');
+
+			// ad title
+			add_settings_field('ziggeo_vast_ad_title',
+			                   __('Does your ad have a title?', 'ziggeo'),
+			                   'ziggeo_a_s_g_vast_ad_title_field',
+			                   'ziggeo_video',
+			                   'ziggeo_video_main');
+
+			// ad description
+			add_settings_field('ziggeo_vast_ad_description',
+			                   __('Does your ad have a description?', 'ziggeo'),
+			                   'ziggeo_a_s_g_vast_ad_description_field',
+			                   'ziggeo_video',
+			                   'ziggeo_video_main');
+
+			// ad ID
+			add_settings_field('ziggeo_vast_ad_id',
+			                   __('Does your ad have an ID?', 'ziggeo'),
+			                   'ziggeo_a_s_g_vast_ad_id_field',
+			                   'ziggeo_video',
+			                   'ziggeo_video_main');
+
+			// ad advertiser
+			add_settings_field('ziggeo_vast_ad_advertiser',
+			                   __('Do you want to say who the advertiser is?', 'ziggeo'),
+			                   'ziggeo_a_s_g_vast_ad_advertiser_field',
+			                   'ziggeo_video',
+			                   'ziggeo_video_main');
+
+		//-Integrations tab (lists integrations and allows to turn them on or off)-
 		add_settings_field('ziggeo_integration_change',
 							'',
 							'ziggeo_a_s_i_change_status_field',
@@ -157,7 +213,7 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video_integrations');
 
 
-		//Contact us section
+		//-Contact us section-
 
 		//Email and forum
 		add_settings_field('ziggeo_contact_ziggeo',
@@ -180,7 +236,7 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_contact');
 
-		//Expert section
+		//-Expert section-
 
 		//Is this development location (and you want things to pop up in console)?
 		add_settings_field('ziggeo_dev_mode',

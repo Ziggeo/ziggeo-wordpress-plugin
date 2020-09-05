@@ -4,7 +4,7 @@ Plugin Name: Ziggeo Video Posts and Comments
 Plugin URI: https://ziggeo.com/integrations/wordpress
 Description: Plugin for adding videos to your website quickly and easily. It is powered by Ziggeo and allows you to add video posts and video comments and so much more.
 Author: Ziggeo
-Version: 2.5
+Version: 2.6
 Author URI: https://ziggeo.com
 Text Domain: ziggeo
 */
@@ -30,7 +30,7 @@ define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . '../ziggeo-userData/');
 define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
 
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
-define('ZIGGEO_VERSION', '2.5');
+define('ZIGGEO_VERSION', '2.6');
 
 //Best to state default code in one location, then just call for it when needed.
 

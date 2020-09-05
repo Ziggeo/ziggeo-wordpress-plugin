@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.5.1
-Stable tag: 2.5
+Stable tag: 2.6
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,16 +264,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.5 =
-* Fixed: One of the hook examples had undeclared value notice shown. This update resolves it.
-* Fixed: The filter which was used to get tags, however ended up clearing the tags
-* Improvement: Added priority to JS hooks to allow us to set when something should fire
-* Improved JS Hooks fire/trigger handler.
-* Moved the changelog info to a new file, reducing the size of readme file.
-* Fixed a bug that showed up when running system that minimizes the files of all plugins.
-* Videolist is now using stretchheight parameter for better playback of portrait videos and no longer uses popups
-* All API calls are now using V2 flavor.
-* Improvement: If API token is not present a warning is shown, to help guide you to plugin settings and allow you to quickly and easily start using our plugin
+= 2.6 =
+* Added: VAST settings have been added to the general tab. To use VAST in your player, just set them up per your requirements and add `preroll adprovider="ziggeo_vast"` to your player template.
 
 == Changelog ==
 

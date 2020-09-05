@@ -347,4 +347,92 @@ function ziggeo_a_s_g_text() {
 			value="<?php echo $option; ?>" />
 		<?php
 	}
+
+
+	//VAST related settings
+	function ziggeo_a_s_g_vast_global_field() {
+		?>
+		<hr class="ziggeo_linespacer">
+		<span class="ziggeo-subframe"><?php _e('VAST (ads) options', 'ziggeo'); ?></span>
+		<?php
+	}
+
+	//The URL that is used to get the ad
+	function ziggeo_a_s_g_vast_adserver_field() {
+		$option = ziggeo_get_plugin_options('vast_adserver');
+
+		?>
+		<input id="ziggeo_vast_adserver" name="ziggeo_video[vast_adserver]" size="50" type="text"
+			placeholder="<?php _e('AdServer URL goes here','ziggeo'); ?>"
+			value="<?php echo $option; ?>" />
+		<?php
+	}
+
+	//The number of seconds to show the SKIP AD button after
+	function ziggeo_a_s_g_vast_skipafter_field() {
+		$option = ziggeo_get_plugin_options('vast_skipafter');
+
+		?>
+		<input id="ziggeo_vast_skipafter" name="ziggeo_video[vast_skipafter]" size="50" type="number"
+			placeholder="<?php _e('Set in seconds','ziggeo'); ?>"
+			value="<?php echo $option; ?>" />
+		<?php
+	}
+
+	//Allows us to set if the ad should be muted when run or not
+	function ziggeo_a_s_g_vast_muted_field() {
+		$option = ziggeo_get_plugin_options('vast_muted');
+
+		?>
+		<input id="ziggeo_vast_muted" name="ziggeo_video[vast_muted]" type="checkbox" value="1"
+			<?php echo checked( 1, $option, false ); ?> />
+		<?php
+	}
+
+	//The Ad title
+	function ziggeo_a_s_g_vast_ad_title_field() {
+		$option = ziggeo_get_plugin_options('vast_ad_title');
+
+		?>
+		<input id="ziggeo_vast_ad_title" name="ziggeo_video[vast_ad_title]" size="50" type="text"
+			placeholder="<?php _e('Ad Title','ziggeo'); ?>"
+			value="<?php echo $option; ?>" />
+		<?php
+	}
+
+	//The Ad description
+	function ziggeo_a_s_g_vast_ad_description_field() {
+		$option = ziggeo_get_plugin_options('vast_ad_description');
+
+		?>
+		<input id="ziggeo_vast_ad_description" name="ziggeo_video[vast_ad_description]" size="50" type="text"
+			placeholder="<?php _e('Ad Description','ziggeo'); ?>"
+			value="<?php echo $option; ?>" />
+		<?php
+	}
+
+	//The Ad ID
+	function ziggeo_a_s_g_vast_ad_id_field() {
+		$option = ziggeo_get_plugin_options('vast_ad_id');
+
+		?>
+		<input id="ziggeo_vast_ad_id" name="ziggeo_video[vast_ad_id]" size="50" type="text"
+			placeholder="<?php _e('Ad ID','ziggeo'); ?>"
+			value="<?php echo $option; ?>" />
+		<?php
+	}
+
+	//The Ad ID
+	function ziggeo_a_s_g_vast_ad_advertiser_field() {
+		$option = ziggeo_get_plugin_options('vast_ad_advertiser');
+
+		?>
+		<input id="ziggeo_vast_ad_advertiser" name="ziggeo_video[vast_ad_advertiser]" size="50" type="text"
+			placeholder="<?php _e('Ad Advertiser','ziggeo'); ?>"
+			value="<?php echo $option; ?>" />
+		<?php
+	}
+
+
+
 ?>
