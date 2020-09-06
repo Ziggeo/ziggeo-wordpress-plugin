@@ -618,6 +618,39 @@ INDEX:
 		background-color: red;
 		color: white;
 	}
+	.ziggeo_videoslist_popup_cover {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(50, 50, 50,20%);
+		z-index: 100000;
+	}
+	.ziggeo_videoslist_popup_frame {
+		width: 50%;
+		border: 4px solid gray;
+		text-align: center;
+		margin: 100px auto;
+		padding: 20px;
+		box-sizing: border-box;
+		border-radius: 20px;
+		background-color: white;
+		box-shadow: 0 0 20px gray;
+	}
+		.ziggeo_videoslist_popup_frame .ziggeo-ctrl-btn {
+			float: right;
+			margin: 10px;
+		}
+		.ziggeo_videoslist_popup_frame textarea {
+			clear: both;
+		}
+		.ziggeo_videoslist_popup_frame textarea[data-format="json"] {
+			background-color: #262a2e;
+			color: lightblue;
+			resize: both;
+			min-height: 200px;
+		}
 
 
 

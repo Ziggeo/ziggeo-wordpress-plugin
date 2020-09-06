@@ -124,7 +124,7 @@
 			//Lets check if we have any integrations and show message if not:
 			if(document.getElementsByClassName('ziggeo_integrations_list')[0].children.length == 0) {
 				var _li = document.createElement('li');
-				_li.innerHTML = 'Search for "Ziggeo" in Wordpress plugins repository to find other plugins that provide you integrations (bridges) between Ziggeo and other plugins.';
+				_li.innerText = 'Search for "Ziggeo" in Wordpress plugins repository to find other plugins that provide you integrations (bridges) between Ziggeo and other plugins.';
 				document.getElementsByClassName('ziggeo_integrations_list')[0].appendChild(_li);
 			}
 
@@ -257,7 +257,7 @@
 
 					for(j = 0, c = fields.length; j < c; j++) {
 						//Param details
-						var param_name = fields[j].children[0].innerHTML;
+						var param_name = fields[j].children[0].innerText;
 						var param_type = fields[j].children[1].children[0].getAttribute('type');
 						var param_value = '';
 
@@ -355,7 +355,7 @@
 		function push(sms, type) {
 
 			var _message = document.getElementById('ziggeo_message');
-			_message.innerHTML = sms;
+			_message.innerText = sms;
 			_message.parentElement.className = 'ziggeo_' + type;
 
 			var _length = 4000;
@@ -996,7 +996,7 @@
 
 		if((elm.className.indexOf('active') > -1 || force_specific === 'simple') && force_specific !== 'advanced') {
 			elm.className = '';
-			elm.firstChild.innerHTML = "Easy Setup";
+			elm.firstChild.innerText = "Easy Setup";
 			section_adv.style.display = 'none';
 			section_simp.style.display = 'block';
 
@@ -1007,7 +1007,7 @@
 		}
 		else {
 			elm.className = 'active';
-			elm.firstChild.innerHTML = "Advanced View";
+			elm.firstChild.innerText = "Advanced View";
 			section_adv.style.display = 'block';
 			section_simp.style.display = 'none';
 
@@ -1488,13 +1488,12 @@
 				}
 			});
 
-
 			_item.appendChild(_p_player);
 			player.activate();
 
 			var _length = document.createElement('div');
 			_length.className = 'video_length';
-			_length.innerHTML = videos[i].duration + 's';
+			_length.innerText = videos[i].duration + 's';
 			_p_player.appendChild(_length);
 
 			_item.appendChild(_tools.cloneNode(true));
@@ -1502,9 +1501,10 @@
 			//Add video info
 			var _info = document.createElement('div');
 			_info.className = 'info';
+			_info.setAttribute('data-token', videos[i].token);
 
 				var _token = document.createElement('div');
-				_token.innerHTML = 'Token: ' +  videos[i].token;
+				_token.innerText = 'Token: ' + videos[i].token;
 				_info.appendChild(_token);
 
 				var _tags = document.createElement('div');
@@ -1513,12 +1513,57 @@
 					for(_i = 0, _c = videos[i].tags.length; _i < _c; _i++) {
 						var _tag = document.createElement('span');
 						_tag.className = 'tag';
-						_tag.innerHTML = videos[i].tags[_i];
+						_tag.innerText = videos[i].tags[_i];
 						_tag.title = 'Search for videos with "' + videos[i].tags[_i] + '"';
 						_tags.appendChild(_tag);
 					}
 				}
+
+				var _edit = document.createElement('span');
+				_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+				_edit.setAttribute('data-action', 'tags');
+				_edit.setAttribute('data-format', 'csv');
+				_edit.innerText = '{edit}';
+
+				_tags.appendChild(_edit);
+
 				_info.appendChild(_tags);
+
+				var _title = document.createElement('div');
+				if(videos[i].title !== null) {
+					_title.innerText = 'Video Title: "' + videos[i].title + '"';
+				}
+				else {
+					_title.innerText = 'Video Title was not set.';
+				}
+
+				var _edit = document.createElement('span');
+				_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+				_edit.setAttribute('data-action', 'title');
+				_edit.setAttribute('data-format', 'text');
+				_edit.innerText = '{edit}';
+
+				_title.appendChild(_edit);
+
+				_info.appendChild(_title);
+
+				var _description = document.createElement('div');
+				if(videos[i].description !== null) {
+					_description.innerText = 'Video Description: "' + videos[i].description + '"';
+				}
+				else {
+					_description.innerText = 'Video Description was not set.';
+				}
+
+				var _edit = document.createElement('span');
+				_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+				_edit.setAttribute('data-action', 'description');
+				_edit.setAttribute('data-format', 'text');
+				_edit.innerText = '{edit}';
+
+				_description.appendChild(_edit);
+
+				_info.appendChild(_description);
 
 			_item.appendChild(_info);
 
@@ -1545,10 +1590,62 @@
 			ziggeoVideosRemove(event.currentTarget);
 		});
 
-		jQuery('#ziggeo-videos .info .tag').on('click', function(event){
-			ziggeoVideosFindByTag(event.currentTarget.innerHTML);
+		jQuery('#ziggeo-videos .ziggeo-btn-custom-data').on('click', function(event){
+			ziggeoVideosEditCustomData(event.currentTarget);
 		});
+
+		jQuery('#ziggeo-videos .info .tag').on('click', function(event){
+			ziggeoVideosFindByTag(event.currentTarget.innerText);
+		});
+
+		jQuery('#ziggeo-videos .ziggeo-btn-edit').on('click', function(event){
+
+			var element_ref = event.currentTarget;
+
+			var media_token = element_ref.parentElement.parentElement.getAttribute('data-token');
+
+			var request = ziggeo_app.videos.get( media_token );
+
+			ZiggeoWP.hooks.set('ziggeo_videolist_info_edit', 'ziggeo_videolist_info_save_on_edit',
+				function(data) {
+					if(data.property === 'title' || data.property === 'description') {
+						//editing textNode not element
+						element_ref.previousSibling.textContent = 'Video ' + data.property + ': "' + data.saved + '"';
+					}
+					else if(data.property === 'tags') {
+						var _tags = element_ref.parentElement;
+						_tags.innerHTML = '';
+
+						if(data.saved.trim() !== '') {
+							var _to_save = data.saved.split(',');
+
+							for(_i = 0, _c = _to_save.length; _i < _c; _i++) {
+								var _tag = document.createElement('span');
+								_tag.className = 'tag';
+								_tag.innerText = _to_save[_i];
+								_tag.title = 'Search for videos with "' + _to_save[_i] + '"';
+								_tags.appendChild(_tag);
+							}
+						}
+						else {
+							_to_save = '';
+						}
+					}
+				});
+
+			request.success( function(video) {
+				ziggeoPUIVideosPopupCreate({
+					data_to_show:   video[element_ref.getAttribute('data-action')],
+					data_saved:     element_ref.getAttribute('data-action'),
+					media_token:    media_token,
+					format:         element_ref.getAttribute('data-format'),
+					allowed:        'edit'
+				});
+			});
+		});
+
 	}
+
 
 	//This is a proxy for ziggeoPUIVideosHasVideos. It first checks the videos, then sends them there
 	function ziggeoPUIVideosHasVideosApproved(videos) {
@@ -1629,6 +1726,11 @@
 		_delete.title = 'Remove';
 		_tools.appendChild(_delete);
 
+		var _custom_data = document.createElement('div');
+		_custom_data.className = 'ziggeo-btn-custom-data dashicons-edit-page';
+		_custom_data.title = 'See & Edit Custom Data';
+		_tools.appendChild(_custom_data);
+
 		return _tools;
 	}
 
@@ -1638,14 +1740,14 @@
 		_v_info.className = 'video_details';
 
 		var _lbl_title = document.createElement('label');
-		_lbl_title.innerHTML = 'Video Title: ';
+		_lbl_title.innerText = 'Video Title: ';
 
 		var _input_title = document.createElement('input');
 		_input_title.className = 'video_title';
 		_lbl_title.appendChild(_input_title);
 
 		var _lbl_desc = document.createElement('label');
-		_lbl_desc.innerHTML = 'Video Description: ';
+		_lbl_desc.innerText = 'Video Description: ';
 
 		var _input_desc = document.createElement('textarea');
 		_input_desc.className = 'video_desc';
@@ -1691,13 +1793,13 @@
 
 				request.success( function() {
 					element_ref = element_ref.parentElement.parentElement;
-					element_ref.style.transition = '4s all ease-in-out';
-    				element_ref.style.maxHeight = '0px';
-    				element_ref.style.backgroundColor = 'red';
+					element_ref.style.transition = '2s all ease-in-out';
+					element_ref.style.maxHeight = '0px';
+					element_ref.style.backgroundColor = 'red';
 
-    				setTimeout(function() {
-    					element_ref.parentElement.removeChild(element_ref);
-    				}, 3800);
+					setTimeout(function() {
+						element_ref.parentElement.removeChild(element_ref);
+					}, 3800);
 				});
 			}
 		}
@@ -1710,6 +1812,128 @@
 
 			//alert('URL for video is: https://' + ZiggeoWP.video_list[_video_ref].embed_video_url);
 			alert('URL for video is: https://ziggeo.io/p/' + ZiggeoWP.video_list[_video_ref].token);
+		}
+	}
+
+	if(typeof ziggeoVideosEditCustomData !== 'function') {
+		function ziggeoVideosEditCustomData(element_ref) {
+			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
+
+			var request = ziggeo_app.videos.get( ZiggeoWP.video_list[_video_ref].token );
+
+			request.success( function(video) {
+				ziggeoPUIVideosPopupCreate({
+					data_to_show:   video.data,
+					data_saved:     'data',
+					media_token:    ZiggeoWP.video_list[_video_ref].token,
+					format:         'json',
+					allowed:        'edit',
+				});
+			});
+		}
+	}
+
+	//Create popup
+	function ziggeoPUIVideosPopupCreate(obj_data) {
+
+		//If it exists, destroy the previous one..
+		if(document.getElementsByClassName('ziggeo_videoslist_cover').length > 0) {
+			ziggeoPUIVideosPopupDestroy();
+		}
+
+		var cover = document.createElement('div');
+		cover.className = 'ziggeo_videoslist_popup_cover';
+
+		var inner = document.createElement('div');
+		inner.className = 'ziggeo_videoslist_popup_frame';
+
+			var btn_save = document.createElement('div');
+			btn_save.className = 'ziggeo-ctrl-btn ziggeo-btn-popup-save';
+			btn_save.innerText = 'Save';
+
+			var btn_cancel = document.createElement('div');
+			btn_cancel.className = 'ziggeo-ctrl-btn ziggeo-btn-popup-cancel';
+			btn_cancel.innerText = 'Cancel';
+
+			inner.appendChild(btn_save);
+			inner.appendChild(btn_cancel);
+
+			var _textarea = document.createElement('textarea');
+
+			//We need to handle different types of data differently
+			if(obj_data.format === 'json') {
+				if(obj_data.data_to_show === null) {
+					_textarea.value = '{}';
+				}
+				else {
+					_textarea.value = JSON.stringify(obj_data.data_to_show).replace(/{/g, '{\n\t').replace(/\",\"/g, '",\n\t"').replace(/\"}/g, '"\n}');
+				}
+			}
+			else {
+				_textarea.value = obj_data.data_to_show;
+			}
+
+			_textarea.setAttribute('data-format', obj_data.format);
+
+			if(obj_data.allowed !== 'edit') {
+				_textarea.disabled = 'disabled';
+			}
+
+			inner.appendChild(_textarea);
+
+		cover.appendChild(inner);
+		document.body.appendChild(cover);
+
+		jQuery('.ziggeo_videoslist_popup_frame .ziggeo-btn-popup-save').on('click', function(event) {
+
+			//We need to prepare the data:
+			if(obj_data.format === 'json') {
+				var data_to_save = JSON.stringify( JSON.parse(_textarea.value) );
+			}
+			else if(obj_data.format === 'csv') {
+				var data_to_save = _textarea.value.replace(/ /g, ' ').replace(/\n/g, '').replace(/\t/g,'').replace(/, /g, ',');
+			}
+			else {
+				var data_to_save = _textarea.value;
+			}
+
+			var obj_save = {};
+			obj_save[obj_data.data_saved] = data_to_save;
+
+			var result = ziggeo_app.videos.update(obj_data.media_token, obj_save);
+
+			result.success( function() {
+				_textarea.style.border = '1px solid green';
+				_textarea.style.boxShadow = '0 0 10px green';
+
+				ZiggeoWP.hooks.fire('ziggeo_videolist_info_edit', {
+					property:   obj_data.data_saved,
+					saved:      data_to_save,
+					format:     obj_data.format
+				});
+
+				setTimeout(function() {
+					ziggeoPUIVideosPopupDestroy();
+				}, 1000);
+			});
+
+			result.error( function(error) {
+				_textarea.style.border = '1px solid red';
+				_textarea.style.boxShadow = '0 0 10px red';
+				alert(error);
+			});
+		});
+
+		jQuery('.ziggeo_videoslist_popup_frame .ziggeo-btn-popup-cancel').on('click', function(event) {
+			ziggeoPUIVideosPopupDestroy();
+		});
+	}
+
+	function ziggeoPUIVideosPopupDestroy() {
+		var list = document.getElementsByClassName('ziggeo_videoslist_popup_cover');
+
+		for(i = 0; i < list.length; i++) {
+			list[i].parentElement.removeChild(list[i]);
 		}
 	}
 
@@ -1728,7 +1952,7 @@
 		var _nav = document.getElementById('ziggeo-videos-nav');
 		_nav.className = _nav.className.replace('disabled', '');
 		//Clear it up
-		_nav.innerHTML = '';
+		_nav.innerText = '';
 
 		for(i = 0, c = Math.floor(ZiggeoWP.video_list.length / 10); i < c; i++) {
 			var _btn = document.createElement('div');
@@ -1738,7 +1962,7 @@
 				_btn.className += ' disabled';
 			}
 
-			_btn.innerHTML = i+1;
+			_btn.innerText = i+1;
 
 			_nav.appendChild(_btn);
 		}
@@ -1747,7 +1971,7 @@
 
 		//Set the event
 		jQuery('#ziggeo-videos-nav .ziggeo-ctrl-btn').on('click', function( event ) {
-			ziggeoPUIVideosPageSwitch(event.currentTarget.innerHTML * 1);
+			ziggeoPUIVideosPageSwitch(event.currentTarget.innerText * 1);
 		});
 	}
 

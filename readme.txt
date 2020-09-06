@@ -266,6 +266,9 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 = 2.6 =
 * Added: VAST settings have been added to the general tab. To use VAST in your player, just set them up per your requirements and add `preroll adprovider="ziggeo_vast"` to your player template.
+* Added: Videolist page now shows additional details (video title and video description).
+* Added: Videolist page now has the option to see and edit custom data
+* Added: Edit option has been added to the videolist page videos, allowing you to edit tags, title and description from within your Wordpress admin dashboard.
 
 == Changelog ==
 
