@@ -266,6 +266,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 = 2.7 =
 * Improvement: Slight change of CSS to make the snapshots shown better in the video list page, regardless of their orientation or aspect ratio.
+* Improvement: The duration of video is no longer going behind videos rather it is shown above them.
 
 == Changelog ==
 

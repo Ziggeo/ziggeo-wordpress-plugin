@@ -530,6 +530,7 @@ INDEX:
 		background-color: whitesmoke;
 		border-radius: 10px;
 		box-shadow: 2px 2px 4px gray;
+		z-index: 1;
 	}
 	.video_list_item > .toolsbar {
 		display: inline-block;
