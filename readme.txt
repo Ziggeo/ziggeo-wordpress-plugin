@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.5.1
-Stable tag: 2.6
+Stable tag: 2.7
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,11 +264,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.6 =
-* Added: VAST settings have been added to the general tab. To use VAST in your player, just set them up per your requirements and add `preroll adprovider="ziggeo_vast"` to your player template.
-* Added: Videolist page now shows additional details (video title and video description).
-* Added: Videolist page now has the option to see and edit custom data
-* Added: Edit option has been added to the videolist page videos, allowing you to edit tags, title and description from within your Wordpress admin dashboard.
+= 2.7 =
+* Improvement: Slight change of CSS to make the snapshots shown better in the video list page, regardless of their orientation or aspect ratio.
 
 == Changelog ==
 

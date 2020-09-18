@@ -651,6 +651,13 @@ INDEX:
 			resize: both;
 			min-height: 200px;
 		}
+	.video_list_item .ba-videoplayer-container img {
+		width: auto;
+		height: 180px;
+		display: inline-block;
+		position: relative;
+		min-width: auto;
+	}
 
 
 

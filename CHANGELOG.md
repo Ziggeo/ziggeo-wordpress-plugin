@@ -1,5 +1,11 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.6 =
+* Added: VAST settings have been added to the general tab. To use VAST in your player, just set them up per your requirements and add `preroll adprovider="ziggeo_vast"` to your player template.
+* Added: Videolist page now shows additional details (video title and video description).
+* Added: Videolist page now has the option to see and edit custom data
+* Added: Edit option has been added to the videolist page videos, allowing you to edit tags, title and description from within your Wordpress admin dashboard.
+
 = 2.5 =
 * Fixed: One of the hook examples had undeclared value notice shown. This update resolves it.
 * Fixed: The filter which was used to get tags, however ended up clearing the tags
