@@ -20,7 +20,10 @@ function ziggeo_p_filters_init() {
 //Add support for the shortcodes
 function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
 
-	define('ZIGGEO_SHORTCODE_RUN', true);
+	if(!defined('ZIGGEO_SHORTCODE_RUN')) {
+		//@TODO - will likely remove this
+		define('ZIGGEO_SHORTCODE_RUN', true);
+	}
 
 	$attrs_str = '';
 
@@ -77,6 +80,18 @@ function ziggeo_p_content_filter($content) {
 //This works like shortcode functions do, allowing us to capture the codes through various filters and parse them as needed.
 //TODO: This needs to be broken up and simplified.
 function ziggeo_p_content_parse_templates($matches) {
+
+	//Elementor support
+	for($i = 0, $l = count($matches); $i < $l; $i++) {
+		$matches[$i] = str_replace(' 0=', '', $matches[$i]);
+	}
+
+	if($l === 2 && ziggeo_p_template_exists(trim($matches[1], "'"))) {
+		$tmp = $matches[1];
+		$matches[1] = ziggeo_p_template_exists(trim($matches[1], "'"));
+		$matches[0] = str_replace($tmp, $matches[1], $matches[0]);
+	}
+
 	//The new templates called the old way..[ziggeoplayer]TOKEN[/ziggeoplayer]
 	//if this is detected, we re-do the call by modifying the parameters and re-calling this function
 	//handles: [ziggeo]token[/ziggeo], [ziggeoplayer]TOKEN[/ziggeoplayer], [ziggeorecorder]
