@@ -267,6 +267,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 = 2.7 =
 * Improvement: Slight change of CSS to make the snapshots shown better in the video list page, regardless of their orientation or aspect ratio.
 * Improvement: The duration of video is no longer going behind videos rather it is shown above them.
+* Improvement: Added a check if the constant was already defined allowing multiple shortcodes to run in same time without issue. Devs - the shortcode constant will be removed in future versions.
 * Support: Added support for Elementor Text with Ziggeo shortcodes. In some area Elementor applies additional details to the content making ID not picked properly as it would within the Elementor shortcode field. The added support helps with the default alterations done by Elementor.
 
 == Changelog ==
