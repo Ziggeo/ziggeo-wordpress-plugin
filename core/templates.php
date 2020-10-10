@@ -323,6 +323,24 @@ defined('ABSPATH') or die();
 		return false;
 	}
 
+	//Function that tries to deliver the string of a template in a safe manner. On fail it returns empty string
+	function ziggeo_p_get_template_code_safe($id = '') {
+		$code = ziggeo_p_template_exists($id);
+
+		if($code === false) {
+			return '';
+		}
+
+		//We first escape any single quotes
+		$code = str_replace("'", "\'", $code);
+		//Now we fix if we added double quotes by some chance:
+		$code = str_replace("\\\'", "\'", $code);
+		//We replace the double quotes with single quotes
+		$code = str_replace('"', "'", $code);
+
+		return $code;
+	}
+
 
 
 

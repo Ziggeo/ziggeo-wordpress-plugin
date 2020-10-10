@@ -28,6 +28,11 @@ function ziggeo_p_page_header() {
 			//Ajax nonce
 			ajax_nonce: "<?php echo wp_create_nonce('ziggeo_ajax_nonce'); ?>",
 			ajax_url: "<?php echo admin_url('admin-ajax.php'); ?>",
+
+			//Integrations info
+			integrations_code_recorder: "<?php echo ziggeo_p_get_template_code_safe($options['integrations_recorder_template']); ?>",
+			integrations_code_player: "<?php echo ziggeo_p_get_template_code_safe($options['integrations_player_template']); ?>",
+
 			//Hooks object
 			hooks: {
 				_hooks: {},

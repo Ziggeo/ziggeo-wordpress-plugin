@@ -265,6 +265,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 == Upgrade notice ==
 
 = 2.7 =
+* Addition: Added 2 new properties to ZiggeoWP on JS side, where `integrations_code_recorder` holds the template codes (RAW) for recorder and `integrations_code_player` for player. Some parsing might be needed for adding it on page depending on the workflow.
 * Improvement: Slight change of CSS to make the snapshots shown better in the video list page, regardless of their orientation or aspect ratio.
 * Improvement: The duration of video is no longer going behind videos rather it is shown above them.
 * Improvement: Added a check if the constant was already defined allowing multiple shortcodes to run in same time without issue. Devs - the shortcode constant will be removed in future versions.
