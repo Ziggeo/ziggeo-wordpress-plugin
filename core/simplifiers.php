@@ -390,6 +390,7 @@ function ziggeo_create_toolbar_button($id='', $title = '', $icon='video-alt', $v
 		$code .= ' style="display:none;" ';
 	}
 	$code .= ' onclick="return false;"';
+	$code .= ' data-toolbar-item="true" dataset="{toolbarItem: false}"';
 	$code .= '>';
 	$code .= '<span class="dashicons dashicons-' . $icon . '"></span> ' . $title . ' </a>';
 

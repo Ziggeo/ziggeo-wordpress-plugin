@@ -755,7 +755,8 @@
 			ziggeoTemplateSetTemplateObject(selected.getAttribute('data-template').replace(/\\'/g, "'"));
 
 			//The code that is shown
-			editor.value = selected.getAttribute('data-template').replace(/\\'/g, "'");
+			// * to help with apostrophes in the custom text fields
+			editor.value = selected.getAttribute('data-template').replace(/\\'/g,"||").replace(/'/g,'&apos;').replace(/\|\|/g, "'")
 
 			var template_base = editor.value.substr(0, editor.value.indexOf(' ') );
 
@@ -1099,6 +1100,8 @@
 		var toolbar_placeholder = document.createElement('div');
 		toolbar_placeholder.id = 'ziggeo_toolbar_holder';
 		toolbar_placeholder.style.display = 'none';
+		toolbar_placeholder.setAttribute('data-toolbar-item', true);
+		toolbar_placeholder.setAttribute('dataset', {toolbarItem: false});
 
 		_t.appendChild(toolbar_placeholder);
 

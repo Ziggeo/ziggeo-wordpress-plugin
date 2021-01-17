@@ -1,5 +1,13 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.7 =
+* Addition: Added 2 new properties to ZiggeoWP on JS side, where `integrations_code_recorder` holds the template codes (RAW) for recorder and `integrations_code_player` for player. Some parsing might be needed for adding it on page depending on the workflow.
+* Improvement: Slight change of CSS to make the snapshots shown better in the video list page, regardless of their orientation or aspect ratio.
+* Improvement: The duration of video is no longer going behind videos rather it is shown above them.
+* Improvement: Added a check if the constant was already defined allowing multiple shortcodes to run in same time without issue. Devs - the shortcode constant will be removed in future versions.
+* Support: Added support for Elementor Text with Ziggeo shortcodes. In some area Elementor applies additional details to the content making ID not picked properly as it would within the Elementor shortcode field. The added support helps with the default alterations done by Elementor.
+* Fix: When providing a filter hook wrong function name was used, which could have resulted in an error. Spotted with Advanced Custom Fields bridge plugin.
+
 = 2.6 =
 * Added: VAST settings have been added to the general tab. To use VAST in your player, just set them up per your requirements and add `preroll adprovider="ziggeo_vast"` to your player template.
 * Added: Videolist page now shows additional details (video title and video description).

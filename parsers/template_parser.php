@@ -91,8 +91,11 @@ function ziggeo_p_parameter_prep($data) {
 			if( stripos($value, 'ziggeo-') > -1 ) {
 				//seems that ziggeo- prefix is already present.. should we do something then, or just skip it?
 			}
-			else {
+			elseif(stripos($value, '=') > -1) {
 				$tmp_str2 .= ' ziggeo-' . $value;
+			}
+			else {
+				$tmp_str2 .= ' ' . $value;
 			}
 		}
 	}

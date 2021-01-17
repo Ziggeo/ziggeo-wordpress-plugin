@@ -215,7 +215,7 @@ function ziggeo_p_page_header() {
 						id: '<?php echo $options['vast_ad_id']; ?>',
 						<?php
 					}
-					if (!empty($options['vast_ad_id'])) {
+					if (!empty($options['vast_ad_advertiser'])) {
 						?>
 						advertiser: '<?php echo $options['vast_ad_advertiser']; ?>',
 						<?php
@@ -278,7 +278,7 @@ function ziggeo_p_page_header() {
 								id: '<?php echo $options['vast_ad_id']; ?>',
 								<?php
 							}
-							if (!empty($options['vast_ad_id'])) {
+							if (!empty($options['vast_ad_advertiser'])) {
 								?>
 								advertiser: '<?php echo $options['vast_ad_advertiser']; ?>',
 								<?php

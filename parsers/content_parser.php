@@ -81,7 +81,7 @@ function ziggeo_p_content_filter($content) {
 //TODO: This needs to be broken up and simplified.
 function ziggeo_p_content_parse_templates($matches) {
 
-	//Elementor support
+	//Elementor Support START
 	for($i = 0, $l = count($matches); $i < $l; $i++) {
 		$matches[$i] = str_replace(' 0=', '', $matches[$i]);
 	}
@@ -89,13 +89,14 @@ function ziggeo_p_content_parse_templates($matches) {
 	if($l === 2 && ziggeo_p_template_exists(trim($matches[1], "'"))) {
 		$tmp = $matches[1];
 		$matches[1] = ziggeo_p_template_exists(trim($matches[1], "'"));
-		$matches[0] = str_replace($tmp, $matches[1], $matches[0]);
+		//$matches[0] = str_replace($tmp, $matches[1], $matches[0]);
+		$matches[0] = $matches[1];
 	}
+	//-- Elementor Support END
 
 	//The new templates called the old way..[ziggeoplayer]TOKEN[/ziggeoplayer]
 	//if this is detected, we re-do the call by modifying the parameters and re-calling this function
 	//handles: [ziggeo]token[/ziggeo], [ziggeoplayer]TOKEN[/ziggeoplayer], [ziggeorecorder]
-
 	if(isset($matches, $matches[3]) && trim($matches[3]) !== '') {
 		//In case this is not set up right, which can happen in some cases
 		// such as [ziggeo]e8c1ae11cf40d579e9bb38d4e0c55fa7[/ziggeo]
@@ -107,6 +108,14 @@ function ziggeo_p_content_parse_templates($matches) {
 
 		//$template, $token, $type
 		return ziggeo_content_parse_with_token_only($matches[0], $matches[2], $matches[3]);
+	}
+
+	//Is this a template?
+	$existing_template = ziggeo_p_template_exists(str_replace(array('[ziggeo ', '[ziggeorecorder ', '[ziggeoplayer ', '[ziggeorerecorder ', '[ziggeouploader ', ']'), '', trim($matches[0] )));
+
+	//Early template catch
+	if($existing_template) {
+		return ziggeo_p_content_parse_templates(array($existing_template, $existing_template));
 	}
 
 	// the variable that we will use to return the data

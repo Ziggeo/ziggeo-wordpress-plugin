@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.5.1
-Stable tag: 2.7
+Stable tag: 2.8
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,13 +264,12 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.7 =
-* Addition: Added 2 new properties to ZiggeoWP on JS side, where `integrations_code_recorder` holds the template codes (RAW) for recorder and `integrations_code_player` for player. Some parsing might be needed for adding it on page depending on the workflow.
-* Improvement: Slight change of CSS to make the snapshots shown better in the video list page, regardless of their orientation or aspect ratio.
-* Improvement: The duration of video is no longer going behind videos rather it is shown above them.
-* Improvement: Added a check if the constant was already defined allowing multiple shortcodes to run in same time without issue. Devs - the shortcode constant will be removed in future versions.
-* Support: Added support for Elementor Text with Ziggeo shortcodes. In some area Elementor applies additional details to the content making ID not picked properly as it would within the Elementor shortcode field. The added support helps with the default alterations done by Elementor.
-* Fix: When providing a filter hook wrong function name was used, which could have resulted in an error. Spotted with Advanced Custom Fields bridge plugin.
+= 2.8 =
+* Fix: Toolbar buttons showing up again
+* Fix: Some CSS errors were failing silently, these are now fixed.
+* Improvement: Handling of parameters that accept custom text is now better
+* Improvement: Changed the way the code parsing is done allowing the templates to be picked up on faster
+* Improvement: Parsing templates by template ID has been improved
 
 == Changelog ==
 
