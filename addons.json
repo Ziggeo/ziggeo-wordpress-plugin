@@ -11,6 +11,12 @@
 			"github": "https://github.com/Ziggeo/ziggeo-wp-videowalls-for-ziggeo"
 		}
 	},
+	"ziggeo-media-for-acf": {
+		"url": {
+			"wordpress": "",
+			"github": "https://github.com/Ziggeo/ziggeo-wp-media-for-advanced-custom-fields"
+		}
+	},
 	"ziggeo-video-for-bbpress": {
 		"url": {
 			"wordpress": "https://wordpress.org/plugins/ziggeo-video-for-bbpress/",
