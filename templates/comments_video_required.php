@@ -116,33 +116,36 @@ if(!function_exists('ziggeo_comment_vrto_js_code')) {
 			//Show video after recording
 			ziggeo_app.embed_events.on("verified", function (embedding) {
 
-				var ziggeoToken = document.getElementById('ziggeo_video_token');
+				var ziggeo_token = document.getElementById('ziggeo_video_token');
 				<?php
 				if($template_player) {
 					?>
 						//Lets add the default value into the box
-						ziggeoToken.value = '<?php echo $template_player ?>';
+						ziggeo_token.value = '[ziggeoplayer ' + '<?php echo $template_player ?>';
 						//Now we have both the token and the template. We should search the template to see if token="" is present and if so, just insert the video token into quotes, otherwise, we would need to add the token attribute and show it up.
-						if( (indexS = ziggeoToken.value.indexOf(' video') ) > -1 ||
-							(indexS = ziggeoToken.value.indexOf(' ziggeo-video') ) > -1) {
+						if( (indexS = ziggeo_token.value.indexOf(' video') ) > -1 ||
+							(indexS = ziggeo_token.value.indexOf(' ziggeo-video') ) > -1) {
 
 							//Lets grab the ending as well
-							var indexE = ziggeoToken.value.indexOf(' ', indexS);
-							ziggeoToken.value = ziggeoToken.value.substr(0, indexS) + ' video="' + embedding.get('video') + '"' + ziggeoToken.value.substr(index + indexE + 2)
+							var indexE = ziggeo_token.value.indexOf(' ', indexS);
+							ziggeo_token.value = ziggeo_token.value.substr(0, indexS) + ' video="' + embedding.get('video') + '"' + ziggeo_token.value.substr(index + indexE + 2)
+						}
+						else {
+							ziggeo_token.value += ' ziggeo-video="' + embedding.get('video') + '" ]';
 						}
 					<?php
 				}
 				//It is not tempalte that we are using, we are just saving it with the parameters..
 				elseif( !empty($template_player) ) {
 					?>
-					ziggeoToken.value = '[ziggeoplayer <?php echo $template_player; ?> video="' + embedding.get('video') + '" ]';
+					ziggeo_token.value = '[ziggeoplayer <?php echo $template_player; ?> video="' + embedding.get('video') + '" ]';
 					<?php
 					//[ziggeo ziggeo-width=480 ziggeo-height=360 video="token" ]
 				}
 				//Fallback to the previous method of embedding. Should not come to it, but just in case it does, we have it here, ready to capture the same.
 				else {
 					?>
-					ziggeoToken.value = '[ziggeoplayer]' + embedding.get('video') + '[/ziggeoplayer]';
+					ziggeo_token.value = '[ziggeoplayer]' + embedding.get('video') + '[/ziggeoplayer]';
 					<?php
 				}
 				?>

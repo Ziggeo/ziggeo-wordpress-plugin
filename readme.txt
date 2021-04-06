@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.6
-Stable tag: 2.8
+Stable tag: 2.9
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,12 +264,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.8 =
-* Fix: Toolbar buttons showing up again
-* Fix: Some CSS errors were failing silently, these are now fixed.
-* Improvement: Handling of parameters that accept custom text is now better
-* Improvement: Changed the way the code parsing is done allowing the templates to be picked up on faster
-* Improvement: Parsing templates by template ID has been improved
+= 2.9 =
+* Fix: In some scenarios the comments would get broken video player code. Now this has been fixed.
 
 == Changelog ==
 

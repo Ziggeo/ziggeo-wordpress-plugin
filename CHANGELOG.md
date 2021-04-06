@@ -1,5 +1,12 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.8 =
+* Fix: Toolbar buttons showing up again
+* Fix: Some CSS errors were failing silently, these are now fixed.
+* Improvement: Handling of parameters that accept custom text is now better
+* Improvement: Changed the way the code parsing is done allowing the templates to be picked up on faster
+* Improvement: Parsing templates by template ID has been improved
+
 = 2.7 =
 * Addition: Added 2 new properties to ZiggeoWP on JS side, where `integrations_code_recorder` holds the template codes (RAW) for recorder and `integrations_code_player` for player. Some parsing might be needed for adding it on page depending on the workflow.
 * Improvement: Slight change of CSS to make the snapshots shown better in the video list page, regardless of their orientation or aspect ratio.
