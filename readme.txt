@@ -266,6 +266,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 = 2.9 =
 * Fix: In some scenarios the comments would get broken video player code. Now this has been fixed.
+* Improvement: Added SDK pages to the plugin (requires you to download the SDK manually - for security reasons)
 
 == Changelog ==
 

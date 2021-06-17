@@ -280,10 +280,6 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_expert');
 
-		/* - set of for next version
-		//@ADD option to turn on the SDK, if done, then we could tell them which version to download as well and from where and how to manually add it
-		// * This would be preferred over adding the SDK manually as part of the plugin itself
-
 		// Ziggeo Private token
 		add_settings_field('ziggeo_private_token',
 							__('Ziggeo API Private Token', 'ziggeo'),
@@ -297,7 +293,6 @@ function ziggeo_p_admin_init() {
 							'ziggeo_a_s_e_encryption_token_field',
 							'ziggeo_video',
 							'ziggeo_video_expert');
-		*/
 
 		// Ziggeo Server Auth token
 		add_settings_field('ziggeo_server_auth_token',

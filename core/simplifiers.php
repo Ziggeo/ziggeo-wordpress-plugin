@@ -397,5 +397,57 @@ function ziggeo_create_toolbar_button($id='', $title = '', $icon='video-alt', $v
 	return $code;
 }
 
+// Use this function to include the 
+// Devs: On true, you will need to also call ziggeo_p_sdk_init() function (see core/sdk.php)
+function ziggeo_p_include_sdk() {
+	//Includes the additional functionality for the SDK
+	if(file_exists(ZIGGEO_ROOT_PATH . 'sdk/Ziggeo.php')) {
+		include_once(ZIGGEO_ROOT_PATH . '/core/sdk.php');
+		include_once(ZIGGEO_ROOT_PATH . '/sdk/Ziggeo.php');
+		return true;
+	}
+
+	return false;
+}
+
+// Function to tell you if you can call the SDK functions or if it is not possible to do it at this time.
+function ziggeo_p_sdk_usable() {
+	global $ziggeo_sdk;
+
+	if(!file_exists(ZIGGEO_ROOT_PATH . 'sdk/Ziggeo.php')) {
+		return false;
+	}
+
+	if($ziggeo_sdk === null) {
+		return false;
+	}
+
+	return true;
+}
+
+// Function to get back all of the tokens that are added to the list (requires at least app token and private key)
+// returns the list of all key combos or the match to provided one
+function ziggeo_p_get_keys($app_token = null) {
+	//Get the default ones
+	$options = ziggeo_get_plugin_options();
+	$applications = get_option('ziggeo_keys');
+
+	$the_list = [];
+
+	$the_list[] = array(
+						'app_token'     => $options['token'],
+						'private'       => $options['p_token'],
+						'encryption'    => $options['e_token'],
+						'title'         => 'Default Application'
+	);
+
+	if(is_array($applications)) {
+		return array_merge($the_list, $applications);
+	}
+	else {
+		return $the_list;
+	}
+
+}
 
 ?>

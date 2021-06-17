@@ -100,6 +100,18 @@ function ziggeo_p_assets_admin() {
 	//Enqueue admin panel styles
 	wp_register_style('ziggeo-admin-css', ZIGGEO_ROOT_URL . 'assets/css/admin-styles.css', array());
 	wp_enqueue_style('ziggeo-admin-css');
+
+
+	if(get_current_screen()->id === 'ziggeo-video_page_ziggeo_sdk') {
+		//Adding support for charts
+		wp_register_script('chart-js', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js');
+		wp_enqueue_script('chart-js');
+		//This is usually added into Admin, however just being safe
+		wp_enqueue_script('jquery-ui-datepicker');
+		//To add support for the drag and drop on our SDK pages
+		wp_enqueue_script("jquery-ui-draggable");
+	}
+
 }
 
 add_action('wp_enqueue_scripts', "ziggeo_p_assets_global");

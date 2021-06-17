@@ -133,8 +133,7 @@ function ziggeo_a_s_e_text() {
 		<?php	
 	}
 
-	/*
-	//@ADD - set for next version
+	//Field to accept the private token
 	function ziggeo_a_s_e_private_token_field() {
 		$option = ziggeo_get_plugin_options('p_token');
 
@@ -145,6 +144,7 @@ function ziggeo_a_s_e_text() {
 		<?php
 	}
 
+	//Field to accept the encryption token
 	function ziggeo_a_s_e_encryption_token_field() {
 		$option = ziggeo_get_plugin_options('e_token');
 		?>
@@ -153,7 +153,6 @@ function ziggeo_a_s_e_text() {
 			value="<?php echo $option; ?>" />
 		<?php
 	}
-	*/
 
 	//Sync field allowing everyone to sync the templates that are in files with templates that are in DB.
 	// It uses addition approach, so if some are missing in one, they will be added to it, while none would be removed

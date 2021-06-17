@@ -32,6 +32,8 @@ function ziggeo_p_page_header() {
 			//Integrations info
 			integrations_code_recorder: "<?php echo ziggeo_p_get_template_code_safe($options['integrations_recorder_template']); ?>",
 			integrations_code_player: "<?php echo ziggeo_p_get_template_code_safe($options['integrations_player_template']); ?>",
+			format_date: "<?php echo get_option('date_format') ?>",
+			format_time: "<?php echo get_option('time_format') ?>",
 
 			//Hooks object
 			hooks: {

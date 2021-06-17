@@ -12,6 +12,7 @@
 //		* ziggeoPOnboard()
 //		* ziggeoPUIFeedbackRemoval()
 //		* ziggeoPUIMessenger()
+//		* ziggeoPUISDKInit()
 // 3. Templates Editor
 //		* ziggeoGetEditor()
 //		3.1. Templates
@@ -60,6 +61,8 @@
 // 8. Addons page
 //		* ziggeoPUIAddonsInit()
 //		* ziggeoPUIAddonsSwitch()
+// 9. SDK Page
+//		* 
 
 /////////////////////////////////////////////////
 // 1. DASHBOARD                                //
@@ -147,6 +150,10 @@
 
 		if(document.getElementById('ziggeo-addons-nav')) {
 			ziggeoPUIAddonsInit();
+		}
+
+		if(document.getElementById('ziggeo-sdk-pages')) {
+			ziggeoPUISDKInit();
 		}
 	});
 
@@ -405,6 +412,144 @@
 			push: push,
 			hide: hide
 		};
+	}
+
+	//Add functionality to the butons on the SDK page
+	function ziggeoPUISDKInit() {
+
+		var i, l, j, c;
+
+		var tabs = document.getElementsByClassName('ziggeo_tab');
+
+		//Support for clicking on tabs
+		for(i = 0, c = tabs.length; i < c; i++) {
+			tabs[i].addEventListener('click', function(e) {
+				var current = document.getElementsByClassName('ziggeo_tab selected')[0];
+				current.className = 'ziggeo_tab';
+				document.getElementById('ziggeo_tab_' + current.getAttribute('data-tab')).style.display = 'none';
+
+				var tab = e.target;
+				tab.className += ' selected';
+				document.getElementById('ziggeo_tab_' + tab.getAttribute('data-tab')).style.display = 'block';
+			});
+		}
+
+		// Set the click event for the fields within the application segment
+		document.getElementById('ziggeo_tab_applications').addEventListener('click', function(event) {
+			var current_element = event.target;
+
+			//Quick filter
+			if(current_element.tagName !== 'SPAN') {
+				return false;
+			}
+
+			//Only do this on actual buttons
+			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
+				//standard buttons
+				if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
+					ziggeoPUISDKButtons(current_element);
+				}
+			}
+			//image radio buttons (on/off)
+			else if(current_element.className.indexOf('ziggeo-ctrl-img-toggle') > -1) {
+				ziggeoPUISDKImageToggle(current_element);
+			}
+
+		});
+
+		// Set the click event for the fields within the application segment
+		document.getElementById('ziggeo_tab_analytics').addEventListener('click', function(event) {
+			var current_element = event.target;
+
+			//Quick filter
+			if(current_element.tagName !== 'SPAN') {
+				return false;
+			}
+
+			//Only do this on actual buttons
+			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
+				//standard buttons
+				if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
+					ziggeoPUISDKButtons(current_element);
+				}
+			}
+
+		});
+
+		// OnChange event handler for selects
+		var dropdowns = document.getElementsByClassName('ziggeo-sdk-ajax-dropdown');
+
+		for(i = 0, c = dropdowns.length; i < c; i++) {
+			var _current = dropdowns[i];
+			_current.addEventListener('change', function() {
+				ziggeoPUISDKDropdown(_current);
+			});
+		}
+
+		//Add calendars to our page
+		jQuery('#calendar_from').datepicker({
+			dateFormat: '@', // This makes it return Unix time.
+			onSelect: function(str_date, instance) {
+				document.getElementById('analytics-from').value = str_date;
+			}
+		});
+
+		jQuery('#calendar_to').datepicker({
+			dateFormat: '@', // This makes it return Unix time.
+			buttonText: "To",
+			onSelect: function(str_date, instance) {
+				document.getElementById('analytics-to').value = str_date;
+			}
+		});
+
+		//Set the click event
+		document.getElementById('ziggeo_tab_effectprofiles').addEventListener('click', function(event) {
+			var current_element = event.target;
+
+			//Quick filter
+			if(current_element.tagName !== 'SPAN') {
+				return false;
+			}
+
+			//Only do this on actual buttons
+			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
+				if(current_element.className.indexOf('ziggeo-sdk-ajax-form') > -1) {
+					ziggeoPUISDKEffectProfilesButtonForms(current_element);
+				}
+				else if(current_element.className.indexOf('ziggeo-ctrl-form-popup') > -1) {
+					ziggeoPUISDKEffectProfilesButtonFormPopup(current_element);
+				}
+				else if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
+					ziggeoPUISDKEffectProfilesButtons(current_element);
+				}
+			}
+
+		});
+
+		// This allows us to change the application that is used on the SDK page
+		document.getElementById('applications_list').addEventListener('change', function(e) {
+			var _current = e.target;
+
+			var text = _current[_current.selectedIndex].innerText;
+			document.getElementById('ziggeo_title_app').innerText = '(' + text + ')';
+
+			if(!ZiggeoWP.sdk) {
+				ZiggeoWP.sdk = {};
+			}
+
+			ZiggeoWP.sdk.app_token = _current.value;
+			ZiggeoWP.sdk.title = text;
+		});
+
+	}
+
+	// Function to help us know if the given value is empty or not
+	function ziggeoPValidateEmpty(value) {
+		if(value === '') {
+			return true;
+		}
+
+		return false;
 	}
 
 
@@ -2004,6 +2149,7 @@
 
 
 
+
 /////////////////////////////////////////////////
 // 8. ADDONS PAGE                              //
 /////////////////////////////////////////////////
@@ -2048,3 +2194,1283 @@
 	}
 
 
+
+
+/////////////////////////////////////////////////
+// 9. SDK PAGE                                 //
+/////////////////////////////////////////////////
+
+	//Image toggle control on the SDK page
+	function ziggeoPUISDKImageToggle(btn_current) {
+		var i, c;
+
+		var data = {
+			'sdk_action' : btn_current.getAttribute('data-action'),
+			'operation'  : btn_current.getAttribute('data-operation'),
+			'value'      : btn_current.getAttribute('data-value')
+		};
+
+		// This allows us to get parameters that we do not hardcode into JS side.
+		var options = btn_current.getAttribute('data-options');
+
+		// This allows us to get additional options from within the control minimizing the JS codes
+		if(options) {
+			options = options.split(',');
+			for(i = 0, c = options.length; i < c; i++) {
+				var _current = options[i].split(':');
+				data[_current[0]] = btn_current.getAttribute('data-' + _current[1]);
+			}
+		}
+
+		//We need to switch the value. With toggle buttons it will always be current and we will only update it once we get back the response..
+		data.value = (data.value === 'on') ? 'off': 'on';
+
+		btn_current.className += ' disabled';
+
+		ziggeoAjax(data, function(response) {
+
+			//We should get back an object
+			response = JSON.parse(response);
+
+			if(response.status && response.status === 'success') {
+
+				if(response.result !== '' && response.result !== 'false' && response.result !== null) {
+
+					//To clear current status
+					btn_current.className = btn_current.className.replace(' on', '');
+					btn_current.className = btn_current.className.replace(' off', '');
+
+					//We now save the new value
+					btn_current.setAttribute('data-value', data.value);
+
+					if(data.value === 'on') {
+						btn_current.className += ' on';
+					}
+					else {
+						btn_current.className += ' off';
+					}
+				}
+				else {
+					alert('The initiated request is not seen as valid.');
+				}
+
+				btn_current.className = btn_current.className.replace(' disabled', '');
+			}
+			else {
+				ziggeoDevReport('Something wrong just happened.');
+			}
+		});
+	}
+
+	// Function to help us with standard dropdowns that are used to make changes within the dashboard through AJAX
+	// These are standard dropdowns with class "ziggeo-sdk-ajax-dropdown"
+	function ziggeoPUISDKDropdown(btn_current) {
+
+		var i, c;
+
+		var data = {
+			'sdk_action' : btn_current.getAttribute('data-action'),
+			'operation'  : btn_current.getAttribute('data-operation')
+		};
+
+		//Should we get value from sowewhere?
+		var value = btn_current.getAttribute('data-value');
+
+		//We should get the value
+		if(value) {
+			value = value.split(',');
+
+			for(i = 0, c = value.length; i < c; i++) {
+				var current = value[i].split(':');
+				data[current[0]] = document.getElementById(current[1]).value;
+			}
+		}
+
+		btn_current.className += ' disabled';
+
+		ziggeoAjax(data, function(response) {
+
+			//We should get back an object
+			response = JSON.parse(response);
+
+			if(response.status && response.status === 'success') {
+
+				if(response.result !== '' && response.result !== false && response.result !== 'false' &&
+					response.result !== null) {
+					if(btn_current.getAttribute('data-results')) {
+						//We are expected to put the returned values somewhere
+						//We might want to change this to function names so we call them with data instead, at least when the data returend is HTML
+						document.getElementById(btn_current.getAttribute('data-results')).innerHTML = response.result;
+					}
+				}
+				else {
+					alert('The initiated request is not seen as valid.');
+				}
+
+				btn_current.className = btn_current.className.replace(' disabled', '');
+			}
+			else {
+				ziggeoDevReport('Something wrong just happened.');
+			}
+		});
+	}
+
+	//Function to handle the buttons on the SDK pages
+	function ziggeoPUISDKButtons(btn_current) {
+
+		var i, c;
+
+		var data = {
+			'sdk_action' : btn_current.getAttribute('data-action'),
+			'operation'  : btn_current.getAttribute('data-operation')
+		};
+
+		//We can add validation to our values
+		var validate = btn_current.getAttribute('data-validate');
+		var is_valid = true;
+
+		if(validate) {
+			validate = validate.split(',');
+
+			for(i = 0, c = validate.length; i < c; i++) {
+				var _current = validate[i].split(':');
+				var _validate = document.getElementById(_current[1]);
+
+				// We remove any previous info about the error being there (if any)
+				_validate.className = _validate.className.replace(' has_error', '');
+				switch(_current[0]) {
+					case 'notempty':
+						if(ziggeoPValidateEmpty(_validate.value)) {
+							is_valid = false;
+							_validate.className += ' has_error';
+						}
+						break;
+				}
+			}
+		}
+
+		//This way we do not do any action if the values do not pass validation
+		if(is_valid === false) {
+			return false;
+		}
+
+		//Should we get value from sowewhere?
+		var value = btn_current.getAttribute('data-value');
+
+		//We should get the value
+		if(value) {
+			value = value.split(',');
+
+			for(i = 0, c = value.length; i < c; i++) {
+				var current = value[i].split(':');
+				if(current[1].indexOf('{') > -1) {
+
+					var segment = current[1].replace('{', '').replace('}', '');
+					if(typeof ZiggeoWP.sdk === 'undefined' || typeof ZiggeoWP.sdk[segment] === 'undefined') {
+						var segment_value = '';
+					}
+					else {
+						var segment_value = ZiggeoWP.sdk[segment];
+					}
+					data[current[0]] = segment_value;
+					//ZiggeoWP.sdk.app_token = _current.value;
+  					//ZiggeoWP.sdk.title = text;
+				}
+				else {
+					data[current[0]] = document.getElementById(current[1]).value;
+				}
+			}
+		}
+
+		// This allows us to get parameters that we do not hardcode into JS side.
+		var options = btn_current.getAttribute('data-options');
+
+		// This allows us to get additional options from within the control minimizing the JS codes
+		if(options) {
+			options = options.split(',');
+			console.log('to be added');
+			//for(i = 0, c = options.length; i < c; i++) {
+			//	data[options[i]] = '';
+			//}
+		}
+
+		btn_current.className += ' disabled';
+
+		ziggeoAjax(data, function(response) {
+
+			//We should get back an object
+			response = JSON.parse(response);
+
+			if(response.status && response.status === 'success') {
+
+				if(response.result !== '' && response.result !== 'false' && response.result !== null) {
+					if(btn_current.getAttribute('data-results')) {
+
+						var _where_what = btn_current.getAttribute('data-results');
+
+						//We have a function to call
+						if(_where_what.indexOf('{') > -1) {
+							_where_what = _where_what.replace('{', '').replace('}', '');
+							if(typeof window[_where_what] === 'function') {
+								window[_where_what](response.result);
+							}
+						}
+						else {
+							//We are expected to put the returned values somewhere
+							document.getElementById(btn_current.getAttribute('data-results')).innerHTML = response.result;
+						}
+					}
+				}
+				else {
+					alert('The initiated request is not seen as valid.');
+				}
+
+				btn_current.className = btn_current.className.replace(' disabled', '');
+			}
+			else {
+				ziggeoDevReport('Something wrong just happened.');
+			}
+		});
+	}
+
+
+	// Analytics
+	// ***********
+
+	//This function creates the graphs
+	// It is called when dates are changed, so everything is drawn first time, using the data we just got.
+	function ziggeoPUISDKAnalyticsCreateGraphs(data) {
+
+		var i,c,j,k,l,m;
+
+		var available = [
+			'device_views_by_os',
+			'device_views_by_date',
+			'total_plays_by_country',
+			'full_plays_by_country',
+			'total_plays_by_hour',
+			'full_plays_by_hour',
+			'total_plays_by_browser',
+			'full_plays_by_browser'
+		];
+
+		var values = {
+			'device_views_by_os': {
+				label: 'os',
+				value: 'event_count',
+				chart_type: 'doughnut'
+			},
+			'device_views_by_date': {
+				label: 'type',
+				value: 'event_count',
+				chart_type: 'polarArea'
+				//date
+			},
+			'total_plays_by_country': {
+				label: 'country',
+				value: 'event_count',
+				chart_type: 'polarArea'
+			},
+			'full_plays_by_country': {
+				label: 'country',
+				value: 'event_count',
+				chart_type: 'radar'
+			},
+			'total_plays_by_hour': {
+				label: 'date',
+				value: 'event_count',
+				chart_type: 'polarArea'
+				//hour
+			},
+			'full_plays_by_hour': {
+				label: 'date',
+				value: 'event_count',
+				chart_type: 'radar'
+				//hour
+			},
+			'total_plays_by_browser': {
+				label: 'device_browser',
+				value: 'event_count',
+				chart_type: 'polarArea'
+				//device_os
+			},
+			'full_plays_by_browser': {
+				label: 'device_browser',
+				value: 'event_count',
+				chart_type: 'polarArea'
+				//device_os
+			}
+		}
+
+		var colors = [
+			'#FF6384',
+			'#4BC0C0',
+			'#FFCE56',
+			'#E7E9ED',
+			'#36A2EB',
+			'#F26354',
+			'#F29E54',
+			'#F2E854',
+			'#77F254',
+			'#54F2CD',
+			'#54C6F2',
+			'#9C54F2',
+			'#ED54F2',
+			'#F2549E',
+			'#F25454'
+		];
+
+		var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+		//Sanity check
+		if(typeof ZiggeoWP.sdk !== 'undefined') {
+
+			if(typeof ZiggeoWP.sdk.charts !== 'undefined') {
+				//We need to clear out the existing charts
+				for(i = 0, c = ZiggeoWP.sdk.charts.length; i < c; i++) {
+					ZiggeoWP.sdk.charts[i].destroy();
+				}
+			}
+
+			ZiggeoWP.sdk.charts = [];
+			ZiggeoWP.sdk.charts_data = {};
+		}
+		else {
+			ZiggeoWP.sdk = {
+				charts: [],
+				charts_data: {}
+			};
+		}
+
+		// handles per query (device_views_by_os)
+		for(i = 0, c = available.length; i < c; i++) {
+			var graph_info = data[available[i]];
+
+			if(typeof graph_info === 'string') {
+				//Something went wrong.
+				ziggeoDevReport('Something went wrong getting analytics data');
+				continue;
+			}
+
+			var graph_data = {
+				datasets: [],
+				labels: []
+			};
+
+			var extras = {
+				data: [],
+				backgroundColor: colors,
+				label: available[i].replace(/\_/g, ' ') // Used as legend
+			};
+
+			//Handles the analytics data of the query segment
+			for(j = 0, k = graph_info.analytics.length; j < k; j++) {
+				var _current = graph_info.analytics[j];
+
+				var _label = _current[values[available[i]].label];
+
+				if(available[i] === 'device_views_by_os') {
+					//on first go, we want to strip some data
+					_label = _label.replace(_label.slice(_label.lastIndexOf(' ')), '');
+				}
+				else if(available[i] === 'total_plays_by_hour' ||
+				        available[i] === 'full_plays_by_hour') {
+					//on first go, we want to strip some data
+					_label = String(_label).substr(0,4) + ', ' + months[ ((String(_label).substr(4,2)*1)-1) ];
+				}
+
+				var _found = false;
+				for(l = 0, m = graph_data.labels.length; l < m; l++) {
+					if(graph_data.labels[l] === _label) {
+						_found = true;
+
+						extras.data[l] += _current.event_count;
+					}
+				}
+
+				if(_found === false) {
+					graph_data.labels.push(_label);
+					extras.data.push(_current.event_count);
+				}
+			}
+
+			graph_data.datasets.push(extras);
+
+			var ctx = document.getElementById('ziggeo_graph_' + available[i]);
+			var config = {
+				data: graph_data,
+				type: values[available[i]].chart_type,
+				options: {
+					responsive: true,
+					plugins: {
+						legend: {
+							position: 'top',
+						},
+						title: {
+							display: true,
+							text: available[i].replace(/\_/g, ' ') // Used as legend
+						}
+					}
+				}
+			};
+
+			if(available[i] === 'device_views_by_os' || 
+				available[i] === 'device_views_by_date' ||
+				available[i] === 'full_plays_by_browser' ||
+				available[i] === 'total_plays_by_browser' ||
+				available[i] === 'full_plays_by_hour' ||
+				available[i] === 'total_plays_by_country' ||
+				available[i] === 'full_plays_by_country' ||
+				available[i] === 'total_plays_by_hour') {
+
+				config.options.onClick = (event, activeElements) => {
+					if(activeElements.length === 0){
+						return false;
+					}
+					chart_id = event.chart.canvas.id.replace('ziggeo_graph_', '');
+
+					var chart = event.chart;
+					var activePoints = chart.getElementsAtEventForMode(event, 'point', chart.options);
+					var firstPoint = activePoints[0];
+					var label = chart.data.labels[firstPoint.index];
+					var value = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+
+					//Create new "zoomed in" chart
+					ziggeoPUISDKAnalyticsCreateGraphZoomedIn(ZiggeoWP.sdk.charts_data[chart_id], label, chart_id);
+				};
+			}
+
+			var chart = new Chart(ctx, config);
+
+			ctx.parentElement.setAttribute('chart_id', i);
+			ZiggeoWP.sdk.charts.push(chart);
+		}
+
+		ZiggeoWP.sdk.charts_data = data;
+		document.getElementById('analytics_data').className = 'graphs';
+	}
+
+	//This function is used to create the data shown in the big canvas used as a zoom in screen
+	function ziggeoPUISDKAnalyticsCreateGraphZoomedIn(data, zoom_value, query_type) {
+
+		var i,c,j,k;
+
+		var available = [
+			'device_views_by_os',
+			'device_views_by_date',
+			'total_plays_by_country',
+			'full_plays_by_country',
+			'total_plays_by_hour',
+			'full_plays_by_hour',
+			'total_plays_by_browser',
+			'full_plays_by_browser'
+		];
+
+		var values = {
+			'device_views_by_os': {
+				label: 'os',
+				value: 'event_count',
+				chart_type: 'polarArea'
+			},
+			'device_views_by_date': {
+				label: 'type',
+				value: 'event_count',
+				chart_type: 'bar',
+				label_alt: 'date'
+			},
+			'total_plays_by_country': {
+				label: 'country',
+				value: 'event_count',
+				chart_type: 'radar',
+				label_alt: 'video_token'
+			},
+			'full_plays_by_country': {
+				label: 'country',
+				value: 'event_count',
+				chart_type: 'radar',
+				label_alt: 'video_token'
+			},
+			'total_plays_by_hour': {
+				label: 'date',
+				value: 'event_count',
+				chart_type: 'polarArea',
+				label_alt: 'hour'
+			},
+			'full_plays_by_hour': {
+				label: 'date',
+				value: 'event_count',
+				chart_type: 'polarArea',
+				label_alt: 'hour'
+			},
+			'total_plays_by_browser': {
+				label: 'device_browser',
+				value: 'event_count',
+				chart_type: 'polarArea',
+				label_alt: 'device_os'
+			},
+			'full_plays_by_browser': {
+				label: 'device_browser',
+				value: 'event_count',
+				chart_type: 'polarArea',
+				label_alt: 'device_os'
+			}
+		}
+
+		var colors = [
+			'rgba(255, 99, 132, 0.6)',  //#FF6384
+			'rgba(75, 192, 192, 0.6)',  //#4BC0C0
+			'rgba(255, 206, 86, 0.6)',  //#FFCE56
+			'rgba(231, 233, 237, 0.6)', //#E7E9ED
+			'rgba(54, 162, 235, 0.6)',  //#36A2EB
+			'rgba(242, 99, 84, 0.6)',   //#F26354
+			'rgba(242, 158, 84, 0.6)',  //#F29E54
+			'rgba(242, 232, 84, 0.6)',  //#F2E854
+			'rgba(119, 242, 84, 0.6)',  //#77F254
+			'rgba(84, 242, 205, 0.6)',  //#54F2CD
+			'rgba(84, 198, 242, 0.6)',  //#54C6F2
+			'rgba(156, 84, 242, 0.6)',  //#9C54F2
+			'rgba(237, 84, 242, 0.6)',  //#ED54F2
+			'rgba(242, 84, 158, 0.6)',  //#F2549E
+			'rgba(242, 84, 84, 0.6)'   //#F25454
+		];
+
+		//get the reference to the big canvas
+		var big_chart = Chart.getChart('ziggeo_graph_big');
+
+		var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+		//If chart is not created already, this will be undefined, so we know we should destroy it if it is not undefined.
+		if(typeof big_chart !== 'undefined') {
+			big_chart.destroy();
+		}
+
+		var graph_info = data;
+
+		var graph_data = {
+			datasets: [],
+			labels: []
+		};
+
+		var extras = {
+			data: [],
+			backgroundColor: colors,
+			label: query_type.replace(/\_/g, ' ') // Used as legend
+		};
+
+		//Handles the analytics data of the query segment
+		for(i = 0, c = graph_info.analytics.length; i < c; i++) {
+			var _current = graph_info.analytics[i];
+
+			var _label = _current[values[query_type].label];
+
+			if(query_type === 'full_plays_by_hour' ||
+				query_type === 'total_plays_by_hour') {
+				_label = String(_label).substr(0,4) + ', ' + months[ ((String(_label).substr(4,2)*1)-1) ];
+			}
+
+			if(String(_label).indexOf(zoom_value) > -1) {
+
+				//We need to do it again, since we are getting days now
+				if(query_type === 'device_views_by_date') {
+					var _label = _current[values[query_type].label_alt];
+					_label = months[ ((String(_label).substr(4,2)*1)-1) ] + ' ' + String(_label).substr(6,2);
+				}
+				else if(query_type === 'full_plays_by_browser' ||
+						query_type === 'total_plays_by_browser' ||
+						query_type === 'full_plays_by_hour' ||
+						query_type === 'total_plays_by_country' ||
+						query_type === 'full_plays_by_country' ||
+						query_type === 'total_plays_by_hour') {
+					var _label = _current[values[query_type].label_alt];
+				}
+
+				if(query_type === 'full_plays_by_hour' ||
+					query_type === 'total_plays_by_hour') {
+					_label += ':00';
+				}
+
+				var _found = false;
+				for(j = 0, k = graph_data.labels.length; j < k; j++) {
+					if(graph_data.labels[j] === _label) {
+						_found = true;
+						extras.data[j] += _current.event_count;
+					}
+				}
+
+				if(_found === false) {
+					graph_data.labels.push(_label);
+					extras.data.push(_current.event_count);
+				}
+			}
+		}
+
+		graph_data.datasets.push(extras);
+
+		var ctx = document.getElementById('ziggeo_graph_big');
+		var config = {
+			data: graph_data,
+			type: values[query_type].chart_type,
+			options: {
+				responsive: true,
+				onClick: (event, activeElements) => {
+					setTimeout(function() {
+						var big_chart = Chart.getChart('ziggeo_graph_big');
+						big_chart.destroy();
+						ctx.parentElement.style.display = 'none';
+					}, 400);
+
+					return true;
+				},
+				plugins: {
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: query_type.replace(/\_/g, ' ') + ' [' + zoom_value + ']'
+					}
+				}
+			}
+		};
+
+		var chart = new Chart(ctx, config);
+		ctx.parentElement.style.display = 'block';
+	}
+
+
+	// Effect Profiles
+	// *****************
+
+	function ziggeoPUISDKEffectsProfileProcessList(data, token) {
+		var i, l, j, c;
+		var keys = ['token', 'title', 'type', 'description', 'configuration'];
+
+		var element_info = document.getElementById('ziggeo-sdk-effects-' + token);
+		element_info.innerText = '';
+
+		for(i = 0, l = data.length; i < l; i++) {
+
+			var element_row = document.createElement('div');
+			element_row.className = 'process';
+
+			for(j = 0, c = keys.length; j < c; j++) {
+				var span_k = document.createElement('span');
+				span_k.textContent = keys[j];
+
+				var span_t = document.createElement('span');
+				span_t.textContent = data[i][keys[j]];
+
+				element_row.appendChild(span_k);
+				element_row.appendChild(span_t);
+			}
+
+			var span_kt = document.createElement('span');
+			span_kt.textContent = 'Created at';
+
+			var span_tt = document.createElement('span');
+			span_tt.textContent = ziggeoUnixTimetoString(data[i].attrs.created,
+			                                             ZiggeoWP.format_date + ' ' + ZiggeoWP.format_time);
+
+			element_row.appendChild(span_kt);
+			element_row.appendChild(span_tt);
+
+			element_info.appendChild(element_row);
+		}
+
+		if(!element_row) {
+			var info = document.createElement('span');
+			info.textContent = 'This effect profile has no effect processes added to it.'
+			element_info.appendChild(info);
+		}
+	}
+
+	function ziggeoPUISDKEffectsProfileDelete(data, token) {
+
+		var elem = document.getElementById('effect-profile-' + token);
+
+		elem.parentElement.removeChild(elem);
+	}
+
+	function ziggeoPUISDKEffectsProfileCreate(data) {
+		var list = document.getElementById('effect_profile_list').getElementsByClassName('ziggeosdk effect_profiles_list')[0];
+
+		list.insertAdjacentHTML('afterbegin', data);
+	}
+
+	//Shows the form to create effect profile process
+	function ziggeoPUISDKEffectsProfileProcessCreateForm(effect_token) {
+		var _form = document.createElement('div');
+		_form.className = 'ziggeo_popup_form';
+		_form.setAttribute('data-token', effect_token);
+
+		//Initial switch between effect and watermark
+		var _switches = ['Effect Filter', 'Watermark'];
+
+		var _switch_placeholder = document.createElement('div');
+		_switch_placeholder.className = 'ziggeo-ctrl-radio-group';
+
+		for(i = 0; i < _switches.length; i++) {
+			var _switch = document.createElement('span');
+
+			_switch.className = 'ziggeo-btn-radio';
+
+			if(i > 0) {
+				_switch.className += ' disabled';
+			}
+
+			_switch.textContent = _switches[i];
+			_switch.setAttribute('data-section', ziggeoStringToSafe(_switches[i]));
+
+			_switch.addEventListener('click', function(e) {
+				var _current_element = e.currentTarget;
+
+				var _all_switches = _current_element.parentElement.getElementsByClassName('ziggeo-btn-radio');
+
+				for(j = 0, l = _all_switches.length; j < l; j++) {
+					//just to be safe, we are going to remove the same if it is already present and add in either case
+					_all_switches[j].className = _all_switches[j].className.replace(' disabled', '') + ' disabled';
+					var _section_deselect = document.getElementById('ziggeo-group-' + _all_switches[j].getAttribute('data-section') + '-section');
+
+					if(_section_deselect) {
+						_section_deselect.style.maxHeight = '0px';
+						_section_deselect.style.display = 'none';
+					}
+
+					_current_element.className = _current_element.className.replace(' disabled', '');
+				}
+
+				var _current_section = document.getElementById('ziggeo-group-' +
+				                                                       _current_element.getAttribute('data-section') +
+				                                                       '-section');
+
+				if(_current_section) {
+					_current_section.style.display = 'block';
+					_current_section.style.maxHeight = 'auto';
+				}
+
+			});
+
+			_switch_placeholder.appendChild(_switch);
+		}
+
+		_form.appendChild(_switch_placeholder);
+
+		// Create filter fields
+		var filter_section = document.createElement('div');
+		filter_section.className = 'ziggeo-group-section';
+		filter_section.id = 'ziggeo-group-effect_filter-section';
+
+			var filter_url = 'https://ziggeo.com/assets/imgs/features/filters/filter_'; //{name}.jpg
+			var filter_list = document.createElement('ul');
+			var available_filters = [
+				{ name: 'gray', label: 'Black & White Effect' },
+				{ name: 'lucis', label: 'Lucis Art Effect' },
+				{ name: 'cartoon', label: 'Cartoon Effect' },
+				{ name: 'edge', label: 'Edge Highlight Effect' },
+				{ name: 'dhill', label: 'Dave Hill Effect' },
+				{ name: 'charcoal', label: 'Charcoal Sketch Effect' },
+				{ name: 'sketch', label: 'Sketch Effect' }
+			];
+
+			for(i = 0, c = available_filters.length; i < c; i++) {
+				var effect_item = document.createElement('li');
+				effect_item.className = 'ziggeo_effects_list';
+
+				var title = document.createElement('div');
+				title.className = 'effect_title';
+				title.textContent = available_filters[i].label;
+				effect_item.appendChild(title);
+
+				var before = document.createElement('div');
+				before.className = 'panel_left';
+				before.style.backgroundImage = 'url("' + filter_url + 'before.jpg")';
+				effect_item.appendChild(before);
+
+				var after = document.createElement('div');
+				after.className = 'panel_right';
+				after.style.backgroundImage = 'url("' + filter_url + available_filters[i].name + '.jpg")';
+				effect_item.appendChild(after);
+
+				var before_text = document.createElement('div');
+				before_text.className = 'panel_right text';
+				before_text.textContent = 'Original Video Sample';
+				effect_item.appendChild(before_text);
+
+				var after_text = document.createElement('div');
+				after_text.className = 'panel_right text';
+				after_text.textContent = 'Example after effect is applied';
+				effect_item.appendChild(after_text);
+
+				var btn_apply = document.createElement('div');
+				btn_apply.className = 'ziggeo-ctrl-btn show-on-hover';
+				btn_apply.textContent = 'Apply this filter';
+				btn_apply.setAttribute('data-token', effect_token);
+				btn_apply.setAttribute('data-effect', available_filters[i].name);
+				btn_apply.addEventListener('click', function(e) {
+
+					var current_btn = e.currentTarget;
+					var token = current_btn.getAttribute('data-token');
+
+					var data = {
+						'effect_token': token,
+						'effect':       current_btn.getAttribute('data-effect'),
+						'operation':    'sdk_effect_profiles',
+						'sdk_action':   'effect_profiles_create_filter'
+					};
+
+					ziggeoAjax(data, function(response) {
+						//We should get back an object
+						response = JSON.parse(response);
+
+						if(response.status && response.status === 'success') {
+
+							if(data.sdk_action === 'effect_profiles_create_filter') {
+								//Devs do you want to see something here?
+							}
+						}
+						else {
+							ziggeoDevReport('Something wrong just happened.');
+						}
+
+						ziggeoPUICtrlClose(_form,
+						                   '#effect-profile-' + token + ' .additional_options .disabled');
+
+						var btn = document.querySelector('#effect-profile-' + token + ' .additional_options [data-action="effect_profile_processes_list"]');
+						if(btn) { btn.click(); }
+					});
+				});
+
+				effect_item.appendChild(btn_apply);
+
+				filter_list.appendChild(effect_item);
+			}
+
+			filter_section.appendChild(filter_list);
+
+		// Create watermark fields
+		var watermark_section = document.createElement('div');
+		watermark_section.className = 'ziggeo-group-section';
+		watermark_section.id = 'ziggeo-group-watermark-section';
+		watermark_section.style.display = 'none';
+
+			var position_x = document.createElement('input');
+			position_x.id = 'ziggeo-effect-profile-watermark-position-x';
+			position_x.type = 'range';
+			// These are all percentages and they have to be divided by 100 when sent to server
+			position_x.min = 0;
+			position_x.max = 100;
+			position_x.value = 50;
+
+			var position_x_label = document.createElement('label');
+			position_x_label.for = position_x.id;
+			position_x_label.textContent = 'Position of watermark horizontally - presented in percentages of video starting from left (0) to right (100)';
+
+			var position_x_value = document.createElement('span');
+			position_x_value.id = 'ziggeo-effect-profile-watermark-position-x-value';
+			position_x_value.textContent = '0.50%';
+
+			watermark_section.appendChild(position_x_label);
+			watermark_section.appendChild(position_x);
+			watermark_section.appendChild(position_x_value);
+
+			position_x.addEventListener('input', function(e) {
+				position_x_value.textContent = (e.currentTarget.value / 100) + '%';
+
+				image_preview.setAttribute('image_data_x', e.currentTarget.value);
+
+				ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview();
+			});
+
+			var position_y = document.createElement('input');
+			position_y.id = 'ziggeo-effect-profile-watermark-position-y';
+			position_y.type = 'range';
+			// These are all percentages and they have to be divided by 100 when sent to server
+			position_y.min = 0;
+			position_y.max = 100;
+			position_y.value = 50;
+
+			var position_y_label = document.createElement('label');
+			position_y_label.for = position_x.id;
+			position_y_label.textContent = 'Position of watermark vertically - presented in percentages of video starting from top (0) to bottom (100)';
+
+			var position_y_value = document.createElement('span');
+			position_y_value.id = 'ziggeo-effect-profile-watermark-position-y-value';
+			position_y_value.textContent = '0.50%';
+
+			position_y.addEventListener('input', function(e) {
+				position_y_value.textContent = (e.currentTarget.value / 100) + '%';
+
+				image_preview.setAttribute('image_data_y', e.currentTarget.value);
+
+				ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview();
+			});
+
+			watermark_section.appendChild(position_y_label);
+			watermark_section.appendChild(position_y);
+			watermark_section.appendChild(position_y_value);
+
+			//Specify the image scale of your watermark (a value between 0.0 and 1.0)
+			var scale = document.createElement('input');
+			scale.id = 'ziggeo-effect-profile-watermark-scale';
+			scale.type = 'range';
+			// These are all percentages and they have to be divided by 100 when sent to server
+			scale.min = 0;
+			scale.max = 100;
+			scale.value = 25;
+
+			var scale_label = document.createElement('label');
+			scale_label.for = position_x.id;
+			scale_label.textContent = 'Factor to scale your image with - 1 leave as is, anything else will reduce it.';
+
+			var scale_value = document.createElement('span');
+			scale_value.id = 'ziggeo-effect-profile-watermark-scale-value';
+			scale_value.textContent = '0.25%';
+
+			scale.addEventListener('input', function(e) {
+				scale_value.textContent = (e.currentTarget.value / 100) + '%';
+
+				image_preview.setAttribute('image_data_scale', e.currentTarget.value);
+
+				ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview();
+			});
+
+			watermark_section.appendChild(scale_label);
+			watermark_section.appendChild(scale);
+			watermark_section.appendChild(scale_value);
+
+			//Video resolution
+			var resolution = document.createElement('select');
+			resolution.id = 'ziggeo-effect-profile-watermark-resolution';
+			var option_sd = document.createElement('option');
+			option_sd.textContent = '640x480';
+			option_sd.value = '640x480';
+
+			var option_hd = document.createElement('option');
+			option_hd.textContent = '1280x720';
+			option_hd.value = '1280x720';
+
+			resolution.appendChild(option_sd);
+			resolution.appendChild(option_hd);
+
+			resolution.addEventListener('change', function() {
+				image_preview.setAttribute('image_data_resolution', this.value);
+
+				if(this.value === '640x480') {
+					document.getElementById('effect_profiles_watermark_preview').parentElement.className = 'video_preview_sd';
+				}
+				else {
+					document.getElementById('effect_profiles_watermark_preview').parentElement.className = 'video_preview_hd';
+				}
+
+				ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview();
+			});
+
+			watermark_section.appendChild(resolution);
+
+			//File to be uploaded
+			var image_file = document.createElement('input');
+			image_file.id = 'ziggeo-effect-profile-watermark-image';
+			image_file.type = 'file';
+			image_file.accept = 'image/*';
+
+			image_file.addEventListener('change', function(e) {
+				var _fr = new FileReader();
+				_fr.readAsDataURL(e.target.files[0]);
+				_fr.onload = function (e2) {
+
+					var image_file_handler = new Image();
+					image_file_handler.src = e2.target.result;
+
+					image_file_handler.onload = function () {
+						//set the width and heigh of the image preview based on the actual file.
+						// take into the account the scale factor as well.
+						image_preview.textContent = '';
+						image_preview.setAttribute('image_data_width', this.width);
+						image_preview.setAttribute('image_data_height', this.height);
+						image_preview.style.backgroundImage = 'url(' + e2.target.result + ')';
+
+						ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview();
+					};
+				};
+			});
+
+			watermark_section.appendChild(image_file);
+
+			// Drag and drop preview
+			var video_preview = document.createElement('div');
+			video_preview.className = 'video_preview_sd';
+
+			var image_preview = document.createElement('div');
+			image_preview.id = "effect_profiles_watermark_preview";
+			image_preview.setAttribute('image_data_width', 320);
+			image_preview.setAttribute('image_data_height', 240);
+			image_preview.setAttribute('image_data_resolution', '640x480');
+			image_preview.setAttribute('image_data_scale', '25');
+			image_preview.setAttribute('image_data_x', '0.50');
+			image_preview.setAttribute('image_data_y', '0.50');
+			image_preview.style.left = '50%';
+			image_preview.style.top = '50%';
+			image_preview.style.width = (320 * 0.25) + 'px';
+			image_preview.style.height = (240 * 0.25) + 'px';
+			image_preview.textContent = 'Add Image First';
+
+			video_preview.appendChild(image_preview);
+			jQuery(image_preview).draggable({
+				//thanks: https://stackoverflow.com/a/11061751
+				drag: function(event, ui) {
+					var pos = ui.position;
+
+					//Make it impossible to escape the box
+					var sizing = image_preview.getBoundingClientRect();
+
+					if(pos.left < 0)	{ pos.left = 0; }
+					if(pos.top < 0)		{ pos.top = 0; }
+					if(image_preview.parentElement.className === 'video_preview_sd') {
+						if(pos.left > 640) {
+							pos.left = 640;
+						}
+						if(pos.top > 480) {
+							pos.top = 480;
+						}
+					}
+					if(image_preview.parentElement.className === 'video_preview_hd') {
+						if(pos.left > 1280) {
+							pos.left = 1280;
+						}
+						if(pos.top > 720) {
+							pos.top = 720;
+						}
+					}
+
+					image_preview.setAttribute('image_data_x', pos.left);
+					image_preview.setAttribute('image_data_y', pos.top);
+
+					ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview(true);
+				}
+			});
+
+			var create_watermark = document.createElement('div');
+			create_watermark.className = 'ziggeo-ctrl-btn';
+			create_watermark.innerText = 'Create';
+			create_watermark.addEventListener('click', function(e) {
+
+				var data = new FormData();
+				var token = this.parentElement.parentElement.getAttribute('data-token')
+				data.append('position_x',   position_x.value / 100);
+				data.append('position_y',   position_y.value / 100);
+				data.append('scale',        scale.value / 100);
+				data.append('file',         image_file.files[0]);
+				data.append('sdk_action',   'effect_profiles_create_watermark');
+				data.append('operation',    'sdk_effect_profiles');
+				data.append('effect_token', token);
+
+				e.currentTarget.className += ' disabled';
+
+				ziggeoAjax(data, function(response) {
+					//We should get back an object
+					response = JSON.parse(response);
+
+					if(response.status && response.status === 'success') {
+
+						if(data.sdk_action === 'effect_profiles_create_watermark') {
+							//Devs do you want to see something here?
+						}
+					}
+					else {
+						ziggeoDevReport('Something wrong just happened.');
+					}
+
+					ziggeoPUICtrlClose(_form,
+					                   '#effect-profile-' + token + ' .additional_options .disabled');
+
+					var btn = document.querySelector('#effect-profile-' + token + ' .additional_options [data-action="effect_profile_processes_list"]');
+					if(btn) { btn.click(); }
+				}, true);
+			});
+
+			watermark_section.appendChild(video_preview);
+			watermark_section.appendChild(create_watermark);
+
+		// Create a close button
+		var btn_close = document.createElement('div');
+		btn_close.className = 'ziggeo-ctrl-btn close';
+
+		btn_close.addEventListener('click', function(e) {
+
+			var token = this.parentElement.getAttribute('data-token');
+
+			ziggeoPUICtrlClose(e.currentTarget.parentElement,
+			                   '#effect-profile-' + token + ' .additional_options .ziggeo-ctrl-form-popup.disabled');
+		});
+
+		_form.appendChild(filter_section);
+		_form.appendChild(watermark_section);
+		_form.appendChild(btn_close);
+
+		document.body.appendChild(_form);
+	}
+
+	// Destroys the element that is passed in _destroy and removes the "disabled" class in the elements found using the CSS query string / CSS rule in _show.
+	function ziggeoPUICtrlClose(_destroy, _show) {
+		var i, c = 0;
+		var to_show = document.querySelectorAll(_show);
+
+		for(i = 0, c = to_show.length; i < c; i++) {
+			to_show[i].className = to_show[i].className.replace(' disabled', '');
+		}
+
+		_destroy.parentElement.removeChild(_destroy);
+	}
+
+	//This function is used to set the image preview over the video preview element based on the settings
+	function ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview(on_drag) {
+
+		//Get relevant elements
+		var preview = document.getElementById('effect_profiles_watermark_preview');
+		var position_x = document.getElementById('ziggeo-effect-profile-watermark-position-x');
+		var position_y = document.getElementById('ziggeo-effect-profile-watermark-position-y');
+		var position_x_v = document.getElementById('ziggeo-effect-profile-watermark-position-x-value');
+		var position_y_v = document.getElementById('ziggeo-effect-profile-watermark-position-y-value');
+		//var scale = document.getElementById('ziggeo-effect-profile-watermark-scale').value;
+
+		//get data
+		var _data = {};
+		_data.width = preview.getAttribute('image_data_width');
+		_data.height = preview.getAttribute('image_data_height');
+		_data.resolution = preview.getAttribute('image_data_resolution');
+		_data.scale = preview.getAttribute('image_data_scale');
+
+		if(on_drag === true) {
+			_data.x = preview.getAttribute('image_data_x');
+			_data.y = preview.getAttribute('image_data_y');
+		}
+		else {
+			_data.x = position_x.value;
+			_data.y = position_y.value;
+		}
+
+		if(_data.resolution === '640x480') {
+			var resolution_factor = { x: 640, y: 480};
+		}
+		else { //1280x720
+			var resolution_factor = { x: 1280, y: 720};
+		}
+
+		//Set the resolution of the image
+		preview.style.width = (_data.width * _data.scale / 100 ) + 'px';
+		preview.style.height = (_data.height * _data.scale / 100 ) + 'px';
+
+		//Set the value of the slider to match position of preview
+		if(on_drag === true) {
+			position_x.value = (_data.x / resolution_factor.x * 100).toFixed(2);
+			position_y.value = (_data.y / resolution_factor.y * 100).toFixed(2);
+
+			//Update the values shown next to sliders
+			position_x_v.textContent = (_data.x / resolution_factor.x).toFixed(2) + '%';
+			position_y_v.textContent = (_data.y / resolution_factor.y).toFixed(2) + '%';
+		}
+		else {
+			preview.style.left = (_data.x * resolution_factor.x / 100).toFixed(2) + 'px';
+			preview.style.top = (_data.y * resolution_factor.y / 100).toFixed(2) + 'px';
+		}
+	}
+
+	function ziggeoPUISDKEffectProfilesButtons(btn_current) {
+		var data = {
+			token        : btn_current.getAttribute('data-token'),
+			'sdk_action' : btn_current.getAttribute('data-action'),
+			'operation'  : btn_current.getAttribute('data-operation')
+		};
+
+		btn_current.className += ' disabled';
+
+		ziggeoAjax(data, function(response) {
+
+			//We should get back an object
+			response = JSON.parse(response);
+
+			if(response.status && response.status === 'success') {
+
+				if(data.sdk_action === 'effect_profile_processes_list') {
+					ziggeoPUISDKEffectsProfileProcessList(response.result, data.token);
+					btn_current.className = btn_current.className.replace(' disabled', '');
+				}
+				else if(data.sdk_action === 'effect_profile_delete') {
+					ziggeoPUISDKEffectsProfileDelete(response.result, data.token);
+				}
+
+			}
+			else {
+				ziggeoDevReport('Something wrong just happened.');
+			}
+		});
+	}
+
+	function ziggeoPUISDKEffectProfilesButtonForms(btn_current) {
+
+		var data = {
+			'sdk_action' : btn_current.getAttribute('data-action'),
+			'operation'  : btn_current.getAttribute('data-operation')
+		};
+
+		//Disable the button as we start working on it
+		btn_current.className += ' disabled';
+
+		//Lets prepare the data
+		var _keys = btn_current.getAttribute('data-keys').replace(/, /g, ',').split(',');
+		var _section = btn_current.getAttribute('data-section');
+		var _data = {};
+
+		for(j = 0, c = _keys.length; j < c; j++) {
+
+			var _field = document.getElementById(_section + '_' + _keys[j]);
+			if(_field.type === 'text') {
+				_data[_keys[j]] = _field.value;
+			}
+			else if(_field.type === 'checkbox') {
+				_data[_keys[j]] = (_field.checked) ? true : false
+			}
+		}
+
+		data.data = _data;
+
+		ziggeoAjax(data, function(response) {
+
+			//We should get back an object
+			response = JSON.parse(response);
+
+			if(response.status && response.status === 'success') {
+
+				if(data.sdk_action === 'effect_profile_create') {
+					ziggeoPUISDKEffectsProfileCreate(response.result.data, response.result.token);
+				}
+				else if(data.sdk_action === 'effect_profile_processes_create') {
+					//We just made a new profile process, let's get a fresh listing of the available processes
+					// We should clear out the listed ones (if any) first
+					var _target = document.getElementById('ziggeo-sdk-effects-' + response.result.token)
+					_target.innerText = '';
+					_target.parentElement.querySelector('[data-action="effect_profile_processes_list"]').click();
+				}
+
+			}
+			else {
+				ziggeoDevReport('Something wrong just happened.');
+			}
+
+			btn_current.className = btn_current.className.replace(' disabled', '');
+		});
+	}
+
+	function ziggeoPUISDKEffectProfilesButtonFormPopup(btn_current) {
+		switch(btn_current.getAttribute('data-form-name')) {
+			case 'effect_profile_processes_create':
+				ziggeoPUISDKEffectsProfileProcessCreateForm(btn_current.getAttribute('data-token'));
+				break;
+
+			default:
+				ziggeoDevReport('Unsure what form should be shown');
+		}
+
+		//Disable the button as we start working on it
+		btn_current.className += ' disabled';
+	}

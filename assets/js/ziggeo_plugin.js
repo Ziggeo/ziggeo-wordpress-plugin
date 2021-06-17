@@ -13,6 +13,8 @@
 //		* ziggeoDevReport()
 //		* ziggeoAjax()
 //		* ziggeoInsertTextToPostEditor()
+//		* ziggeoStringToSafe()
+//		* ziggeoUnixTimetoString()
 // 3. API
 //		* ziggeoAPIGetVideo()
 //		* ziggeoAPIGetVideosData()
@@ -287,20 +289,44 @@
 	}
 
 	//AJAX handler
-	function ziggeoAjax(data, callback) {
-
-		data.action = 'ziggeo_ajax';
-		data.ajax_nonce = ZiggeoWP.ajax_nonce;
+	//data = the data to send
+	//callback = function to call once the response is received
+	//is_form_data = true if FormData is set as data, if it is an object, just ignore the same.
+	function ziggeoAjax(data, callback, is_form_data) {
 
 		if(typeof ajaxurl === 'undefined') {
 			var ajaxurl = ZiggeoWP.ajax_url;
 		}
 
-		jQuery.post(ajaxurl, data, function(response) {
-			if(typeof callback !== 'undefined') {
-				callback(response);
-			}
-		});
+		if(is_form_data === true) {
+			data.append('action', 'ziggeo_ajax');
+			data.append('ajax_nonce', ZiggeoWP.ajax_nonce);
+
+			jQuery.ajax({
+				url : ajaxurl,
+				type: "POST",
+				data : data,
+				processData: false,
+				contentType: false,
+				success:function(response) {
+					if(typeof callback !== 'undefined') {
+						callback(response);
+					}
+				},
+				error: function(response, error_info) {
+				}
+			});
+		}
+		else {
+			data.action = 'ziggeo_ajax';
+			data.ajax_nonce = ZiggeoWP.ajax_nonce;
+
+			jQuery.post(ajaxurl, data, function(response) {
+				if(typeof callback !== 'undefined') {
+					callback(response);
+				}
+			});
+		}
 	}
 
 	//Used to be able to just pass the text into editor, while one place holds all
@@ -321,6 +347,106 @@
 		else {
 			ziggeoDevReport('Unsupported editor detected. Can not pass the message that should be passed', 'error');
 		}
+	}
+
+	//Function used to change spaces into underscores and all letters to lowercase
+	function ziggeoStringToSafe(str) {
+		return str.toLocaleLowerCase().replace(/ /g, '_');
+	}
+
+	//Converts the UNIX timestamp into a readable time format using the format provided.
+	// If not provided it will return time in  YYYY/MM/DD HH:MM:SS format
+	// tried making it follow PHP file format: https://www.php.net/manual/en/datetime.format.php
+	//
+	//	Y    A full numeric representation of a year, 4 digits                      Examples: 1999 or 2003
+	//	y    A two digit representation of a year                                   Examples: 99 or 03
+	//	n    Numeric representation of a month, without leading zeros               1 through 12
+	//	m    Numeric representation of a month, with leading zeros                  01 through 12
+	//	M    A short textual representation of a month, three letters               Jan through Dec
+	//	F    A full textual representation of a month, such as January or March     January through December
+	//	j    Day of the month without leading zeros                                 1 to 31
+	//	d    Day of the month, 2 digits with leading zeros                          01 to 31
+	//	D    A textual representation of a day, three letters                       Mon through Sun
+	//	l    (lowercase 'L') A full textual representation of the day of the week   Sunday through Saturday
+	//	g    12-hour format of an hour without leading zeros                        1 through 12
+	//	h    12-hour format of an hour with leading zeros                           01 through 12
+	//	G    24-hour format of an hour without leading zeros                        0 through 23
+	//	H    24-hour format of an hour with leading zeros                           00 through 23
+	//	i    Minutes with leading zeros                                             00 to 59
+	//	s    Seconds with leading zeros                                             00 through 59
+	//	a    Lowercase Ante meridiem and Post meridiem                              am or pm
+	//	A    Uppercase Ante meridiem and Post meridiem                              AM or PM
+	function ziggeoUnixTimetoString(unix_timestamp, format){
+
+		if(typeof unix_timestamp === 'undefined') {
+			ziggeoDevReport('no timestamp was provided', 'error');
+			return '';
+		}
+
+		if(typeof format !== 'string') {
+			format = 'Y/M/d H:i:s';
+		}
+
+		var months_s = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+		var months_l = ['January','February','March','April','May','Jun','Jul','August','September','October','November','December'];
+		var days_s = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+		var days_l = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		var meridiem_s = ['am', 'pm'];
+		var meridiem_l = ['AM', 'PM'];
+
+		var time = new Date(unix_timestamp * 1000);
+
+		// year
+		var yyyy = time.getFullYear();                              // 2021
+		var yy = yyyy.toString().slice(2);                          // 21
+
+		// month
+		var m = time.getMonth();                                    // 4
+		var mm = (m < 10) ? '0' + m.toString() : m;                 // 04
+		var mmm = months_s[m];                                      // Apr
+		var mmmm = months_l[m];                                     // April
+
+		// day
+		var d = time.getDate();				                        // 4
+		var dd = (d < 10) ? '0' + d.toString() : d;                 // 04
+		var ddd = days_s[time.getDay()];                            // Sun
+		var dddd = days_l[time.getDay()];                           // Sunday
+
+		// hour
+		var h_24 = time.getHours();                                 // 8
+		var hh_24 = (h_24 < 10) ? '0' + h_24.toString() : h_24;     // 08
+
+		var h_12 = (h_24 > 12) ? h_24 - 12: h_24;                   // 8
+		var hh_12 = (h_12 < 10) ? '0' + h_12.toString() : h_12;     // 08
+
+		// meridiem mark
+		var meridiem_mark = (hh_24 > 12) ? 1 : 0;
+
+		// minute
+		var min = time.getMinutes();                                // 8
+		min = (min > 10) ? min : '0' + min.toString();              // 08
+
+		// seconds
+		var sec = time.getSeconds();                                // 8
+		sec = (sec > 10) ? sec : '0' + sec.toString();              // 08
+
+		//We need to do this in order that will not catch any numbers given in format.
+		var result = format.replace('Y', yyyy).replace('y', yy);
+		result = result.replace('n', m).replace('m', mm);
+		result = result.replace('j', d).replace('d', dd);
+		result = result.replace('g', h_12).replace('h', hh_12);
+		result = result.replace('G', h_24).replace('H', hh_24);
+		result = result.replace('i', min).replace('s', sec);
+
+		// With meridiem mark, you could easily confuse the filter with M letter that is for month, while if this was last it would match almost all months improperly. Same is with parameter "l" and "F". To go around this we will first mark them by adding "xx" to them, which we will later change to proper format. 
+		result = result.replace('a', 'axx').replace('A', 'Axx').replace('l', 'lxx').replace('F', 'Fxx');
+
+		result = result.replace('M', mmm).replace('D', ddd);
+
+		result = result.replace('axx', meridiem_s[meridiem_mark]).replace('Axx', meridiem_l[meridiem_mark]);
+		result = result.replace('lxx', dddd).replace('Fxx', mmmm);
+
+		return result;
 	}
 
 

@@ -113,6 +113,8 @@ INDEX:
 		cursor: pointer;
 		text-align: center;
 		position:relative;
+		margin: 2px;
+		box-sizing: border-box;
 	}
 	.ziggeo-ctrl-btn.disabled {
 		background-image: linear-gradient(lightgray, gray);
@@ -132,6 +134,17 @@ INDEX:
 		border: 1px dashed gray;
 		border-radius: 10px;
 		margin: 0 4px;
+		cursor: pointer;
+	}
+	.ziggeo-ctrl-btn.delete {
+		background-image: linear-gradient(orange, red);
+    	transition: color .1s ease-in;
+	}
+
+	.ziggeo-ctrl-btn.delete::before {
+		content: "\f182";
+		padding-right: 4px;
+		font-family: dashicons;
 	}
 
 	.ziggeo-ctrl-btn i {
@@ -167,7 +180,21 @@ INDEX:
 			border: 4px double gray;
 			border-radius: 0 10px 20px 20px;
 		}
-
+		.ziggeo-ctrl-btn.close {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			border-radius: 50%;
+			background-image: radial-gradient(orange,red);
+			width: 20px;
+			height: 20px;
+			font-size: 14px;
+			line-height: 16px;
+			padding: 0;
+		}
+		.ziggeo-ctrl-btn.close::after {
+			content: "x";
+		}
 	.ziggeo-ctrl-group {
 		border: 4px double lightgray;
 		padding: 10px;
@@ -176,10 +203,169 @@ INDEX:
 		margin: 10px 0;
 	}
 
+	.ziggeo-ctrl-form-popup::after {
+		content: "\f504";
+		font-family: dashicons;
+		margin-left: 2px;
+	}
+
 	.ziggeo-ctrl-group label {
 		display: block;
 	}
+	.ziggeo-ctrl-img-toggle {
+		display: inline-block;
+		width: 200px;
+		height: 100px;
+		border: 4px double gray;
+		margin: 4px;
+		box-sizing: border-box;
+		border-radius: 40px 10px 80px 10px;
+		line-height: 100px;
+		text-align: left;
+		padding: 8px;
+		border-block-color: lightblue lightgreen;
+		border-block-width: thin;
+		vertical-align: bottom;
+		cursor: pointer;
+	}
+	.ziggeo-ctrl-img-toggle.on {
+		box-shadow: 0 0 20px 8px lightblue inset;
+		border-right-color: green;
+	}
+	.ziggeo-ctrl-img-toggle.off {
+		box-shadow: 0 0 10px 10px lightgray inset
+	}
+	.ziggeo-ctrl-img-toggle.disabled {
+		cursor: not-allowed;
+		box-shadow: none;
+		background-color: transparent;
+		color: gray;
+		pointer-events: none;
+	}
+	.ziggeo-ctrl-img-toggle.on.disabled {
+		border-right-color: lightgreen;
+	}
+	.ziggeo-list {
+		margin-bottom: 20px;
+		box-shadow: 2px 2px 2px lightgray;
+	}
+	.ziggeo-ctrl-editlist {
+		list-style: none;
+		border: 1px solid gray;
+		background-image: linear-gradient(white, lightgray);
+		padding: 4px;
+		box-sizing: border-box;
+		width: 300px;
+		height: 32px;
+		overflow: hidden;
+		position: relative;
+	}
+	.ziggeo-ctrl-editlist::after {
+		content: "\f140";
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: block;
+		height: 32px;
+		width: 32px;
+		text-align: center;
+		line-height: 30px;
+		border-left: 1px solid lightgray;
+		font-family: dashicons;
+		font-size: 30px;
+		padding: 0;
+		margin: 0;
+		color: lightgray;
+	}
+	.ziggeo-ctrl-editlist:focus {
+		overflow-y: auto;
+		height: auto;
+		border-left: none;
+		background: none;
+		border-bottom: 2px double lightgray;
+		border-right: none;
+	}
+	.ziggeo-ctrl-editlist:focus::after {
+		display: none;
+	}
+	.ziggeo-ctrl-editlist li {
+		background-color: white;
+		margin: 0;
+		height: 30px;
+		line-height: 28px;
+		padding: 2px 4px;
+		box-sizing: border-box;
+	}
+	.ziggeo-ctrl-editlist li:hover {
+		background-color: lightgray;
+	}
+	.ziggeo-ctrl-editlist:not(focus) li {
+		pointer-events: none;
+	}
+	.ziggeo-ctrl-editlist:focus li {
+		pointer-events: all;
+	}
 
+	/* Styles related to Ziggeo popup. Mostly to be used on admin side */
+	.ziggeo_popup_form {
+		position: fixed;
+		top: 10%;
+		left: 10%;
+		right: 10%;
+		bottom: 10%;
+		overflow: auto;
+		background-color: white;
+		z-index: 9999;
+		box-sizing: border-box;
+		padding: 10px;
+		box-shadow: 0 0 10px black;
+		border: 2px groove white;
+	}
+	.ziggeo-btn-radio {
+		padding: 2px 8px;
+		display: inline-block;
+		background-color: white;
+		cursor: pointer;
+	}
+	.ziggeo-btn-radio::before {
+		content: "";
+		border: 1px solid gray;
+		box-sizing: border-box;
+		width: 10px;
+		height: 10px;
+		background-color: green;
+		display: inline-block;
+		margin-right: 8px;
+	}
+	.ziggeo-btn-radio.disabled {
+		background-color: #eaeaea;
+	}
+	.ziggeo-btn-radio.disabled::before {
+		background-color: lightgray;
+	}
+	.ziggeo-ctrl-radio-group {
+		display: inline-block;
+		padding: 4px;
+		box-sizing: border-box;
+		background-color: lightgray;
+		margin: 10px 0;
+		border: 1px solid gray;
+		box-sizing: border-box;
+	}
+	.ziggeo-group-section label::before {
+		content: "";
+		display: block;
+	}
+	.ziggeo-group-section input[type="range"] {
+		width: 90%;
+		margin-bottom: 10px;
+	}
+	.ziggeo-group-section [type="range"] + span {
+		width: 6%;
+		display: inline-block;
+		margin-bottom: 10px;
+		vertical-align: top;
+	}
 
 
 /************************************************

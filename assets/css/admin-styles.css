@@ -24,7 +24,13 @@ INDEX:
 	1. DASHBOARD (PLUGIN SETTINGS)
 ************************************************/
 
-	.ziggeo-tabName {
+	.ziggeo_tabs .ziggeo_tab:first-child {
+		border-top-left-radius: 8px;
+	}
+	.ziggeo_tabs .ziggeo_tab:last-child {
+		border-top-right-radius: 8px;
+	}
+	.ziggeo-tabName, .ziggeo_tab {
 		border: 1px solid gray;
 		border-bottom: none;
 		display: inline-block;
@@ -39,7 +45,7 @@ INDEX:
 		margin-bottom: 1em;
 		padding: 1em;
 	}
-	.ziggeo-tabName.selected {
+	.ziggeo-tabName.selected, .ziggeo_tab.selected {
 		border-top-left-radius: 8px;
 		border-top-right-radius: 8px;
 		height: 30px;
@@ -667,25 +673,285 @@ INDEX:
 	4. DASHBOARD (SDK)
 ************************************************/
 
-	.ziggeo_adm_client_auth_simplifiers .ziggeo-ctrl-group {
+	#ziggeo_tab_applications label {
+		display: block;
+		margin-top: 10px;
+		margin-bottom: 4px;
+	}
+	#ziggeo_tab_applications textarea {
 		width: 50%;
-		display: inline-block;
+		min-width: 300px;
+	}
+	#ziggeo_tab_applications input {
+		width: 50%;
+		min-width: 300px;
 	}
 
-	@media all (max-width: 800) {
-		.ziggeo_adm_client_auth_simplifiers .ziggeo-ctrl-group {
+	#applications_list {
+		min-width: 50%;
+	}
+	input.ziggeo_secret {
+		filter: blur(4px);
+		border: 1px solid gray;
+		box-shadow: 0 0 10px black;
+	}
+	input.ziggeo_secret:hover {
+		filter: blur(0);
+		box-shadow: none;
+		transition: filter 1s ease-in-out;
+	}
+
+	.has_error {
+		box-shadow: 0 0 2px orangered;
+	}
+
+	.calendars {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+	.calendars .hasDatepicker {
+		display: inline-block;
+	}
+	.calendars label {
+		min-width: 250px;
+		display: inline-block;
+	}
+	.ziggeo-graph {
+		width: calc(100% / 4 - 4px);
+		background-image: radial-gradient(white, white, silver);
+		display: inline-block;
+		border: 2px solid gray;
+		border-radius: 10px;
+		box-sizing: border-box;
+	}
+	.ziggeo-graph.big {
+		position: absolute;
+		width: 60%;
+		border: none transparent;
+		box-shadow: 0 0 10px gray;
+		top: 40px;
+		right: 140px;
+	}
+	@media screen and (max-width: 720px) {
+		.ziggeo-graph {
 			width: 100%;
 		}
 	}
+	@media screen and (min-width: 720px) and (max-width: 1024px) {
+		.ziggeo-graph {
+			width: calc(100% / 2 - 4px);
+		}
+	}
+	#analytics_data {
+		position: relative;
+	}
+	.analytics_data .ziggeo-graph.big {
+		display: none;
+		position: absolute;
+	}
+	.ziggeo-ctrl-btn.ziggeo-sdk-ajax + p {
+		display: none;
+	}
+	.ziggeo-ctrl-btn.ziggeo-sdk-ajax.disabled + p {
+		display: block;
+	}
 
-	.ziggeo_adm_client_auth_simplifiers label {
-		width: 40%;
+	/*.ziggeosdk.effect_profiles_list li span {
+		border-right: 2px groove lightgray;
+		text-align: center;
 		display: inline-block;
 	}
-	.ziggeo_adm_client_auth_simplifiers label + input {
-		width: 58%;
+
+	.ziggeosdk.effect_profiles_list .count,
+	.ziggeosdk.effect_profiles_list .owned {
+		width: 30px;
+	}
+
+	.ziggeosdk.effect_profiles_list .type,
+	.ziggeosdk.effect_profiles_list .created {
+		padding: 0 10px;
+	}
+
+	.ziggeosdk.effect_profiles_list .volatile,
+	.ziggeosdk.effect_profiles_list .image_only_effect,
+	.ziggeosdk.effect_profiles_list .default_effect {
+		width: 60px;
+	}
+
+	.ziggeosdk.effect_profiles_list .token,
+	.ziggeosdk.effect_profiles_list .key,
+	.ziggeosdk.effect_profiles_list .title {
+		/*width: 240px;* /
+		width: 180px;
+		overflow-y: scroll;
+	}*/
+
+	.ziggeosdk.effect_profiles_list li > span {
 		display: inline-block;
 		box-sizing: border-box;
+		line-height: 22px;
+		font-size: 12px;
+	}
+
+	.ziggeosdk.effect_profiles_list li > span .ziggeo-ctrl-btn {
+		margin-left: 20px;
+	}
+
+	.ziggeosdk.effect_profiles_list li > span:nth-child(2n+1) {
+		width: 20%;
+		text-align: left;
+		border-right: 1px solid gray;
+		padding-left: 20px;
+	}
+
+	.ziggeosdk.effect_profiles_list li > span:first-child {
+		padding-left: 0px;
+		width: 10px;
+		border-bottom: 1px dotted gray;
+		border-right: none transparent;
+	}
+
+	.ziggeosdk.effect_profiles_list li > span.count:nth-child(2) {
+		padding-left: 0px;
+		width: 90%;
+		width: calc(100% - 10px);
+		border-bottom: 1px dotted gray;
+	}
+
+	.ziggeosdk.effect_profiles_list li > span:nth-child(2n) {
+		width: 78%;
+		padding-left: 20px;
+	}
+
+	#ziggeo-sdk-pages .additional_info {
+		width: 80%;
+		margin-left: 20%;
+		border-left: 1px solid gray;
+	}
+
+	#ziggeo-sdk-pages .additional_info span {
+		display: inline-block;
+		box-sizing: border-box;
+	}
+
+	#ziggeo-sdk-pages .additional_info span:only-child {
+		width: 100%;
+	}
+	.additional_info span:nth-child(odd) {
+		width: 20%;
+		padding-left: 10px;
+	}
+	.additional_info span:nth-child(even) {
+		width: 80%;
+	}
+	.additional_info .process {
+		padding: 10px 0;
+	}
+	.additional_info .process:nth-child(2n+1) {
+		background-color: #53c7f4;
+	}
+
+	#ziggeo_tab_effectprofiles label {
+		width: 180px;
+		display: inline-block;
+		margin: 10px 0;
+	}
+
+	#ziggeo_tab_effectprofiles label + input[type="text"]{
+		width: 50%;
+		width: calc(100% - 200px);
+		min-width: 50%;
+	}
+
+	#ziggeo-sdk-pages [data-required="true"]::before {
+		content: "*";
+		color: red;
+		font-size: 0.8em;
+		font-variant-position: super;
+	}
+
+	#effect_profile_list li.new {
+		background: lightgreen;
+		transition-property: background;
+		transition-duration: 4s;
+	}
+
+	#ziggeo_tab_effectprofiles .additional_options {
+		margin: 10px 0;
+	}
+
+	.video_preview_sd, .video_preview_hd {
+		position: relative;
+		overflow: hidden;
+		background-color: lightgray;
+		border: 2px ridge gray;
+		margin: 4px;
+		box-sizing: border-box;
+	}
+
+	.video_preview_sd {
+		width: 640px;
+		height: 480px;
+	}
+
+	.video_preview_hd {
+		width: 1280px;
+		height: 720px;
+	}
+
+	#effect_profiles_watermark_preview {
+		width: 20px;
+		height: 20px;
+		position: relative;
+		background-size: 100%;
+	}
+	.effect_title {
+		text-align: center;
+		font-size: 20px;
+		margin: 40px 0 20px 0;
+	}
+	.ziggeo_popup_form .panel_left,
+	.ziggeo_popup_form .panel_right {
+		width: 50%;
+		box-sizing: border-box;
+		min-height: 200px;
+		background-size: auto 100%;
+		background-repeat: no-repeat;
+		background-position: center;
+		display: inline-block;
+	}
+	.panel_left.text, .panel_right.text {
+		width: 50%;
+		box-sizing: border-box;
+		display: inline-block;
+		text-align: center;
+		min-height: 0;
+	}
+	.ziggeo-ctrl-btn.show-on-hover {
+		position: absolute;
+		top: 50%;
+		left: calc( 50% - 100px);
+		width: 200px;
+		margin: 0;
+	}
+	.ziggeo_effects_list {
+		position: relative;
+	}
+	.ziggeo_effects_list .ziggeo-ctrl-btn.show-on-hover {
+		position: absolute;
+		top: 40%;
+		left: calc( 50% - 100px);
+		width: 200px;
+		margin: 0;
+		height: 60px;
+		line-height: 60px;
+		padding: 0;
+		font-size: 16px;
+		opacity: 0;
+	}
+	.ziggeo_effects_list:hover .show-on-hover {
+		opacity: 1;
+		transition: 0.2s opacity ease-in-out;
 	}
 
 
