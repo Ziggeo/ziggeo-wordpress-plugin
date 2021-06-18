@@ -333,6 +333,13 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_expert');
 
+		//Are we using Lazy Load approach or standard
+		add_settings_field('ziggeo_expert_lazyload',
+							__('Turn on lazyload approach', 'ziggeo'),
+							'ziggeo_a_s_e_lazyload',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
 }
 
 add_action('admin_init', 'ziggeo_p_admin_init');

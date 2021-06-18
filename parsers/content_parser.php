@@ -74,12 +74,52 @@ function ziggeo_p_content_filter($content) {
 		$content = apply_filters('ziggeo_content_filter_post', $content);
 	}
 
+	if(defined('ZIGGEO_FOUND')) {
+		if(!defined('ZIGGEO_FOUND_POST')) {
+			$options = ziggeo_get_plugin_options();
+			if($options['lazy_load'] === ZIGGEO_YES) {
+
+				// Create the function that will load the scripts after page has been loaded.
+				$content .= '<script>function ziggeoLoadAssets() {' .
+						'var _head = document.getElementsByTagName(\'head\')[0];' .
+						'window.addEventListener(\'load\', function() {' .
+							'for(i = 0, c = ZiggeoWP.lazyload.length; i < c; i++) {' .
+								//Check for and create script element
+								'if( typeof ZiggeoWP.lazyload[i].js !== \'undefined\' ){' .
+									'var _script = document.createElement(\'script\');' .
+									'_script.type = "text/javascript";' .
+									'_script.src = ZiggeoWP.lazyload[i].js;' .
+									'_head.appendChild(_script);' .
+								'}' .
+								//Check for and create style element
+								'if( typeof ZiggeoWP.lazyload[i].css !== \'undefined\' ){' .
+									'var _style = document.createElement(\'link\');' .
+									'_style.rel = "stylesheet";' .
+									'_style.href = ZiggeoWP.lazyload[i].css;' .
+									'_style.media = \'all\';' .
+									'_head.appendChild(_style);' .
+								'}' .
+							'}' .
+						'})' .
+					'}' .
+					'ziggeoReInitApp();' .
+					'ziggeoLoadAssets();' .
+				'</script>';
+
+				define('ZIGGEO_FOUND_POST', true);
+			}
+		}
+	}
+
 	return $content;
 }
 
 //This works like shortcode functions do, allowing us to capture the codes through various filters and parse them as needed.
 //TODO: This needs to be broken up and simplified.
 function ziggeo_p_content_parse_templates($matches) {
+
+	//for lazyload support
+	define('ZIGGEO_FOUND', true);
 
 	//Elementor Support START
 	for($i = 0, $l = count($matches); $i < $l; $i++) {

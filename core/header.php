@@ -232,9 +232,14 @@ function ziggeo_p_page_header() {
 			//Fallback for strange cases when the ziggeo.js does not get loaded yet the above is executed.
 			jQuery(document).ready( function() {
 				//Final check in case it was blocked (like some plugins do)
+				ziggeoReInitApp();				
+			});
+
+			//Needed in cases of lazy load
+			function ziggeoReInitApp() {
 				if(typeof ZiggeoApi !== 'undefined') {
 					//Set the V2 application
-					window.ziggeo_app = new ZiggeoApi.V2.Application( ziggeoGetApplicationOptions() );
+					window.ziggeo_app = ZiggeoApi.V2.Application.instanceByToken( ziggeoGetApplicationOptions().token , ziggeoGetApplicationOptions());
 
 					<?php
 					//Language options
@@ -291,7 +296,10 @@ function ziggeo_p_page_header() {
 					}
 					?>
 				}
-			});
+				else {
+					setTimeout(function(){ziggeoReInitApp();}, 500);
+				}
+			}
 		}
 	</script>
 	<!-- Ziggeo API code - END -->
