@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.6
-Stable tag: 2.9.1
+Stable tag: 2.8.2
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,12 +264,12 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.9.1 - Lazy Load =
+= 2.8.2 - Lazy Load =
 * New Feature: The Expert settings now feature a lazy load option which would turn off our system outputting assets to the page unless some part of the page requests our embedding.
 	NOTE: This is limited to detection - only by our parsing component, so if the parsing happens outside of its scope (like adding HTML or JS codes, assets will not be loaded). This WILL disable video comments on pages where you do not add your own embedding.
 	NOTE: This will not disable the ouput of scripts that are used as bridges to some other plugin. These brdige plugins will provide their own option that will respect the core (this) plugin setting in future.
 
-= 2.9 =
+= 2.8.1 =
 * Fix: In some scenarios the comments would get broken video player code. Now this has been fixed.
 
 == Changelog ==
