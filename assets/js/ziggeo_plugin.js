@@ -388,7 +388,7 @@
 		}
 
 		var months_s = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-		var months_l = ['January','February','March','April','May','Jun','Jul','August','September','October','November','December'];
+		var months_l = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 		var days_s = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 		var days_l = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 		var meridiem_s = ['am', 'pm'];
@@ -401,10 +401,10 @@
 		var yy = yyyy.toString().slice(2);                          // 21
 
 		// month
-		var m = time.getMonth();                                    // 4
+		var m = time.getMonth()+1;                                  // 4
 		var mm = (m < 10) ? '0' + m.toString() : m;                 // 04
-		var mmm = months_s[m];                                      // Apr
-		var mmmm = months_l[m];                                     // April
+		var mmm = months_s[m-1];                                    // Apr
+		var mmmm = months_l[m-1];                                   // April
 
 		// day
 		var d = time.getDate();				                        // 4
@@ -431,20 +431,26 @@
 		sec = (sec > 10) ? sec : '0' + sec.toString();              // 08
 
 		//We need to do this in order that will not catch any numbers given in format.
-		var result = format.replace('Y', yyyy).replace('y', yy);
-		result = result.replace('n', m).replace('m', mm);
-		result = result.replace('j', d).replace('d', dd);
-		result = result.replace('g', h_12).replace('h', hh_12);
-		result = result.replace('G', h_24).replace('H', hh_24);
-		result = result.replace('i', min).replace('s', sec);
+		var result = format.replace('Y', 'xx_01').replace('y', 'xx_02');
+		result = result.replace('n', 'xx_03').replace('m', 'xx_04');
+		result = result.replace('j', 'xx_05').replace('d', 'xx_06');
+		result = result.replace('g', 'xx_07').replace('h', 'xx_08');
+		result = result.replace('G', 'xx_09').replace('H', 'xx_10');
+		result = result.replace('i', 'xx_11').replace('s', 'xx_12');
+		result = result.replace('a', 'xx_13').replace('A', 'xx_14');
+		result = result.replace('l', 'xx_15').replace('F', 'xx_16');
+		result = result.replace('M', 'xx_17').replace('D', 'xx_18');
 
-		// With meridiem mark, you could easily confuse the filter with M letter that is for month, while if this was last it would match almost all months improperly. Same is with parameter "l" and "F". To go around this we will first mark them by adding "xx" to them, which we will later change to proper format. 
-		result = result.replace('a', 'axx').replace('A', 'Axx').replace('l', 'lxx').replace('F', 'Fxx');
-
-		result = result.replace('M', mmm).replace('D', ddd);
-
-		result = result.replace('axx', meridiem_s[meridiem_mark]).replace('Axx', meridiem_l[meridiem_mark]);
-		result = result.replace('lxx', dddd).replace('Fxx', mmmm);
+		// Now to get actual values..
+		result = result.replace('xx_01', yyyy).replace('xx_02', yy);
+		result = result.replace('xx_03', m).replace('xx_04', mm);
+		result = result.replace('xx_05', d).replace('xx_06', dd);
+		result = result.replace('xx_07', h_12).replace('xx_08', hh_12);
+		result = result.replace('xx_09', h_24).replace('xx_10', hh_24);
+		result = result.replace('xx_11', min).replace('xx_12', sec);
+		result = result.replace('xx_13', meridiem_s[meridiem_mark]).replace('xx_14', meridiem_l[meridiem_mark]);
+		result = result.replace('xx_15', dddd).replace('xx_16', mmmm);
+		result = result.replace('xx_17', mmm).replace('xx_18', ddd);
 
 		return result;
 	}
