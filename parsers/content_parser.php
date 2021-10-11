@@ -27,13 +27,51 @@ function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
 
 	$attrs_str = '';
 
-	//We have to combine the attrs array into key + value
-	foreach($attrs as $key => $value) {
-		$attrs_str .= ' ' . $key . "='" . $value . "'";
+	if($attrs === '') {
+		$attrs_str = ZIGGEO_DEFAULTS_RECORDER;
+	}
+	else {
+		//We have to combine the attrs array into key + value
+		foreach($attrs as $key => $value) {
+			$attrs_str .= ' ' . $key . "='" . $value . "'";
+		}
 	}
 
 	return ziggeo_p_content_filter($tag . $attrs_str . ']');
 }
+
+// Support for event shortcodes
+add_shortcode('ziggeo_event', function($attrs) {
+
+	// Defaults
+	$event = 'verified';
+	$type = 'alert';
+	$msg = 'Captured media has been verified';
+
+	if($attrs['event']) {
+		$event = $attrs['event'];
+	}
+
+	if($attrs['type']) {
+		$type = $attrs['type'];
+	}
+
+	if($attrs['message']) {
+		$msg = $attrs['message'];
+	}
+
+	$code = '<script>';
+		$code .= 'ziggeo_app.embed_events.on("' . $event . '", function (embedding, extra) {';
+
+			if($type === 'alert') {
+				$code .= 'alert("' . $msg . '")'; // We do not escape the strings at this time
+			}
+
+		$code .= '});';
+	$code .= '</script>';
+
+	return $code;
+});
 
 //Old and general Ziggeo shortcode support
 add_shortcode( 'ziggeo', function($attrs) {
@@ -42,6 +80,11 @@ add_shortcode( 'ziggeo', function($attrs) {
 
 //We are updating this in such a way that we will keep the old calls, so that we have backwards compatibility, but in the same time, we are adding another call that will check for us if there are any tags matching new templates. We must do it like this, since using regex we will be able to find this in all locations that we want, while if we use shortcode, it will only work (out of the box) if the shortcode is within the section covered by 'the_content' filter.
 function ziggeo_p_content_filter($content) {
+
+	// To not parse the ziggeo events
+	if(stripos($content, '[ziggeo_event') > -0) {
+		return $content;
+	}
 
 	//This way we are making it work fine with WPv5 saving where we would parse the content while we should not (like saving the post)
 	if(is_rest()) {

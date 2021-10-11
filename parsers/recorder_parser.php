@@ -98,7 +98,8 @@ function ziggeo_p_template_is_recorder($template) {
 		'recordermode',
 		'input-bind',
 		'form-accept',
-		'recordings' //this generally tells us that it is recorder, without inspecting value we can not know if it is a rerecorder
+		'recordings', //this generally tells us that it is recorder, without inspecting value we can not know if it is a rerecorder
+		'playermodeifexists' // Player is shown however this is added on recorder, to turn recorder into player when exitings
 	);
 
 	for($i = 0, $c = count($recorderParams); $i < $c; $i++) {

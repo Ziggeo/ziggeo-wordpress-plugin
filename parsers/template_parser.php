@@ -82,8 +82,9 @@ function ziggeo_p_parameter_prep($data) {
 
 	foreach($tmp_str as $key => $value) {
 		$value = trim($value, " \t\n\r\0\x0B".chr(0xC2).chr(0xA0));
-		if( $value !== '' && $value !== '[' && $value !== '[ziggeo' && $value !== ']' && $value !== '""'&& $value !== '"'
-			&& $value !== 'player' && $value !== 'recorder' && $value !== 'rerecorder') {
+
+		if( $value !== '' && $value !== '[' && $value !== '[ziggeo' && $value !== ']' && $value !== '""' &&
+			$value !== '"' && $value !== 'player' && $value !== 'recorder' && $value !== 'rerecorder') {
 
 			//@TODO
 			// 2. make it understand that 'some text' are not actually 2 parameters..
@@ -95,6 +96,7 @@ function ziggeo_p_parameter_prep($data) {
 				$tmp_str2 .= ' ziggeo-' . $value;
 			}
 			else {
+				// This part makes it not support the boolean parameters (which seems not needed, leaving for now, will be removed in future)
 				$tmp_str2 .= ' ' . $value;
 			}
 		}

@@ -3391,7 +3391,15 @@
 
 			if(response.status && response.status === 'success') {
 
-				if(data.sdk_action === 'effect_profile_processes_list') {
+				if(data.sdk_action === 'effect_profile_get_all') {
+
+					// #effect_profile_list
+					var elem_where = document.getElementById(btn_current.getAttribute('data-results'));
+					elem_where.insertAdjacentHTML('afterbegin', response.result);
+
+					btn_current.className = btn_current.className.replace(' disabled', '');
+				}
+				else if(data.sdk_action === 'effect_profile_processes_list') {
 					ziggeoPUISDKEffectsProfileProcessList(response.result, data.token);
 					btn_current.className = btn_current.className.replace(' disabled', '');
 				}

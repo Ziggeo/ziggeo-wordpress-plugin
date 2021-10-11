@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.6
-Stable tag: 2.9
+Stable tag: 2.10
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,9 +264,10 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.9 =
-* Fix: In some scenarios the comments would get broken video player code. Now this has been fixed.
-* Improvement: Added SDK pages to the plugin (requires you to download the SDK manually - for security reasons)
+= 2.10 =
+* Fix: The analytics date was not correctly shown. This has been corrected now
+* New Feature: Ziggeo events can now be used in WP. Just add [ziggeo_event event=verified message="my message" type=alert] and as soon as the verified event fires, your message will be shown. See all events you can use on the following page: https://ziggeo.com/docs/sdks/javascript/browser-interaction/events. (to be extended for more types)
+* Added support for `rerecordableifexists` and `playermodeifexists`
 
 == Changelog ==
 

@@ -173,6 +173,11 @@ function ziggeo_a_sdk_text() {
 			</div>
 		</div>
 		<div class="ziggeo-frame" style="display:none;" id="ziggeo_tab_authtokens">
+			<p>
+				<?php
+					_e('Auth tokens area has not yet been added to this version of Ziggeo\'s Wordpress Core plugin.', 'ziggeo');
+				?>
+			</p>
 		</div>
 		<div class="ziggeo-frame" style="display:none;" id="ziggeo_tab_effectprofiles">
 			<p>
@@ -207,14 +212,24 @@ function ziggeo_a_sdk_text() {
 
 			<div id="effect_profile_list">
 			</div>
-			<span class="ziggeo-ctrl-btn"
+			<span class="ziggeo-ctrl-btn ziggeo-sdk-ajax"
 			     data-action="effect_profile_get_all"
 			     data-operation="sdk_effect_profiles"
 			     data-results="effect_profile_list">Get All Effect Profiles</span>
 		</div>
 		<div class="ziggeo-frame" style="display:none;" id="ziggeo_tab_metaprofiles">
+			<p>
+				<?php
+					_e('Meta Profiles area has not yet been added to this version of Ziggeo\'s Wordpress Core plugin.', 'ziggeo');
+				?>
+			</p>
 		</div>
 		<div class="ziggeo-frame" style="display:none;" id="ziggeo_tab_webhooks">
+			<p>
+				<?php
+					_e('Webhooks area has not yet been added to this version of Ziggeo\'s Wordpress Core plugin.', 'ziggeo');
+				?>
+			</p>
 		</div>
 	</div>
 

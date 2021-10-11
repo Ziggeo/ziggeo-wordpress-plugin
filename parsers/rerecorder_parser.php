@@ -44,6 +44,7 @@ function ziggeo_p_template_is_rerecorder($template) {
 		'skipinitialonrerecord',
 		'early-rerecord',
 		'rerecordable',
+		'rerecordableifexists',
 		'force-overwrite',
 		'delete-old-streams'
 	);
