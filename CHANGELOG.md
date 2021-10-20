@@ -1,5 +1,10 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.10 =
+* Fix: The analytics date was not correctly shown. This has been corrected now
+* New Feature: Ziggeo events can now be used in WP. Just add [ziggeo_event event=verified message="my message" type=alert] and as soon as the verified event fires, your message will be shown. See all events you can use on the following page: https://ziggeo.com/docs/sdks/javascript/browser-interaction/events. (to be extended for more types)
+* Added support for `rerecordableifexists` and `playermodeifexists`
+
 = 2.9 =
 * Fix: In some scenarios the comments would get broken video player code. Now this has been fixed.
 * Improvement: Added SDK pages to the plugin (requires you to download the SDK manually - for security reasons)

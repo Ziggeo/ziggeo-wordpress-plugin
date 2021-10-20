@@ -15,9 +15,10 @@ INDEX:
 	3. Dashboard (video listing)
 	4. Dashboard (SDK)
 	5. Dashboard (Addons)
-	6. Global styles
-	7. Post and page editors
-	8. Third party or modules CSS (TO BE REMOVED IN FUTURE VERSIONS)
+	6. Dashboard (Events Editor)
+	7. Global styles
+	8. Post and page editors
+	9. Third party or modules CSS (TO BE REMOVED IN FUTURE VERSIONS)
 */
 
 /************************************************
@@ -1029,7 +1030,26 @@ INDEX:
 
 
 /************************************************
-	6. GLOBAL STYLES
+	6. DASHBOARD (EVENTS EDITOR)
+************************************************/
+
+	#ziggeo-ee-custom-code {
+		width: 100%;
+	}
+
+	.ziggeo-ee-custom-code-placeholder i {
+		color: purple;
+	}
+
+	#ziggeo-ee-shortcode {
+		margin-top: 20px;
+		width: 90%;
+	}
+
+
+
+/************************************************
+	7. GLOBAL STYLES
 ************************************************/
 
 	b.message, b.warning {
@@ -1129,7 +1149,7 @@ INDEX:
 
 
 /************************************************
-	7. POST AND PAGE EDITORS
+	8. POST AND PAGE EDITORS
 ************************************************/
 
 	/* Toolbar */
@@ -1202,7 +1222,7 @@ INDEX:
 
 
 /************************************************
-	8. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
+	9. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
 ************************************************/
 
 	/* Gravity Forms specific CSS */

@@ -1,20 +1,20 @@
 {
 	"wp": {
 		"required": "3.0.1",
-		"tested": "5.6",
+		"tested": "5.8.1",
 		"repo_url": "https://wordpress.org/plugins/ziggeo/",
 		"alternative_repo_url": "https://github.com/Ziggeo/ziggeo-wordpress-plugin"
 	},
 	"plugin": {
 		"name": "ziggeo-core",
 		"title": "Ziggeo Video Posts and Comments",
-		"version": "2.10",
+		"version": "2.11",
 		"author": "Ziggeo",
 		"logo": "https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/assets/images/logo.png",
 		"contributors": "oliverfriedmann, baned, carloscsz409",
 		"tags": "video, video service, record video, video playback, gallery, ziggeo",
 		"description": "This plugin allows you to bring video to your Wordpress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.",
-		"highlight": "Widget parser improvement",
+		"highlight": "Ziggeo Events Editor and support",
 		"info_url": "https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/info.json",
 		"addon_url": "https://ziggeo.com/integrations/wordpress",
 		"docs_url": "https://ziggeo.com/docs/integrations/wordpress/"

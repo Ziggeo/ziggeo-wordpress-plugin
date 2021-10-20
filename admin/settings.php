@@ -420,4 +420,8 @@ function ziggeo_a_addons_page() {
 	include_once(ZIGGEO_ROOT_PATH . 'admin/page_addons.php');
 }
 
+// Inclusion of events editor page
+function ziggeo_a_ee_page() {
+	include_once(ZIGGEO_ROOT_PATH . 'admin/page_editor_events.php');
+}
 ?>

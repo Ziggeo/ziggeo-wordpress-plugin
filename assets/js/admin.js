@@ -63,6 +63,8 @@
 //		* ziggeoPUIAddonsSwitch()
 // 9. SDK Page
 //		* 
+// 10. Events Editor
+//		* 
 
 /////////////////////////////////////////////////
 // 1. DASHBOARD                                //
@@ -154,6 +156,10 @@
 
 		if(document.getElementById('ziggeo-sdk-pages')) {
 			ziggeoPUISDKInit();
+		}
+
+		if(document.getElementById('ziggeo-ee-event-id')) {
+			ziggeoPUIEEInit();
 		}
 	});
 
@@ -3481,4 +3487,172 @@
 
 		//Disable the button as we start working on it
 		btn_current.className += ' disabled';
+	}
+
+
+
+
+
+/////////////////////////////////////////////////
+// 10. EVENTS EDITOR                           //
+/////////////////////////////////////////////////
+
+	// Register functions that we need to make our Events Editor a bit interactive
+	function ziggeoPUIEEInit() {
+
+		var event_type = document.getElementById('ziggeo-ee-event-type'); // select
+
+		var event_alert_message = document.getElementById('ziggeo-ee-event-message');
+		var event_template_code = document.getElementById('ziggeo-ee-custom-code');
+
+		var event_code_inject_onload = document.getElementById('ziggeo-ee-onload');
+		var event_code_inject_onfire = document.getElementById('ziggeo-ee-onfire');
+
+		var codes_preview = document.getElementsByClassName('ziggeo-ee-custom-code-placeholder');
+
+		var btn_generate = document.getElementById('ziggeo-ee-btn-generate');
+		var btn_save = document.getElementById('ziggeo-ee-btn-save');
+
+		var i, c;
+
+		// Depending on what is selected different fields are shown
+		event_type.addEventListener('change', function() {
+			if(event_type.value === 'template') {
+				event_alert_message.parentElement.parentElement.style.display = 'none';
+				event_template_code.parentElement.parentElement.style.display = 'table-row';
+				event_code_inject_onload.parentElement.parentElement.style.display = 'table-row';
+				btn_save.style.display = 'inline-block';
+			}
+			else { // alert
+				event_alert_message.parentElement.parentElement.style.display = 'table-row';
+				event_template_code.parentElement.parentElement.style.display = 'none';
+				event_code_inject_onload.parentElement.parentElement.style.display = 'none';
+			}
+		});
+
+		event_code_inject_onfire.addEventListener('click', function() {
+			for(i = 0, c = codes_preview.length; i < c; i++) {
+				codes_preview[i].style.display = 'block';
+			}
+		})
+
+		event_code_inject_onload.addEventListener('click', function() {
+			for(i = 0, c = codes_preview.length; i < c; i++) {
+				codes_preview[i].style.display = 'none';
+			}
+		})
+
+		btn_generate.addEventListener('click', ziggeoPUIEEGenerateShortcode);
+		btn_save.addEventListener('click', ziggeoPUIEESaveTemplate);
+
+		// Set default UI
+		ziggeoPUIEEDefauts();
+
+	}
+
+	// Helper function to set everything to initial state
+	// Used on load and on save
+	function ziggeoPUIEEDefauts() {
+
+		// Event ID is important to be added for templates, however not really important for alerts
+		var event_id = document.getElementById('ziggeo-ee-event-id');
+		var event_to_listen_to = document.getElementById('ziggeo-ee-event'); // select
+		var event_type = document.getElementById('ziggeo-ee-event-type'); // select
+		var event_alert_message = document.getElementById('ziggeo-ee-event-message');
+		var event_template_code = document.getElementById('ziggeo-ee-custom-code');
+
+		var event_code_inject_onload = document.getElementById('ziggeo-ee-onload');
+		var event_code_inject_onfire = document.getElementById('ziggeo-ee-onfire');
+
+		var elem_shortcode = document.getElementById('ziggeo-ee-shortcode');
+
+		var codes_preview = document.getElementsByClassName('ziggeo-ee-custom-code-placeholder');
+
+		var btn_save = document.getElementById('ziggeo-ee-btn-save');
+
+		var i, c;
+
+		event_id.value = '';
+		event_to_listen_to.value = 'verified';
+		event_type.value = 'alert'
+		event_alert_message.value = '';
+		event_template_code.value = '';
+		event_code_inject_onload.checked = 'checked';
+
+		// Since we are hiding a row, we need to do this as page is loaded
+		event_alert_message.parentElement.parentElement.style.display = 'table-row';
+		event_template_code.parentElement.parentElement.style.display = 'none';
+		event_code_inject_onload.parentElement.parentElement.style.display = 'none';
+
+		btn_save.style.display = 'none';
+
+		for(i = 0, c = codes_preview.length; i < c; i++) {
+			codes_preview[i].style.display = 'none';
+		}
+
+		elem_shortcode.value = '';
+		elem_shortcode.style.display = 'none';
+	}
+
+	// This function captures the data and then sends it to the server through AJAX to save it.
+	// Once done, it resets the values
+	function ziggeoPUIEESaveTemplate() {
+
+		var event_id = document.getElementById('ziggeo-ee-event-id');
+		var event_to_listen_to = document.getElementById('ziggeo-ee-event'); // select
+		var event_template_code = document.getElementById('ziggeo-ee-custom-code');
+		var event_code_inject_onload = document.getElementById('ziggeo-ee-onload');
+		var event_code_inject_onfire = document.getElementById('ziggeo-ee-onfire');
+
+		// Save the same
+
+		var data = {
+			id: event_id.value,
+			event: event_to_listen_to.value,
+			code: event_template_code.value, //JSON.stringify(event_template_code.value),
+			inject_type: (event_code_inject_onload.checked) ? 'on_load' : 'on_fire',
+			operation: 'event_editor_save_template'
+		}
+
+		ziggeoAjax(data, function(result) {
+
+			console.log(result);
+
+			//ziggeoPUIEEDefauts();
+		});
+
+	}
+
+	// This function is used to capture the values from the fields and show a copy ready shortcode to be used.
+	// In case of templates, they have to be saved first to be usable
+	function ziggeoPUIEEGenerateShortcode() {
+
+		var event_id = document.getElementById('ziggeo-ee-event-id');
+		var event_to_listen_to = document.getElementById('ziggeo-ee-event'); // select
+		var event_type = document.getElementById('ziggeo-ee-event-type'); // select
+
+		var event_alert_message = document.getElementById('ziggeo-ee-event-message');
+		var event_template_code = document.getElementById('ziggeo-ee-custom-code');
+
+		var event_code_inject_onload = document.getElementById('ziggeo-ee-onload');
+		var event_code_inject_onfire = document.getElementById('ziggeo-ee-onfire');
+
+		var codes_preview = document.getElementsByClassName('ziggeo-ee-custom-code-placeholder');
+		var elem_shortcode = document.getElementById('ziggeo-ee-shortcode');
+
+		var shortcode = '[ziggeo_event ';
+		if(event_type.value === 'alert') {
+			//[ziggeo_event event=verified message="my message" type=alert]
+			shortcode += 'event=' + event_to_listen_to.value;
+			shortcode += ' message="' + event_alert_message.value.replace(/"/g, '&quot;').replace(/'/g, '&apos;') + '"';
+			shortcode += ' type=alert]';
+		}
+		else { // template
+			//[ziggeo_event id="event_id_set_in_editor" type=template]
+			shortcode += ' id="' + event_id.value;
+			shortcode += ' type=template]';
+		}
+
+		elem_shortcode.value = shortcode;
+		elem_shortcode.style.display = 'block';
 	}
