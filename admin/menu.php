@@ -17,20 +17,29 @@ add_action('admin_menu', function() {
 
 	//Settings sub menu
 	ziggeo_p_add_menu_entry(array(
-		'page_title'	=> 'Ziggeo Video Settings',				//page title
-		'menu_title'	=> 'Settings',							//menu title
-		'capability'	=> 'manage_options',					//min capability to view
-		'slug'			=> 'ziggeo_video',						//menu slug
-		'callback'		=> 'ziggeo_a_s_page')					//function
+		'page_title'	=> 'Ziggeo Video Settings',             //page title
+		'menu_title'	=> 'Settings',                          //menu title
+		'capability'	=> 'manage_options',                    //min capability to view
+		'slug'			=> 'ziggeo_video',                      //menu slug
+		'callback'		=> 'ziggeo_a_s_page')                   //function
+	);
+
+	//Templates Editor
+	ziggeo_p_add_menu_entry(array(
+		'page_title'	=> 'Ziggeo Templates Editor',           //page title
+		'menu_title'	=> 'Templates Editor',                  //menu title
+		'capability'	=> 'manage_options',                    //min capability to view
+		'slug'			=> 'ziggeo_editor_templates',           //menu slug
+		'callback'		=> 'ziggeo_a_et_page')                  //function
 	);
 
 	//Events Editor
 	ziggeo_p_add_menu_entry(array(
-		'page_title'	=> 'Ziggeo Events editor',				//page title
-		'menu_title'	=> 'Events Editor',						//menu title
-		'capability'	=> 'manage_options',					//min capability to view
-		'slug'			=> 'ziggeo_editor_events',				//menu slug
-		'callback'		=> 'ziggeo_a_ee_page')					//function
+		'page_title'	=> 'Ziggeo Events editor',              //page title
+		'menu_title'	=> 'Events Editor',                     //menu title
+		'capability'	=> 'manage_options',                    //min capability to view
+		'slug'			=> 'ziggeo_editor_events',              //menu slug
+		'callback'		=> 'ziggeo_a_ee_page')                  //function
 	);
 
 	// Get notifications count

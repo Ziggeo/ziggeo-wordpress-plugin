@@ -1,5 +1,8 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.11 =
+* Improved: Ziggeo events can still be used as alert using [ziggeo_event event=verified message="my message" type=alert] however now you can add your custom code to be injected into the page and called once some event fires. All through Events Editor which includes the shortcode generator to add into your pages.
+
 = 2.10 =
 * Fix: The analytics date was not correctly shown. This has been corrected now
 * New Feature: Ziggeo events can now be used in WP. Just add [ziggeo_event event=verified message="my message" type=alert] and as soon as the verified event fires, your message will be shown. See all events you can use on the following page: https://ziggeo.com/docs/sdks/javascript/browser-interaction/events. (to be extended for more types)

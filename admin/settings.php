@@ -11,8 +11,6 @@ function ziggeo_p_admin_init() {
 		//Add all sections in order of desired appearance
 		// for styling purposes -start-
 		add_settings_section('ziggeo_video_tabss', '', 'ziggeo_a_s_tabs_s_html', 'ziggeo_video');
-		// templates tab
-		add_settings_section('ziggeo_video_templates', '', 'ziggeo_a_s_t_text', 'ziggeo_video');
 		// general tab
 		add_settings_section('ziggeo_video_main', '', 'ziggeo_a_s_g_text', 'ziggeo_video');
 		// integrations tab
@@ -26,28 +24,6 @@ function ziggeo_p_admin_init() {
 
 	//Add sections settings
 	//----------------------
-		//-Templates section-
-
-		// Templates list (shows templates, allows edit and delete)
-		add_settings_field('ziggeo_templates_manager',
-							__('Manage your templates', 'ziggeo'),
-							'ziggeo_a_s_t_manager_field',
-							'ziggeo_video',
-							'ziggeo_video_templates');
-
-		// Template ID field
-		add_settings_field('ziggeo_templates_id',
-							__('Template ID', 'ziggeo'),
-							'ziggeo_a_s_t_id_field',
-							'ziggeo_video',
-							'ziggeo_video_templates');
-
-		// Templates editor segment (lists available parameters and shows the editor textarea and dropbox for type of template to be created )
-		add_settings_field('ziggeo_templates_editor',
-							__('Template Editor', 'ziggeo'),
-							'ziggeo_a_s_t_editor_field',
-							'ziggeo_video',
-							'ziggeo_video_templates');
 
 		//-General section-
 
@@ -347,8 +323,7 @@ function ziggeo_a_s_tabs_s_html() {
 	//Here we print the tabs
 	?>
 	<br>
-	<span id="ziggeo-tab_id_templates" class="ziggeo-tabName" style="border-top-left-radius: 8px;" onclick="ziggeoPUIChangeTab('templates');"><?php _ex('Templates Editor', '"Templates Editor" tab in settings', 'ziggeo'); ?></span>
-	<span id="ziggeo-tab_id_general" class="ziggeo-tabName selected" onclick="ziggeoPUIChangeTab('general');"><?php _ex('General', '"General" tab in settings', 'ziggeo'); ?></span>
+	<span id="ziggeo-tab_id_general" class="ziggeo-tabName selected" style="border-top-left-radius: 8px;" onclick="ziggeoPUIChangeTab('general');"><?php _ex('General', '"General" tab in settings', 'ziggeo'); ?></span>
 	<span id="ziggeo-tab_id_integrations" class="ziggeo-tabName" onclick="ziggeoPUIChangeTab('integrations');"><?php _ex('Integrations', '"Integrations" tab in settings', 'ziggeo'); ?></span>
 	<span id="ziggeo-tab_id_contact" class="ziggeo-tabName" onclick="ziggeoPUIChangeTab('contact');"><?php _ex('Contact Us', '"Contact Us" tab in settings', 'ziggeo'); ?></span>
 	<span id="ziggeo-tab_id_expert" class="ziggeo-tabName" style="border-top-right-radius: 8px;" onclick="ziggeoPUIChangeTab('expert');"><?php _ex('Expert Settings', '"Expert Settings" tab in settings', 'ziggeo'); ?></span>
@@ -360,8 +335,7 @@ function ziggeo_a_s_tabs_s_html() {
 	//If there are any frames before it we need to add </div> before the frame to close the previous one.
 }
 
-//functions for the Templates tab
-include_once( ZIGGEO_ROOT_PATH . 'admin/settings-tabs-templates.php');
+
 //functions for the general tab
 include_once( ZIGGEO_ROOT_PATH . 'admin/settings-tabs-general.php');
 //functions for the integrations tab
@@ -424,4 +398,10 @@ function ziggeo_a_addons_page() {
 function ziggeo_a_ee_page() {
 	include_once(ZIGGEO_ROOT_PATH . 'admin/page_editor_events.php');
 }
+
+// Adding the templates editor
+function ziggeo_a_et_page() {
+	include_once( ZIGGEO_ROOT_PATH . 'admin/page_editor_templates.php');
+}
+
 ?>

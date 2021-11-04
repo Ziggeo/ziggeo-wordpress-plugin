@@ -118,6 +118,14 @@
 			}, 4000); //Why 4 seconds? No reason, just seemed as enough of time for things to load up :)
 		}
 
+		if(document.getElementById('ziggeo-tab_templates')) {
+			ziggeoPUIParametersQuickAddInit();
+			ziggeoPUITemplatesManageInit();
+			ziggeoPUIParametersShownInit();
+			//lets always do this last
+			ziggeoPUIHooksInit();
+		}
+
 		//Lets do this only if we are in the admin panel of our plugin
 		if(document.getElementById('ziggeo-tab_id_general')) {
 			ziggeoPUIParametersQuickAddInit();

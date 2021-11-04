@@ -12,7 +12,6 @@ function ziggeo_a_s_g_text() {
 	$option = ziggeo_get_plugin_options('token');
 
 	?>
-	</div>
 	<div class="ziggeo-frame" id="ziggeo-tab_general">
 	<?php
 
