@@ -121,6 +121,12 @@ function ziggeo_p_on_update($options = null) {
 		}
 	}
 
+	// 2.12
+	if(version_compare($options['version'], '2.12', '<')) {
+		// We would be here if we were updating from some older revision. As such we should leave the comments as they were, with the defauilt of modifying comments set to true instead of false (the actual default).
+		$defaults['modify_comments'] = ZIGGEO_YES;
+	}
+
 	//Using this method, we actually allow some new options to be added and saved even if they are not made through our plugin.
 	foreach($options as $option => $value) {
 		$defaults[$option] = $value;

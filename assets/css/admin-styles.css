@@ -340,6 +340,11 @@ INDEX:
 			margin-bottom: 10px;
 		}
 
+		.disabled_option {
+			opacity: 0.4;
+			pointer-events: none;
+		}
+
 
 	/* Integrations tab
 	*************************

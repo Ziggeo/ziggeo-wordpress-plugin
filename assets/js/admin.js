@@ -65,6 +65,11 @@
 //		* 
 // 10. Events Editor
 //		* 
+// 11. General Settings
+//		* ziggeoCommentsToggle
+
+
+
 
 /////////////////////////////////////////////////
 // 1. DASHBOARD                                //
@@ -132,7 +137,7 @@
 			ziggeoPUITemplatesManageInit();
 			ziggeoPUIParametersShownInit();
 			//lets always do this last
-			ziggeoPUIHooksInit();
+			//ziggeoPUIHooksInit();
 
 			//Lets check if we have any integrations and show message if not:
 			if(document.getElementsByClassName('ziggeo_integrations_list')[0].children.length == 0) {
@@ -141,6 +146,12 @@
 				document.getElementsByClassName('ziggeo_integrations_list')[0].appendChild(_li);
 			}
 
+			// Comments area on/off on page load
+			var _comments_area = document.getElementById('ziggeo_modify_comments');
+			_comments_area.addEventListener('change', function(e) {
+				ziggeoCommentsToggle(e);
+			});
+			ziggeoCommentsToggle(_comments_area);
 		}
 
 		//Happens only if we are on notifications pages
@@ -3663,4 +3674,47 @@
 
 		elem_shortcode.value = shortcode;
 		elem_shortcode.style.display = 'block';
+	}
+
+
+
+
+
+/////////////////////////////////////////////////
+// 11. GENERAL SETTINGS                        //
+/////////////////////////////////////////////////
+
+	// Function that helps us to hide the comment related options if the entire comments section has been disabled.
+	function ziggeoCommentsToggle(e) {
+
+		if(e.target) {
+			var current = e.target;
+		}
+		else {
+			var current = e;
+		}
+
+		var the_next = current.parentElement.parentElement.nextElementSibling;
+		var to_enable = current.checked;
+
+		while (the_next) {
+
+			// Check if we should stop
+			if(the_next.children[0].innerText === '') {
+				// We should stop
+				the_next = null;
+			}
+			else {
+				// Enable fields
+				if(to_enable === true) {
+					the_next.className = the_next.className.replace('disabled_option', '');
+					the_next = the_next.nextElementSibling;
+				}
+				else {
+					// Disable Fields
+					the_next.className += ' disabled_option';
+					the_next = the_next.nextElementSibling;
+				}
+			}
+		}
 	}

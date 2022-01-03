@@ -49,6 +49,13 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video_main');
 
 			//disables video comments
+			add_settings_field('ziggeo_modify_comments',
+								__('Modify Comments', 'ziggeo'),
+								'ziggeo_a_s_g_modify_comments',
+								'ziggeo_video',
+								'ziggeo_video_main');
+
+			//disables video comments
 			add_settings_field('ziggeo_video_comments',
 								__('Disable Video Comments', 'ziggeo'),
 								'ziggeo_a_s_g_accept_video_comments_field',

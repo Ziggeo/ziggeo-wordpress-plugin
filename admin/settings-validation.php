@@ -16,23 +16,24 @@ function ziggeo_a_s_validation($input) {
 
 	//List of all options that we accept
 	$allowed_options = array(
-		//not shown
+		// not shown
 			'version' => true,
-		//templates tab
+		// Templates Editor page
 			'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
-		//general tab
+		// General tab
 			'token' => true,
 			'recorder_config' => true, 'player_config' => true, 'disable_video_comments' => true, 'disable_text_comments' => true,
-			'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
+			'modify_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
 			'comment_roles' => true, 'integrations_recorder_template' => true, 'integrations_player_template' => true, 'default_lang' => true, 'vast_adserver' => true, 'vast_skipafter' => true, 'vast_muted' => true, 'vast_ad_title' => true, 'vast_ad_description' => true, 'vast_ad_id' => true, 'vast_ad_advertiser' => true,
-		//integrations tab
+		// Integrations tab
 			'integrations' => true,
-		//experts tab
+		// Experts tab
 			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true, 'use_auth' => true, 'use_version' => true, 'use_revision' => true
 	);
 
 	//Needed for checkboxes otherwise we would clear them
 	$clear_if_not_set = array(
+		'modify_comments'           => true,
 		'disable_video_comments'    => true,
 		'disable_text_comments'     => true,
 		'video_and_text'            => true,

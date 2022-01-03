@@ -196,6 +196,20 @@ function ziggeo_a_s_g_text() {
 		<?php
 	}
 
+	// Option to turn on or off our code mixing with comments
+	function ziggeo_a_s_g_modify_comments() {
+		$option = ziggeo_get_plugin_options('modify_comments');
+
+		?>
+		<input id="ziggeo_modify_comments" name="ziggeo_video[modify_comments]" type="checkbox" value="1"
+			<?php echo checked( 1, $option, false ); ?> />
+		<label for="ziggeo_modify_comments">
+			<?php _e('Check if you want our plugin to try and inject the needed code to your comments. Might not work with all themes.)', 'ziggeo');
+			?>
+		</label>
+		<?php
+	}
+
 	//Allows us to select if video comments are accepted on a post where comments are enabled
 	function ziggeo_a_s_g_accept_video_comments_field() {
 		$option = ziggeo_get_plugin_options('disable_video_comments');

@@ -250,6 +250,7 @@ function ziggeo_get_plugin_options_defaults() {
 		'token'                             => '',
 		'recorder_config'                   => '',
 		'player_config'                     => '',
+		'modify_comments'                   => ZIGGEO_NO,
 		'disable_video_comments'            => '',
 		'disable_text_comments'             => '',
 		'comments_recorder_template'        => '',

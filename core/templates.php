@@ -458,7 +458,11 @@ defined('ABSPATH') or die();
 	//This allows anyone to create custom comments video template to use in favor of our default setup
 	if(!function_exists('ziggeo_comments_template')) {
 		function ziggeo_comments_template($comment_template) {
-			return ZIGGEO_ROOT_PATH . "templates/handle_comments.php";
+			
+			$option = ziggeo_get_plugin_options('modify_comments');
+			if($option === ZIGGEO_YES) {
+				return ZIGGEO_ROOT_PATH . "templates/handle_comments.php";
+			}
 		}
 	}
 

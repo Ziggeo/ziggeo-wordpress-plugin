@@ -1,5 +1,8 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.11.2 =
+* Changed: The Templates Editor is now moved to its own page. There have been no other changes except its move, making it easy to get to it, and separating it from the actual settings.
+
 = 2.11 =
 * Improved: Ziggeo events can still be used as alert using [ziggeo_event event=verified message="my message" type=alert] however now you can add your custom code to be injected into the page and called once some event fires. All through Events Editor which includes the shortcode generator to add into your pages.
 
