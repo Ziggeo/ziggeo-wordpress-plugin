@@ -195,7 +195,16 @@
 
 		//Set the parameters shown based on currently selected value (on page load)
 		var _sel = document.getElementById('ziggeo_shorttags_list');
-		ziggeoTemplatesEditorEasyParametersCheck( _sel.options[_sel.selectedIndex].value.replace('[ziggeo', ''));
+		if(_sel) {
+			ziggeoTemplatesEditorEasyParametersCheck( _sel.value.replace('[ziggeo', ''));
+		}
+		else {
+			setTimeout(function() {
+				ziggeoPUIHooksInit();
+			}, 1000);
+
+			return;
+		}
 
 		ZiggeoWP.hooks.set(_hooks, 'ziggeo-template-change', function(data) {
 			switch(data.template) {
@@ -765,27 +774,27 @@
 	function ziggeoPUITemplatesManageInit() {
 		//lets get the elements..
 		var managingElements = document.getElementsByClassName('ziggeo-manage_list');
+		var i, c;
 
 		if(managingElements.length === 0) {
 			return false;
 		}
 
-		for(i = 0; i < managingElements.length; i++) {
+		managingElements = managingElements[0];
 
-			//We can capture both and process both now, since templates will have both every time..
-			var meDel = document.getElementsByClassName('delete');
-			var meEdit = document.getElementsByClassName('edit');
+		//We can capture both and process both now, since templates will have both every time..
+		var meDel = managingElements.getElementsByClassName('delete');
+		var meEdit = managingElements.getElementsByClassName('edit');
 
-			for(j = 0; j < meDel.length; j++)
-			{
-				if(document.addEventListener) {
-					meDel[j].addEventListener( 'click',  ziggeoPUITemplatesManage, false );
-					meEdit[j].addEventListener( 'click',  ziggeoPUITemplatesManage, false );
-				}
-				else { //older IE..
-					meDel[j].attachEvent( 'onclick', ziggeoPUITemplatesManage);
-					meEdit[j].attachEvent( 'onclick', ziggeoPUITemplatesManage );
-				}
+		for(i = 0, c = meDel.length; i < c; i++)
+		{
+			if(document.addEventListener) {
+				meDel[i].addEventListener( 'click',  ziggeoPUITemplatesManage, false );
+				meEdit[i].addEventListener( 'click',  ziggeoPUITemplatesManage, false );
+			}
+			else { //older IE..
+				meDel[i].attachEvent( 'onclick', ziggeoPUITemplatesManage);
+				meEdit[i].attachEvent( 'onclick', ziggeoPUITemplatesManage );
 			}
 		}
 
@@ -3668,7 +3677,7 @@
 		}
 		else { // template
 			//[ziggeo_event id="event_id_set_in_editor" type=template]
-			shortcode += ' id="' + event_id.value;
+			shortcode += ' id="' + event_id.value + '"';
 			shortcode += ' type=template]';
 		}
 

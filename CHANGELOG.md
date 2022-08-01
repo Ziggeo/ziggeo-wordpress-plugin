@@ -1,5 +1,8 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+= 2.12 =
+Improved: The comments integration is now disabled by default (on new installs) and allows everyone to disable our plugin from outputting any codes to the comments unless you want it to. This adds additional support for custom handling in various themes you might be using.
+
 = 2.11.2 =
 * Changed: The Templates Editor is now moved to its own page. There have been no other changes except its move, making it easy to get to it, and separating it from the actual settings.
 

@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 5.8.3
-Stable tag: 2.12
+Stable tag: 2.13
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -264,8 +264,10 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Upgrade notice ==
 
-= 2.12 =
-Improved: The comments integration is now disabled by default (on new installs) and allows everyone to disable our plugin from outputting any codes to the comments unless you want it to. This adds additional support for custom handling in various themes you might be using.
+= 2.13 =
+Fixed: The Ziggeo Code Editor would not add a second quote around the name, causing the event code to not get generated when using templates. This has now been fixed.
+Fixed: In certain browsers specific code would cause error in Templates Editor. This has been fixed.
+Fixed: The templates manage list did not have JS events assigned properly, not allowing edit and delete operations to happen as expected. This has been fixed
 
 == Changelog ==
 
