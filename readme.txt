@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
 Tested up to: 6.0.1
-Stable tag: 2.8.2
+Stable tag: 3.0
 License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -266,7 +266,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 = 3.0 =
 
-** TODO
+* Optimized for better experience through faster execution
+* Includes Lazyload (optional) - load Ziggeo codes (ziggeo.js and ziggeo.css) only when embedding is detected
 
 == Changelog ==
 
