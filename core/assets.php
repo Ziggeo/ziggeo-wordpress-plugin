@@ -45,11 +45,21 @@ function ziggeo_p_assets_get_raw() {
 function ziggeo_p_assets_global() {
 
 	//To make sure that we are parsing this only once
-	if(defined('ZIGGEO_PARSED_ASSETS')) {
+	if(defined('ZIGGEO_PARSED_ASSETS') || defined('ZIGGEO_LOAD_ASSETS')) {
 		return;
 	}
 
 	$options = ziggeo_get_plugin_options();
+
+	//To allow the lazy load of our resources instead of loading them right away.
+	if($options['lazy_load'] === ZIGGEO_YES) {
+		wp_register_script( 'ziggeo-lazyload', '', [], '', true );
+		wp_enqueue_script( 'ziggeo-lazyload'  );
+		wp_add_inline_script( 'ziggeo-lazyload', 'ZiggeoWP.lazyload = ' . json_encode(ziggeo_p_assets_get_raw()) );
+
+		define('ZIGGEO_LOAD_ASSETS', true);
+		return;
+	}
 
 	//use add_filter('ziggeo_assets_init', 'your-function-name') to change the options on fly if wanted
 	// it needs to return modified $options array.

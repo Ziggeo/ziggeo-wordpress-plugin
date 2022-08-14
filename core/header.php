@@ -21,6 +21,7 @@ function ziggeo_p_page_header() {
 	<script type="text/javascript">
 
 		//Function to just add the main entry in the namespace, so that we keep everything within it, instead of having many things outside of it as we do now.
+		window.ZiggeoDefer = true; // We use this to stop loading of embeddings right away
 		var ZiggeoWP = {
 			//DEVS: Make sure you add comma behind your code or it would cause issue
 			<?php do_action('ziggeo_add_to_ziggeowp_object'); ?>
@@ -174,6 +175,7 @@ function ziggeo_p_page_header() {
 
 			//Set the V2 application
 			window.ziggeo_app = new ZiggeoApi.V2.Application( ziggeoGetApplicationOptions() );
+			ZiggeoApi.V2.Application.undefer();
 
 			<?php
 			//Language options
@@ -234,9 +236,15 @@ function ziggeo_p_page_header() {
 			//Fallback for strange cases when the ziggeo.js does not get loaded yet the above is executed.
 			jQuery(document).ready( function() {
 				//Final check in case it was blocked (like some plugins do)
+				ziggeoReInitApp();				
+			});
+
+			//Needed in cases of lazy load
+			function ziggeoReInitApp() {
 				if(typeof ZiggeoApi !== 'undefined') {
 					//Set the V2 application
-					window.ziggeo_app = new ZiggeoApi.V2.Application( ziggeoGetApplicationOptions() );
+					window.ziggeo_app = ZiggeoApi.V2.Application.instanceByToken( ziggeoGetApplicationOptions().token , ziggeoGetApplicationOptions());
+					ZiggeoApi.V2.Application.undefer();
 
 					<?php
 					//Language options
@@ -293,7 +301,10 @@ function ziggeo_p_page_header() {
 					}
 					?>
 				}
-			});
+				else {
+					setTimeout(function(){ziggeoReInitApp();}, 500);
+				}
+			}
 		}
 	</script>
 	<!-- Ziggeo API code - END -->

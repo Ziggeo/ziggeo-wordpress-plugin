@@ -1,7 +1,23 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
+
+=======
+
+= 2.14.1 =
+* Fix: In some scenarios the comments would get broken video player code. Now this has been fixed.
+
+= 2.14 - Lazy Load =
+* New Feature: The Expert settings now feature a lazy load option which would turn off our system outputting assets to the page unless some part of the page requests our embedding.
+	NOTE: This is limited to detection - only by our parsing component, so if the parsing happens outside of its scope (like adding HTML or JS codes, assets will not be loaded). This WILL disable video comments on pages where you do not add your own embedding.
+	NOTE: This will not disable the ouput of scripts that are used as bridges to some other plugin. These brdige plugins will provide their own option that will respect the core (this) plugin setting in future.
+
+= 2.13 =
+* Fixed: The Ziggeo Code Editor would not add a second quote around the name, causing the event code to not get generated when using templates. This has now been fixed.
+* Fixed: In certain browsers specific code would cause error in Templates Editor. This has been fixed.
+* Fixed: The templates manage list did not have JS events assigned properly, not allowing edit and delete operations to happen as expected. This has been fixed
+
 = 2.12 =
-Improved: The comments integration is now disabled by default (on new installs) and allows everyone to disable our plugin from outputting any codes to the comments unless you want it to. This adds additional support for custom handling in various themes you might be using.
+* Improved: The comments integration is now disabled by default (on new installs) and allows everyone to disable our plugin from outputting any codes to the comments unless you want it to. This adds additional support for custom handling in various themes you might be using.
 
 = 2.11.2 =
 * Changed: The Templates Editor is now moved to its own page. There have been no other changes except its move, making it easy to get to it, and separating it from the actual settings.

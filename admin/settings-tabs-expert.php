@@ -203,7 +203,17 @@ function ziggeo_a_s_e_text() {
 
 		?>
 		<input id="ziggeo_use_revision" name="ziggeo_video[use_revision]" type="text" value="<?php echo $option; ?>">
-		<label for="ziggeo_use_revision"><?php _e('Please add in following format "rXY". So if you wish to use revision 35 you would set it as r35. Alternatively use word "stable" to load the revision we mark with stable tag (default).'); ?></label>
+		<label for="ziggeo_use_revision"><?php _e('Please add in following format "rXY". So if you wish to use revision 35 you would set it as r35. Alternatively use word "stable" to load the revision we mark with stable tag (default).', 'ziggeo'); ?></label>
+		<?php
+	}
+
+	//Lazyload approach where the assets are loaded later on, instead of right away.
+	function ziggeo_a_s_e_lazyload() {
+		$option = ziggeo_get_plugin_options('lazy_load');
+
+		?>
+		<input id="ziggeo_lazy_load" name="ziggeo_video[lazy_load]" type="checkbox"value="1" <?php echo checked( ZIGGEO_YES, $option, false ); ?> />
+		<label for="ziggeo_lazy_load"><?php _e('Please use it ON, or leave disabled OFF', 'ziggeo'); ?></label>
 		<?php
 	}
 

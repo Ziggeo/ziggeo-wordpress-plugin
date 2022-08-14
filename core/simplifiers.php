@@ -280,7 +280,8 @@ function ziggeo_get_plugin_options_defaults() {
 		'vast_ad_title'                     => '',
 		'vast_ad_description'               => '',
 		'vast_ad_id'                        => '',
-		'vast_ad_advertiser'                => ''
+		'vast_ad_advertiser'                => '',
+		'lazy_load'                         => false
 	);
 
 	return $defaults;
@@ -308,7 +309,10 @@ function ziggeo_get_plugin_options($specific = null) {
 		}
 	}
 	else {
-		return $options;
+
+		//Added this to allow us ot use the defaults even if there is no saved value for them
+		//* in that time we should really be using defaults either way
+		return array_merge($defaults, $options);
 	}
 
 	return false;
