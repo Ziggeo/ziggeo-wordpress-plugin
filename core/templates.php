@@ -148,21 +148,17 @@ defined('ABSPATH') or die();
 		else {
 			$existing_templates = get_option('ziggeo_templates');
 
-			foreach($existing_templates as $existing => $value) {
-
-				//find old
-				if($existing === $old_id) {
-					//update old
-					$updated[$id] = $content;
-
-					//@HERE do we remove the old ID then?
+			if(isset($existing_templates[$old_id])) {
+				if($old_id !== $id) {
+					unset($existing_templates[$old_id]);
+					$existing_templates[$id] = $content;
 				}
 				else {
-					$updated[$existing] = $value;
+					$existing_templates[$old_id] = $content;
 				}
 			}
 
-			return update_option('ziggeo_templates', $updated);
+			return update_option('ziggeo_templates', $existing_templates);
 		}
 
 		return false;

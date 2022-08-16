@@ -237,20 +237,31 @@ function ziggeo_a_s_v_templates_handler($options) {
 		'status'	=> false
 	);
 
+	$id_given = true;
+
+	$options['templates_editor'] = trim($options['templates_editor']);
+
 	//if we have a value that is not empty and something other than default one...
 	if( isset($options['templates_editor']) &&
 		$options['templates_editor'] !== '' &&
-		$options['templates_editor'] !== '[ziggeo ' && //old templates started with this
-		$options['templates_editor'] !== '[ziggeoplayer ' &&
-		$options['templates_editor'] !== '[ziggeorecorder ' &&
-		$options['templates_editor'] !== '[ziggeouploader ' &&
-		$options['templates_editor'] !== '[ziggeorerecorder ') { //new templates start with this
+		$options['templates_editor'] !== '[ziggeo' && //old templates started with this
+		$options['templates_editor'] !== '[ziggeoplayer' &&
+		$options['templates_editor'] !== '[ziggeorecorder' &&
+		$options['templates_editor'] !== '[ziggeouploader' &&
+		$options['templates_editor'] !== '[ziggeorerecorder') { //new templates start with this
 
 		if(isset($options['templates_id'])) {
 			$options['templates_id'] = trim($options['templates_id']);
 		}
 		else {
 			$options['templates_id'] = '';
+		}
+	
+		if($options['templates_id'] === '') {
+			$options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
+
+			$message = sprintf( __('Since Template ID was not given, we have set one up for you! - "%s"', 'ziggeo'), $options['templates_id'] );
+			$id_given = false;
 		}
 
 		//Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
@@ -261,17 +272,10 @@ function ziggeo_a_s_v_templates_handler($options) {
 		//We should check what is the action..
 		//add new
 		if( !isset($options['templates_manager']) || $options['templates_manager'] === '' ) {
-			$id_given = true;
-
+			
 			//before adding template we need to know that the template name was added, if not, lets just name it for our customer :)
-			if($options['templates_id'] === '' ) {
-				$options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
-
-				$message = sprintf( __('We have saved your template, but since Template ID was not given, we have set one up for you! - "%s"', 'ziggeo'), $options['templates_id'] );
-				$id_given = false;
-			}
 			//if the template is just a number, it will not work, we need to add it some text at the start
-			elseif( is_numeric($options['templates_id']) ) {
+			if( is_numeric($options['templates_id']) ) {
 				$options['templates_id'] = '_' . $options['templates_id'];
 			}
 
@@ -305,9 +309,8 @@ function ziggeo_a_s_v_templates_handler($options) {
 		}
 		//edit old template
 		elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
-
 			//old ID, new ID, template structure
-			if( ziggeo_p_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']) ) {
+			if(ziggeo_p_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']);) {
 				$ajax_status['message'] = 'updated';
 				$ajax_status['status'] = 'success';
 				add_settings_error('ziggeo_templates_manager',

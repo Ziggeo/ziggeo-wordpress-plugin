@@ -117,6 +117,7 @@ INDEX:
 			font-size: 12px;
 			padding: 2px 10px;
 			border-radius: 10px;
+			cursor: pointer;
 		}
 		.ziggeo-manage_list > li {
 			font-size: 14px;
