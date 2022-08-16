@@ -123,7 +123,20 @@ function ziggeo_p_assets_admin() {
 
 		echo ziggeo_p_get_lazyload_activator();
 	}
-	if(get_current_screen()->id === 'ziggeo-video_page_ziggeo_videoslist') {
+
+	$ziggeo_plugin_pages = array(
+		// Core plugin pages
+		'ziggeo-video_page_ziggeo_videoslist',
+		'ziggeo-video_page_ziggeo_video',
+		'ziggeo-video_page_ziggeo_editor_templates',
+		'ziggeo-video_page_ziggeo_editor_events',
+		'ziggeo-video_page_ziggeo_notifications',
+		'ziggeo-video_page_ziggeo_videoslist',
+		'ziggeo-video_page_ziggeo_sdk',
+		'ziggeo-video_page_ziggeo_addons'
+	);
+
+	if(in_array(get_current_screen()->id, $ziggeo_plugin_pages)) {
 		echo ziggeo_p_get_lazyload_activator();
 	}
 
