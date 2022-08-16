@@ -120,6 +120,11 @@ function ziggeo_p_assets_admin() {
 		wp_enqueue_script('jquery-ui-datepicker');
 		//To add support for the drag and drop on our SDK pages
 		wp_enqueue_script("jquery-ui-draggable");
+
+		echo ziggeo_p_get_lazyload_activator();
+	}
+	if(get_current_screen()->id === 'ziggeo-video_page_ziggeo_videoslist') {
+		echo ziggeo_p_get_lazyload_activator();
 	}
 
 }
@@ -127,3 +132,39 @@ function ziggeo_p_assets_admin() {
 add_action('wp_enqueue_scripts', "ziggeo_p_assets_global");
 add_action('admin_enqueue_scripts', "ziggeo_p_assets_global");
 add_action('admin_enqueue_scripts', "ziggeo_p_assets_admin");
+
+
+// Function that helps us with the lazyload assets loading
+function ziggeo_p_get_lazyload_activator() {
+	return '<script>function ziggeoLoadAssets() {' .
+			'var _head = document.getElementsByTagName(\'head\')[0];' .
+			'for(i = 0, c = ZiggeoWP.lazyload.length; i < c; i++) {' .
+				//Check for and create script element
+				'if( typeof ZiggeoWP.lazyload[i].js !== \'undefined\' ){' .
+					'var _script = document.createElement(\'script\');' .
+					'_script.type = "text/javascript";' .
+					'_script.src = ZiggeoWP.lazyload[i].js;' .
+					'_head.appendChild(_script);' .
+				'}' .
+				//Check for and create style element
+				'if( typeof ZiggeoWP.lazyload[i].css !== \'undefined\' ){' .
+					'var _style = document.createElement(\'link\');' .
+					'_style.rel = "stylesheet";' .
+					'_style.href = ZiggeoWP.lazyload[i].css;' .
+					'_style.media = \'all\';' .
+					'_head.appendChild(_style);' .
+				'}' .
+			'}' .
+		'}' .
+		'if(document.readyState === \'complete\'){' .
+			'ziggeoReInitApp();' .
+			'ziggeoLoadAssets();' .
+		'}' .
+		'else {' .
+			'window.addEventListener(\'load\', function() {' . 
+				'ziggeoReInitApp();' .
+				'ziggeoLoadAssets();' .
+			'});' .
+		'}' .
+	'</script>';
+}

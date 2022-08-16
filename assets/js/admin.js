@@ -162,11 +162,6 @@
 		//Happens only if on videos page
 		if(document.getElementById('ziggeo-videos-filter')) {
 			ziggeoPUIVideosInit();
-
-			//Clear videos counter at this time
-			ziggeoAjax({
-				operation: 'video_verified_seen'
-			});
 		}
 
 		if(document.getElementById('ziggeo-addons-nav')) {
@@ -1415,6 +1410,16 @@
 /////////////////////////////////////////////////
 
 	function ziggeoPUIVideosInit() {
+
+		// Lazyload support
+		if(typeof ziggeoAPIGetVideo === 'undefined') {
+			setTimeout(function() {
+				return ziggeoPUIVideosInit();
+			}, 2000);
+
+			return null;
+		}
+
 		var _placeholder = document.getElementById('ziggeo-videos-filter');
 		var _moderation_filter = _placeholder.querySelector('.moderation');
 		var _tags_filter = _placeholder.querySelector('.tags');
@@ -1446,6 +1451,11 @@
 		});
 
 		ziggeoPUIVideosFilter(true);
+
+		//Clear videos counter at this time
+		ziggeoAjax({
+			operation: 'video_verified_seen'
+		});
 	}
 
 	//Handles the "Searching..." screen or "Not Found", etc.

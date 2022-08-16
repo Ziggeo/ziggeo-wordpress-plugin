@@ -153,31 +153,7 @@ function ziggeo_p_content_filter($content) {
 			if($options['lazy_load'] === ZIGGEO_YES) {
 
 				// Create the function that will load the scripts after page has been loaded.
-				$content .= '<script>function ziggeoLoadAssets() {' .
-						'var _head = document.getElementsByTagName(\'head\')[0];' .
-						'window.addEventListener(\'load\', function() {' .
-							'for(i = 0, c = ZiggeoWP.lazyload.length; i < c; i++) {' .
-								//Check for and create script element
-								'if( typeof ZiggeoWP.lazyload[i].js !== \'undefined\' ){' .
-									'var _script = document.createElement(\'script\');' .
-									'_script.type = "text/javascript";' .
-									'_script.src = ZiggeoWP.lazyload[i].js;' .
-									'_head.appendChild(_script);' .
-								'}' .
-								//Check for and create style element
-								'if( typeof ZiggeoWP.lazyload[i].css !== \'undefined\' ){' .
-									'var _style = document.createElement(\'link\');' .
-									'_style.rel = "stylesheet";' .
-									'_style.href = ZiggeoWP.lazyload[i].css;' .
-									'_style.media = \'all\';' .
-									'_head.appendChild(_style);' .
-								'}' .
-							'}' .
-						'})' .
-					'}' .
-					'ziggeoReInitApp();' .
-					'ziggeoLoadAssets();' .
-				'</script>';
+				$content .= ziggeo_p_get_lazyload_activator();
 
 				define('ZIGGEO_FOUND_POST', true);
 			}
