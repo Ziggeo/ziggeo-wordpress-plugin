@@ -310,7 +310,7 @@ function ziggeo_a_s_v_templates_handler($options) {
 		//edit old template
 		elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
 			//old ID, new ID, template structure
-			if(ziggeo_p_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor']);) {
+			if(ziggeo_p_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor'])) {
 				$ajax_status['message'] = 'updated';
 				$ajax_status['status'] = 'success';
 				add_settings_error('ziggeo_templates_manager',
