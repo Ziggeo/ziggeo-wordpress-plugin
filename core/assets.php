@@ -136,7 +136,12 @@ function ziggeo_p_assets_admin() {
 		'ziggeo-video_page_ziggeo_addons'
 	);
 
-	if(in_array(get_current_screen()->id, $ziggeo_plugin_pages)) {
+	$supported_screens = array(
+		'post',
+		'page'
+	);
+
+	if(in_array(get_current_screen()->id, $ziggeo_plugin_pages) || in_array(get_current_screen()->id, $supported_screens)) {
 		echo ziggeo_p_get_lazyload_activator();
 	}
 
