@@ -68,199 +68,6 @@ INDEX:
 		position: relative;
 	}
 
-	/* Templates Editor tab
-	*************************
-	*/
-
-		#ziggeo_templates_editor {
-			display: none;
-		}
-
-		#ziggeo-tab_templates dd {
-			display: none;
-		}
-		#ziggeo-tab_templates dt:hover {
-			border-bottom: 1px solid orange;
-		}
-		#ziggeo-tab_templates dt:hover + dd, #ziggeo-tab_templates dd:hover {
-			background-image: linear-gradient(orange, yellow);
-			border: 1px solid orange;
-			border-bottom-left-radius: 8px;
-			border-bottom-right-radius: 4px;
-			display: block;
-			padding: 1em;
-			margin-left: 20px;
-			position: absolute;
-			width: 230px;
-		}
-		#ziggeo-tab_templates dd span {
-			border-bottom: 1px dashed navy;
-		}
-		#ziggeo-tab_templates textarea {
-			resize: vertical;
-			float: left;
-		}
-		.ziggeo-manage_list {
-			background-image: linear-gradient(175deg, transparent, white);
-			border: 2px groove silver;
-			padding: 4px;
-			width: 450px;
-			max-height: 400px;
-			overflow-y: scroll;
-		}
-		.ziggeo-manage_list li > span {
-			display: none;
-		}
-		.ziggeo-manage_list li:hover span {
-			display: inline-block;
-			float: right;
-			font-size: 12px;
-			padding: 2px 10px;
-			border-radius: 10px;
-			cursor: pointer;
-		}
-		.ziggeo-manage_list > li {
-			font-size: 14px;
-			padding: 4px 2px;
-		}
-		.ziggeo-manage_list > li:hover {
-			border-bottom: 1px solid orange;
-		}
-		.ziggeo-manage_list .edit:hover {
-			box-shadow: 0 0 10px orange;
-		}
-		.ziggeo-manage_list .delete:hover {
-			border-radius: 10px;
-			box-shadow: 0 0 10px orangeRed;
-		}
-		#ziggeo-params-holder {
-			float: left;
-			padding-left: 10px;
-			width: 580px;
-		}
-		#ziggeo_parameters_advanced_section {
-			display: none;
-		}
-		#ziggeo_templates_turn_to_new {
-			background-image: linear-gradient(orange, yellow);
-			border: 1px solid gold;
-			border-radius: 9px;
-			padding: 4px 10px;
-		}
-		.ziggeo_info {
-			background-image: linear-gradient(gold, orange, gold);
-			border-radius: 4px 4px 4px 0;
-			font-size: 0.9em;
-			font-style: italic;
-			padding: 0.2em 0.6em;
-			margin-bottom: 2em;
-		}
-
-		/* Simple setup editor */
-		.ziggeo-field {
-			border: 1px solid silver;
-			display: inline-block;
-			height: 50px;
-			line-height: 22px;
-			margin: 4px;
-			max-width: 50%;
-			padding: 4px;
-			vertical-align: middle;
-			text-align: center;
-			width: calc(30% - 24px);
-		}
-		.ziggeo-field div, .ziggeo-field input[type="text"],
-		.ziggeo-field div, .ziggeo-field input[type="number"] {
-			width: 100%;
-		}
-
-		/* Advanced setup editor */
-		#ziggeo-tab_templates dl {
-			/*clear: left;*/
-			display: inline-block;
-			margin-left: 10px;
-			width: 280px;
-			float: left;
-		}
-
-		/* advanced or simple code generator button */
-		#ziggeo_parameters_advanced {
-			background-color: rgba(0, 200, 0, 0.6);
-			border: 2px inset gray;
-			border-radius: 10px;
-			box-sizing: border-box;
-			display: inline-block;
-			height: 30px;
-			margin-left: 10px;
-			padding: 4px 8px;
-			position: relative;
-			text-align: center;
-			width: 160px;
-		}
-
-		#ziggeo_parameters_advanced > span:last-child {
-			border: 1px solid gray;
-			border-radius: 50%;
-			height: 22px;
-			position: absolute;
-			right: 2px;
-			left: auto;
-			top: calc(50% - 12px);
-			transition: all 0s ease 0s;
-			width: 22px;
-			background-color: green;
-		}
-
-		#ziggeo_parameters_advanced.active {
-			background-color: rgba(0, 100, 200, 0.6);
-		}
-
-		#ziggeo_parameters_advanced.active > span:last-child {
-			background-color: lightblue;
-			left: 2px;
-			right: auto;
-			transition: all 0s ease 0s;
-		}
-
-		#ziggeo_templates_update {
-			background-image: linear-gradient(25deg, blue,navy, blue);
-			color: white;
-			margin-top: 10px;
-		}
-
-		#ziggeo_messenger {
-			position: fixed;
-			opacity: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			min-height: 40px;
-			background-image: linear-gradient(snow, silver);
-			z-index: 10000;
-			padding: 0 8px 8px;
-			box-sizing: border-box;
-			box-shadow: 0px -10px 10px 6px snow;
-			text-align: center;
-		}
-
-		#ziggeo_messenger > div:last-child {
-			margin: 0;
-			padding: 0;
-			position: absolute;
-			right: 10px;
-			bottom: 50%;
-			font-weight: bold;
-		}
-		#ziggeo_messenger > div:last-child:hover {
-			color: red;
-		}
-		#ziggeo_messenger.ziggeo_error {
-			box-shadow: 0 -10px 10px 8px orangered;
-			background-image: linear-gradient(orangered, orange);
-			color: white;
-			font-weight: bold;
-		}
-
 	/* General tab
 	****************
 	*/
@@ -1054,8 +861,173 @@ INDEX:
 
 
 
+
 /************************************************
-	7. GLOBAL STYLES
+	7. DASHBOARD (TEMPLATES EDITOR)
+************************************************/
+
+	#ziggeo_templates_editor {
+		width: 100%;
+		background: #222;
+		color: orange;
+		cursor: crosshair;
+	}
+	.ziggeo_templates {
+		display: flex;
+		flex-flow: row wrap;
+	}
+	.ziggeo_templates .template {
+		width: 260px;
+		border: 1px solid gray;
+		border-radius: 10px 10px 20px 20px;
+		margin: 20px;
+		overflow: hidden;
+		position: relative;
+		min-height: 260px;
+		box-shadow: 4px 4px 4px 2px lightgray;
+	}
+	.ziggeo_templates .template:hover {
+		box-shadow: -4px -4px 4px 2px lightgray;
+	}
+	.ziggeo_templates .template .template_id {
+		text-align: center;
+		font-weight: bold;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		width: 90%;
+		margin: 0 auto;
+	}
+	.ziggeo_templates .template .template_code {
+		font-family: Consolas, "Liberation Mono", Menlo, "Bitstream Vera Sans Mono", Courier, monospace;
+		background: #222;
+		color: orange;
+		padding: 4px 2px;
+		font-size: 0.8em;
+		margin: 4px;
+		height: 80%;
+	}
+	.ziggeo_templates .template .actions {
+		word-spacing: -20px;
+		cursor: pointer;
+		min-height: 10%;
+		display: flex;
+	}
+	.ziggeo_templates .template .actions > div {
+		width: 100%;
+		display: inline-block;
+		box-sizing: border-box;
+		padding: 0;
+		margin: 0;
+		text-align: center;
+		background-color: orange;
+		color: white;
+	}
+	.ziggeo_templates .template .actions .edit {
+		border-left: 2px solid gray;
+		border-right: 2px solid gray;
+	}
+	.ziggeo_templates .template .actions .use:hover {
+		background-color: #0CB;
+	}
+	.ziggeo_templates .template .actions .edit:hover {
+		background-color: #0B0;
+	}
+	.ziggeo_templates .template .actions .delete:hover {
+		background-color: #B00;
+	}
+	.template_creator {
+		display: flex;
+		width: 100%;
+		flex-flow: column;
+	}
+	.template_creator .row {
+		display: flex;
+		flex-flow: row nowrap;
+	}
+	.template_creator .column {
+		width: 100%;
+		border: 1px dotted gray;
+		text-align: center;
+	}
+	.template_creator .column > p {
+		margin-bottom: 10px;
+		border-bottom: 1px dotted gray;
+		padding: 10px;
+		box-sizing: border-box;
+	}
+	.template_creator .column > input,
+	.template_creator .column > select,
+	.template_creator .column > textarea {
+		width: 100%;
+		min-height: 30px;
+		margin: 4px 0;
+		resize: vertical;
+	}
+	#ziggeo-embedding-parameters-list {
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+	}
+	#ziggeo-embedding-parameters-list > div.param {
+		margin: 4px 10px;
+		width: 240px;
+	}
+	#ziggeo-embedding-parameters-list > div.param:hover {
+		cursor: copy;
+	}
+	#ziggeo-embedding-parameters-list > div.param_description {
+		display: none;
+	}
+	#ziggeo-embedding-parameters-list > div.param_description:hover {
+		cursor: help;
+	}
+	#ziggeo-embedding-parameters-list > div.param:hover + div.param_description,
+	#ziggeo-embedding-parameters-list > div.param_description:hover {
+		background-image: linear-gradient(orange, yellow);
+		border: 1px solid orange;
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 4px;
+		display: block;
+		padding: 1em;
+		margin-left: 20px;
+		position: absolute;
+		width: 230px;
+		z-index: 2;
+		position: relative;
+		top: 22px;
+		left: -280px;
+		margin-bottom: -100px;
+		margin-right: -280px;
+	}
+	#ziggeo-embedding-parameters-list > div.param_description span {
+		border-bottom: 1px dashed navy;
+	}
+	#ziggeo_templates_turn_to_new {
+		background-image: linear-gradient(orange, yellow);
+		border: 1px solid gold;
+		border-radius: 9px;
+		padding: 4px 10px;
+		cursor: pointer;
+	}
+	.ziggeo_info {
+		background-image: linear-gradient(gold, orange, gold);
+		border-radius: 4px 4px 4px 0;
+		font-size: 0.9em;
+		font-style: italic;
+		padding: 0.2em 0.6em;
+		margin-bottom: 2em;
+	}
+	#ziggeo_templates_update {
+		background-image: linear-gradient(25deg, #f80, #f40, #f80);
+		color: white;
+		margin-top: 10px;
+	}
+
+
+
+
+/************************************************
+	8. GLOBAL STYLES
 ************************************************/
 
 	b.message, b.warning {
@@ -1151,11 +1123,45 @@ INDEX:
 		transition-delay: 0.1s;
 	}
 
+	.ziggeo-ctrl-btn.btn-warning {
+		background-image: linear-gradient(orangered, red);
+	}
+	#ziggeo_messenger {
+		position: fixed;
+		opacity: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		min-height: 40px;
+		background-image: linear-gradient(snow, silver);
+		z-index: 10000;
+		padding: 0 8px 8px;
+		box-sizing: border-box;
+		box-shadow: 0px -10px 10px 6px snow;
+		text-align: center;
+	}
+	#ziggeo_messenger > div:last-child {
+		margin: 0;
+		padding: 0;
+		position: absolute;
+		right: 10px;
+		bottom: 50%;
+		font-weight: bold;
+	}
+	#ziggeo_messenger > div:last-child:hover {
+		color: red;
+	}
+	#ziggeo_messenger.ziggeo_error {
+		box-shadow: 0 -10px 10px 8px orangered;
+		background-image: linear-gradient(orangered, orange);
+		color: white;
+		font-weight: bold;
+	}
 
 
 
 /************************************************
-	8. POST AND PAGE EDITORS
+	9. POST AND PAGE EDITORS
 ************************************************/
 
 	/* Toolbar */
@@ -1228,7 +1234,7 @@ INDEX:
 
 
 /************************************************
-	9. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
+	10. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
 ************************************************/
 
 	/* Gravity Forms specific CSS */

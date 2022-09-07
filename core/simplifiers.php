@@ -264,7 +264,7 @@ function ziggeo_get_plugin_options_defaults() {
 		'dev_mode'                          => ZIGGEO_YES,
 		'p_token'                           => '',
 		'e_token'                           => '',
-		'templates_save_to'                 => 'db',
+		//'templates_save_to'               => 'db', // removed in v3.0
 		//'templates_clear'                 => '',
 		'webrtc_for_mobile'                 => ZIGGEO_YES,
 		'webrtc_streaming'                  => ZIGGEO_NO,
@@ -281,7 +281,8 @@ function ziggeo_get_plugin_options_defaults() {
 		'vast_ad_description'               => '',
 		'vast_ad_id'                        => '',
 		'vast_ad_advertiser'                => '',
-		'lazy_load'                         => false
+		'lazy_load'                         => false,
+		'support_templates_v1'              => true
 	);
 
 	return $defaults;

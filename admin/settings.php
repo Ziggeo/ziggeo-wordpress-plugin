@@ -228,13 +228,6 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_expert');
 
-		// Where to save the templates
-		add_settings_field('ziggeo_templates_save_to',
-							__('Where to save the templates', 'ziggeo'),
-							'ziggeo_a_s_e_templates_save_to_field',
-							'ziggeo_video',
-							'ziggeo_video_expert');
-
 		//Option to remove all templates
 		add_settings_field('ziggeo_templates_clear',
 							__('Want to clear all templates?', 'ziggeo'),
@@ -292,7 +285,7 @@ function ziggeo_p_admin_init() {
 
 		//Sync the templates
 		add_settings_field('ziggeo_expert_sync',
-							__('Sync saved templates in file and database', 'ziggeo'),
+							__('Recreate templates file', 'ziggeo'),
 							'ziggeo_a_s_e_sync_field',
 							'ziggeo_video',
 							'ziggeo_video_expert');
@@ -315,6 +308,13 @@ function ziggeo_p_admin_init() {
 		add_settings_field('ziggeo_expert_lazyload',
 							__('Turn on lazyload approach', 'ziggeo'),
 							'ziggeo_a_s_e_lazyload',
+							'ziggeo_video',
+							'ziggeo_video_expert');
+
+		//Should we support old embedding code templates?
+		add_settings_field('ziggeo_support_templates_v1',
+							__('Do you want to support older version of templates?', 'ziggeo'),
+							'ziggeo_a_s_e_support_old_templates',
 							'ziggeo_video',
 							'ziggeo_video_expert');
 

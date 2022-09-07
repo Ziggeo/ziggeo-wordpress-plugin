@@ -233,7 +233,7 @@
 				ziggeoInsertTextToPostEditor(explanation.original_code);
 			}
 			else {
-				ziggeoInsertTextToPostEditor('[ziggeo ' + explanation.template_name + ']');
+				ziggeoInsertTextToPostEditor('[ziggeotemplate ' + explanation.template_name + ']');
 			}
 
 			//close it all

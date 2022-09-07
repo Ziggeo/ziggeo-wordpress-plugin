@@ -105,11 +105,10 @@ function ziggeo_p_assets_admin() {
 
 	//Enqueue admin panel scripts
 	wp_register_script('ziggeo-admin-js', ZIGGEO_ROOT_URL . 'assets/js/admin.js', array("jquery"));
-	wp_enqueue_script('ziggeo-admin-js');
 
 	//Enqueue admin panel styles
 	wp_register_style('ziggeo-admin-css', ZIGGEO_ROOT_URL . 'assets/css/admin-styles.css', array());
-	wp_enqueue_style('ziggeo-admin-css');
+	wp_enqueue_style('ziggeo-admin-css'); // We always include CSS in dashboard since there are some menu styles
 
 
 	if(get_current_screen()->id === 'ziggeo-video_page_ziggeo_sdk') {
@@ -126,6 +125,7 @@ function ziggeo_p_assets_admin() {
 
 	$ziggeo_plugin_pages = array(
 		// Core plugin pages
+		'toplevel_page_ziggeo_video',
 		'ziggeo-video_page_ziggeo_videoslist',
 		'ziggeo-video_page_ziggeo_video',
 		'ziggeo-video_page_ziggeo_editor_templates',
@@ -142,6 +142,7 @@ function ziggeo_p_assets_admin() {
 	);
 
 	if(in_array(get_current_screen()->id, $ziggeo_plugin_pages) || in_array(get_current_screen()->id, $supported_screens)) {
+		wp_enqueue_script('ziggeo-admin-js');
 		echo ziggeo_p_get_lazyload_activator();
 	}
 
@@ -185,4 +186,22 @@ function ziggeo_p_get_lazyload_activator() {
 			'});' .
 		'}' .
 	'</script>';
+}
+
+// Filter function that will maybe add the lazy load code (only once and only if needed) 
+function ziggeo_p_assets_maybeload($content) {
+	if(defined('ZIGGEO_FOUND')) {
+		if(!defined('ZIGGEO_FOUND_POST')) {
+			$options = ziggeo_get_plugin_options();
+			if($options['lazy_load'] === ZIGGEO_YES) {
+
+				// Create the function that will load the scripts after page has been loaded.
+				$content .= ziggeo_p_get_lazyload_activator();
+
+				define('ZIGGEO_FOUND_POST', true);
+			}
+		}
+	}
+
+	return $content;
 }

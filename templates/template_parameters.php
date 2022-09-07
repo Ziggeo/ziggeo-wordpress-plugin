@@ -138,96 +138,87 @@ function ziggeo_template_write_simple_parameters_list() {
 function ziggeo_template_write_advanced_parameters_list($paged = true, $per_page = 'half', $page_when_over = 20) {
 
 	$fields = ziggeo_get_template_parameters_list();
+
 	$sections = array('system');
 
 	//advanced is for adding parameters one by one into textarea
 	$sections = apply_filters('ziggeo_templates_editor_advanced_parameters_section', $sections);
 
+	// Count for the list
+	$total = 0;
 	for($i = 0, $c = count($sections); $i < $c; $i++) {
-		$default_style = ' style="display:none;"';
-
-		if($i === 0) {
-			$default_style = '';
-		}
-
-		if($sections[$i] === 'system') {
-			?>
-			<div id="ziggeo-embedding-parameters-adv" <?php echo $default_style; ?>>
-			<?php
-			$default_class = '';
+		if($paged === true && count($fields[$sections[$i]]) > $page_when_over) {
+			if($per_page === 'quarter') {
+				$total += floor( count($fields[$sections[$i]]) / 4);
+			}
+			elseif($per_page === 'third') {
+				$total += floor( count($fields[$sections[$i]]) / 3.3);
+			}
+			else { //if($per_page === 'half')
+				$total += floor( count($fields[$sections[$i]]) / 2);
+			}
 		}
 		else {
-			?>
-			<div id="ziggeo-<?php echo $sections[$i]; ?>-parameters-adv" <?php echo $default_style; ?>>
-			<?php
-			$default_class = $sections[$i];
+			$total += count($fields[$sections[$i]]) + 10; //just so that we never reach it..
 		}
+	}
 
-			?>
-			<dl class="ziggeo-params">
-				<?php
-				//pagination code
-				$j = 0;
-				if($paged === true && count($fields[$sections[$i]]) > $page_when_over) {
-					if($per_page === 'third') {
-						$total = round( count($fields[$sections[$i]]) / 3.3);
-					}
-					else { //if($per_page === 'half')
-						$total = round( count($fields[$sections[$i]]) / 2);
+	?>
+	<div id="ziggeo-embedding-parameters-list">
+	<?php
+
+	for($i = 0; $i < $c; $i++) {
+
+		// To sort the keys by name A->Z
+		ksort($fields[$sections[$i]]);
+
+		foreach($fields[$sections[$i]] as $field => $params) {
+			$default_class = 'param';
+
+			if($params['used_by_player'] === true) {
+				$default_class .= ' for_ziggeoplayer';
+			}
+			if($params['used_by_recorder'] === true) {
+				$default_class .= ' for_ziggeorecorder';
+			}
+			if($params['used_by_rerecorder'] === true) {
+				$default_class .= ' for_ziggeorerecorder';
+			}
+			if($params['used_by_uploader'] === true) {
+				$default_class .= ' for_ziggeouploader';
+			}
+			if(isset($params['custom_used_by'])) {
+				// This allows us to add custom used_by values when needed
+				if(is_array($params['custom_used_by'])) {
+					foreach($params['custom_used_by'] as $t_param => $t_val) {
+						$default_class .= ' for_' . $t_param;
 					}
 				}
 				else {
-					$total = count($fields[$sections[$i]]) + 10; //just so that we never reach it..
+					$default_class .= ' for_' . $params['custom_used_by'];
 				}
+			}
 
-				foreach($fields[$sections[$i]] as $field => $params) {
-
-					if($j == $total) {
-						?>
-							</dl>
-							<dl class="ziggeo-params">
-						<?php
-						$j = 0;
-					}
-
-					//Parameter fields code
-					//@ADD - the class should say if it is aimed to be used in player, recorder, rerecorder, etc.
-					if($params['type'] === 'enum') {
-						?>
-							<dt class="<?php echo $default_class; ?>" data-equal="string"><?php echo $field; ?></dt>
-								<dd><?php echo $params['description']; ?><br>
-									Possible options are: `<?php echo join('`, `', $params['options']); ?>`
-								</dd>
-						<?php
-					}
-					elseif($params['type'] === 'integer') {
-						?>
-							<dt class="<?php echo $default_class; ?>" data-equal="int"><?php echo $field; ?></dt>
-								<dd><?php echo $params['description']; ?></dd>
-						<?php
-					}
-					else {
-						?>
-							<dt class="<?php echo $default_class; ?>" data-equal="<?php echo $params['type']; ?>"><?php echo $field; ?></dt>
-								<dd><?php echo $params['description']; ?></dd>
-						<?php
-					}
-
-					$j++;
-				}
+			//Parameter fields code
+			if($params['type'] === 'enum') {
 				?>
-			</dl>
-		</div>
-		<?php
+					<div class="<?php echo $default_class; ?>" data-type="<?php echo $params['type']; ?>"><?php echo $field; ?></div>
+					<div class="param_description"><?php echo $params['description']; ?><br>
+						Possible options are: `<?php echo join('`, `', $params['options']); ?>`
+					</div>
+				<?php
+			}
+			else {
+				?>
+					<div class="<?php echo $default_class; ?>" data-type="<?php echo $params['type']; ?>"><?php echo $field; ?></div>
+					<div class="param_description"><?php echo $params['description']; ?></div>
+				<?php
+			}
+		}
 	}
-		/*
-			<dt class="wall" data-equal="=">show_video_comments</dt>
-				<dd>Boolean value to show the comments of each video - if available (under each video)</dd>
-			<dt class="wall" data-equal="=">show_video_rating</dt>
-				<dd>Boolean value to show the collected video rating - if available (under each video)</dd>
-			<dt class="wall" data-equal="=">param</dt>
-				<dd>desc</dd>
-		*/
+	?>
+	</div>
+	<?php
 }
 
 function ziggeo_get_template_parameters_list() {
@@ -241,8 +232,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> false
 		),
 		'width' => array(
@@ -252,8 +241,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> 640
 		),
 		'height' => array(
@@ -263,8 +250,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> 480
 		),
 		'recordingwidth' => array(
@@ -274,8 +259,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> 640
 		),
 		'recordingheight' => array(
@@ -285,8 +268,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> 480
 		),
 		'popup' => array(
@@ -296,8 +277,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> false
 		),
 		'popup-width' => array(
@@ -307,8 +286,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'popup-height' => array(
@@ -318,8 +295,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'video' => array(
@@ -329,8 +304,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'faceoutline' => array(
@@ -340,8 +313,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> false
 		),
 		'stream' => array(
@@ -351,8 +322,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'tags' => array(
@@ -362,8 +331,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'effect-profile' => array(
@@ -373,19 +340,15 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'custom-data' => array(
-			'type'					=> 'string',
+			'type'					=> 'json',
 			'description'			=> __('String of JSON formatted data that you wish to pass with the video.', 'ziggeo'),
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'skipinitial' => array(
@@ -395,8 +358,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'audio-test-mandatory' => array(
@@ -406,8 +367,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'display-timer' => array(
@@ -417,8 +376,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> true
 		),
 		'picksnapshots' => array(
@@ -428,8 +385,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> true
 		),
 		'early-rerecord' => array(
@@ -439,8 +394,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'auto-crop' => array(
@@ -450,8 +403,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'auto-pad' => array(
@@ -461,8 +412,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'key' => array(
@@ -472,8 +421,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'timelimit' => array(
@@ -483,8 +430,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> 0 //Equal to unlimited
 		),
 		'countdown' => array(
@@ -494,8 +439,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> 3
 		),
 		'input-bind' => array(
@@ -505,8 +448,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'form-accept' => array(
@@ -516,8 +457,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'localplayback' => array(
@@ -527,8 +466,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'v1_only'				=> true,
 			'default_value'			=> ''
 		),
@@ -539,8 +476,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'loop' => array(
@@ -550,8 +485,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'server-auth' => array(
@@ -561,8 +494,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'client-auth' => array(
@@ -572,8 +503,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'recordings' => array(
@@ -583,8 +512,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> 0 //equal to unlimited
 		),
 		'expiration-days' => array(
@@ -594,8 +521,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> 0 //same as no expiration
 		),
 		'video-profile' => array(
@@ -605,8 +530,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'meta-profile' => array(
@@ -616,8 +539,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'stream-width' => array(
@@ -627,8 +548,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'stream-height' => array(
@@ -638,8 +557,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'title' => array(
@@ -649,8 +566,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'description' => array(
@@ -660,8 +575,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> true,
 			'default_value'			=> ''
 		),
 		'allowedextensions' => array(
@@ -671,8 +584,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> ''
 		),
 		'enforce-duration' => array(
@@ -682,19 +593,15 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'filesizelimit' => array(
-			'type'					=> 'bool',
+			'type'					=> 'integer',
 			'description'			=> __('Integer value to limit the size of videos being uploaded in bytes (no limit by default).', 'ziggeo'),
 			'used_by_player'		=> false,
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> 0 //no limit
 		),
 		'framerate-warning' => array(
@@ -704,8 +611,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'nofullscreen' => array(
@@ -715,8 +620,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'stretch' => array(
@@ -726,8 +629,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> false
 		),
 		'theme' => array(
@@ -737,8 +638,6 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'advanced'				=> true,
-			'simple'				=> false,
 			'default_value'			=> 'modern'
 		)
 	);

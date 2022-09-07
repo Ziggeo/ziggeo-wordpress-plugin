@@ -266,8 +266,18 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 = 3.0 =
 
-* Optimized for better experience through faster execution
+* This version of plugin is highly optimized for better experience through faster execution
 * Includes Lazyload (optional) - load Ziggeo codes (ziggeo.js and ziggeo.css) only when embedding is detected
+    * This happens for frontend as well as backend, supporting the faster load for logged in scenarios as well
+    * Has support for providing Ziggeo codes on specific pages (see core/assets.php and `ziggeo_p_get_lazyload_activator()`)
+* Better parameters handling:
+    1. Save Pre-rendered templates
+    2. Save template parameters as objects
+    3. Optimized to support parameters without the need to update plugin for latest parameters
+    4. Templates are now saved in database (read and write) and local file (read only) which is re-created on plugin update with the templates from DB
+    5. When error occurs a hidden message is shown within the HTML page as well as within Notifications section of your plugin, making it easy to spot any pages with outdated or templates with any issues.
+* Templates are searched for in same locations using PHP functions that are in some cases even 100 times faster than what we used before (miliseconds difference in most cases, can be saving seconds in large contents).
+* Old template and shortcode codes are still supported as they were, all new templates are saved in a new, improved format
 
 == Changelog ==
 

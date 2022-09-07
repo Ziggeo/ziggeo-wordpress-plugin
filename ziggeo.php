@@ -26,8 +26,8 @@ define('ZIGGEO_ROOT_URL', plugins_url('', __FILE__) . '/');
 
 //We will store data in another folder, so that it is not removed when the plugin gets updated
 // From v2.0 we use this only if the option is set to use file instead of DB. Since in many cases the calls are made to the DB it makes sense to also have the data there.
-define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . '../ziggeo-userData/');
-define('ZIGGEO_DATA_ROOT_URL', plugins_url() . '/ziggeo-userData/');
+define('ZIGGEO_DATA_ROOT_PATH', ZIGGEO_ROOT_PATH . 'cache/');
+define('ZIGGEO_DATA_ROOT_URL', ZIGGEO_ROOT_URL . '/cache/');
 
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
 define('ZIGGEO_VERSION', '3.0');
@@ -65,6 +65,8 @@ include_once(ZIGGEO_ROOT_PATH . 'core/simplifiers.php');
 include_once(ZIGGEO_ROOT_PATH . 'admin/update.php');
 
 //Parsing codes
+// Support for Events shortcode
+include_once(ZIGGEO_ROOT_PATH . 'core/events.php');
 //codes to detect templates
 include_once(ZIGGEO_ROOT_PATH . 'parsers/content_parser.php');
 //codes used by the template parsers
@@ -142,9 +144,5 @@ include_once(ZIGGEO_ROOT_PATH . 'core/rest.php');
 //Expose functions for integrations and custom codes
 include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_recorder.php');
 include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_player.php');
-
-// The file that holds all functions that are removed from plugin, to give us a chance to show notification
-// Functions would be kept for few versions
-include_once(ZIGGEO_ROOT_PATH . '/core/removed.php');
 
 ?>

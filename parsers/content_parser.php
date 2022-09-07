@@ -6,22 +6,164 @@ defined('ABSPATH') or die();
 //This file contains codes that hook into and parse the text to detect if template codes are within them.
 // If they are the calls are made to right functions.
 
+// Supported parses
+// [ziggeotemplate ID] - latest, recommended
+// [ziggeorecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
+// [ziggeoplayer parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
+// [ziggeorerecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
+// [ziggeouploader parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
+// [ziggeo ID] - legacy, not recommended
+// [ziggeo]video_token[/ziggeo] - old legacy code - not recommended
+
+
 
 //To initialize filters after the theme was loaded..
 add_action('after_setup_theme', 'ziggeo_p_filters_init');
 
 function ziggeo_p_filters_init() {
-	add_filter('the_content', 'ziggeo_p_content_filter');
-	add_filter('comment_text', 'ziggeo_p_content_filter');
-	add_filter('the_excerpt', 'ziggeo_p_content_filter');
-	add_filter('thesis_comment_text', 'ziggeo_p_content_filter');
+
+	$option = ziggeo_get_plugin_options('support_templates_v1');
+
+	if($option === true && $option === false) { // @HERE - added like this to force new template execution
+		add_filter('the_content', 'ziggeo_p_content_filter', 1, 90);
+		add_filter('comment_text', 'ziggeo_p_content_filter', 1, 90);
+		add_filter('the_excerpt', 'ziggeo_p_content_filter', 1, 90);
+		add_filter('thesis_comment_text', 'ziggeo_p_content_filter', 1, 90);
+	}
+	else {
+		add_filter('the_content', 'ziggeo_p_content_ziggeotemplate_parser');
+		add_filter('comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
+		add_filter('the_excerpt', 'ziggeo_p_content_ziggeotemplate_parser');
+		add_filter('thesis_comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
+	}
+
 }
+
+// Templates v2 support
+///////////////////////
+
+// This function is checking the content that is passed to it if there is [ziggeotemplate {ID}] present or not present
+// We also use this to avoid using REGEX that we used before (more convenient), and instead use faster PHP native functions
+// For reference, please check: https://stackoverflow.com/questions/9477984/which-is-the-fast-process-strpos-stripos-or-preg-match-in-php
+// used by: templates v2
+function ziggeo_p_content_ziggeotemplate_parser($content) {
+
+	$start = strpos($content, '[ziggeotemplate');
+
+	if($start > -1) {
+		// There is template present in the content that was passed to the function
+
+		// To support lazyload mode
+		if(!defined('ZIGGEO_FOUND')) {
+			define('ZIGGEO_FOUND', true);
+		}
+
+		while($start > -1) {
+			$t_before_template = '';    // To temporary store the content before the template
+			$t_after_template = '';     // To temporary store content behind the template
+			$t_template = '';           // To temporary store the template info itself
+			$t_code = '';               // The code produced from the template
+
+			$end = strpos($content, ']', $start); // [ziggeotemplate ID]
+
+			$t_before_template = substr($content, 0, $start);
+			$t_after_template = substr($content, $end+1);
+
+			$t_template = substr($content, $start, ($end-$start)+1);
+
+			$t_code = ziggeo_p_template_parser($t_template);
+
+			if($t_code['status'] == 'success') {
+				$content = $t_before_template . $t_code['result'] . $t_after_template;
+			}
+			else {
+				// For now we just strip the template, however in future we might add filter or option
+				// to handle this through code if someone reaches out about it.
+				$content = $t_before_template .
+							'<!--
+								ziggeo-error: template code should be show here.
+								reason: ' . $t_code['result'] . '
+								solution: Please see: https://ziggeo.com/docs/integrations/wordpress/ for more info.
+							-->' .
+							$t_after_template;
+				// Add notice
+				ziggeo_notification_create('There was an error grabbing template on following page:  ' . esc_url($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) .
+					'  Error: ' . $t_code['result'], 'error');
+			}
+
+			// To find if we have multiple templates set
+			$start = strpos($content, '[ziggeotemplate', $start+1);
+		}
+	}
+
+	$content = ziggeo_p_assets_maybeload($content);
+
+	return $content;
+}
+
+// Function that takes care of the template with ID to retrive the actual embedding code for us.
+// used by: templates v2
+// returns array with error or success status
+function ziggeo_p_template_parser($template) {
+
+	// Cleanup
+	$template_id = str_replace('[ziggeotemplate', '', $template);
+	$template_id = str_replace(']', '', $template_id);
+
+	$template_id = trim($template_id);
+
+	// Retrieve the template ID
+	$template_info = ziggeo_p_template_get_params($template_id);
+
+	if(is_array($template_info)) {
+
+		switch ($template_info['type']) {
+			case '[ziggeorecorder':
+			case '[ziggeorerecorder':
+			case '[ziggeouploader':
+				$template_code = '<ziggeorecorder ' .
+				                    ziggeo_p_template_prefix_params($template_info['params']) .
+				                 '></ziggeorecorder>';
+				break;
+			case '[ziggeoplayer':
+				$template_code = '<ziggeoplayer ' .
+				                    ziggeo_p_template_prefix_params($template_info['params']) .
+				                 '></ziggeoplayer>';
+				break;
+			default:
+				$template_info['type'] = str_replace('[', '', $template_info['type']);
+				// If we get to this point, it is a non core template (like videowalls template)
+				// We allow plugins to hook into this to replace their own templates and do their magic
+				$template_code = apply_filters('ziggeo_template_parser_type_' . $template_info['type'], $template_info);
+
+				if(is_array($template_code)) {
+					return array(
+						'status' => 'error',
+						'result' => 'Template type "' . $template_info['type'] . '" is not supported.'
+					);
+				}
+				break;
+		}
+
+		return array(
+			'status' => 'success',
+			'result' => $template_code
+		);
+	}
+
+	return array(
+		'status' => 'error',
+		'result' => 'Template ID not found'
+	);
+}
+
+// Templates v1 support
+///////////////////////
 
 //Add support for the shortcodes
 function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
 
 	if(!defined('ZIGGEO_SHORTCODE_RUN')) {
-		//@TODO - will likely remove this
 		define('ZIGGEO_SHORTCODE_RUN', true);
 	}
 
@@ -40,81 +182,21 @@ function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
 	return ziggeo_p_content_filter($tag . $attrs_str . ']');
 }
 
-// Support for event shortcodes
-add_shortcode('ziggeo_event', function($attrs) {
-
-	// Defaults
-	$event = 'verified';
-	$type = 'alert';
-	$msg = 'Captured media has been verified';
-	$id = false;
-	$saved_events = false;
-	$extra_code = '';
-	$inject_type = 'on_load';
-
-	if(isset($attrs['event'])) {
-		$event = $attrs['event'];
-	}
-
-	if(isset($attrs['type'])) {
-		$type = $attrs['type'];
-	}
-
-	if(isset($attrs['message'])) {
-		$msg = $attrs['message'];
-	}
-
-	if(isset($attrs['id'])) {
-		$id = $attrs['id'];
-
-		$saved_events = get_option('ziggeo_events');
-
-		if(isset($saved_events[$id])) {
-			$extra_code = stripcslashes($saved_events[$id]['code']);
-			$event = $saved_events[$id]['event'];
-			$inject_type = $saved_events[$id]['inject_type'];
-		}
-		else {
-			$type === 'ignore'; // We do not want to output anything since the template was not found
-			// @here - We could add some error reporting of sorts to notify that the event with ID is missing.. Anyone needs something like that? Let us know :)
-		}
-	}
-
-	if($type === 'alert') {
-		$code = '<script>';
-			$code .= 'ziggeo_app.embed_events.on("' . $event . '", function (embedding, attr1, attr2, attr3, attr4) {';
-				$code .= 'alert("' . $msg . '")'; // We do not escape the strings at this time
-			$code .= '});';
-		$code .= '</script>';
-	}
-	elseif($type === 'template') {
-		if($inject_type === 'on_fire') {
-			$code = '<script>';
-			$code .= 'ziggeo_app.embed_events.on("' . $event . '", function (embedding, attr1, attr2, attr3, attr4) {';
-				$code .= $extra_code;
-			$code .= '});';
-			$code .= '</script>';
-		}
-		else {
-			$code = $extra_code;
-		}
-	}
-
-	return $code;
-});
-
-//Old and general Ziggeo shortcode support
+//General Ziggeo shortcode support
 add_shortcode( 'ziggeo', function($attrs) {
+
+	if($attrs === '') {
+		// it could be
+		// [ziggeo]video_token[/ziggeo] - legacy code
+		// [ziggeo] - which would call for template without ID
+		return '';
+	}
+
 	return ziggeo_p_shortcode_handler('[ziggeo', $attrs);
 });
 
 //We are updating this in such a way that we will keep the old calls, so that we have backwards compatibility, but in the same time, we are adding another call that will check for us if there are any tags matching new templates. We must do it like this, since using regex we will be able to find this in all locations that we want, while if we use shortcode, it will only work (out of the box) if the shortcode is within the section covered by 'the_content' filter.
 function ziggeo_p_content_filter($content) {
-
-	// To not parse the ziggeo events
-	if(stripos($content, '[ziggeo_event') > -0) {
-		return $content;
-	}
 
 	//This way we are making it work fine with WPv5 saving where we would parse the content while we should not (like saving the post)
 	if(is_rest()) {
@@ -147,18 +229,7 @@ function ziggeo_p_content_filter($content) {
 		$content = apply_filters('ziggeo_content_filter_post', $content);
 	}
 
-	if(defined('ZIGGEO_FOUND')) {
-		if(!defined('ZIGGEO_FOUND_POST')) {
-			$options = ziggeo_get_plugin_options();
-			if($options['lazy_load'] === ZIGGEO_YES) {
-
-				// Create the function that will load the scripts after page has been loaded.
-				$content .= ziggeo_p_get_lazyload_activator();
-
-				define('ZIGGEO_FOUND_POST', true);
-			}
-		}
-	}
+	$content = ziggeo_p_assets_maybeload($content);
 
 	return $content;
 }
@@ -166,6 +237,11 @@ function ziggeo_p_content_filter($content) {
 //This works like shortcode functions do, allowing us to capture the codes through various filters and parse them as needed.
 //TODO: This needs to be broken up and simplified.
 function ziggeo_p_content_parse_templates($matches) {
+
+	// To not parse the ziggeo events
+	if(strpos($matches[0], '[ziggeo_event') > 0) {
+		return $matches[0];
+	}
 
 	//for lazyload support
 	// To make sure we do not call it multiple times
@@ -319,9 +395,7 @@ function ziggeo_p_content_parse_templates($matches) {
 						//allowrecord=false
 						'width' => 320,
 						'height' => 240*/
-					)/*,
-		//These are to be done later...
-		'ziggeoform' => array () //!uses different parameters //@update to be moved*/
+					)
 	);
 
 	//Lets remove that last bracket

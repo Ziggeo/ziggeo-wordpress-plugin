@@ -3,44 +3,57 @@
 //
 // INDEX
 //********
-// 1. Dashboard
+// 1. Dashboard Helpers
 //		* ziggeoPUIChangeTab()
-//
-// 2. Helper functions
-//		* jQuery.ready()
-//		* ziggeoPUIHooksInit()
 //		* ziggeoPOnboard()
 //		* ziggeoPUIFeedbackRemoval()
 //		* ziggeoPUIMessenger()
-//		* ziggeoPUISDKInit()
-// 3. Templates Editor
-//		* ziggeoGetEditor()
-//		3.1. Templates
-//			* ziggeoPUITemplatesManageInit()
+//		* ziggeoCommentsToggle()
+//		* ziggeoPValidateEmpty()
+//		* ziggeoScrollTo()
+// 2. Onload
+//		* jQuery.ready()
+// 3. Hooks init
+//		* ziggeoPUIHooksInit()
+// 4. Fields Support
+//		* ziggeoDynamicFieldsSupportInit()
+// 5. Templates Editor Functions
+//		* ziggeoTemplatesEditorGet()             // <v3.0 ziggeoGetEditor()
+//		* ziggeoTemplatesEditorSetCode()         // <v3.0 ziggeoTemplatesEditorSetText()
+//		* ziggeoTemplatesEditorRePopulate()
+//		* ziggeoTemplatesGetID()                 // <v3.0 ziggeoGetTemplateID()
+//		* ziggeoTemplatesSetID()                 // <v3.0 ziggeoSetTemplateID()
+//		* ziggeoTemplatesTemplateObjectGet()     // <v3.0 ziggeoTemplateGetTemplateObject()
+//		* ziggeoTemplatesTemplateObjectSet()     // <v3.0 ziggeoTemplateSetTemplateObject()
+//		* ziggeoTemplatesTemplateObjectAdd()
+//		* ziggeoTemplatesParametersAdd()
+//		* ziggeoTemplatesParametersRemove()
+//		5.1 Templates
+//			* ziggeoTemplatesManageInit()
+//			* ziggeoTemplatesEdit()
+//			* ziggeoTemplatesRemove()
+//			* ziggeoTemplatesSave()
+//			* ziggeoTemplatesUpdate()
+//			* ziggeoTemplatesShortcodeGet()
 //			* ziggeoPUIManageTemplate()
-//			* ziggeoPUITemplatesManage()
+//			* 						ziggeoPUITemplatesManage()
 //			* ziggeoPUITemplatesChange()
 //			* ziggeoPUITemplatesTurnIntoNew()
-//			* ziggeoTemplatesBase()
-//		3.2. Parameters
-//			* ziggeoPUIParametersQuickAddInit()
-//			* ziggeoPUIParametersShownInit()
-//			* ziggeoPUIParametersQuickAdd()
-//			* ziggeoPUIParametersAddSimple()
-//			* ziggeoPUIParametersShownToggle()
-//			* ziggeoParameterPresent()
-// 4. Integrations
-//		4.1 Integrations Tab
+//			* ziggeoTemplatesBaseGet()           // <v3.0 ziggeoTemplatesBase()
+//			* ziggeoTemplatesBaseSet()
+// 6. Integrations
+//		6.1 Integrations Tab
 //			* ziggeoPUIIntegrationStatus()
-// 5. WP Editor
+// 7. WP Editor
 //		* ziggeoSetupNewWPToolbar()
 //		* ziggeoSetupOverlayRecorder()
 //		* ziggeoSetupOverlayTemplates()
-// 6. Notifications
+// 8. Notifications
 //		* ziggeoPUINotificationsInit()
 //		* ziggeoNotificationManage()
-// 7. Videos Page
+// 9. Videos Page
 //		* ziggeoPUIVideosInit()
+//		* ziggeoPUIVideosMessage()
 //		* ziggeoPUIVideosFilter()
 //		* ziggeoVideosFindByTag()
 //		* ziggeoPUIVideosNoVideos()
@@ -54,25 +67,47 @@
 //		* ziggeoVideosReject()
 //		* ziggeoVideosRemove()
 //		* ziggeoVideosGetURL()
+//		* ziggeoVideosEditCustomData()
+//		* ziggeoPUIVideosPopupCreate()
+//		* ziggeoPUIVideosPopupDestroy()
 //		* ziggeoPUIVideosFilterReset()
 //		* ziggeoPUIVideosPageCreateNavigation()
 //		* ziggeoPUIVideosPageSwitch()
 //		* ziggeoPUIVideosPageCounter()
-// 8. Addons page
+// 10. Addons page
 //		* ziggeoPUIAddonsInit()
 //		* ziggeoPUIAddonsSwitch()
-// 9. SDK Page
-//		* 
-// 10. Events Editor
-//		* 
-// 11. General Settings
-//		* ziggeoCommentsToggle
+// 11. SDK Page
+//		* ziggeoPUISDKInit()
+//		* ziggeoPUISDKImageToggle()
+//		* ziggeoPUISDKDropdown()
+//		* ziggeoPUISDKButtons()
+//		* ziggeoPUISDKAnalyticsCreateGraphs()
+//		* ziggeoPUISDKAnalyticsCreateGraphZoomedIn()
+//		* ziggeoPUISDKEffectsProfileProcessList()
+//		* ziggeoPUISDKEffectsProfileDelete()
+//		* ziggeoPUISDKEffectsProfileCreate()
+//		* ziggeoPUISDKEffectsProfileProcessCreateForm()
+//		* ziggeoPUICtrlClose()
+//		* ziggeoPUISDKEffectsProfileProcessWatermarkImagePreview()
+//		* ziggeoPUISDKEffectProfilesButtons()
+//		* ziggeoPUISDKEffectProfilesButtonForms()
+//		* ziggeoPUISDKEffectProfilesButtonFormPopup()
+// 12. Events Editor
+//		* ziggeoPUIEEInit()
+//		* ziggeoPUIEEDefauts()
+//		* ziggeoPUIEESaveTemplate()
+//		* ziggeoPUIEEGenerateShortcode()
+// 13. Autocomplete Control
+//		* ziggeoPUICAutoCompleteInit()
+//		* ziggeoPUICAutoCompleteFilter()
+
 
 
 
 
 /////////////////////////////////////////////////
-// 1. DASHBOARD                                //
+// 1. DASHBOARD HELPERS                        //
 /////////////////////////////////////////////////
 
 	//Changes tabs in WordPress admin panel
@@ -100,238 +135,6 @@
 		//Now lets set the right tab to be shown as selected
 		document.getElementById('ziggeo-tab_id_' + tab).className = 'ziggeo-tabName selected';
 		document.getElementById('ziggeo-tab_' + tab).style.display = 'block';
-	}
-
-
-
-
-/////////////////////////////////////////////////
-// 2. HELPER FUNCTIONS                         //
-/////////////////////////////////////////////////
-
-	//Registering onload needed to have everything run smoothly.. :)
-	jQuery(document).ready( function() {
-
-		//Are we within the post editor
-		if(document.querySelector('.block-editor') !== null) {
-
-			//The new builder uses JS to build stuff, so not much is ready on load...
-			setTimeout(function() {
-				if(typeof ziggeoSetupNewWPToolbar === 'function') {
-					ziggeoSetupNewWPToolbar();
-				}
-			}, 4000); //Why 4 seconds? No reason, just seemed as enough of time for things to load up :)
-		}
-
-		if(document.getElementById('ziggeo-tab_templates')) {
-			ziggeoPUIParametersQuickAddInit();
-			ziggeoPUITemplatesManageInit();
-			ziggeoPUIParametersShownInit();
-			//lets always do this last
-			ziggeoPUIHooksInit();
-		}
-
-		//Lets do this only if we are in the admin panel of our plugin
-		if(document.getElementById('ziggeo-tab_id_general')) {
-			ziggeoPUIParametersQuickAddInit();
-			ziggeoPUITemplatesManageInit();
-			ziggeoPUIParametersShownInit();
-			//lets always do this last
-			//ziggeoPUIHooksInit();
-
-			//Lets check if we have any integrations and show message if not:
-			if(document.getElementsByClassName('ziggeo_integrations_list')[0].children.length == 0) {
-				var _li = document.createElement('li');
-				_li.innerText = 'Search for "Ziggeo" in Wordpress plugins repository to find other plugins that provide you integrations (bridges) between Ziggeo and other plugins.';
-				document.getElementsByClassName('ziggeo_integrations_list')[0].appendChild(_li);
-			}
-
-			// Comments area on/off on page load
-			var _comments_area = document.getElementById('ziggeo_modify_comments');
-			_comments_area.addEventListener('change', function(e) {
-				ziggeoCommentsToggle(e);
-			});
-			ziggeoCommentsToggle(_comments_area);
-		}
-
-		//Happens only if we are on notifications pages
-		if(document.getElementById('ziggeo-notifications')) {
-			ziggeoPUINotificationsInit();
-		}
-
-		//Happens only if on videos page
-		if(document.getElementById('ziggeo-videos-filter')) {
-			ziggeoPUIVideosInit();
-		}
-
-		if(document.getElementById('ziggeo-addons-nav')) {
-			ziggeoPUIAddonsInit();
-		}
-
-		if(document.getElementById('ziggeo-sdk-pages')) {
-			ziggeoPUISDKInit();
-		}
-
-		if(document.getElementById('ziggeo-ee-event-id')) {
-			ziggeoPUIEEInit();
-		}
-	});
-
-	//All the hooks that we want to set up right away as page is loaded are added here, which is better than leaving hooks "out in the open", as this makes them fire when everything is ready
-	function ziggeoPUIHooksInit() {
-
-		//Hooks to change the template editor in admin dashboard [START]
-		var _hooks = ['dashboard_parameters_editor-adv', 'dashboard_parameters_editor-easy'];
-
-		//a check in case the class is not defined (can happen in instances where header is not outputted by WP like customize page).
-		if(typeof ZiggeoWP === 'undefined') {
-			return false;
-		}
-
-		//Set the parameters shown based on currently selected value (on page load)
-		var _sel = document.getElementById('ziggeo_shorttags_list');
-		if(_sel) {
-			ziggeoTemplatesEditorEasyParametersCheck( _sel.value.replace('[ziggeo', ''));
-		}
-		else {
-			setTimeout(function() {
-				ziggeoPUIHooksInit();
-			}, 1000);
-
-			return;
-		}
-
-		ZiggeoWP.hooks.set(_hooks, 'ziggeo-template-change', function(data) {
-			switch(data.template) {
-				case '[ziggeoplayer': {}
-				case '[ziggeorecorder': {}
-				case '[ziggeorerecorder': {}
-				case '[ziggeouploader': {
-					data.editor.value = data.template + ' ' + data.editor.value.substr(data.editor.value.indexOf(' ')+1);
-
-					if(data.editor_type == 'advanced') {
-						document.getElementById('ziggeo-embedding-parameters-adv').style.display = 'block';
-					}
-					else {
-						document.getElementById('ziggeo-embedding-parameters-easy').style.display = 'block';
-					}
-
-					ziggeoTemplatesEditorEasyParametersCheck(data.template.replace('[ziggeo', ''));
-
-					break;
-				}
-				default: {
-					
-					if(data.editor_type == 'advanced') {
-						document.getElementById('ziggeo-embedding-parameters-adv').style.display = 'none';
-					}
-					else {
-						document.getElementById('ziggeo-embedding-parameters-easy').style.display = 'none';
-					}
-				}
-			}
-		});
-
-		//Hook when simple templates editor is activated
-		ZiggeoWP.hooks.set('dashboard_template_editor_simple_shown', 'ziggeo-template-editing', function(data) {
-			document.getElementById('ziggeo-embedding-parameters-adv').style.display = 'none';
-			ziggeoGetEditor().style.display = 'none';
-
-			var embedding_params = document.getElementById('ziggeo-embedding-parameters-easy');
-
-			if(data.template_base == '[ziggeoplayer' ||
-				data.template_base == '[ziggeorecorder' ||
-				data.template_base == '[ziggeorerecorder' ||
-				data.template_base == '[ziggeouploader') {
-				embedding_params.style.display = 'block';
-
-				ziggeoTemplatesEditorEasyParametersCheck(data.template_base.replace('[ziggeo', ''));
-			}
-			else {
-				embedding_params.style.display = 'none';
-			}
-		});
-
-		//Hook when advanced templates editor is activated
-		ZiggeoWP.hooks.set('dashboard_template_editor_advanced_shown', 'ziggeo-template-editing', function(data) {
-			document.getElementById('ziggeo-embedding-parameters-easy').style.display = 'none';
-			ziggeoGetEditor().style.display = 'block';
-
-			var embedding_params = document.getElementById('ziggeo-embedding-parameters-adv');
-
-			if(data.template_base == '[ziggeoplayer' ||
-				data.template_base == '[ziggeorecorder' ||
-				data.template_base == '[ziggeorerecorder' ||
-				data.template_base == '[ziggeouploader') {
-				embedding_params.style.display = 'block';
-			}
-			else {
-				embedding_params.style.display = 'none';
-			}
-		});
-
-		//Hook for fom being saved (when in templates editor)
-		//Grab all of the values from the simple editor fields and put them into the editor to make it possible to grab them
-		ZiggeoWP.hooks.set('ziggeo_editor_save_templates', 'ziggeo_save_defaults', function(data) {
-			var editor = ziggeoGetEditor();
-
-			if(editor.value === '') {
-				var data_string = ziggeoTemplatesBase() + ' ';
-			}
-			else {
-				var data_string = editor.value + ' ';
-			}
-
-			//Grab all available easy editor screens (core + videowalls + your own?)
-			var easy_params_holder = document.querySelectorAll('#ziggeo_parameters_simple_section [id*="-parameters-easy"]');
-
-			for(i = 0, l = easy_params_holder.length; i < l; i++) {
-
-				//We only really do this for the section that is not hidden
-				if(easy_params_holder[i].style.display !== 'none') {
-					var fields = easy_params_holder[i].querySelectorAll('.ziggeo-field');
-
-					for(j = 0, c = fields.length; j < c; j++) {
-						//Param details
-						var param_name = fields[j].children[0].innerText;
-						var param_type = fields[j].children[1].children[0].getAttribute('type');
-						var param_value = '';
-
-						if(param_type === 'number' || param_type === 'text') {
-
-							if(fields[j].children[1].children[0].value !== '') {
-								param_value = fields[j].children[1].children[0].value;
-							}
-						}
-						else if(param_type === 'checkbox') {
-							if(fields[j].children[1].children[0].checked) {
-								param_value = true;
-							}
-							else {
-								param_value = false;
-							}
-						}
-						else if(param_type === 'enum') {
-							param_value = fields[j].children[1].children[0].options[fields[j].children[1].children[0].selectedIndex].value;
-						}
-
-						//Check if this value is already within the editor
-						//false means we need to add it
-						if(ziggeoParameterPresent(editor.value, param_name) === false) {
-							//Place it all into the string that will be remembered
-							if(param_value !== '') {
-								data_string += param_name + "='" + param_value + "' ";
-							}
-						}
-
-					}
-
-					//Add to editor
-					editor.value = data_string;
-				}
-			}
-
-		});
 	}
 
 	//Function to help with onboarding
@@ -443,136 +246,43 @@
 		};
 	}
 
-	//Add functionality to the butons on the SDK page
-	function ziggeoPUISDKInit() {
+	// Function that helps us to hide the comment related options if the entire comments section has been disabled.
+	function ziggeoCommentsToggle(e) {
 
-		var i, l, j, c;
-
-		var tabs = document.getElementsByClassName('ziggeo_tab');
-
-		//Support for clicking on tabs
-		for(i = 0, c = tabs.length; i < c; i++) {
-			tabs[i].addEventListener('click', function(e) {
-				var current = document.getElementsByClassName('ziggeo_tab selected')[0];
-				current.className = 'ziggeo_tab';
-				document.getElementById('ziggeo_tab_' + current.getAttribute('data-tab')).style.display = 'none';
-
-				var tab = e.target;
-				tab.className += ' selected';
-				document.getElementById('ziggeo_tab_' + tab.getAttribute('data-tab')).style.display = 'block';
-			});
+		if(e.target) {
+			var current = e.target;
+		}
+		else {
+			var current = e;
 		}
 
-		// Set the click event for the fields within the application segment
-		document.getElementById('ziggeo_tab_applications').addEventListener('click', function(event) {
-			var current_element = event.target;
+		var the_next = current.parentElement.parentElement.nextElementSibling;
+		var to_enable = current.checked;
 
-			//Quick filter
-			if(current_element.tagName !== 'SPAN') {
-				return false;
+		while (the_next) {
+
+			// Check if we should stop
+			if(the_next.children[0].innerText === '') {
+				// We should stop
+				the_next = null;
 			}
-
-			//Only do this on actual buttons
-			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
-				//standard buttons
-				if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
-					ziggeoPUISDKButtons(current_element);
+			else {
+				// Enable fields
+				if(to_enable === true) {
+					the_next.className = the_next.className.replace('disabled_option', '');
+					the_next = the_next.nextElementSibling;
+				}
+				else {
+					// Disable Fields
+					the_next.className += ' disabled_option';
+					the_next = the_next.nextElementSibling;
 				}
 			}
-			//image radio buttons (on/off)
-			else if(current_element.className.indexOf('ziggeo-ctrl-img-toggle') > -1) {
-				ziggeoPUISDKImageToggle(current_element);
-			}
-
-		});
-
-		// Set the click event for the fields within the application segment
-		document.getElementById('ziggeo_tab_analytics').addEventListener('click', function(event) {
-			var current_element = event.target;
-
-			//Quick filter
-			if(current_element.tagName !== 'SPAN') {
-				return false;
-			}
-
-			//Only do this on actual buttons
-			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
-				//standard buttons
-				if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
-					ziggeoPUISDKButtons(current_element);
-				}
-			}
-
-		});
-
-		// OnChange event handler for selects
-		var dropdowns = document.getElementsByClassName('ziggeo-sdk-ajax-dropdown');
-
-		for(i = 0, c = dropdowns.length; i < c; i++) {
-			var _current = dropdowns[i];
-			_current.addEventListener('change', function() {
-				ziggeoPUISDKDropdown(_current);
-			});
 		}
-
-		//Add calendars to our page
-		jQuery('#calendar_from').datepicker({
-			dateFormat: '@', // This makes it return Unix time.
-			onSelect: function(str_date, instance) {
-				document.getElementById('analytics-from').value = str_date;
-			}
-		});
-
-		jQuery('#calendar_to').datepicker({
-			dateFormat: '@', // This makes it return Unix time.
-			buttonText: "To",
-			onSelect: function(str_date, instance) {
-				document.getElementById('analytics-to').value = str_date;
-			}
-		});
-
-		//Set the click event
-		document.getElementById('ziggeo_tab_effectprofiles').addEventListener('click', function(event) {
-			var current_element = event.target;
-
-			//Quick filter
-			if(current_element.tagName !== 'SPAN') {
-				return false;
-			}
-
-			//Only do this on actual buttons
-			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
-				if(current_element.className.indexOf('ziggeo-sdk-ajax-form') > -1) {
-					ziggeoPUISDKEffectProfilesButtonForms(current_element);
-				}
-				else if(current_element.className.indexOf('ziggeo-ctrl-form-popup') > -1) {
-					ziggeoPUISDKEffectProfilesButtonFormPopup(current_element);
-				}
-				else if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
-					ziggeoPUISDKEffectProfilesButtons(current_element);
-				}
-			}
-
-		});
-
-		// This allows us to change the application that is used on the SDK page
-		document.getElementById('applications_list').addEventListener('change', function(e) {
-			var _current = e.target;
-
-			var text = _current[_current.selectedIndex].innerText;
-			document.getElementById('ziggeo_title_app').innerText = '(' + text + ')';
-
-			if(!ZiggeoWP.sdk) {
-				ZiggeoWP.sdk = {};
-			}
-
-			ZiggeoWP.sdk.app_token = _current.value;
-			ZiggeoWP.sdk.title = text;
-		});
-
 	}
 
 	// Function to help us know if the given value is empty or not
+	// used by SDK mostly
 	function ziggeoPValidateEmpty(value) {
 		if(value === '') {
 			return true;
@@ -581,21 +291,256 @@
 		return false;
 	}
 
+	// Function to help us scroll the element of interest into view
+	function ziggeoScrollTo(id) {
+		try {
+
+			var elm = document.getElementById(id);
+
+			elm.scrollIntoView({ 
+				behavior: 'smooth' 
+			});
+			return true;
+		}
+		catch(e) {}
+
+		return false;
+	}
 
 
 
 /////////////////////////////////////////////////
-// 3. TEMPLATES EDITOR FUNCTIONS               //
+// 2. ONLOAD                                   //
+/////////////////////////////////////////////////
+
+	//Registering onload needed to have everything run smoothly.. :)
+	jQuery(document).ready( function() {
+
+		//Are we within the post editor
+		if(document.querySelector('.block-editor') !== null) {
+			//The new builder uses JS to build stuff, so not much is ready on load...
+			setTimeout(function() {
+				if(typeof ziggeoSetupNewWPToolbar === 'function') {
+					ziggeoSetupNewWPToolbar();
+				}
+			}, 4000); //Why 4 seconds? No reason, just seemed as enough of time for things to load up :)
+		}
+
+		// Initialize the hooks
+		ziggeoPUIHooksInit();
+
+		// Initialize support for various fields we have on different screens
+		ziggeoDynamicFieldsSupportInit();
+
+		//Lets do this only if we are in the admin panel of our plugin
+		if(document.getElementById('ziggeo-tab_id_general')) {
+
+			//Lets check if we have any integrations and show message if not:
+			if(document.getElementsByClassName('ziggeo_integrations_list')[0].children.length == 0) {
+				var _li = document.createElement('li');
+				_li.innerText = 'Search for "Ziggeo" in Wordpress plugins repository to find other plugins that provide you integrations (bridges) between Ziggeo and other plugins.';
+				document.getElementsByClassName('ziggeo_integrations_list')[0].appendChild(_li);
+			}
+
+			// Comments area on/off on page load
+			var _comments_area = document.getElementById('ziggeo_modify_comments');
+			_comments_area.addEventListener('change', function(e) {
+				ziggeoCommentsToggle(e);
+			});
+			ziggeoCommentsToggle(_comments_area);
+		}
+		//Happens only if we are on notifications pages
+		else if(document.getElementById('ziggeo-notifications')) {
+			ziggeoPUINotificationsInit();
+		}
+		//Happens only if on videos page
+		else if(document.getElementById('ziggeo-videos-filter')) {
+			ziggeoPUIVideosInit();
+		}
+		else if(document.getElementById('ziggeo-addons-nav')) {
+			ziggeoPUIAddonsInit();
+		}
+		else if(document.getElementById('ziggeo-sdk-pages')) {
+			ziggeoPUISDKInit();
+		}
+		else if(document.getElementById('ziggeo-ee-event-id')) {
+			ziggeoPUIEEInit();
+		}
+		else if(document.getElementById('ziggeo-tab_templates')) {
+			ziggeoTemplatesManageInit();
+		}
+
+	});
+
+
+
+
+/////////////////////////////////////////////////
+// 3. HOOKS INIT                               //
+/////////////////////////////////////////////////
+
+	// Helper for setup hooks we want to listen to
+	function ziggeoPUIHooksInit() {
+		// A hook that helps to react to the change of the parameter name, so that we can set the type and possibly more
+		ZiggeoWP.hooks.set('template_editor_autocomplete_param_name',   // hook name
+		                   'template_editor_autocomplete_param_name',   // function key (needed for anonimous functions)
+		                   function(obj_info) {                         // function
+		                   		var type = document.getElementById('parameter-type');
+
+		                   		type.value = obj_info.data.type;
+		                   },
+		                   10);                                         // priority
+
+		// a hook that helps us detect the change of the template base
+		// Then we set the editor information to the new base template (and clear parameters) + we set Template object
+		ZiggeoWP.hooks.set('template_editor_template_base_change',      // hook name
+		                   'template_editor_template_base_change',      // function key (needed for anonimous functions)
+		                   function(obj_info) {                         // function
+		                   		ziggeoTemplatesEditorSetCode(obj_info.template);
+
+		                   		// Clear out the template object
+		                   		ziggeoTemplatesTemplateObjectSet({base: obj_info.template, params:{}});
+		                   },
+		                   10);                                         // priority
+
+		// showing different parameters based on template base
+		// We use this one to hide and show the parameters that are usable for selected template
+		ZiggeoWP.hooks.set('template_editor_template_base_change',      // hook name
+		                   'template_editor_template_base_change',      // function key (needed for anonimous functions)
+		                   function(obj_info) {                         // function
+		                   		var base = obj_info.template.replace('[', 'for_');
+		                   		var params = document.querySelectorAll('#ziggeo-embedding-parameters-list div.param');
+
+		                   		var i, c;
+		                   		for(i = 0, c = params.length; i < c; i++) {
+		                   			if(params[i].className.indexOf(base) === -1) {
+		                   				params[i].style.display = 'none';
+		                   			}
+		                   			else {
+		                   				params[i].style.display = 'block';
+		                   			}
+		                   		}
+		                   },
+		                   12);                                         // priority
+	}
+
+
+
+
+/////////////////////////////////////////////////
+// 4. FIELDS SUPPORT                           //
+/////////////////////////////////////////////////
+
+	function ziggeoDynamicFieldsSupportInit() {
+
+		// Simple form buttons support
+		////////////////////////////////
+
+		var simple_form_btns = document.querySelectorAll('.ziggeo-ctrl-btn.ziggeo-of-simple-form');
+
+		if(simple_form_btns.length > 0) {
+			var i, c;
+			for(i = 0, c = simple_form_btns.length; i < c; i++) {
+				if(simple_form_btns[i].getAttribute('data-function')) {
+					simple_form_btns[i].addEventListener('click', function(e) {
+						var current = e.target;
+						var fun = current.getAttribute('data-function');
+
+						if(typeof window[fun] == 'function') {
+
+							// get fields
+							//data-fields="name:parameter-name,value:parameter-value"
+							var t_fields = current.getAttribute('data-fields').split(',');
+							var t_fields_array = [];
+
+							var j,k;
+							var obj_values = {};
+
+							for(j = 0, k = t_fields.length; j < k; j++) {
+								t_field = t_fields[j].split(':');
+
+								t_fields_array.push(t_field[1]);
+
+								obj_values[t_field[0]] = document.getElementById(t_field[1]).value;
+							}
+
+							var res = window[fun](obj_values);
+
+							// We might do some additional stuff however only if it sends back true as response
+							if(res) {
+								var post_action = current.getAttribute('data-post-action');
+
+								if(post_action && post_action === 'clear') {
+									// We should go through all fields and clear their values
+									for(j = 0, k = t_fields_array.length; j < k; j++) {
+										t_field = t_fields_array[j];
+
+										document.getElementById(t_field).value = '';
+									}
+								}
+							}
+						}
+					});
+				}
+			}
+		}
+
+		// Autocomplete fields
+		////////////////////////
+
+		ziggeoPUICAutoCompleteInit();
+	}
+
+
+
+
+/////////////////////////////////////////////////
+// 5. TEMPLATES EDITOR FUNCTIONS               //
 /////////////////////////////////////////////////
 
 	//Returns the reference to the templates editor
-	function ziggeoGetEditor() {
+	function ziggeoTemplatesEditorGet() {
 		//Using this so that we do not need to remember the ID and can change it in one place
 		return document.getElementById('ziggeo_templates_editor');
 	}
 
+	// Helps us set the code that we want to have present within the template editor
+	// This will replace entrie template code with the sent one
+	function ziggeoTemplatesEditorSetCode(code) {
+		var editor = ziggeoTemplatesEditorGet();
+
+		if(code === null || typeof code === 'undefined') {
+			code = '';
+		}
+
+		if(editor) {
+			editor.value = code;
+		}
+	}
+
+	// uses the object info we have about the template to recreate the code that should be shown in
+	// the template code editor
+	function ziggeoTemplatesEditorRePopulate() {
+		var obj_template = ziggeoTemplatesTemplateObjectGet();
+
+		var code = obj_template.base;
+
+		for(_param in obj_template.params) {
+			if(!obj_template.params.hasOwnProperty(_param)) {
+				continue;
+			}
+
+			code += ' ' + _param + '=\'' + obj_template.params[_param] + '\'';
+		}
+
+		code += ']';
+
+		ziggeoTemplatesEditorSetCode( code );
+	}
+
+
 	//returns Ziggeo template ID that was set or empty string if it was not set at all
-	function ziggeoGetTemplateID() {
+	function ziggeoTemplatesGetID() {
 		var _t = document.getElementById('ziggeo_templates_id');
 
 		if(_t) {
@@ -606,7 +551,7 @@
 	}
 
 	//Helps us set the template ID properly
-	function ziggeoSetTemplateID(new_id) {
+	function ziggeoTemplatesSetID(new_id) {
 		var _t = document.getElementById('ziggeo_templates_id');
 
 		if(_t) {
@@ -617,205 +562,392 @@
 		return false;
 	}
 
-	function ziggeoTemplateGetTemplateObject() {
-		return (ZiggeoWP.template_object) ? ZiggeoWP.template_object : null;
+
+	// Returns the Object with the information about template ID, base and parameters
+	function ziggeoTemplatesTemplateObjectGet() {
+		if(!ZiggeoWP.template_object) {
+			ZiggeoWP.template_object = {
+				base: document.getElementById('ziggeo_shorttags_list').value,
+				params: {}
+			};
+		}
+
+		return ZiggeoWP.template_object;
 	}
 
-	function ziggeoTemplateSetTemplateObject(code) {
-		//Parse the code
+	// Creates the object from the template code that we pass to it
+	// pass false to reset the object
+	function ziggeoTemplatesTemplateObjectSet(obj) {
 
-		//code == "[ziggeovideowall wall_design='mosaic_grid' videos_to_show='' show show_videos='all']"
-		var params_groups = code.split(' ');
-		var params = {};
+		if(!ZiggeoWP.template_object || obj === false) {
+			// We do this just so the default values are set on the object
+			ziggeoTemplatesTemplateObjectGet();
+		}
 
-		var id = params_groups[0];
-
-		for(i = 1, l = params_groups.length; i < l; i++) {
-			var tmp = params_groups[i].split('=');
-
-			if(tmp[1]) {
-				params[tmp[0]] = tmp[0];
-			}
-			else {
-				params[tmp[0]] = 'true';
-			}
+		if(typeof obj === 'undefined' || obj === null || obj === false) {
+			return false;
 		}
 
 		//save the object
-		ZiggeoWP.template_object = {id: id, params: params};
+		ZiggeoWP.template_object = {base: obj.base, params: obj.params};
 	}
 
-	function ziggeoTemplatesEditorSetText(msg) {
-		var editor = ziggeoGetEditor();
+	// Helper to add another parameter to the template object
+	function ziggeoTemplatesTemplateObjectAdd(parameter, value) {
 
-		if(msg === null || typeof msg === 'undefined') {
-			msg = '';
-		}
-
-		editor.value = msg;
-	}
-
-	//Selects the given parameter in the textarea editor. If the always_highlight is true, it will either select value or the parameter if it is bool, otherwise it will only select the value when possible
-	function ziggeoTemplatesEditorSelectText(parameter, always_highlight) {
-		var editor = ziggeoGetEditor();
-		var location = ziggeoParameterPresent(editor.value, parameter);
-
-		//If the parameter is not there, just exit
-		if(location === false) {
+		if(parameter === '' || typeof parameter === 'undefined' || parameter === null) {
 			return false;
 		}
 
-		var end = editor.value.indexOf(' ', location+2);
-
-		if(end == -1) {
-			end = editor.value.length;
+		if(!ZiggeoWP.template_object) {
+			ZiggeoWP.template_object = {
+				base: document.getElementById('ziggeo_shorttags_list').value,
+				params: {}
+			};
 		}
 
-		//To handle the cases where we have value
-		var tmp_val = editor.value.indexOf('=', location+2)+1;
+		// To allow us to not break the code through escaping of apostrophe
+		value = value.replaceAll("'", "\'");
 
-		if(tmp_val <= end) {
-			location = tmp_val;
-		}
+		ZiggeoWP.template_object.params[parameter] = value;
 
-		editor.focus();
-		editor.setSelectionRange(location , end);
+		return true;
 	}
 
-	//Allows us to change the value of a given parameter
-	function ziggeoTemplateChangeParam(template, param, new_value, type) {
-		//We do not need to recreate the code, just remove param
-		template = ziggeoTemplateRemoveParam(template, param);
 
-		//did it have ]?
-		var was_finalized = false;
+	// Used to add parameter to the current template. Can be used from code as well
+	// devs: please use this to add your own parameters through custom actions or buttons
+	// expects: `name`, `type` and `value` keys with the values
+	function ziggeoTemplatesParametersAdd(obj_info) {
+		// Add to object
+		// "draw" in the template editor
 
-		//Now lets add the parameter in
-		//This way even if it was not present, we add it which is desired
-		if(template.indexOf(']') > -1) {
-			template = template.replace(']', '');
-			was_finalized = true;
-		}
+		// Note:
+		// For arrays, strings floats and integers we leave them as is
+		// For JSON we validate that it is actually OK JSON string
+		// for bool it has to be true or false, will be false unless it is true
 
-		//Just so that we do not make it have a large amount of whitespace
-		template = template.trim();
+		obj_info.value = obj_info.value.replaceAll("'", "\'");
 
-		if(type === 'bool' && ( new_value === '' || new_value === 'on' || new_value === true)) {
-			template += ' ' + param;
-		}
-		else if(type === 'string' || type === 'array' || type === 'enum') {
-			template += ' ' + param + "='" + new_value + "'";
-		}
-		else {//it is int
-			template += ' ' + param + '=' + new_value;
-		}
-
-		//Do we need to add back the ]?
-		if(was_finalized) {
-			template += ']';
-		}
-
-		return template;
-	}
-
-	//find and remove the parameter in the code we got and return the final template code
-	function ziggeoTemplateRemoveParam(template, param) {
-
-		var location = ziggeoParameterPresent(template, param);
-
-		//If the parameter is not found, we can just return the template code
-		if(location === false) {
-			return template;
-		}
-
-		var end_of_param = template.indexOf(' ', location+2);
-
-		//In case when the parameter is last in string (no space after)
-		if(end_of_param == -1) {
-			end_of_param = template.length;
-
-			if(template.indexOf(']') > -1) {
-				end_of_param = template.indexOf(']');
-			}
-		}
-
-		//At this point it means that we do have the parameter present
-		template = template.substr(0, location) + template.substr(end_of_param);
-
-		return template;
-	}
-
-	function ziggeoTemplatesEditorEasyParametersCheck(base) {
-
-		var embedding_params = document.getElementById('ziggeo-embedding-parameters-easy');
-
-		//Change what options are shown based on the template_base
-		var _fields = embedding_params.querySelectorAll('.ziggeo-field');
-
-		for(i = 0, c = _fields.length; i < c; i++) {
-			if(_fields[i].getAttribute('data-type').indexOf(' ' + base) > -1) {
-				_fields[i].style.display = '';
+		if(obj_info.type === 'bool') {
+			if(obj_info.value.indexOf('true') > -1) {
+				obj_info.value = "true";
 			}
 			else {
-				_fields[i].style.display = 'none';
+				obj_info.value = "false";
 			}
 		}
+		else if(obj_info.type === 'json') {
+			try {
+				JSON.parse(obj_info.value);
+				// All is good as is
+			}
+			catch(e) {
+				var msg = 'Given value is not proper JSON. JSON has to start with "{" and end with "}" have key and value separated by ":" and both within double quotes' + "\n" +
+					'Example: {"key":"value"}' + "\n" +
+					'Additional Error info:' + JSON.stringify(e);
+				ziggeoPUIMessenger().push(msg, 'error');
+				return false;
+			}
+		}
+
+		// Save into object
+		ziggeoTemplatesTemplateObjectAdd(obj_info.name, obj_info.value);
+
+		// save into editor
+		ziggeoTemplatesEditorRePopulate();
+
+		return true;
 	}
 
-	// 3.1 Templates
+	// We use this to remove the parameter name and value from the Object and the editor preview
+	// If the parameter was not already set, nothing would happen
+	function ziggeoTemplatesParametersRemove(parameter_name) {
+
+		// We do this to make sure we have the default fields if they do not exist yet
+		ziggeoTemplatesTemplateObjectGet();
+
+		// For cases when we call this function with an object that has the name and other details
+		if(typeof parameter_name === 'object' && typeof parameter_name.name !== 'undefined') {
+			parameter_name = parameter_name.name;
+		}
+
+		if(typeof ZiggeoWP.template_object.params[parameter_name] !== 'undefined') {
+
+			delete ZiggeoWP.template_object.params[parameter_name];
+
+			// save into editor
+			ziggeoTemplatesEditorRePopulate();
+			ziggeoScrollTo('ziggeo_templates_editor');
+
+			return true;
+		}
+
+		return false;
+	}
+
+
+	// 5.1 Templates
 	/////////////////
 
-	//Attaching events for templates management
-	function ziggeoPUITemplatesManageInit() {
-		//lets get the elements..
-		var managingElements = document.getElementsByClassName('ziggeo-manage_list');
-		var i, c;
+	function ziggeoTemplatesManageInit() {
+		// Allow removal of items in editor
+		document.getElementById('ziggeo_templates_editor').parentElement.addEventListener('click', function(e) {
+			if(e.target.tagName === 'TEXTAREA') {
+				var start = e.target.selectionStart;
+				var end = e.target.selectionEnd;
 
-		if(managingElements.length === 0) {
-			return false;
+				if(start === end) {
+					// single click
+					// Likely to be somewhere on textarea, not really on a parameter itself
+					if(start === e.target.value.length) {
+						return false;
+					}
+					else {
+						var t_start = e.target.value.lastIndexOf(' ', start) + 1;
+
+						if(t_start === 0) {
+							// Someone is clicking on the template base, we can ignore it
+							return false;
+						}
+
+						// We use t_start here instead of end, since parameter can have a value so by end we could find
+						// equal sign of a different parameter instead
+						var t_end = e.target.value.indexOf('=', t_start);
+
+						if(t_end === -1) {
+							t_end = e.target.value.length - 2; // -2 == ']
+						}
+
+						// Detect if something is off (like it can be with space accepting parameter values)
+						// For cases when you click on the 2nd + word in a space separated value
+						if(e.target.value.indexOf(' ', end) === -1 && e.target.value.indexOf('=', end) === -1) {
+							t_end = e.target.value.lastIndexOf('=', end);
+							t_start = e.target.value.lastIndexOf(' ', t_end) + 1;
+						}
+						// In other cases
+						else {
+							if((e.target.value.indexOf(' ', end) > -1 &&
+								e.target.value.indexOf(' ', end) < e.target.value.indexOf('=', end)) ||
+								e.target.value.indexOf('=', end) === -1) {
+								// If we are here, the t_start and t_end need to be changed.
+								t_start = e.target.value.lastIndexOf(' ', e.target.value.lastIndexOf('=', start)) + 1;
+								t_end = e.target.value.indexOf('=', t_start);
+							}
+						}
+
+						// Select the parameter in the textarea for visual assistance
+						e.target.selectionStart = t_start;
+						e.target.selectionEnd = t_end;
+
+						// Add the parameter into the editing field
+						var t_param_name = e.target.value.substring(t_start, t_end);
+
+						var obj = ziggeoTemplatesTemplateObjectGet();
+						var t_value = obj.params[t_param_name];
+
+						// As is the type is something we can not know with 100% certainty.
+						// There are ways of knowing, however in most cases we can detect functioning types
+						var t_type = 'string';
+
+						if(t_value === 'false' || t_value === 'true') {
+							t_type = 'bool';
+						}
+						else if(!isNaN(t_value)) {
+							t_type = 'integer';
+						}
+
+						document.getElementById('parameter-name').value = t_param_name;
+						document.getElementById('parameter-value').value = t_value;
+						document.getElementById('parameter-type').value = t_type;
+
+						ziggeoScrollTo('ziggeo_shorttags_list');
+					}
+				}
+				else if(start > 0 && end < e.target.value.length) {
+					// double click
+					console.log(start);
+					console.log(end);
+				}
+			}
+		} ); 
+
+		var i,c;
+
+		var use = document.querySelectorAll('.ziggeo_templates .use');
+
+		for(i = 0, c = use.length; i < c; i++) {
+			use[i].addEventListener('click', function(e) {
+				ziggeoTemplatesShortcodeGet(e.target);
+			});
 		}
 
-		managingElements = managingElements[0];
+		var edits = document.querySelectorAll('.ziggeo_templates .edit');
 
-		//We can capture both and process both now, since templates will have both every time..
-		var meDel = managingElements.getElementsByClassName('delete');
-		var meEdit = managingElements.getElementsByClassName('edit');
-
-		for(i = 0, c = meDel.length; i < c; i++)
-		{
-			if(document.addEventListener) {
-				meDel[i].addEventListener( 'click',  ziggeoPUITemplatesManage, false );
-				meEdit[i].addEventListener( 'click',  ziggeoPUITemplatesManage, false );
-			}
-			else { //older IE..
-				meDel[i].attachEvent( 'onclick', ziggeoPUITemplatesManage);
-				meEdit[i].attachEvent( 'onclick', ziggeoPUITemplatesManage );
-			}
+		for(i = 0, c = edits.length; i < c; i++) {
+			edits[i].addEventListener('click', function(e) {
+				ziggeoTemplatesEdit(e.target);
+			});
 		}
 
-		//add event to the button for saving templates
-		document.getElementById('ziggeo_templates_update').addEventListener('click', ziggeoPUIManageTemplate, false );
+		var removals = document.querySelectorAll('.ziggeo_templates .delete');
+
+		for(i = 0, c = removals.length; i < c; i++) {
+			removals[i].addEventListener('click', function(e) {
+				ziggeoTemplatesRemove(e.target);
+			});
+		}
+
+		// Support for click to add parameters from the visual list
+		var param_list = document.getElementById('ziggeo-embedding-parameters-list');
+
+		param_list.addEventListener('click', function(e) {
+			var current = e.target;
+			if(current.className.indexOf('param') > -1) {
+				document.getElementById('parameter-name').value = current.innerText;
+				document.getElementById('parameter-type').value = current.getAttribute('data-type');
+				document.getElementById('parameter-value').focus();
+			}
+		});
+
+		document.getElementById('ziggeo_templates_update').addEventListener('click', ziggeoTemplatesUpdate, false );
+		document.getElementById('ziggeo_templates_save').addEventListener('click', ziggeoTemplatesSave, false );
+
+		// Run the hook for the template base to init various states on page
+		ziggeoPUITemplatesChange(document.getElementById('ziggeo_shorttags_list'));
+	}
+
+	// Helper to help us start editing the template
+	function ziggeoTemplatesEdit(field) {
+		var root = field.parentElement.parentElement;
+
+		var id = root.getElementsByClassName('template_id')[0].innerText;
+		var codes = root.getElementsByClassName('template_code')[0];
+
+		ziggeoTemplatesSetID(id);
+		document.getElementById('ziggeo_templates_manager').value = id;
+
+		// We need to unescape the code for editing
+		var json_code = codes.getAttribute('template-json');
+		json_code = json_code.replace(/(\\(?:'))/g, '&apos;');
+		json_code = json_code.replace(/\'/g, '"');
+		json_code = json_code.replaceAll('&apos;', '\'');
+		json_code = JSON.parse(json_code);
+
+		ziggeoTemplatesTemplateObjectSet(json_code);
+		ziggeoTemplatesBaseSet(json_code.base);
+
+		ziggeoTemplatesEditorRePopulate();
+
+		ziggeoScrollTo('ziggeo_templates_id');
+
+		document.getElementById('ziggeo_templates_update').style.display = 'block';
+		document.getElementById('ziggeo_templates_save').style.display = 'none';
+
+		document.getElementById('ziggeo_templates_turn_to_new').style.display = 'inline-block';
+
+		var hook_values = {
+			template: document.getElementById('ziggeo_shorttags_list').value,
+		};
+
+		ZiggeoWP.hooks.fire('template_editor_template_edit', hook_values);
+	}
+
+	// Helps us to remove the template
+	function ziggeoTemplatesRemove(field) {
+		var root = field.parentElement.parentElement;
+		var id = root.getElementsByClassName('template_id')[0].innerText;
+
+		ZiggeoWP.hooks.fire('dashboard_templates_pre_removal', {id: id});
+
+		if(confirm('Are you sure that you want to remove template? It is not possible to undo the same action!')) {
+			document.getElementById('ziggeo_templates_manager').value = id;
+
+			//Just about to remove the template
+			ZiggeoWP.hooks.fire('dashboard_templates_post_removal', {id: id});
+
+			//submit the form
+			ziggeoPUIManageTemplate('remove', { id:id }, root);
+		}
+
+		return false;
+	}
+
+	// Functionality to save the template
+	function ziggeoTemplatesSave() {
+
+		var id = document.getElementById('ziggeo_templates_id').value;
+		var code_shortcode = document.getElementById('ziggeo_templates_editor').value;
+		var code_json = ziggeoTemplatesTemplateObjectGet();
+
+		var data = {
+			id: id,
+			code: {
+				json: code_json,
+				shortcode: code_shortcode
+			}
+		};
+
+		ZiggeoWP.hooks.fire('dashboard_templates_pre_save', data);
+		ziggeoPUIManageTemplate('save', data);
+	}
+
+	// Functionality to save the template
+	function ziggeoTemplatesUpdate() {
+
+		var id_new = document.getElementById('ziggeo_templates_id').value;
+		var id_old = document.getElementById('ziggeo_templates_manager').value;
+		var code_shortcode = document.getElementById('ziggeo_templates_editor').value;
+		var code_json = ziggeoTemplatesTemplateObjectGet();
+
+		var data = {
+			id: id_new,
+			id_old: id_old,
+			code: {
+				json: code_json,
+				shortcode: code_shortcode
+			}
+		};
+
+		ZiggeoWP.hooks.fire('dashboard_templates_pre_update', data);
+		ziggeoPUIManageTemplate('update', data);
+	}
+
+	function ziggeoTemplatesShortcodeGet(field) {
+		var root = field.parentElement.parentElement;
+
+		var id = root.getElementsByClassName('template_id')[0].innerText;
+
+		alert('Please use:' + "\n" + '[ziggeotemplate ' + id + ']');
 	}
 
 	//function to report over AJAX on what we should do to/with templates
-	function ziggeoPUIManageTemplate(operation, data, ref) {
+	function ziggeoPUIManageTemplate(action, data, ref) {
 		var obj = {};
 
-		//Operations are defined for some actions like delete template
-		if(typeof operation !== 'undefined' && operation !== null && typeof data !== 'undefined') {
-			obj.operation = encodeURI(operation);
-			obj.template_id = encodeURI(data.id);
-			obj.template_code = encodeURI(data.code);
-			obj.manager = encodeURI(data.manager);
+		// Create a request to remove the template
+		if(action === 'remove') {
+			obj.operation = 'settings_manage_template';                 // needed for routing AJAX requests
+			obj.activity = encodeURI(action);                           // needed for knowing what we want to do
+			obj.template_id = encodeURI(data.id);                       // We need ID to remove by
+		}
+		else if(action === 'save') {
+			obj.operation = 'settings_manage_template';                 // needed for routing AJAX requests
+			obj.activity = encodeURI(action);                           // needed for knowing what we want to do
+			obj.template_id = encodeURI(data.id);                       // We need ID to save as
+			obj.code_shortcode = encodeURI(data.code.shortcode);        // shortcode code
+			obj.code_json = encodeURI(JSON.stringify(data.code.json));  // JSON object to save
+		}
+		else if(action === 'update') {
+			obj.operation = 'settings_manage_template';                 // needed for routing AJAX requests
+			obj.activity = encodeURI(action);                           // needed for knowing what we want to do
+			obj.template_id = encodeURI(data.id);                       // We need ID to save as
+			obj.template_id_old = encodeURI(data.id_old);               // We need ID to save as
+			obj.code_shortcode = encodeURI(data.code.shortcode);        // shortcode code
+			obj.code_json = encodeURI(JSON.stringify(data.code.json));  // JSON object to save
 		}
 		else {
-			//We are saving the template
-			ZiggeoWP.hooks.fire('ziggeo_editor_save_templates', {});
-
-			obj.operation = 'settings_manage_template';
-			obj.template_id = encodeURI(ziggeoGetTemplateID());
-			obj.template_code = encodeURI(ziggeoGetEditor().value);
-			obj.manager = encodeURI(document.getElementById('ziggeo_templates_manager').value);
+			return false;
 		}
 
 		ziggeoAjax(obj, function(e) {
@@ -833,144 +965,80 @@
 
 				if(e.message === 'added') {
 					//Lets also add it into the templates list above
-					var list = document.getElementsByClassName('ziggeo-manage_list')[0];
-					var item = document.createElement('li');
-					item.textContent = e.template_id + ' ';
+					var list = document.getElementsByClassName('ziggeo_templates')[0];
+					var item = document.createElement('div');
+					item.className = 'template';
 
-					/*
-					* Had to be removed for some reason
-					var _sdel = document.createElement('span');
-					_sdel.className = 'delete';
-					_sdel.textContent = 'x';
+					var item_id = document.createElement('div');
+					item_id.className = 'template_id';
+					item_id.innerText = e.template_id;
+					item.appendChild(item_id);
 
-					var _sedit = document.createElement('span');
-					_sedit.className = 'edit';
-					_sedit.setAttribute('data-template', obj.template_code);
-					_sedit.textContent = 'edit';
+					var item_code = document.createElement('div');
+					item_code.className = 'template_code';
+					item_code.setAttribute('template-json', JSON.stringify(ziggeoTemplatesTemplateObjectGet()));
+					item_code.innerText = ziggeoTemplatesEditorGet().value;
+					item.appendChild(item_code);
 
-					item.appendChild(_sdel);
-					item.appendChild(_sedit);
-					*/
+					var item_actions = document.createElement('div');
+					item_actions.className = 'actions';
+					item.appendChild(item_actions);
+
+					var item_actions_use = document.createElement('div');
+					item_actions_use.className = 'use';
+					item_actions_use.innerText = 'Use';
+					item_actions.appendChild(item_actions_use);
+
+					var item_actions_edit = document.createElement('div');
+					item_actions_edit.className = 'edit';
+					item_actions_edit.innerText = 'Edit';
+					//item_actions_edit.setAttribute('data-template', ziggeoTemplatesEditorGet().value);
+					item_actions.appendChild(item_actions_edit);
+
+					var item_actions_remove = document.createElement('div');
+					item_actions_remove.className = 'delete';
+					item_actions_remove.innerText = 'Remove';
+					item_actions.appendChild(item_actions_remove);
 
 					list.appendChild(item);
+				}
+				else if(e.message === 'updated') {
+					var i, c;
+					var templates = document.getElementsByClassName('template_id');
+
+					for(i = 0, c = templates.length; i < c; i++) {
+						if(templates[i].innerText === data.id_old) {
+							// We found the template
+							templates[i].innerText = data.id;
+
+							var _code_elem = templates[i].parentElement.getElementsByClassName('template_code')[0];
+
+							_code_elem.setAttribute('template-json', JSON.stringify(data.code.json));
+							_code_elem.innerText = data.code.shortcode;
+
+							i = c;
+						}
+					}
 				}
 				else if(e.message === 'removed') {
 					ref.parentElement.removeChild(ref);
 				}
+
+				//Reset the screen
+				document.getElementById('ziggeo_templates_manager').value = '';
+				document.getElementById('ziggeo_templates_turn_to_new').style.display = 'none';
+				document.getElementById('ziggeo_templates_update').style.display = 'none';
+				document.getElementById('ziggeo_templates_save').style.display = 'block';
+				ziggeoTemplatesSetID('');
+				ziggeoTemplatesTemplateObjectSet(false);
+				ziggeoTemplatesEditorSetCode( ziggeoTemplatesBaseGet() );
+
 			}
 			else {
 				ziggeoDevReport('Managing templates: ' + e, 'error');
 				ziggeoPUIMessenger().push('Something unexpected happened', 'error');
 			}
 		});
-
-		//Reset the screen
-		document.getElementById('ziggeo_templates_manager').value = '';
-		ziggeoSetTemplateID('');
-		ziggeoTemplatesEditorSetText( ziggeoTemplatesBase() );
-
-	}
-
-	//Function to manage templates. Holds both edit and delete functionality
-	// > event
-	function ziggeoPUITemplatesManage(event) {
-
-		//Grabbing the option reference that will help us pass the value over to server backend.
-		var elem = document.getElementById('ziggeo_templates_manager');
-
-		var selected = event.currentTarget;
-
-		//Get the text..
-		var txt = selected.parentNode.innerText;
-
-		//Since it holds new line breaks between the elements text lets remove them - if any..
-		txt = txt.replace(/\n/g, '');
-
-		//If we do have the elements text next to the name, lets just remove it..
-		if( txt.indexOf('xedit') > 0 ) {
-			txt = txt.substr(0, (txt.length - 5) );
-		}
-
-		//lets get what we should do with a fallback to edit..
-
-		//delete a template
-		if(selected.className === 'delete') {
-
-			//Hook to notify that removing of the existing template is likely to occur
-			ZiggeoWP.hooks.fire('dashboard_templates_pre_removal', {});
-
-			if(confirm('Are you sure that you want to remove template? It is not possible to undo the same action!')) {
-				//Lets set the template manager with the value that we want to remove
-				elem.value = txt;
-
-				//Since it is removal, we want to remove all data in this field..
-				ziggeoGetEditor().value = "";
-				ziggeoSetTemplateID('');
-
-				//Just about to remove the template
-				ZiggeoWP.hooks.fire('dashboard_templates_post_removal', {});
-
-				//submit the form
-				ziggeoPUIManageTemplate(null, { id:txt, 'code':'', 'manager': ''}, selected.parentNode);
-				//document.forms[0].submit();
-			}
-		}
-		//edit template
-		else {
-			elem.value = txt;
-
-			//Add value to template ID field
-			ziggeoSetTemplateID(txt);
-
-			//Add value to templates editor field
-			var editor = ziggeoGetEditor();
-
-			//The code to work with in the background
-			ziggeoTemplateSetTemplateObject(selected.getAttribute('data-template').replace(/\\'/g, "'"));
-
-			//The code that is shown
-			// * to help with apostrophes in the custom text fields
-			editor.value = selected.getAttribute('data-template').replace(/\\'/g,"||").replace(/'/g,'&apos;').replace(/\|\|/g, "'")
-
-			var template_base = editor.value.substr(0, editor.value.indexOf(' ') );
-
-			var templates_select = document.getElementById('ziggeo_shorttags_list');
-
-			//set up the dropdown to show the right value
-			if(templates_select.value !== '[ziggeo ' && template_base !== '') {
-				//the following would work, however in some cases it will not (when "[ziggeo" is used as base)
-				document.getElementById('ziggeo_shorttags_list').value = template_base;
-			}
-			else {
-				// so instead we set it as player by default and go from there
-				templates_select.value = '[ziggeoplayer';
-			}
-
-			for(i = 0, c = templates_select.options.length; i < c; i++) {
-				if(templates_select.options[i].value === template_base) {
-					//at this point it is safe
-					templates_select.value = template_base;
-				}
-			}
-
-			//Hook to notify that editing the existing template is about to be started
-			ZiggeoWP.hooks.fire('dashboard_templates_editing', { editor: editor, template_base: template_base, template_code: txt });
-
-			//Turn into new button should now be shown..
-			document.getElementById('ziggeo_templates_turn_to_new').style.display = 'inline-block';
-
-			//for now every time we want to edit the template we go into advanced editor..
-			ziggeoPUIParametersShownToggle('advanced');
-
-			//Set focus on editor, as it is the most likely thing that would be edited.
-			editor.focus();
-
-			//also lets scroll a bit down to it if needed (must be after focus, or setting focus will "break" the scrolling)
-			scrollTo({
-				top: Math.abs(document.body.getBoundingClientRect().top) + editor.parentNode.getBoundingClientRect().top,
-				behavior: "smooth"
-			});
-		}
 	}
 
 	//Function to change the shortcode in the templates editor to the selected one and to show the parameters that can be applied to each
@@ -978,42 +1046,39 @@
 	function ziggeoPUITemplatesChange(sel) {
 		//lets get the selected value
 		var selected = sel.options[sel.selectedIndex].value;
-		
+
 		//Lets grab the currently set value if any from the templates editor
-		var editor = ziggeoGetEditor();
+		var editor = ziggeoTemplatesEditorGet();
 
 		var hook_values = {
 			template: selected, //will it be player ([ziggeoplayer), recorder..
-			editor: editor,
-			editor_type: ''
+			editor: editor
 		};
 
-		//this helps pinpoint the specific section we are working with
-		if(document.getElementById('ziggeo_parameters_advanced').className === 'active') {
-			var editor_suffix = '-adv';
-			hook_values.editor_type = 'advanced';
-		}
-		else {
-			var editor_suffix = '-easy';
-			hook_values.editor_type = 'easy';
-		}
-
-		ZiggeoWP.hooks.fire('dashboard_parameters_editor' + editor_suffix, hook_values);
+		ZiggeoWP.hooks.fire('template_editor_template_base_change', hook_values);
 	}
 
 	//We set the template as a new template, instead of it being edited - allowing people to click on edit to create a new template based on the old one.. ;)
 	function ziggeoPUITemplatesTurnIntoNew() {
 		//Clear the value indicating what was changed
 		document.getElementById('ziggeo_templates_manager').value = '';
+
+		// Change the name of the template as well, so we do not end up adding over
+		var t_date = new Date();
+		var template_id = document.getElementById('ziggeo_templates_id');
+		template_id.value = template_id.value +'_' + t_date.getYear()+''+(t_date.getMonth()+1)+''+t_date.getDate()+''+t_date.getMilliseconds();
+
 		//hide the button to turn it into a new template..
 		document.getElementById('ziggeo_templates_turn_to_new').style.display = 'none';
+		document.getElementById('ziggeo_templates_update').style.display = 'none';
+		document.getElementById('ziggeo_templates_save').style.display = 'block';
 	}
 
 	//Gets the parameter base that we should use in editor, or returns the one to use
 	//>> specific can be 'player' or 'recorder' which then passes back the template base
 	// that you should use to start your template with
 	// When no paramateter is passed it will retrieve the editor template and return that
-	function ziggeoTemplatesBase(specific) {
+	function ziggeoTemplatesBaseGet(specific) {
 		if(specific) {
 			//@here, would like to do this as hooks so you can add your own
 			// until specifically asked for will leave as is
@@ -1024,222 +1089,19 @@
 		}
 	}
 
-
-	// 3.2. Parameters
-	//////////////////
-
-	//Attaching events to the parameters list..
-	function ziggeoPUIParametersQuickAddInit() {
-		//lets get the elements..
-		var elementsHolders = document.getElementsByClassName('ziggeo-params');
-
-		for(i = 0; i < elementsHolders.length; i++) {
-			
-			var le = document.getElementsByTagName('DT');
-
-			for(j = 0; j < le.length; j++)
-			{
-				(document.addEventListener) ? (
-					//true
-					le[j].addEventListener( 'click',  ziggeoPUIParametersQuickAdd, false ) ) : (
-					//false - for older IE only..
-					le[j].attachEvent( 'onclick', ziggeoPUIParametersQuickAdd ) );
-			}
-		}
-	}
-
-	//attach the event to the toggle button..
-	function ziggeoPUIParametersShownInit() {
-		var elm = document.getElementById('ziggeo_parameters_advanced');
-
-		if(elm){
-			if(document.addEventListener) {
-				elm.addEventListener( 'click',  ziggeoPUIParametersShownToggle, false );
-			}
-			else {
-				elm.attachEvent( 'onclick',  ziggeoPUIParametersShownToggle );
-			}
-		}
-	}
-
-	//Function to add parameters on click..should allow much easier customer experience
-	// > event
-	function ziggeoPUIParametersQuickAdd(event, is_simple) {
-		//Reference to textarea
-		var editor = ziggeoGetEditor();
-
-		//Reference to clicked attribute
-		var current = event.currentTarget;
-
-		//Let's get the parameter title and value
-		if(is_simple) {
-			var parameter_title = current.parentElement.parentElement.children[0].innerHTML;
-			var parameter_value = current.value;
-		}
-		else {
-			var parameter_title = current.innerHTML;
-			var parameter_value = '';
-		}
-
-		//to know what we are working with..
-		// can be `string, array` (both as strings), integer, float or bool
-		var parameter_type = current.getAttribute('data-equal');
-
-		//At this point we could just check the object, instead of working with the code...
-		var template_obj = ziggeoTemplateGetTemplateObject();
-
-		if(template_obj) {
-			//Do we already have this parameter?
-			if(template_obj[parameter_title]) {
-				if(template_obj[parameter_title] !== parameter_value) {
-					//A change has been made to the value of the parameter
-					template_obj[parameter_title] = parameter_value;
-				}
-			}
-			else {
-				//This parameter is being added for the first time
-				template_obj[parameter_title] = parameter_value;
-			}
-		}
-		else {
-			//The template was not created so far
-			template_obj = {};
-			template_obj[parameter_title] = parameter_value;
-		}
-
-
-		//to support the simple setup
-		if(is_simple) {
-			if(parameter_type === 'enum') {
-				//if enum type, our value actually needs to be captured from the selected option..
-				parameter_value = current.options[current.selectedIndex].value;
-				//effectively going further, this should be seen as array..
-				parameter_type = 'array';
-			}
-			else if(parameter_type === 'bool') {
-				parameter_value = current.checked;
-			}
-		}
-
-		if(parameter_type === 'string' || parameter_type === 'array') {
-
-			//We should clean up the string..
-			parameter_value = ziggeoCleanTextValues(parameter_value);
-		}
-
-
-		//In case it is advanced, we look if we should select or add it..
-		if(!is_simple) {
-			//in advanced editor we also select the right section
-			if(ziggeoTemplatesEditorSelectText(parameter_title, true) !== false) {
-				//If we made the selection, it existed so we just return from here
-				return;
-			}
-		}
-
-		//Lets add the parameter
-		editor.value = ziggeoTemplateChangeParam(editor.value,
-													parameter_title,
-													parameter_value,
-													parameter_type
-		);
-
-		if(!is_simple) {
-			ziggeoTemplatesEditorSelectText(parameter_title, true);
-		}
-
-		//Save the template object
-		ziggeoTemplateSetTemplateObject(editor.value);
-
-		return true;
-	}
-
-	//Handles the adding of the parameters from the simple editor:
-	function ziggeoPUIParametersAddSimple(event) {
-		//We could call this function directly. Leaving like this for now in case we need to add some special code to be
-		// run before it or after.. * such as cleanup code
-		ziggeoPUIParametersQuickAdd(event, true);
-	}
-
-	//switches between simple paramaters and advanced ones
-	function ziggeoPUIParametersShownToggle(force_specific) {
-		var elm = document.getElementById('ziggeo_parameters_advanced');
-		var section_adv = document.getElementById('ziggeo_parameters_advanced_section');
-		var section_simp = document.getElementById('ziggeo_parameters_simple_section');
-		var main_template = document.getElementById('ziggeo_shorttags_list');
-		var template_base = main_template.options[main_template.selectedIndex].value;
-
-		if((elm.className.indexOf('active') > -1 || force_specific === 'simple') && force_specific !== 'advanced') {
-			elm.className = '';
-			elm.firstChild.innerText = "Easy Setup";
-			section_adv.style.display = 'none';
-			section_simp.style.display = 'block';
-
-			ZiggeoWP.hooks.fire('dashboard_template_editor_simple_shown', { template_base: template_base });
-
-			//hide the list of parameters
-			document.getElementById('ziggeo_templates_types').style.display = 'none';
-		}
-		else {
-			elm.className = 'active';
-			elm.firstChild.innerText = "Advanced View";
-			section_adv.style.display = 'block';
-			section_simp.style.display = 'none';
-
-			ZiggeoWP.hooks.fire('dashboard_template_editor_advanced_shown', { template_base: template_base });
-
-			//hide the list of parameters
-			document.getElementById('ziggeo_templates_types').style.display = 'block';
-		}
-
-		//Now lets make sure that we can switch back and forth between the simple and advanced editing, while being aware
-		// of the main template in use..
-
-		//@ADD - make this work so that parameters possibly go back and forth (if the same parameters exist in easy and advanced editor)
-
-	}
-
-	//Checks if the parameter is present or not. If it is, it returns the position otherwise false 
-	function ziggeoParameterPresent(code, parameter) {
-		var location = false;
-
-		//Most paramters has the equal to value so this is first check
-		location = code.indexOf(' ' + parameter + '=');
-
-			//Did we find it?
-			if(location > -1) {
-				return location+1;
-			}
-
-		//common for boolean true values
-		location = code.indexOf(' ' + parameter + ' ');
-
-			//Did we find it?
-			if(location > -1) {
-				return location+1;
-			}
-
-		//indicator of the parameter being at the very end of the string
-		location = code.indexOf(' ' + parameter + ']');
-
-			//Did we find it?
-			if(location > -1) {
-				return location+1;
-			}
-
-		//The parameter is not part of the code checked
-		return false;
+	function ziggeoTemplatesBaseSet(value) {
+		document.getElementById('ziggeo_shorttags_list').value = value;
 	}
 
 
 
 
 /////////////////////////////////////////////////
-// 4. INTEGRATIONS                             //
+// 6. INTEGRATIONS                             //
 /////////////////////////////////////////////////
 
 
-	// 4.1 Integrations tab
+	// 6.1 Integrations tab
 	///////////////////////
 
 	//set the integration to disable
@@ -1255,7 +1117,7 @@
 
 
 /////////////////////////////////////////////////
-// 5. WP EDITOR                                //
+// 7. WP EDITOR                                //
 /////////////////////////////////////////////////
 
 	function ziggeoSetupNewWPToolbar() {
@@ -1327,7 +1189,7 @@
 
 
 /////////////////////////////////////////////////
-// 6. NOTIFICATIONS                            //
+// 8. NOTIFICATIONS                            //
 /////////////////////////////////////////////////
 
 	function ziggeoPUINotificationsInit() {
@@ -1406,7 +1268,7 @@
 
 
 /////////////////////////////////////////////////
-// 7. VIDEOS PAGE                              //
+// 9. VIDEOS PAGE                              //
 /////////////////////////////////////////////////
 
 	function ziggeoPUIVideosInit() {
@@ -1838,7 +1700,6 @@
 
 	}
 
-
 	//This is a proxy for ziggeoPUIVideosHasVideos. It first checks the videos, then sends them there
 	function ziggeoPUIVideosHasVideosApproved(videos) {
 		var clean_videos = [];
@@ -2195,11 +2056,10 @@
 
 
 /////////////////////////////////////////////////
-// 8. ADDONS PAGE                              //
+// 10. ADDONS PAGE                              //
 /////////////////////////////////////////////////
 
 	function ziggeoPUIAddonsInit() {
-
 		var _nav = document.getElementById('ziggeo-addons-nav')
 
 		_nav.querySelector('[data-section="installed"]').addEventListener('click', function() {
@@ -2213,11 +2073,9 @@
 		_nav.querySelector('[data-section="store"]').addEventListener('click', function() {
 			ziggeoPUIAddonsSwitch('ziggeo_addons_store', '[data-section="store"]');
 		});
-
 	}
 
 	function ziggeoPUIAddonsSwitch(show, in_nav) {
-
 		var _installed = document.getElementById('ziggeo_addons_installed');
 		_installed.style.display = 'none';
 
@@ -2241,8 +2099,136 @@
 
 
 /////////////////////////////////////////////////
-// 9. SDK PAGE                                 //
+// 11. SDK PAGE                                 //
 /////////////////////////////////////////////////
+
+	//Add functionality to the butons on the SDK page
+	function ziggeoPUISDKInit() {
+
+		var i, l, j, c;
+
+		var tabs = document.getElementsByClassName('ziggeo_tab');
+
+		//Support for clicking on tabs
+		for(i = 0, c = tabs.length; i < c; i++) {
+			tabs[i].addEventListener('click', function(e) {
+				var current = document.getElementsByClassName('ziggeo_tab selected')[0];
+				current.className = 'ziggeo_tab';
+				document.getElementById('ziggeo_tab_' + current.getAttribute('data-tab')).style.display = 'none';
+
+				var tab = e.target;
+				tab.className += ' selected';
+				document.getElementById('ziggeo_tab_' + tab.getAttribute('data-tab')).style.display = 'block';
+			});
+		}
+
+		// Set the click event for the fields within the application segment
+		document.getElementById('ziggeo_tab_applications').addEventListener('click', function(event) {
+			var current_element = event.target;
+
+			//Quick filter
+			if(current_element.tagName !== 'SPAN') {
+				return false;
+			}
+
+			//Only do this on actual buttons
+			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
+				//standard buttons
+				if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
+					ziggeoPUISDKButtons(current_element);
+				}
+			}
+			//image radio buttons (on/off)
+			else if(current_element.className.indexOf('ziggeo-ctrl-img-toggle') > -1) {
+				ziggeoPUISDKImageToggle(current_element);
+			}
+
+		});
+
+		// Set the click event for the fields within the application segment
+		document.getElementById('ziggeo_tab_analytics').addEventListener('click', function(event) {
+			var current_element = event.target;
+
+			//Quick filter
+			if(current_element.tagName !== 'SPAN') {
+				return false;
+			}
+
+			//Only do this on actual buttons
+			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
+				//standard buttons
+				if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
+					ziggeoPUISDKButtons(current_element);
+				}
+			}
+
+		});
+
+		// OnChange event handler for selects
+		var dropdowns = document.getElementsByClassName('ziggeo-sdk-ajax-dropdown');
+
+		for(i = 0, c = dropdowns.length; i < c; i++) {
+			var _current = dropdowns[i];
+			_current.addEventListener('change', function() {
+				ziggeoPUISDKDropdown(_current);
+			});
+		}
+
+		//Add calendars to our page
+		jQuery('#calendar_from').datepicker({
+			dateFormat: '@', // This makes it return Unix time.
+			onSelect: function(str_date, instance) {
+				document.getElementById('analytics-from').value = str_date;
+			}
+		});
+
+		jQuery('#calendar_to').datepicker({
+			dateFormat: '@', // This makes it return Unix time.
+			buttonText: "To",
+			onSelect: function(str_date, instance) {
+				document.getElementById('analytics-to').value = str_date;
+			}
+		});
+
+		//Set the click event
+		document.getElementById('ziggeo_tab_effectprofiles').addEventListener('click', function(event) {
+			var current_element = event.target;
+
+			//Quick filter
+			if(current_element.tagName !== 'SPAN') {
+				return false;
+			}
+
+			//Only do this on actual buttons
+			if(current_element.className.indexOf('ziggeo-ctrl-btn') > -1) {
+				if(current_element.className.indexOf('ziggeo-sdk-ajax-form') > -1) {
+					ziggeoPUISDKEffectProfilesButtonForms(current_element);
+				}
+				else if(current_element.className.indexOf('ziggeo-ctrl-form-popup') > -1) {
+					ziggeoPUISDKEffectProfilesButtonFormPopup(current_element);
+				}
+				else if(current_element.className.indexOf('ziggeo-sdk-ajax') > -1) {
+					ziggeoPUISDKEffectProfilesButtons(current_element);
+				}
+			}
+
+		});
+
+		// This allows us to change the application that is used on the SDK page
+		document.getElementById('applications_list').addEventListener('change', function(e) {
+			var _current = e.target;
+
+			var text = _current[_current.selectedIndex].innerText;
+			document.getElementById('ziggeo_title_app').innerText = '(' + text + ')';
+
+			if(!ZiggeoWP.sdk) {
+				ZiggeoWP.sdk = {};
+			}
+
+			ZiggeoWP.sdk.app_token = _current.value;
+			ZiggeoWP.sdk.title = text;
+		});
+	}
 
 	//Image toggle control on the SDK page
 	function ziggeoPUISDKImageToggle(btn_current) {
@@ -3530,9 +3516,8 @@
 
 
 
-
 /////////////////////////////////////////////////
-// 10. EVENTS EDITOR                           //
+// 12. EVENTS EDITOR                           //
 /////////////////////////////////////////////////
 
 	// Register functions that we need to make our Events Editor a bit interactive
@@ -3698,41 +3683,102 @@
 
 
 
-
 /////////////////////////////////////////////////
-// 11. GENERAL SETTINGS                        //
+// 13. AUTOCOMPLETE CONTROL                     //
 /////////////////////////////////////////////////
 
-	// Function that helps us to hide the comment related options if the entire comments section has been disabled.
-	function ziggeoCommentsToggle(e) {
 
-		if(e.target) {
-			var current = e.target;
+	// Initialize the autocomplete field functionality
+	function ziggeoPUICAutoCompleteInit() {
+		var autocomplete = document.getElementsByClassName('ziggeo-autocomplete-input');
+
+		if(autocomplete.length > 0) {
+			var i, c;
+
+			for(i = 0, c = autocomplete.length; i < c; i++) {
+				autocomplete[i].addEventListener('keyup', function(e) {
+					if(e.keyCode < 65) {
+						return false;
+					}
+
+					ziggeoPUICAutoCompleteFilter(e.target, true, false);
+				});
+			}
+
+			for(i = 0, c = autocomplete.length; i < c; i++) {
+				autocomplete[i].addEventListener('focusout', function(e) {
+					ziggeoPUICAutoCompleteFilter(e.target, true, true);
+				});
+			}
 		}
-		else {
-			var current = e;
+	}
+
+	// The actual filtering for the autocomplete to work
+	function ziggeoPUICAutoCompleteFilter(input, use_children, exact_match) {
+
+		if(use_children !== true) {
+			use_children = false;
 		}
 
-		var the_next = current.parentElement.parentElement.nextElementSibling;
-		var to_enable = current.checked;
+		// grab selection cursor position
+		var start = input.selectionStart;
 
-		while (the_next) {
+		// To grab the value without the part that we have selected ourselves
+		var value = input.value.substring(0, input.selectionStart);
 
-			// Check if we should stop
-			if(the_next.children[0].innerText === '') {
-				// We should stop
-				the_next = null;
+		if(value === '') {
+			return false;
+		}
+
+		// Get all of the items for autocomplete
+		var items = JSON.parse(input.getAttribute('field-data'));
+
+		// We only do the rest of processing if there is data to be processed
+		if(items) {
+
+			var i, c;
+			var all_items = {};
+
+			if(use_children) {
+				for(var _item in items) {
+					if(!items.hasOwnProperty(_item)) {
+						continue;
+					}
+
+					all_items = Object.assign(all_items, items[_item]);
+				}
 			}
 			else {
-				// Enable fields
-				if(to_enable === true) {
-					the_next.className = the_next.className.replace('disabled_option', '');
-					the_next = the_next.nextElementSibling;
+				all_items = items;
+			}
+
+			_item = null;
+
+			// Now we want to go through entire list we have prepared, and filter out possible values
+			// (first match found only) by default
+
+			for(var _item in all_items) {
+				var t_found = false;
+
+				if(exact_match === true && value === _item) {
+					t_found = true;
 				}
-				else {
-					// Disable Fields
-					the_next.className += ' disabled_option';
-					the_next = the_next.nextElementSibling;
+				else if(exact_match !== true && _item.startsWith(value)) {
+					t_found = true;
+				}
+
+				if(t_found === true) {
+					// Set the value
+					input.value = _item;
+					input.selectionStart = value.length;
+					input.selectionEnd = _item.length;
+
+					// Call hook if any is registered
+					var hook = input.getAttribute('field-hook');
+
+					if(hook) {
+						ZiggeoWP.hooks.fire(hook, { 'input': input, 'key': _item, 'data': all_items[_item] });
+					}
 				}
 			}
 		}

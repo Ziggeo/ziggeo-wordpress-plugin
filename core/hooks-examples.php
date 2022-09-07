@@ -12,13 +12,17 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 		if(isset($_POST['template_id'])) {
 
 			$id = urldecode($_POST['template_id']);
-			$code = (isset($_POST['template_code'])) ? urldecode($_POST['template_code']): '';
-			$manager = (isset($_POST['manager'])) ? urldecode($_POST['manager']): '';
+			$code_shortcode = (isset($_POST['code_shortcode'])) ? urldecode($_POST['code_shortcode']) : '';
+			$code_json = (isset($_POST['code_json'])) ? urldecode($_POST['code_json']) : '';
+			$template_id_old = (isset($_POST['template_id_old'])) ? urldecode($_POST['template_id_old']) : '';
+			$activity = (isset($_POST['activity'])) ? urldecode($_POST['activity']) : '';
 
 			$data = array(
-				'templates_id'			=> $id,
-				'templates_editor'		=> $code,
-				'templates_manager'		=> $manager,
+				'templates_id'          => $id,
+				'code_shortcode'        => $code_shortcode,
+				'code_json'             => $code_json,
+				'template_id_old'       => $template_id_old,
+				'activity'              => $activity
 			);
 
 			$rez = ziggeo_a_s_v_templates_handler($data);

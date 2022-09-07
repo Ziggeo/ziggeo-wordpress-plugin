@@ -28,7 +28,7 @@ function ziggeo_a_s_validation($input) {
 		// Integrations tab
 			'integrations' => true,
 		//experts tab
-			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_save_to' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true, 'use_auth' => true, 'use_version' => true, 'use_revision' => true, 'lazy_load' => true
+			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true, 'use_auth' => true, 'use_version' => true, 'use_revision' => true, 'lazy_load' => true
 
 	);
 
@@ -99,14 +99,6 @@ function ziggeo_a_s_validation($input) {
 	//From this point on, we should not use $input, only $options
 
 
-
-	// Templates tab settings
-	///////////////////////////
-
-	//templates
-	$options = ziggeo_a_s_v_templates_handler($options);
-
-
 	//Contact us tab settings
 	///////////////////////////
 
@@ -118,9 +110,9 @@ function ziggeo_a_s_validation($input) {
 	//Synce the templates between the files and DB templates that are saved
 	if(isset($input['expert_sync']) && $input['expert_sync'] === 'sync_now') {
 		//Get all templates from the DB
-		$db_templates = ziggeo_p_templates_index(null, 'db');
+		$db_templates = ziggeo_p_templates_index();
 		//Get all templates from the files
-		$file_templates = ziggeo_p_templates_index(null, 'files');
+		//$file_templates = ziggeo_p_templates_index(null, 'files');
 
 		if( is_array($db_templates)) {
 			$final_templates = $db_templates;
@@ -133,14 +125,17 @@ function ziggeo_a_s_validation($input) {
 		if( is_array($file_templates) ) {
 			//All is good, lets do it
 			foreach ($file_templates as $key => $value) {
-				if(!isset($final_templates[strtolower($key)])) {
+				if(isset($value['shortcode'])) {
+					$final_templates[strtolower($key)] = $value['shortcode'];
+				}
+				else {
 					$final_templates[strtolower($key)] = $value;
 				}
 			}
 		}
 
 		//Sync them in
-		ziggeo_p_templates_add_all($final_templates, 'db');
+		//ziggeo_p_templates_add_all($final_templates, 'db');
 		//This might fail - depends on what your server is set up like, so if files can not be made, this will fail.
 		ziggeo_p_templates_add_all($final_templates, 'files');
 	}
@@ -239,98 +234,96 @@ function ziggeo_a_s_v_templates_handler($options) {
 
 	$id_given = true;
 
-	$options['templates_editor'] = trim($options['templates_editor']);
-
-	//if we have a value that is not empty and something other than default one...
-	if( isset($options['templates_editor']) &&
-		$options['templates_editor'] !== '' &&
-		$options['templates_editor'] !== '[ziggeo' && //old templates started with this
-		$options['templates_editor'] !== '[ziggeoplayer' &&
-		$options['templates_editor'] !== '[ziggeorecorder' &&
-		$options['templates_editor'] !== '[ziggeouploader' &&
-		$options['templates_editor'] !== '[ziggeorerecorder') { //new templates start with this
-
-		if(isset($options['templates_id'])) {
+	if(isset($options['templates_id'])) {
 			$options['templates_id'] = trim($options['templates_id']);
-		}
-		else {
-			$options['templates_id'] = '';
-		}
-	
-		if($options['templates_id'] === '') {
-			$options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
-
-			$message = sprintf( __('Since Template ID was not given, we have set one up for you! - "%s"', 'ziggeo'), $options['templates_id'] );
-			$id_given = false;
-		}
-
-		//Lets check if templates_editor code ends with ] or not.. if not, we need to add it, since customers might forget adding it.
-		if( substr( $options['templates_editor'], -1) !== "]" ) {
-			$options['templates_editor'] .= ']';
-		}
-
-		//We should check what is the action..
-		//add new
-		if( !isset($options['templates_manager']) || $options['templates_manager'] === '' ) {
-			
-			//before adding template we need to know that the template name was added, if not, lets just name it for our customer :)
-			//if the template is just a number, it will not work, we need to add it some text at the start
-			if( is_numeric($options['templates_id']) ) {
-				$options['templates_id'] = '_' . $options['templates_id'];
-			}
-
-			//Templates Editor value gets saved in a bit different manner, together with the ID.. We need to keep these two clean each time
-			// instead we save them into a new file as JSON, but we must make sure that such file does not exist currently.
-			if( ($rez = ziggeo_p_templates_add( $options['templates_id'], $options['templates_editor']) ) ) {
-
-				//Was template ID set (true) or did we make it for our customer? (false)
-				if($id_given) {
-					$message = sprintf( __('Your template "%s" has been successfully created.', 'ziggeo'), $options['templates_id']);
-				}
-
-				$ajax_status['message'] = 'added';
-				$ajax_status['status'] = 'success';
-				$ajax_status['template_id'] = $options['templates_id'];
-
-				add_settings_error('ziggeo_templates_manager',
-														'template_created',
-														$message,
-														'updated');
-			}
-			elseif($rez === false || $rez === null) {
-
-				//for now we handle false and null in the same manner, however later we might do it differently..
-
-				//@here - false depends on where we save data to. If DB then it already exists or there was an error
-
-				$ajax_status['message'] = 'unchanged';
-				$ajax_status['status'] = 'success';
-			}
-		}
-		//edit old template
-		elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
-			//old ID, new ID, template structure
-			if(ziggeo_p_templates_update($options['templates_manager'], $options['templates_id'] , $options['templates_editor'])) {
-				$ajax_status['message'] = 'updated';
-				$ajax_status['status'] = 'success';
-				add_settings_error('ziggeo_templates_manager',
-																'template_updated',
-																sprintf(__('Your template "%s" has been successfully updated.', 'ziggeo'), $options['templates_id']),
-																'updated');
-			}
-		}
-
-		unset( $options['templates_editor'], $options['templates_id'] );
 	}
-	//Should we delete template?
-	elseif( isset($options['templates_manager']) && $options['templates_manager'] !== '' ) {
-		if( ziggeo_p_templates_remove($options['templates_manager']) ) {
+	else {
+		$options['templates_id'] = '';
+	}
+
+	if($options['templates_id'] === '') {
+		$options['templates_id'] = "ziggeo_template_" . rand(20, 3000);
+
+		$message = sprintf( __('Since Template ID was not given, we have set one up for you! - "%s"', 'ziggeo'), $options['templates_id'] );
+		$id_given = false;
+	}
+
+	if(isset($options['template_id_old'])) {
+		$options['template_id_old'] = trim($options['template_id_old']);
+	}
+	else {
+		$options['template_id_old'] = '';
+	}
+
+	if($options['activity'] === 'remove') {
+		if( ziggeo_p_templates_remove($options['templates_id']) ) {
 			$ajax_status['message'] = 'removed';
 			$ajax_status['status'] = 'success';
 			add_settings_error('ziggeo_templates_manager',
-													'template_removed',
-													sprintf(__('Your template "%s" has been successfully deleted.', 'ziggeo'), $options['templates_manager']),
-													'updated');
+			                   'template_removed',
+			                   sprintf(__('Your template "%s" has been successfully deleted.', 'ziggeo'), $options['templates_id']),
+			                   'updated');
+		}
+	}
+	elseif($options['activity'] === 'save') {
+
+		$ajax_status['message'] = 'Template code is not present';
+
+		if(isset($options['code_json'], $options['code_shortcode'])) {
+			$codes = array(
+				'json' => $options['code_json'],
+				'shortcode' => $options['code_shortcode']
+			);
+
+			$template_obj = json_decode($options['code_json'], true);
+
+			// Do we have any parameters set? If not we do not want to save this
+			if($template_obj['params'] !== '') {
+
+				$ajax_status['message'] = 'Unable to save the template';
+
+				if($rez = ziggeo_p_templates_add( $options['templates_id'], $codes)) {
+
+					//Was template ID set (true) or did we make it for our customer? (false)
+					if($id_given) {
+						$message = sprintf( __('Your template "%s" has been successfully created.', 'ziggeo'), $options['templates_id']);
+					}
+
+					$ajax_status['message'] = 'added';
+					$ajax_status['status'] = 'success';
+					$ajax_status['template_id'] = $options['templates_id'];
+
+					add_settings_error('ziggeo_templates_manager', 'template_created', $message, 'updated');
+				}
+			}
+		}
+	}
+	elseif($options['activity'] === 'update') {
+
+		$ajax_status['message'] = 'Template code is not present';
+
+		if(isset($options['code_json'], $options['code_shortcode'])) {
+			$codes = array(
+				'json' => $options['code_json'],
+				'shortcode' => $options['code_shortcode']
+			);
+
+			$template_obj = json_decode($options['code_json'], true);
+
+			// Do we have any parameters set? If not we do not want to save this
+			if($template_obj['params'] !== '') {
+				if(ziggeo_p_templates_update($options['template_id_old'], $options['templates_id'], $codes)) {
+					$ajax_status['message'] = 'updated';
+					$ajax_status['status'] = 'success';
+					add_settings_error('ziggeo_templates_manager',
+					                   'template_updated',
+					                   sprintf(__('Your template "%s" has been successfully updated.', 'ziggeo'), $options['templates_id']),
+					                   'updated');
+				}
+				else {
+					$ajax_status['message'] = 'Template update failed';
+				}
+			}
 		}
 	}
 
@@ -339,7 +332,8 @@ function ziggeo_a_s_v_templates_handler($options) {
 	}
 	else {
 		//We are currently showing it up as default, so we should remove it at this point - we do not want it saved
-		unset($options['templates_editor']);
+		unset($options['code_shortcode']);
+		unset($options['code_json']);
 
 		return $options;
 	}

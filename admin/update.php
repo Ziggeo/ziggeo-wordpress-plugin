@@ -53,7 +53,7 @@ function ziggeo_p_on_update($options = null) {
 		}
 
 		//Save templates
-		ziggeo_p_templates_add_all($templates);
+		ziggeo_p_templates_add_all($templates, false);
 	}
 
 	// 2.3

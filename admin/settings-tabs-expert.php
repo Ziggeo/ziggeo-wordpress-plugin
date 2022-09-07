@@ -40,32 +40,6 @@ function ziggeo_a_s_e_text() {
 	}
 
 
-	//Creates a field that will allow us to choose where the templates will be saved (DB or file)
-	// files can offer faster data retrieval over DB especially on slow or websites with many plugins
-	// files can open website to security issue depending on setup, and sometimes might not be possible to create them
-	// select the DB if you are not sure which one, or if you are not sure how to manually create the file as the automated file
-	//  creation is removed in favor of security over ease of use.
-	function ziggeo_a_s_e_templates_save_to_field() {
-
-		$option = ziggeo_get_plugin_options('templates_save_to');
-
-		$e_db = ' selected ';
-		$e_files = '';
-
-		if($option == 'files') {
-			$e_db = '';
-			$e_files = ' selected ';
-		}
-
-		?>
-		<select id="ziggeo_templates_save_to" name="ziggeo_video[templates_save_to]">
-			<option value="db" <?php echo $e_db; ?>>DataBase</option>
-			<option value="files" <?php echo $e_files; ?>>Files</option>
-		</select>
-		<label for="ziggeo_templates_save_to"><?php _e('Select where you want the templates to be saved at. Default is "DataBase", previously was "Files".', 'ziggeo'); ?></label>
-		<?php
-	}
-
 	function ziggeo_a_s_e_clear_templates() {
 		?>
 		<select id="ziggeo_templates_clear" name="ziggeo_video[templates_clear]">
@@ -154,13 +128,10 @@ function ziggeo_a_s_e_text() {
 		<?php
 	}
 
-	//Sync field allowing everyone to sync the templates that are in files with templates that are in DB.
-	// It uses addition approach, so if some are missing in one, they will be added to it, while none would be removed
-	// example file has A and D templates, and DB has B, C, D and F templates. After sync both will have A, B, C, D, F templates
-	// If one exists, in both, the DB version will be saved in both
+	//Sync field allows you to recreate the templates from the DB into the file
 	function ziggeo_a_s_e_sync_field() {
 		?>
-		<button id="ziggeo_expert_sync" name="ziggeo_video[expert_sync]" value="sync_now">Sync Now</button>
+		<button id="ziggeo_expert_sync" name="ziggeo_video[expert_sync]" value="sync_now">Rebuild Now</button>
 		<?php
 	}
 
@@ -214,6 +185,17 @@ function ziggeo_a_s_e_text() {
 		?>
 		<input id="ziggeo_lazy_load" name="ziggeo_video[lazy_load]" type="checkbox"value="1" <?php echo checked( ZIGGEO_YES, $option, false ); ?> />
 		<label for="ziggeo_lazy_load"><?php _e('Please use it ON, or leave disabled OFF', 'ziggeo'); ?></label>
+		<?php
+	}
+
+	// This makes it possible for new customers to disable support for old templates and customers that have been using
+	// Ziggeo before to still support them until they switch to new templates.
+	function ziggeo_a_s_e_support_old_templates() {
+		$option = ziggeo_get_plugin_options('support_templates_v1');
+
+		?>
+		<input id="ziggeo_support_templates_v1" name="ziggeo_video[support_templates_v1]" type="checkbox"value="1" <?php echo checked( ZIGGEO_YES, $option, false ); ?> />
+		<label for="ziggeo_support_templates_v1"><?php _e('Check to support old version of templates. We suggest new version unless you have already used templates before and have not switched them to new version.', 'ziggeo'); ?></label>
 		<?php
 	}
 

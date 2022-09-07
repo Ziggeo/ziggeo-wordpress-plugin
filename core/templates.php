@@ -41,7 +41,7 @@ defined('ABSPATH') or die();
 /////////////////////////////////////////////////
 
 	//Adds new templates to the currently existing ones
-	function ziggeo_p_templates_add($id, $value, $specific = null) {
+	function ziggeo_p_templates_add($id, $value) {
 
 		//Few fixes to ID in special cases when they might be needed
 		//Check if the id is empty
@@ -52,15 +52,32 @@ defined('ABSPATH') or die();
 		//Lets right away put the ID into lowercase
 		$id = strtolower($id);
 
-		$option = ziggeo_get_plugin_options('templates_save_to');
+		// Before we would check where the codes would be saved. Starting with v3.0, we save them at 2 places:
+		// 1. Into the DB (saving JSON Object and shortcode), allowing us to easily edit the templates
+		// 2. Into the files, allowing us to quickly read it and show the prepared template with minimal parsing
 
-		if( $specific === 'files' || ($specific === null && $option === "files" )) {
+		$existing_templates = get_option('ziggeo_templates');
 
-			//path to userData directory 
+		// Since this is "add", we will reject the call when the ID already exists
+		if(isset($existing_templates[$id])) {
+			return false;
+		}
+
+		$existing_templates[$id] = $value;
+
+		//This always returns false. We can either:
+		//1. save the template over AJAX, without saving the settings
+		//2. use own table
+
+		$rez_db = update_option('ziggeo_templates', $existing_templates);
+
+		// We will add it to the files only if the DB save passed through
+		if($rez_db) {
+			// Saving the shortcode version into the files
 			$dir = ZIGGEO_DATA_ROOT_PATH;
 			$file = $dir . '/custom_templates.php';
 
-			$content = array ( $id => $value );
+			$content = array ( $id => $value['shortcode'] );
 
 			//In case directory does not exist, we will make one.
 			if(!file_exists($dir)) {
@@ -68,37 +85,28 @@ defined('ABSPATH') or die();
 				return false;
 			}
 			else {
-				if($current = ziggeo_p_file_read($file)) {
-					//This way the new data updates the old one, if array keys match..
-					//@TODO - the name should be unique, so do we want to record an error for our customer to know that they had used the name that was previously used in some other template, or do we just overwrite it? -> report otherwise leave as is.
-					$content = array_merge($current, $content);
+				$shortcodes = array();
+
+				// Go through templates and only use shortcode
+				foreach($existing_templates as $id => $value) {
+					$shortcodes[$id] = $value['shortcode'];
 				}
 
-				return ziggeo_p_file_write($file, $content);
+				return ziggeo_p_file_write($file, $shortcodes);
 			}
 		}
-		//else save to DB, which is now a new default
-		else {
 
-			$existing_templates = get_option('ziggeo_templates');
-
-			$existing_templates[$id] = $value;
-
-			//This always returns false. We can either:
-			//1. save the template over AJAX, without saving the settings
-			//2. use own table
-
-			return update_option('ziggeo_templates', $existing_templates);
-		}
+		return false;
 	}
 
 	//If calling this function be careful, it will remove all other templates!
-	function ziggeo_p_templates_add_all($templates, $specific = null) {
-		$option = ziggeo_get_plugin_options('templates_save_to');
+	function ziggeo_p_templates_add_all($templates, $file_write = false) {
 
-		if( $specific === 'files' || ($specific === null && $option === "files" )) {
+		if($file_write !== true) {
+			$rez = update_option('ziggeo_templates', $templates);
+		}
 
-			//path to userData directory 
+		if($rez || $file_write === true) {
 			$dir = ZIGGEO_DATA_ROOT_PATH;
 			$file = $dir . '/custom_templates.php';
 			//In case directory does not exist, we will make one.
@@ -108,57 +116,56 @@ defined('ABSPATH') or die();
 			}
 			else
 			{
-				return ziggeo_p_file_write($file, $templates);
+				$shortcodes = array();
+
+				// Go through templates and only use shortcode
+				foreach($templates as $id => $value) {
+					$shortcodes[$id] = $value['shortcode'];
+				}
+
+				return ziggeo_p_file_write($file, $shortcodes);
 			}
 		}
-		//else save to DB, which is now a new default
-		else {
-			return update_option('ziggeo_templates', $templates);
-		}
+
+		return false;
 	}
 
 	//Finds and updates the passed template
 	function ziggeo_p_templates_update($old_id, $id, $content) {
 		$updated = array();
 
-		$option = ziggeo_get_plugin_options('templates_save_to');
+		$existing_templates = get_option('ziggeo_templates');
 
-		if( $option === "files" ) {
+		if(isset($existing_templates[$old_id])) {
+			if($old_id !== $id) {
+				unset($existing_templates[$old_id]);
+				$existing_templates[$id] = $content;
+			}
+			else {
+				$existing_templates[$old_id] = $content;
+			}
+		}
+
+		$rez = update_option('ziggeo_templates', $existing_templates);
+
+		if( $rez ) {
 			//path to custom templates file
 			$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
-			//grab all
-			if($current = ziggeo_p_file_read($file)) {
-				foreach($current as $template => $value) {
-					//find old
-					if($template === $old_id) {
-						//update old
-						$updated[$id] = $content;
-					}
-					else{
-						$updated[$template] = $value;
-					}
-				}
-
-				//save all
-				return ziggeo_p_file_write($file, $updated);
-			}
-		}
-		//save to DB
-		else {
-			$existing_templates = get_option('ziggeo_templates');
-
-			if(isset($existing_templates[$old_id])) {
-				if($old_id !== $id) {
-					unset($existing_templates[$old_id]);
-					$existing_templates[$id] = $content;
+			$shortcodes = array();
+			// Go through templates and only use shortcode
+			foreach($existing_templates as $id => $value) {
+				if(isset($value['shortcode'])) {
+					// templates v2
+					$shortcodes[$id] = $value['shortcode'];
 				}
 				else {
-					$existing_templates[$old_id] = $content;
+					// templates v1
+					$shortcodes[$id] = $value;
 				}
 			}
 
-			return update_option('ziggeo_templates', $existing_templates);
+			return ziggeo_p_file_write($file, $shortcodes);
 		}
 
 		return false;
@@ -168,37 +175,36 @@ defined('ABSPATH') or die();
 	function ziggeo_p_templates_remove($id) {
 		$updated = array();
 
-		$option = ziggeo_get_plugin_options('templates_save_to');
+		$existing_templates = get_option('ziggeo_templates');
 
-		if( $option === "files" ) {
+		foreach($existing_templates as $existing => $value) {
+			//find and skip
+			if($existing !== $id) {
+				$updated[$existing] = $value;
+			}
+		}
+
+		$rez = update_option('ziggeo_templates', $updated);
+
+		if($rez) {
 			//path to custom templates file
 			$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
-			//grab all
-			if($current = ziggeo_p_file_read($file)) {
-				foreach($current as $template => $value) {
-					//find old and skip it
-					if( ($template !== $id) && (trim($template) !== $id) ) {
-						$updated[$template] = $value;
-					}
+			$shortcodes = array();
+
+			// Go through templates and only use shortcode
+			foreach($updated as $id => $value) {
+				if(isset($value['shortcode'])) {
+					// templates v2
+					$shortcodes[$id] = $value['shortcode'];
 				}
-
-				//save all
-				return ziggeo_p_file_write($file, $updated);
-			}
-		}
-		//remove it from the DB
-		else {
-			$existing_templates = get_option('ziggeo_templates');
-
-			foreach($existing_templates as $existing => $value) {
-				//find and skip
-				if($existing !== $id) {
-					$updated[$existing] = $value;
+				else {
+					// templates v1
+					$shortcodes[$id] = $value;
 				}
 			}
 
-			return update_option('ziggeo_templates', $updated);
+			return ziggeo_p_file_write($file, $shortcodes);
 		}
 
 		return false;
@@ -221,29 +227,16 @@ defined('ABSPATH') or die();
 	}
 
 	//Searches for all existing templates. Returns the list or false if none
-	function ziggeo_p_templates_index($opposite = false, $specific = '') {
+	// Searches DB (backend calls) by default, can be overridden with "file" value
+	function ziggeo_p_templates_index($specific = 'db') {
 
-		$option = ziggeo_get_plugin_options('templates_save_to');
 		$ret = null;
 
-		//to make it easier to check with opposite parameter
-		$is_files = ($option === "files") ? true : false;
-
-		if($specific !== '') {
-			if($specific === 'files') {
-				$is_files = true;
-			}
-			else {
-				$is_files = false;
-			}
+		if($specific !== 'db') {
+			$is_files = true;
 		}
 		else {
-			if( ($is_files && $opposite === false) || ($is_files === false && $opposite === true) ) {
-				$is_files = true;
-			}
-			else {
-				$is_files = false;
-			}
+			$is_files = false;
 		}
 
 		if( $is_files === true ) {
@@ -293,14 +286,15 @@ defined('ABSPATH') or die();
 	}
 
 	//Checks if the template with specified ID exists or not
-	function ziggeo_p_template_exists($id, $opposite = false) { 
+	// This is used on both sides, however mostly on frontend requests, so should be set to read files
+	function ziggeo_p_template_exists($id = null, $deprecated = null) { 
 		//If we do not pass anything we do not want to parse the templates..
 		if(!$id) {
 			return false;
 		}
 
 		//Lets get a list of all existing templates
-		$index = ziggeo_p_templates_index($opposite);
+		$index = ziggeo_p_templates_index('file');
 
 		$id = trim($id);
 
@@ -308,11 +302,6 @@ defined('ABSPATH') or die();
 		{
 			//yey we found it, lets get it sent back for processing :)
 			return $index[$id];
-		}
-
-		//Since this might be called (and should be) to bring out embedding code, for example to show embedding on a post it might be good to check both files and DB, not just one.. plus this way it will only check the other if the first go failed.
-		if($opposite === false) {
-			return ziggeo_p_template_exists($id, true);
 		}
 
 		//if we did not find it, lets just return false..
@@ -345,7 +334,12 @@ defined('ABSPATH') or die();
 /////////////////////////////////////////////////
 
 	//Retrieves template parameters only based on template ID or false if not available.
-	function ziggeo_p_template_params($id) {
+	// template system: v1
+	function ziggeo_p_template_params($id = null) {
+
+		if($id === null) {
+			return false;
+		}
 
 		$rez = ziggeo_p_template_exists($id);
 
@@ -358,7 +352,60 @@ defined('ABSPATH') or die();
 		return false;
 	}
 
-	//Changes the output from HTML to object like code
+	// Retrieves template parameters as well as template part or false if not available
+	// template system: v2
+	function ziggeo_p_template_get_params($id = null) {
+
+		if($id === null) {
+			return false;
+		}
+
+		$rez = ziggeo_p_template_exists($id);
+
+		//OK, template exists, lets parse it
+		if($rez) {
+
+			$type = substr($rez, 0, strpos($rez, ' '));
+			$params = substr($rez, strpos($rez, ' '), -1);
+
+			return array(
+				'type'      => $type,
+				'params'    =>  $params
+			);
+		}
+
+		return false;
+	}
+
+	// Adds ziggeo- as a prefix to each parameter in the string
+	// template system: v2
+	// this will actually not be needed as we will pre-save the templates
+	function ziggeo_p_template_prefix_params($parameters = null) {
+
+		if($parameters === null) {
+			return array(
+				'status' => 'error',
+				'result' => 'No parameters provided'
+			);
+		}
+
+		// This will not be needed later as we update the code @here
+		$parameters = stripslashes($parameters);
+
+		$result = '';
+		$param_array = explode(' ', $parameters);
+
+		foreach($param_array as $param) {
+			if($param !== '') {
+				$result .= ' ziggeo-' . $param;
+			}
+		}
+
+		return $result;
+	}
+
+
+	//Changes the output from chortcode to object like code
 	function ziggeo_p_template_params_as_object($id, $code = null) {
 
 		if($code === null) {
@@ -444,6 +491,124 @@ defined('ABSPATH') or die();
 		return $embedding_string;
 	}
 
+	// Prepares the template code into the template Object we use in v3.0
+	function ziggeo_p_template_code_to_object($code = null, $escape = false) {
+
+		$obj = '';
+		$base = '';
+		$params = '';
+		$params_spaced = '';
+
+		// obj = {"base": "[ziggeorecorder", "params": {"param1": "value1"}}
+
+		if($code === null) { return ''; }
+
+		$code = stripslashes($code);
+
+		$t_bracket = strpos($code, '{');
+
+		if($t_bracket > -1 && $t_bracket < 4) {
+			return $code; // it looks like it is object already (would likely be 0 or 1 position,
+			              // 4 is just in case we end up with a space in front)
+		}
+
+		// At this point we want to be safe, so we should check for existance of any parameters that have space
+		$spaced_parameters = array(
+			'title',
+			'description'
+		);
+
+		// A hook to allow you to add custom parameters into this list.
+		// Note: No need to hook into this if your code is built after 2022-08-24, this is for legacy support
+		$spaced_parameters = apply_filters('ziggeo_template_to_object_parsing_spaced_parameters', $spaced_parameters);
+
+		// Now we try to understand and parse the ones that can be found with a space.
+		for($i = 0, $c = count($spaced_parameters); $i < $c; $i++) {
+			$start = strpos($code, $spaced_parameters[$i] . '=');
+			if($start > -1) {
+				$t_quote_position = $start + strlen($spaced_parameters[$i]) + 1;
+				$t_quote_mark = $code[$t_quote_position]; // can be ' or ", this helps us know
+
+				$t_length = strpos($code, $t_quote_mark, $t_quote_position+1) - $t_quote_position;
+
+				$t_value = substr($code, $t_quote_position+1, $t_length-1);
+				$t_value = str_replace('&apos;', '\'', $t_value);
+
+				if($params_spaced !== '') {
+					$params_spaced .= ',';
+				}
+
+				$params_spaced .= '"' . $spaced_parameters[$i] . '":"' . addslashes($t_value) . '"';
+
+				// This way we do not have it cause issues parsing in the later part of this code.
+				$code = substr($code, 0, $start) . substr($code, $t_quote_position + $t_length + 1);
+			}
+		}
+
+
+		// The space can be used in many different fields, which is why this is not good way, however this is why
+		// we need to move from the old version of parameters to new one
+		$t_code = explode(' ', $code);
+
+		foreach($t_code as $t_piece) {
+			if(strpos($t_piece, '[ziggeo') > -1) {
+				$base .= '"base":"' . trim($t_piece, ' \'"]') . '",';
+			}
+			else {
+				// We need to get the key and value
+				$t_param = explode('=', $t_piece);
+
+				$t_param[0] = trim($t_param[0]);
+
+				if($t_param[0] !== '' && $t_param[0] !== '[' &&  $t_param[0] !== ']') {
+
+					if($params === '') {
+						$params = '"params":{';
+					}
+					else {
+						$params .= ',';
+					}
+
+					if(isset($t_param[1])) {
+						$t_param[1] = trim($t_param[1], '\'" ]');
+						$params .= '"' . $t_param[0] . '":"' . $t_param[1] . '"';
+					}
+					else {
+						$params .= '"' . $t_param[0] . '":true';
+					}
+				}
+
+
+			}
+		}
+
+		if($base === '') {
+			$base = '"base":"[ziggeorecorder",';
+		}
+		if($params_spaced != '') {
+			if($params === '') {
+				$params = '"params":{';
+			}
+			else {
+				$params .= ',';
+			}
+
+			$params .= $params_spaced;
+		}
+		if($params === '') {
+			$params = '"params":{';
+		}
+
+		$obj = '{' . $base . $params . '}}';
+
+		// If true, we are going to export this into HTML code, so we need to make it a non standard JSON by switching
+		// quotes to escaped single quote \'
+		if($escape === true) {
+			$obj = str_replace('"', '\'', $obj);
+		}
+
+		return $obj;
+	}
 
 
 
