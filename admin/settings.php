@@ -55,6 +55,20 @@ function ziggeo_p_admin_init() {
 								'ziggeo_video',
 								'ziggeo_video_main');
 
+			// Saves the comments form ID
+			add_settings_field('ziggeo_comments_form_id',
+								__('Comments Form ID', 'ziggeo'),
+								'ziggeo_a_s_g_advanced_comments_identifier_form',
+								'ziggeo_video',
+								'ziggeo_video_main');
+
+			// Saves the comments form ID
+			add_settings_field('ziggeo_comments_form_text_id',
+								__('Comments Form Text ID', 'ziggeo'),
+								'ziggeo_a_s_g_advanced_comments_identifier_text',
+								'ziggeo_video',
+								'ziggeo_video_main');
+
 			//disables video comments
 			add_settings_field('ziggeo_video_comments',
 								__('Disable Video Comments', 'ziggeo'),

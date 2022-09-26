@@ -61,6 +61,13 @@ function ziggeo_p_setup_comments() {
 	$template_recorder = ziggeo_get_recorder_code('comments');
 	$template_player = ziggeo_get_player_code('comments');
 
+	// We need to prepare the codes for use
+	$template_recorder = str_replace("\'", '"', $template_recorder);
+	$template_recorder = str_replace("&apos;", "'", $template_recorder);
+
+	$template_player = str_replace("\'", '"', $template_player);
+	$template_player = str_replace("&apos;", "'", $template_player);
+
 	//If video is set as required and text as optional..
 	if( $options['video_and_text'] === ZIGGEO_YES ) {
 

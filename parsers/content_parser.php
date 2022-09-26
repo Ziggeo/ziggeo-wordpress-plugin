@@ -7,13 +7,14 @@ defined('ABSPATH') or die();
 // If they are the calls are made to right functions.
 
 // Supported parses
-// [ziggeotemplate ID] - latest, recommended
-// [ziggeorecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
-// [ziggeoplayer parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
-// [ziggeorerecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
-// [ziggeouploader parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID
-// [ziggeo ID] - legacy, not recommended
-// [ziggeo]video_token[/ziggeo] - old legacy code - not recommended
+// [ziggeotemplate ID] - latest, recommended [v2]
+// [ziggeorecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID [v1]
+// [ziggeoplayer parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID [v1]
+// [ziggeorerecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID [v1]
+// [ziggeouploader parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID [v1]
+// [ziggeoplayer]VIDEO_TOKEN[/ziggeoplayer] - OK to use, considered as shortcode for default player (comments) [v1]
+// [ziggeo ID] - legacy, not recommended [v1]
+// [ziggeo]video_token[/ziggeo] - old legacy code - not recommended [v1]
 
 
 
@@ -24,17 +25,19 @@ function ziggeo_p_filters_init() {
 
 	$option = ziggeo_get_plugin_options('support_templates_v1');
 
-	if($option === true && $option === false) { // @HERE - added like this to force new template execution
+	add_filter('the_content', 'ziggeo_p_content_ziggeotemplate_parser');
+	add_filter('comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
+	add_filter('the_excerpt', 'ziggeo_p_content_ziggeotemplate_parser');
+	add_filter('thesis_comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
+
+	// This is additional level of support
+	// It means additional processing, however it offers support for legacy template codes, which is needed
+	// at the start of this introduction to new template structure
+	if($option === true) {
 		add_filter('the_content', 'ziggeo_p_content_filter', 1, 90);
 		add_filter('comment_text', 'ziggeo_p_content_filter', 1, 90);
 		add_filter('the_excerpt', 'ziggeo_p_content_filter', 1, 90);
 		add_filter('thesis_comment_text', 'ziggeo_p_content_filter', 1, 90);
-	}
-	else {
-		add_filter('the_content', 'ziggeo_p_content_ziggeotemplate_parser');
-		add_filter('comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
-		add_filter('the_excerpt', 'ziggeo_p_content_ziggeotemplate_parser');
-		add_filter('thesis_comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
 	}
 
 }
@@ -239,7 +242,12 @@ function ziggeo_p_content_filter($content) {
 function ziggeo_p_content_parse_templates($matches) {
 
 	// To not parse the ziggeo events
-	if(strpos($matches[0], '[ziggeo_event') > 0) {
+	if(strpos($matches[0], '[ziggeo_event') > -1) {
+		return $matches[0];
+	}
+
+	// To not parse the ziggeotemplate (it was already parsed at this time)
+	if(strpos($matches[0], '[ziggeotemplate') > -1) {
 		return $matches[0];
 	}
 

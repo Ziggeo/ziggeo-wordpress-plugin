@@ -278,6 +278,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
     5. When error occurs a hidden message is shown within the HTML page as well as within Notifications section of your plugin, making it easy to spot any pages with outdated or templates with any issues.
 * Templates are searched for in same locations using PHP functions that are in some cases even 100 times faster than what we used before (miliseconds difference in most cases, can be saving seconds in large contents).
 * Old template and shortcode codes are still supported as they were, all new templates are saved in a new, improved format
+* Added more options for comments allowing you to easily make them work with custom form elements that are using different field identifiers than the default WordPress themes.
 
 == Changelog ==
 

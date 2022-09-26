@@ -1,8 +1,10 @@
 <?php
 
+// This file is used when comment modification is turned on and the video comments are set as required
+
+
 //Checking if WP is running or if this is a direct call..
 defined('ABSPATH') or die();
-
 
 
 // you would change 0 to 10 so that your code overwrites ours..
@@ -10,6 +12,7 @@ add_filter('ziggeo_comments_js_template_vrto', 'ziggeo_p_default_handle_vrto_com
 
 //This is an example of how you would hook to change the code for comments. We are actually just adding code this way that we would add either way. You can simply write your own code and change this one..
 function ziggeo_p_default_handle_vrto_comments($recorder_code, $player_code) {
+	$options = ziggeo_get_plugin_options();
 	?>
 	<div class="comment-navigation">
 		<span class="dashicons dashicons-video-alt"></span> <?php _e('Video Comment with optional text comment', 'ziggeo'); ?>
@@ -23,8 +26,8 @@ function ziggeo_p_default_handle_vrto_comments($recorder_code, $player_code) {
 		<ziggeorecorder
 			<?php echo $recorder_code;
 			//Do not allow the form to be submitted unless video is filled out, but also allow custom form_accept setup
-			if( stripos($recorder_code, 'form_accept') === false) {
-				?> ziggeo-form-accept="#commentform" <?php
+			if( stripos($recorder_code, 'form_accept') === false && stripos($recorder_code, 'form-accept') === false) {
+				?> ziggeo-form-accept="#<?php echo $options['comments_form_id']; ?>" <?php
 			}
 			//Capture "wordpress" and "username" as video tags, but only if the tags are not set in the template
 			if( stripos($recorder_code, 'tags') === false) {
@@ -55,6 +58,8 @@ function ziggeo_p_default_handle_vrto_comments($recorder_code, $player_code) {
 if(!function_exists('ziggeo_comment_vrto_js_code')) {
 	function ziggeo_comment_vrto_js_code($template_recorder, $template_player) {
 
+		$options = ziggeo_get_plugin_options();
+
 		$code = "";
 		?>
 		<script type="text/template" id="comment-ziggeo-template">
@@ -66,57 +71,28 @@ if(!function_exists('ziggeo_comment_vrto_js_code')) {
 
 		<script type="text/javascript">
 			var elems = {};
-			//Locate comments textarea
-			elems.textarea = jQuery("[name='comment']");
-			//get the form it is under
-			elems.form = elems.textarea.closest("form");
-			//element containing the textarea
-			elems.textarea_container = elems.textarea.closest("form>");
-			//get allowed tags
-			elems.moveover = [jQuery(".form-allowed-tags")];
-			//Get comments label
-			elems.garbage = [jQuery("label[for='comment']")];
-			//Get submit button..
-			elems.submitbtn = elems.form.find(':submit');
-			//Disable submit button
-			elems.submitbtn.attr('disabled', 'disabled');
 
-			elems.form.css("position", "inherit");
-			elems.form.css("padding-top", "0px");
+			elems.textarea = document.getElementById('<?php echo $options['comments_text_id']; ?>');
+			elems.form = document.getElementById('<?php echo $options['comments_form_id']; ?>');
+			elems.btn_submit = elems.form.querySelector('#submit');
+			if(elems.btn_submit) {
+				elems.btn_submit.setAttribute('disabled', 'disabled');
+			}
 
-			//Add template above the comment textarea by using template above
-			jQuery(elems.textarea_container).before(jQuery("#comment-ziggeo-template").html());
-			//Add comment textarea into our comments text container element
-			jQuery("#comments-text-container").append(elems.textarea_container);
+			elems.comments_container = jQuery(elems.textarea).closest('form >')[0];
 
-			//Lets make a dummy textarea..
-			elems.clonedta = elems.textarea.clone().prop('id', 'ziggeo_commentTA').prop('name', 'ziggeo_commentTA').appendTo("#comments-text-container > .comment-form-comment");
+			elems.comments_container.insertAdjacentHTML('beforebegin', document.getElementById('comment-ziggeo-template').innerHTML);
 
-			//Lets hide the original comments box:
-			elems.textarea.css('display', 'none');
+			function ziggeoCommentsVerifiedListener() {
 
-			//Set the field to be filled out properly for us..
-			jQuery("#ziggeo_commentTA").on("keyup", function () {
-
-				var comment = document.getElementById('comment');
-				//We will always pass this to the textarea..
-				comment.value = document.getElementById('ziggeo_video_token').value;
-
-				//is the video recorded?
-				if( document.getElementById('ziggeo_video_token').value.length > 0 ) {
-					comment.value += "\n\n" + document.getElementById('ziggeo_commentTA').value;
-					elems.submitbtn.removeAttr('disabled');
+				// Added to support lazy load option
+				if(typeof ziggeo_app === 'undefined') {
+					setTimeout(function() {
+						ziggeoCommentsVerifiedListener();
+					}, 400);
+					return false;
 				}
-				else {
-					//show that video is required..
-					elems.submitbtn.attr('disabled', 'disabled');
-				}
-			});
 
-
-			//Needed to support lazy load option
-			if(typeof ziggeo_app !== 'undefined') {
-				//Show video after recording
 				ziggeo_app.embed_events.on("verified", function (embedding) {
 
 					var ziggeo_token = document.getElementById('ziggeo_video_token');
@@ -126,12 +102,12 @@ if(!function_exists('ziggeo_comment_vrto_js_code')) {
 							//Lets add the default value into the box
 							ziggeo_token.value = '[ziggeoplayer ' + '<?php echo $template_player ?>';
 							//Now we have both the token and the template. We should search the template to see if token="" is present and if so, just insert the video token into quotes, otherwise, we would need to add the token attribute and show it up.
-							if( (indexS = ziggeo_token.value.indexOf(' video') ) > -1 ||
-								(indexS = ziggeo_token.value.indexOf(' ziggeo-video') ) > -1) {
+							if( (index_s = ziggeo_token.value.indexOf(' video') ) > -1 ||
+								(index_s = ziggeo_token.value.indexOf(' ziggeo-video') ) > -1) {
 
 								//Lets grab the ending as well
-								var indexE = ziggeo_token.value.indexOf(' ', indexS);
-								ziggeo_token.value = ziggeo_token.value.substr(0, indexS) + ' video="' + embedding.get('video') + '"' + ziggeo_token.value.substr(index + indexE + 2)
+								var index_e = ziggeo_token.value.indexOf(' ', index_s);
+								ziggeo_token.value = ziggeo_token.value.substr(0, index_s) + ' video="' + embedding.get('video') + '"' + ziggeo_token.value.substr(index + index_e + 2)
 							}
 							else {
 								ziggeo_token.value += ' ziggeo-video="' + embedding.get('video') + '" ]';
@@ -152,11 +128,18 @@ if(!function_exists('ziggeo_comment_vrto_js_code')) {
 						<?php
 					}
 					?>
-					document.getElementById('comment').value = document.getElementById('ziggeo_video_token').value + "\n\n" + document.getElementById('ziggeo_commentTA').value;
+					if(elems.textarea.value === '') {
+						elems.textarea.value = ziggeo_token.value + "\n\n"
+					}
+					else {
+						elems.textarea.value += "\n\n" + ziggeo_token.value;
+					}
 
-					elems.submitbtn.removeAttr('disabled');
+					elems.btn_submit.removeAttribute('disabled');
 				});
 			}
+
+			ziggeoCommentsVerifiedListener();
 		</script>
 		<?php
 	}

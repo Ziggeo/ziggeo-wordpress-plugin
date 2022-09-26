@@ -190,18 +190,16 @@ function ziggeo_p_get_lazyload_activator() {
 
 // Filter function that will maybe add the lazy load code (only once and only if needed) 
 function ziggeo_p_assets_maybeload($content) {
+
 	if(defined('ZIGGEO_FOUND')) {
 		if(!defined('ZIGGEO_FOUND_POST')) {
 			$options = ziggeo_get_plugin_options();
 			if($options['lazy_load'] === ZIGGEO_YES) {
-
 				// Create the function that will load the scripts after page has been loaded.
 				$content .= ziggeo_p_get_lazyload_activator();
-
 				define('ZIGGEO_FOUND_POST', true);
 			}
 		}
 	}
-
 	return $content;
 }

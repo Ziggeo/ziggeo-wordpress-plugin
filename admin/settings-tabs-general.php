@@ -210,6 +210,32 @@ function ziggeo_a_s_g_text() {
 		<?php
 	}
 
+	// Form identifier
+	function ziggeo_a_s_g_advanced_comments_identifier_form() {
+		$option = ziggeo_get_plugin_options('comments_form_id');
+
+		?>
+		<input id="ziggeo_comments_form_id" name="ziggeo_video[comments_form_id]" type="text" value="<?php echo $option; ?>"/>
+		<label for="ziggeo_comments_form_id">
+			<?php _e('This is the ID of the comments form. In most cases you do not need to modify this. In some themes you might need to do this so that Ziggeo codes can recognize your comments', 'ziggeo');
+			?>
+		</label>
+		<?php
+	}
+	// Form text field identifier
+	function ziggeo_a_s_g_advanced_comments_identifier_text() {
+		$option = ziggeo_get_plugin_options('comments_text_id');
+
+		?>
+		<input id="ziggeo_comments_text_id" name="ziggeo_video[comments_text_id]" type="text" value="<?php echo $option; ?>"/>
+		<label for="ziggeo_comments_text_id">
+			<?php _e('This is the ID of the comments textarea. In most cases you do not need to modify this. In some themes you might need to do this so that Ziggeo codes can recognize your comments', 'ziggeo');
+			?>
+		</label>
+		<?php
+	}
+
+
 	//Allows us to select if video comments are accepted on a post where comments are enabled
 	function ziggeo_a_s_g_accept_video_comments_field() {
 		$option = ziggeo_get_plugin_options('disable_video_comments');

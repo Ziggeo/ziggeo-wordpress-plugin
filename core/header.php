@@ -243,9 +243,9 @@ function ziggeo_p_page_header() {
 			function ziggeoReInitApp() {
 				if(typeof ZiggeoApi !== 'undefined') {
 					//Set the V2 application
+
 					window.ziggeo_app = ZiggeoApi.V2.Application.instanceByToken( ziggeoGetApplicationOptions().token , ziggeoGetApplicationOptions());
 					ZiggeoApi.V2.Application.undefer();
-
 					<?php
 					//Language options
 					//@add translations options here

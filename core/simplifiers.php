@@ -257,6 +257,8 @@ function ziggeo_get_plugin_options_defaults() {
 		'comments_player_template'          => '',
 		'video_and_text'                    => '',
 		'comment_roles'                     => 0,
+		'comments_form_id'                  => 'commentform',
+		'comments_text_id'                  => 'comment',
 		'integrations'                      => '',
 		'integrations_recorder_template'    => '',
 		'integrations_player_template'      => '',

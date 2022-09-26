@@ -23,8 +23,8 @@ function ziggeo_a_s_validation($input) {
 		// General tab
 			'token' => true,
 			'recorder_config' => true, 'player_config' => true, 'disable_video_comments' => true, 'disable_text_comments' => true,
-			'modify_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true,
-			'comment_roles' => true, 'integrations_recorder_template' => true, 'integrations_player_template' => true, 'default_lang' => true, 'vast_adserver' => true, 'vast_skipafter' => true, 'vast_muted' => true, 'vast_ad_title' => true, 'vast_ad_description' => true, 'vast_ad_id' => true, 'vast_ad_advertiser' => true,
+			'modify_comments' => true, 'comments_recorder_template' => true, 'comments_player_template' => true, 'video_and_text' => true, 'comment_roles' => true, 'comments_form_id' => true, 'comments_text_id' => true,
+			'integrations_recorder_template' => true, 'integrations_player_template' => true, 'default_lang' => true, 'vast_adserver' => true, 'vast_skipafter' => true, 'vast_muted' => true, 'vast_ad_title' => true, 'vast_ad_description' => true, 'vast_ad_id' => true, 'vast_ad_advertiser' => true,
 		// Integrations tab
 			'integrations' => true,
 		//experts tab
