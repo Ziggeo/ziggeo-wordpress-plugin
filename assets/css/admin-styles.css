@@ -420,11 +420,24 @@ INDEX:
 		top: calc(50% - 1em);
 		width: 100%;
 	}
+	#ziggeo-videos-screen.error > div {
+		white-space: pre-wrap;
+		line-height: 30px;
+		top: 20px;
+		text-align: left;
+		padding-left: 40px;
+		position: relative;
+		box-sizing: border-box;
+	}
 	.ziggeo-navigation .ziggeo-ctrl-btn {
-		width: 20px;
-		height: 20px;
+		width: 40px;
+		height: 40px;
 		display: inline-block;
 		text-align: center;
+		vertical-align: middle;
+		line-height: 40px;
+		padding: 0;
+		font-size: 20px;
 	}
 
 	.ziggeo-navigation.disabled .ziggeo-ctrl-btn {

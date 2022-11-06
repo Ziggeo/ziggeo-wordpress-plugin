@@ -7,13 +7,13 @@ defined('ABSPATH') or die();
 <div>
 	<h2>Video List</h2>
 
-	<form action="options.php" method="post">
+	<div>
 		<?php
 		wp_nonce_field('ziggeo_nonce_action', 'ziggeo_videos_list_nonce');
 		settings_errors();
 		ziggeo_a_v_text();
 		?>
-	</form>
+	</div>
 	<div id="ziggeo_messenger"><div id="ziggeo_message"></div><div>X</div></div>
 </div>
 <?php

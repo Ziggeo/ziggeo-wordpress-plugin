@@ -1284,6 +1284,7 @@
 
 		var _placeholder = document.getElementById('ziggeo-videos-filter');
 		var _moderation_filter = _placeholder.querySelector('.moderation');
+		var _token_filter = _placeholder.querySelector('.token');
 		var _tags_filter = _placeholder.querySelector('.tags');
 		var _sort_filter = _placeholder.querySelector('.sort');
 		var _apply = _placeholder.querySelector('.ziggeo-ctrl-btn');
@@ -1291,6 +1292,11 @@
 		//Disable on default
 		_apply.className += ' disabled';
 		ZiggeoWP.video_list_current = 1;
+
+		_token_filter.addEventListener('change', function() {
+			//enable
+			_apply.className = _apply.className.replace('disabled', '');
+		});
 
 		_moderation_filter.addEventListener('change', function() {
 			//enable
@@ -1355,6 +1361,7 @@
 		var _token_filter = _filter_placeholder.querySelector('.token');
 
 		if(clear === true) {
+			ZiggeoWP.video_list = [];
 			ziggeoPUIVideosMessage('Searching...');
 		}
 
@@ -1408,8 +1415,8 @@
 			query_obj.reverse = true;
 		}
 
-		//Allows getting ready or those in processing. Makes no sense to use here, so skipping
-		//query_obj.states = 'ready';
+		//Allows getting ready or those in processing. We only really want to get playable ones
+		query_obj.states = 'ready';
 
 		if(_tags_filter.value !== '') {
 			//It needs to be comma separated so we replace all spaces with comma
@@ -1425,7 +1432,9 @@
 									},
 									'ziggeoPUIVideosNoVideos',
 									function(err) {
-										ziggeoDevReport(err, 'error');
+										if(!ziggeoPUIVideosIndexNotAllowed(err)) {
+											ziggeoDevReport(err, 'error');
+										}
 									},
 									null);
 		}
@@ -1435,7 +1444,9 @@
 									'ziggeoPUIVideosHasVideosPending',
 									'ziggeoPUIVideosNoVideos',
 									function(err) {
-										ziggeoDevReport(err, 'error');
+										if(!ziggeoPUIVideosIndexNotAllowed(err)) {
+											ziggeoDevReport(err, 'error');
+										}
 									},
 									null);
 		}
@@ -1445,7 +1456,9 @@
 									'ziggeoPUIVideosHasVideosRejected',
 									'ziggeoPUIVideosNoVideos',
 									function(err) {
-										ziggeoDevReport(err, 'error');
+										if(!ziggeoPUIVideosIndexNotAllowed(err)) {
+											ziggeoDevReport(err, 'error');
+										}
 									},
 									null);
 		}
@@ -1454,7 +1467,9 @@
 									'ziggeoPUIVideosHasVideos',
 									'ziggeoPUIVideosNoVideos',
 									function(err) {
-										ziggeoDevReport(err, 'error');
+										if(!ziggeoPUIVideosIndexNotAllowed(err)) {
+											ziggeoDevReport(err, 'error');
+										}
 									},
 									null);
 		}
@@ -1476,26 +1491,27 @@
 	//Used for cases where no videos are found on initial request
 	function ziggeoPUIVideosNoVideos() {
 		ziggeoPUIVideosMessage('We searched however nothing was found.');
+		var _nav = document.getElementById('ziggeo-videos-nav');
+		_nav.className = _nav.className.replace('disabled', '');
 	}
 
 	//Used for cases where videos have been found and we need to create the list
-	function ziggeoPUIVideosHasVideos(videos, clear) {
+	function ziggeoPUIVideosHasVideos(videos, not_fresh) {
 		var _placeholder = document.getElementById('ziggeo-videos');
 
 		ziggeoPUIVideosMessage(null, null, 'hide');
 
 		//We will not be making pages in the real sense, however will not need to use the API if we already have the "page" in the cache
-		if(typeof ZiggeoWP.video_list === 'undefined' || _placeholder.getAttribute('_clear')) {
+		if(typeof ZiggeoWP.video_list === 'undefined' || _placeholder.getAttribute('_clear') === true) {
 			ZiggeoWP.video_list = [];
 		}
 
-		if(clear !== false) {
+		if(not_fresh !== true) {
 			//We now add the new videos to the existing videos if any
 			ZiggeoWP.video_list = ZiggeoWP.video_list.concat(videos);
 		}
 
 		_placeholder.innerHTML = '';
-		
 
 		var _tools = ziggeoPUIVideosCreateTools();
 		//var _v_info = ziggeoPUIVideosCreateInfoSection(); //TODO
@@ -1841,19 +1857,29 @@
 
 			if(ZiggeoWP.server_auth && ZiggeoWP.server_auth !== '') {
 
-				var request = ziggeo_app.videos.destroy( ZiggeoWP.video_list[_video_ref].token,
-														{ 'server_auth': ZiggeoWP.server_auth });
+				// Let's be safe and confirm first
+				if(confirm('Are you sure you want to remove the video?') === true) {
+					var request = ziggeo_app.videos.destroy( ZiggeoWP.video_list[_video_ref].token,
+															{ 'server_auth': ZiggeoWP.server_auth });
 
-				request.success( function() {
-					element_ref = element_ref.parentElement.parentElement;
-					element_ref.style.transition = '2s all ease-in-out';
-					element_ref.style.maxHeight = '0px';
-					element_ref.style.backgroundColor = 'red';
+					request.success( function() {
+						element_ref = element_ref.parentElement.parentElement;
+						element_ref.style.transition = '2s all ease-in-out';
+						element_ref.style.maxHeight = '0px';
+						element_ref.style.backgroundColor = 'red';
 
-					setTimeout(function() {
-						element_ref.parentElement.removeChild(element_ref);
-					}, 3800);
-				});
+						setTimeout(function() {
+							element_ref.parentElement.removeChild(element_ref);
+						}, 3800);
+					});
+
+					request.error(function(er) {
+						alert('Server responded with ' + er.__status_code + ' ' + er.__status_text);
+					})
+				}
+			}
+			else {
+				alert('You will need to add server auth token into settings to be able to remove videos');
 			}
 		}
 	}
@@ -2038,18 +2064,47 @@
 		ZiggeoWP.video_list_current = page_num;
 
 		//Detect if we have enough of the videos to show page, or if we need to get more.
-		if(page_num * 10 > ZiggeoWP.video_list.length) {
+		if((page_num+1) * 10 > ZiggeoWP.video_list.length) {
 			ziggeoPUIVideosFilter(false, page_num * 10);
 		}
 		else {
 			page_num--;
-			ziggeoPUIVideosHasVideos(ZiggeoWP.video_list.slice(page_num*10, page_num*10+10), false);
+			ziggeoPUIVideosHasVideos(ZiggeoWP.video_list.slice(page_num*10, page_num*10+10), true);
 		}
 	}
 
 	//Function to update the count of videos found and shown
 	function ziggeoPUIVideosPageCounter(query_obj) {
 		//Requires the PHP SDK to be added. Happy to add if it is asked for it
+	}
+
+	// Function that checks if this is a 401 error and if it is, displays the message about it and returns true,
+	// if not returns false indicating it is a different error
+	function ziggeoPUIVideosIndexNotAllowed(err) {
+		if(err.indexOf('401') > -1) {
+			// Show message
+			var msg = 'Indexing seems to be disabled in your account. To turn it on, please follow next steps';
+			msg += "\n";
+			msg += '1. Log into your Ziggeo account';
+			msg += "\n";
+			msg += '2. Click on the Application you are using on your WordPress website';
+			msg += "\n";
+			msg += '3. Now go to <b>Manage</b> sub menu';
+			msg += "\n";
+			msg += '4. And then go to <b>Authorization Settings</b> section';
+			msg += "\n";
+			msg += '5. Make sure the "Client is allowed to perform the index operation" is checked';
+			msg += "\n";
+			msg += '6. Click on Save';
+			msg += "\n";
+			msg += '7. Refresh this page';
+
+			ziggeoPUIVideosMessage(msg, 'error', null);
+			// stop further processing
+			return true;
+		}
+
+		return false;
 	}
 
 

@@ -8,7 +8,7 @@ License: GPLv2 or later
 Requires PHP: 5.2.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you to bring video to your Wordpress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.
+This plugin allows you to bring video to your WordPress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.
 
 == Who is this plugin for? ==
 
@@ -104,13 +104,13 @@ You can see [how the templates work](https://support.ziggeo.com/hc/en-us/communi
 
 = Video List =
 
-Moderate your videos through your Wordpress dashboard. The Video List page now allows you to see different types of videos right in in your Wordpress website. With the quick possibility of approving and rejecting them you can quickly and from within Wordpress fulfill your workflows.
+Moderate your videos through your Wordpress dashboard. The Video List page now allows you to see different types of videos right in in your Wordpress website. With the quick possibility of approving and rejecting them you can quickly and from within WordPress fulfill your workflows.
 
-You will see new counter shown when a video is recorded on your Wordpress page, to help you notice it.
+You will see new counter shown when a video is recorded on your WordPress page, to help you notice it.
 
 = Notifications =
 
-Notifications page has been created. It provides you with a way to get notified about different errors or good pointers that can happen with your Wordpress website. This makes it easy for you to find out if some page needs to be updated for some reason, or if there is some other info that can help you.
+Notifications page has been created. It provides you with a way to get notified about different errors or good pointers that can happen with your WordPress website. This makes it easy for you to find out if some page needs to be updated for some reason, or if there is some other info that can help you.
 
 = Improvements and Feedback =
 
@@ -276,9 +276,13 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
     3. Optimized to support parameters without the need to update plugin for latest parameters
     4. Templates are now saved in database (read and write) and local file (read only) which is re-created on plugin update with the templates from DB
     5. When error occurs a hidden message is shown within the HTML page as well as within Notifications section of your plugin, making it easy to spot any pages with outdated or templates with any issues.
-* Templates are searched for in same locations using PHP functions that are in some cases even 100 times faster than what we used before (miliseconds difference in most cases, can be saving seconds in large contents).
+* Templates are searched for in same locations using PHP functions that are in some cases even 100 times faster than what we used before (milliseconds difference in most cases, can be saving seconds in large contents).
 * Old template and shortcode codes are still supported as they were, all new templates are saved in a new, improved format
 * Added more options for comments allowing you to easily make them work with custom form elements that are using different field identifiers than the default WordPress themes.
+* Improvements made to Videos List page:
+    1. Removing submission of page on Enter/Return key press
+    2. Confirmation of removal before it is done avoiding accidental removals
+    3. Improved indexing to allow going over 10 pages
 
 == Changelog ==
 

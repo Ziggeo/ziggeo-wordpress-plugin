@@ -187,7 +187,7 @@ function ziggeo_p_page_header() {
 			}
 
 			//developer feature
-			if($options['dev_mode']) {
+			if(isset($options['dev_mode'])) {
 				//This allows you to get some additional feedback into the console. Turning off this option is recommended in the production (not needed), since that will hide any info from the browser / dev console.
 				?>
 				var ziggeo_dev = <?php echo ($options['dev_mode'] === ZIGGEO_YES) ? 'true' : 'false'; ?>;
@@ -256,7 +256,7 @@ function ziggeo_p_page_header() {
 					}
 
 					//developer feature
-					if($options['dev_mode']) {
+					if(isset($options['dev_mode'])) {
 						//This allows you to get some additional feedback into the console. Turning off this option is recommended in the production (not needed), since that will hide any info from the browser / dev console.
 						?>
 						var ziggeo_dev = <?php echo ($options['dev_mode'] === ZIGGEO_YES) ? 'true' : 'false'; ?>;
