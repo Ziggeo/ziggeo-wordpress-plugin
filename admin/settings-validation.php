@@ -112,32 +112,17 @@ function ziggeo_a_s_validation($input) {
 		//Get all templates from the DB
 		$db_templates = ziggeo_p_templates_index();
 		//Get all templates from the files
-		//$file_templates = ziggeo_p_templates_index(null, 'files');
 
-		if( is_array($db_templates)) {
+		if(is_array($db_templates)) {
 			$final_templates = $db_templates;
 		}
 		else {
 			$final_templates = array();
 		}
 
-		//Prepare the templates data
-		if( is_array($file_templates) ) {
-			//All is good, lets do it
-			foreach ($file_templates as $key => $value) {
-				if(isset($value['shortcode'])) {
-					$final_templates[strtolower($key)] = $value['shortcode'];
-				}
-				else {
-					$final_templates[strtolower($key)] = $value;
-				}
-			}
-		}
-
 		//Sync them in
-		//ziggeo_p_templates_add_all($final_templates, 'db');
 		//This might fail - depends on what your server is set up like, so if files can not be made, this will fail.
-		ziggeo_p_templates_add_all($final_templates, 'files');
+		ziggeo_p_templates_add_all($final_templates, true);
 	}
 
 	//Do we want to clear out the templates? (WHY? - please let us know)

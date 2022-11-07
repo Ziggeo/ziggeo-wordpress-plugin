@@ -23,11 +23,12 @@ function ziggeo_p_file_write($file, $content, $context = false) {
 
 	if(file_exists($file)) {
 		//Lets temporarily unlock the file if possible..
-		$c = @chmod($file, 0766);
-		if($c === false) {
+		// No longer attempting this, leaving if someone wants to uncomment these lines
+		//$c = @chmod($file, 0766);
+		//if($c === false) {
 			//nope, it failed..
 			//Leaving this for notifications ;)
-		}
+		//}
 	}
 	else {
 			//raise error.. 
@@ -38,12 +39,12 @@ function ziggeo_p_file_write($file, $content, $context = false) {
 
 	if($ret) {
 		//Lets set it back to `closed`
-		$c = @chmod($file, 0755);
+		//$c = @chmod($file, 0755);
 
-		if($c === false) {
+		//if($c === false) {
 			//nope, it failed..
 			//Leaving this for notifications @ADD in future version ;)
-		}
+		//}
 	}
 
 	return $ret;

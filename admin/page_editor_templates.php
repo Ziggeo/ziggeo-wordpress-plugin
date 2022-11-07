@@ -240,6 +240,7 @@ defined('ABSPATH') or die();
 				<div class="row">
 					<div class="column">
 						<p>Some of the parameters can be found in bellow list. For complete list of available parameters please our <a href="https://ziggeo.com/docs/sdks/javascript/browser-integration/parameters?utm_source=wordpress">parameters page</a>.</p>
+						<p>Please add <i>%ZIGGEO_MEDIA_TOKEN%</i> into parameter when you want to pass the media (video) token</p>
 					</div>
 					</div>
 				</div>

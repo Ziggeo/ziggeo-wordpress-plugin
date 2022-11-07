@@ -8,6 +8,7 @@ defined('ABSPATH') or die();
 
 // Supported parses
 // [ziggeotemplate ID] - latest, recommended [v2]
+// [ziggeotemplate ID media_token] - latest, recommended [v2] (replaces %ZIGGEO_MEDIA_TOKEN% with token)
 // [ziggeorecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID [v1]
 // [ziggeoplayer parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID [v1]
 // [ziggeorerecorder parameter1=value1 ...] - OK to use, considered as shortcode code, not template with ID [v1]
@@ -110,15 +111,33 @@ function ziggeo_p_content_ziggeotemplate_parser($content) {
 function ziggeo_p_template_parser($template) {
 
 	// Cleanup
-	$template_id = str_replace('[ziggeotemplate', '', $template);
-	$template_id = str_replace(']', '', $template_id);
+	$template = str_replace('[ziggeotemplate', '', $template);
+	$template = str_replace(']', '', $template);
 
-	$template_id = trim($template_id);
+	$template_id = trim($template);
+	$token = false;
+
+	if(strpos($template_id, ' ') > -1) {
+		// We have ID and media token
+		$template = explode(' ', $template_id);
+		$template_id = $template[0];
+		$token = $template[1];
+	}
 
 	// Retrieve the template ID
 	$template_info = ziggeo_p_template_get_params($template_id);
 
 	if(is_array($template_info)) {
+
+		if($token !== false) {
+			if(strpos($template_info['params'], '%ZIGGEO_MEDIA_TOKEN%') > -1) {
+				$template_info['params'] = str_replace('%ZIGGEO_MEDIA_TOKEN%', $token, $template_info['params']);
+			}
+			else {
+				// We need to modify it by adding the video parameter (or audio - later)
+				$template_info['params'] .= ' video=\'' . $token . '\'';
+			}
+		}
 
 		switch ($template_info['type']) {
 			case '[ziggeorecorder':

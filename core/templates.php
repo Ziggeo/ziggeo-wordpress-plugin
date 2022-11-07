@@ -89,7 +89,9 @@ defined('ABSPATH') or die();
 
 				// Go through templates and only use shortcode
 				foreach($existing_templates as $id => $value) {
-					$shortcodes[$id] = $value['shortcode'];
+					if(isset($value['shortcode'])) {
+						$shortcodes[$id] = $value['shortcode'];
+					}
 				}
 
 				return ziggeo_p_file_write($file, $shortcodes);
@@ -118,9 +120,13 @@ defined('ABSPATH') or die();
 			{
 				$shortcodes = array();
 
-				// Go through templates and only use shortcode
 				foreach($templates as $id => $value) {
-					$shortcodes[$id] = $value['shortcode'];
+					if(is_array($value)) {
+						$shortcodes[$id] = $value['shortcode'];
+					}
+					else {
+						$shortcodes[$id] = $value;
+					}
 				}
 
 				return ziggeo_p_file_write($file, $shortcodes);
@@ -363,7 +369,12 @@ defined('ABSPATH') or die();
 		$rez = ziggeo_p_template_exists($id);
 
 		//OK, template exists, lets parse it
+
 		if($rez) {
+
+			if(is_array($rez)) {
+				$rez = $rez['shortcode'];
+			}
 
 			$type = substr($rez, 0, strpos($rez, ' '));
 			$params = substr($rez, strpos($rez, ' '), -1);

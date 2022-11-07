@@ -188,19 +188,7 @@ This is the load process:
 
 They are stored in DB. If you want, there is also an option to use files instead. Completely up to you and both will work just the same.
 
-= We are using files and getting the error that the template can not be saved =
-
-That simply means that you are using different 'user' to run WordPress and a different one to create files. To work around this all you should do is to:
-
-1. create a folder/directory under your plugins directory and call it **ziggeo-userData** (if it is not already existing)
-1. create a file named **custom_templates.php**
-1. set its permissions to *766* or *666*. Our plugin will now try to read it and change the permissions once it is done saving the file (as such 766 will not stay the same all the time, only for a moment when plugin needs it to write to the same).
-
-= Why are there 'ziggeo' and 'ziggeo-userData' directories in our plugins folder? =
-
-In order to store data in files and read the same on-fly without loosing the data once the plugin is updated, we are storing the data in another folder - `ziggeo-userData`. That means that we have moved the actual data from the plugin itself. As such `ziggeo` directory holds the plugin functionality code and `ziggeo-userData` holds the data saved by the plugin.
-
-This is happening only if you are using files.
+Starting with version 3.0 the file is within the plugin directory and is filled out with new templates as they are created.
 
 = We have used [ziggeo] before should we update our code to [ziggeoplayer] and [ziggeorecorder]?
 
@@ -276,6 +264,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
     3. Optimized to support parameters without the need to update plugin for latest parameters
     4. Templates are now saved in database (read and write) and local file (read only) which is re-created on plugin update with the templates from DB
     5. When error occurs a hidden message is shown within the HTML page as well as within Notifications section of your plugin, making it easy to spot any pages with outdated or templates with any issues.
+    6. Added support for use of template ID with media token
 * Templates are searched for in same locations using PHP functions that are in some cases even 100 times faster than what we used before (milliseconds difference in most cases, can be saving seconds in large contents).
 * Old template and shortcode codes are still supported as they were, all new templates are saved in a new, improved format
 * Added more options for comments allowing you to easily make them work with custom form elements that are using different field identifiers than the default WordPress themes.
