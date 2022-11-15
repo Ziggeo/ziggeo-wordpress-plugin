@@ -26,19 +26,26 @@ function ziggeo_p_filters_init() {
 
 	$option = ziggeo_get_plugin_options('support_templates_v1');
 
+	// [ziggeotemplate ...]
 	add_filter('the_content', 'ziggeo_p_content_ziggeotemplate_parser');
 	add_filter('comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
 	add_filter('the_excerpt', 'ziggeo_p_content_ziggeotemplate_parser');
 	add_filter('thesis_comment_text', 'ziggeo_p_content_ziggeotemplate_parser');
 
+	// [ziggeodownloads ...]
+	add_filter('the_content', 'ziggeo_p_content_ziggeodownloads_parser');
+	add_filter('comment_text', 'ziggeo_p_content_ziggeodownloads_parser');
+	add_filter('the_excerpt', 'ziggeo_p_content_ziggeodownloads_parser');
+	add_filter('thesis_comment_text', 'ziggeo_p_content_ziggeodownloads_parser');
+
 	// This is additional level of support
 	// It means additional processing, however it offers support for legacy template codes, which is needed
 	// at the start of this introduction to new template structure
 	if($option === true) {
-		add_filter('the_content', 'ziggeo_p_content_filter', 1, 90);
-		add_filter('comment_text', 'ziggeo_p_content_filter', 1, 90);
-		add_filter('the_excerpt', 'ziggeo_p_content_filter', 1, 90);
-		add_filter('thesis_comment_text', 'ziggeo_p_content_filter', 1, 90);
+		add_filter('the_content', 'ziggeo_p_content_filter', 90);
+		add_filter('comment_text', 'ziggeo_p_content_filter', 90);
+		add_filter('the_excerpt', 'ziggeo_p_content_filter', 90);
+		add_filter('thesis_comment_text', 'ziggeo_p_content_filter', 90);
 	}
 
 }
@@ -178,6 +185,86 @@ function ziggeo_p_template_parser($template) {
 		'result' => 'Template ID not found'
 	);
 }
+
+
+// Extra Templates Support
+//////////////////////////
+
+// Function that searches the content for the [ziggeodownloads shortcode
+// Needed because add_shortcode would not work as long as v1 support is turned on
+function ziggeo_p_content_ziggeodownloads_parser($content) {
+
+	$start = strpos($content, '[ziggeodownloads');
+
+	if($start > -1) {
+
+		// To support lazyload mode
+		if(!defined('ZIGGEO_FOUND')) {
+			define('ZIGGEO_FOUND', true);
+		}
+
+		while($start > -1) {
+			$t_before_code = '';    // To temporary store the content before the download option
+			$t_after_code = '';     // To temporary store content behind the download option
+			$t_shortcode = '';      // To temporary store the download option params info itself
+			$t_code = '';           // download option code
+			$error = false;
+
+			$t_code = '<script class="ziggeo_download_template">' .
+				'setTimeout(function() { ziggeoShowDownloadVideo(\'%token%\'); }, 2000);' .
+			'</script>';
+
+			$end = strpos($content, ']', $start); // [ziggeodownloads token]
+
+			$t_before_code = substr($content, 0, $start);
+			$t_after_code = substr($content, $end+1);
+
+			$t_shortcode = substr($content, $start, ($end-$start)+1);
+
+			// Check if there is media token or not
+			// if not error = 'No media token provided'
+			$t_shortcode = str_replace('[ziggeodownloads', '', $t_shortcode);
+			$t_shortcode = trim(str_replace(']', '', $t_shortcode));
+
+			if($t_shortcode === '') {
+				$error = 'No media token was provided';
+			}
+			else {
+				// we might extend this to support more than just token
+				$token = $t_shortcode;
+			}
+
+			if($error !== false) {
+				// For now we just strip the template, however in future we might add filter or option
+				// to handle this through code if someone reaches out about it.
+				$content = $t_before_code .
+							'<!--
+								ziggeo-error: download option should be show here.
+								reason: ' . $error . '
+								solution: Please see: https://ziggeo.com/docs/integrations/wordpress/ for more info.
+							-->' .
+							$t_after_code;
+				// Add notice
+				ziggeo_notification_create('There was an error using download shortcode on following page:  ' . esc_url($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) .
+					'  Error: ' . $error, 'error');
+			}
+			else {
+				$t_code = str_replace('%token%', $token, $t_code);
+				$content = $t_before_code . $t_code . $t_after_code;
+			}
+
+			// To find if we have multiple templates set
+			$start = strpos($content, '[ziggeodownloads', $start+1);
+		}
+	}
+
+	$content = ziggeo_p_assets_maybeload($content);
+
+	return $content;
+}
+
+
+
 
 // Templates v1 support
 ///////////////////////

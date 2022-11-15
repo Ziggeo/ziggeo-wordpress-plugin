@@ -2,7 +2,7 @@
 Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
-Tested up to: 6.0.1
+Tested up to: 6.1
 Stable tag: 3.0
 License: GPLv2 or later
 Requires PHP: 5.2.4
@@ -116,7 +116,7 @@ Notifications page has been created. It provides you with a way to get notified 
 
 Have some feedback? Have some questions? You can do that through options shown in plugins *Contact Us* tab.
 
-Prefer other ways? Check out [Ziggeo Forum in WordPress Plugin section](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
+Prefer other ways? Check out [our feedback and feature requests system](https://feedback.ziggeo.com/wordpress).
 
 We value your suggestions in regards to all aspects of our service and plugin.
 

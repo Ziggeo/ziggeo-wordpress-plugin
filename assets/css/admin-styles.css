@@ -485,12 +485,29 @@ INDEX:
 			resize: both;
 			min-height: 200px;
 		}
+		.ziggeo_videoslist_popup_frame .popupinner {
+			clear: both;
+			text-align: left;
+		}
+		.ziggeo_videoslist_popup_frame .description {
+			margin-bottom: 20px;
+			margin-left: 20px;
+		}
 	.video_list_item .ba-videoplayer-container img {
 		width: auto;
 		height: 180px;
 		display: inline-block;
 		position: relative;
 		min-width: auto;
+	}
+	.video_list_item .info > select {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background-color: transparent;
+	}
+	.video_list_item .info > select:hover, .video_list_item .info > select:focus {
+		background-color: white;
 	}
 
 

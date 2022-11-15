@@ -68,12 +68,14 @@
 //		* ziggeoVideosRemove()
 //		* ziggeoVideosGetURL()
 //		* ziggeoVideosEditCustomData()
+//		* ziggeoVideosGrabShortcodes()
 //		* ziggeoPUIVideosPopupCreate()
 //		* ziggeoPUIVideosPopupDestroy()
 //		* ziggeoPUIVideosFilterReset()
 //		* ziggeoPUIVideosPageCreateNavigation()
 //		* ziggeoPUIVideosPageSwitch()
 //		* ziggeoPUIVideosPageCounter()
+//		* ziggeoPUIVideosIndexNotAllowed()
 // 10. Addons page
 //		* ziggeoPUIAddonsInit()
 //		* ziggeoPUIAddonsSwitch()
@@ -766,8 +768,8 @@
 				}
 				else if(start > 0 && end < e.target.value.length) {
 					// double click
-					console.log(start);
-					console.log(end);
+					//console.log(start);
+					//console.log(end);
 				}
 			}
 		} ); 
@@ -1577,6 +1579,9 @@
 				_token.innerText = 'Token: ' + videos[i].token;
 				_info.appendChild(_token);
 
+				// add download option
+				_info.appendChild(ziggeoShowDownloadVideo(videos[i].token, true));
+
 				var _tags = document.createElement('div');
 				_tags.className = 'tags-field';
 				if(videos[i].tags) {
@@ -1662,6 +1667,10 @@
 
 		jQuery('#ziggeo-videos .ziggeo-btn-custom-data').on('click', function(event){
 			ziggeoVideosEditCustomData(event.currentTarget);
+		});
+
+		jQuery('#ziggeo-videos .ziggeo-btn-shortcodes').on('click', function(event){
+			ziggeoVideosGrabShortcodes(event.currentTarget);
 		});
 
 		jQuery('#ziggeo-videos .info .tag').on('click', function(event){
@@ -1800,6 +1809,11 @@
 		_custom_data.title = 'See & Edit Custom Data';
 		_tools.appendChild(_custom_data);
 
+		var _sortcodes = document.createElement('div');
+		_sortcodes.className = 'ziggeo-btn-shortcodes dashicons-shortcode';
+		_sortcodes.title = 'Get Shortcodes';
+		_tools.appendChild(_sortcodes);
+
 		return _tools;
 	}
 
@@ -1912,6 +1926,25 @@
 		}
 	}
 
+	if(typeof ziggeoVideosGrabShortcodes !== 'function') {
+		function ziggeoVideosGrabShortcodes(element_ref) {
+			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
+
+			var request = ziggeo_app.videos.get( ZiggeoWP.video_list[_video_ref].token );
+
+			request.success( function(video) {
+				ziggeoPUIVideosPopupCreate({
+					//data_to_show:   video.data,
+					//data_saved:     'data',
+					media_token:    ZiggeoWP.video_list[_video_ref].token,
+					shortcodes: true
+					//format:         'json',
+					//allowed:        'edit',
+				});
+			});
+		}
+	}
+
 	//Create popup
 	function ziggeoPUIVideosPopupCreate(obj_data) {
 
@@ -1934,31 +1967,90 @@
 			btn_cancel.className = 'ziggeo-ctrl-btn ziggeo-btn-popup-cancel';
 			btn_cancel.innerText = 'Cancel';
 
-			inner.appendChild(btn_save);
-			inner.appendChild(btn_cancel);
+			if(obj_data.shortcodes && obj_data.shortcodes === true) {
+				btn_cancel.innerText = 'Close';
+				inner.appendChild(btn_cancel);
 
-			var _textarea = document.createElement('textarea');
+				var sub = document.createElement('div');
+				sub.className = 'popupinner';
 
-			//We need to handle different types of data differently
-			if(obj_data.format === 'json') {
-				if(obj_data.data_to_show === null) {
-					_textarea.value = '{}';
-				}
-				else {
-					_textarea.value = JSON.stringify(obj_data.data_to_show).replace(/{/g, '{\n\t').replace(/\",\"/g, '",\n\t"').replace(/\"}/g, '"\n}');
-				}
+				// We just show different options
+				var info1 = document.createElement('span');
+				info1.innerText = '[ziggeoplayer ' + obj_data.media_token + ']';
+
+				var info1desc = document.createElement('p');
+				info1desc.className = 'description';
+				info1desc.innerText = 'Shortcode for default player playing specified video';
+
+				var info2 = document.createElement('span');
+				info2.innerText = '[ziggeoplayer]' + obj_data.media_token + '[/ziggeoplayer]';
+
+				var info2desc = document.createElement('p');
+				info2desc.className = 'description';
+				info2desc.innerText = 'Same as first for people preferring closed shortcodes';
+
+				var info3 = document.createElement('span');
+				info3.innerText = '[ziggeoplayer video="' + obj_data.media_token + '"]';
+
+				var info3desc = document.createElement('p');
+				info3desc.className = 'description';
+				info3desc.innerText = 'Same as first, useful if you want to add more parameters to shortcode';
+
+				var info4 = document.createElement('span');
+				info4.innerText = '[ziggeotemplate {TEMPLATE_ID} ' + obj_data.media_token + ']';
+
+				var info4desc = document.createElement('p');
+				info4desc.className = 'description';
+				info4desc.innerText = 'Allows to set video to be played while using specific template (replace {TEMPLATE_ID} with actual template ID';
+
+				var info5 = document.createElement('span');
+				info5.innerText = '[ziggeodownloads ' + obj_data.media_token + ']';
+
+				var info5desc = document.createElement('p');
+				info5desc.className = 'description';
+				info5desc.innerText = 'Shortcode to provide download link for some video (includes all streams)';
+
+				sub.appendChild(info1);
+				sub.appendChild(info1desc);
+				sub.appendChild(info2);
+				sub.appendChild(info2desc);
+				sub.appendChild(info3);
+				sub.appendChild(info3desc);
+				sub.appendChild(info4);
+				sub.appendChild(info4desc);
+				sub.appendChild(info5);
+				sub.appendChild(info5desc);
+
+				inner.appendChild(sub);
 			}
 			else {
-				_textarea.value = obj_data.data_to_show;
+
+				inner.appendChild(btn_save);
+				inner.appendChild(btn_cancel);
+
+				var _textarea = document.createElement('textarea');
+
+				//We need to handle different types of data differently
+				if(obj_data.format === 'json') {
+					if(obj_data.data_to_show === null) {
+						_textarea.value = '{}';
+					}
+					else {
+						_textarea.value = JSON.stringify(obj_data.data_to_show).replace(/{/g, '{\n\t').replace(/\",\"/g, '",\n\t"').replace(/\"}/g, '"\n}');
+					}
+				}
+				else {
+					_textarea.value = obj_data.data_to_show;
+				}
+
+				_textarea.setAttribute('data-format', obj_data.format);
+
+				if(obj_data.allowed !== 'edit') {
+					_textarea.disabled = 'disabled';
+				}
+
+				inner.appendChild(_textarea);
 			}
-
-			_textarea.setAttribute('data-format', obj_data.format);
-
-			if(obj_data.allowed !== 'edit') {
-				_textarea.disabled = 'disabled';
-			}
-
-			inner.appendChild(_textarea);
 
 		cover.appendChild(inner);
 		document.body.appendChild(cover);

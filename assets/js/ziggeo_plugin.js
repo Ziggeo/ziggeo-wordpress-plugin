@@ -15,6 +15,8 @@
 //		* ziggeoInsertTextToPostEditor()
 //		* ziggeoStringToSafe()
 //		* ziggeoUnixTimetoString()
+//		* ziggeoShowDownloadVideo()
+//		* ziggeoDownloadsGetOptions()
 // 3. API
 //		* ziggeoAPIGetVideo()
 //		* ziggeoAPIGetVideosData()
@@ -455,6 +457,147 @@
 		return result;
 	}
 
+	// Function that shows the dropdown for downloading videos
+	function ziggeoShowDownloadVideo(m_token, use_token) {
+
+		if(use_token === true) {
+			var download_templates = [1]; // Just to get us into the for loop
+		}
+		else {
+			var download_templates = document.getElementsByClassName('ziggeo_download_template');
+		}
+
+		var i, c;
+
+		for(i = 0, c = download_templates.length; i < c; i++) {
+			var current = download_templates[i];
+
+			var down = document.createElement('select');
+			down.addEventListener('click', function(e) {
+
+				var curr_elem = e.target;
+
+				if(curr_elem.tagName === 'OPTION') {
+					curr_elem = curr_elem.parentElement;
+				}
+
+				if(curr_elem.tagName !== 'SELECT') {
+					return false;
+				}
+
+				if(curr_elem.tagName === 'SELECT' && e.target.tagName === 'OPTION' &&
+				   curr_elem.getAttribute('d_linked') !== null) {
+					// We should start the download
+					if(e.target.value === '') {
+						return true;
+					}
+
+					window.location = e.target.value;
+				}
+
+				if(curr_elem.tagName === 'SELECT' && curr_elem.getAttribute('d_linked') !== null) {
+				   	return true;
+				}
+
+				var media_token = curr_elem.getAttribute('token');
+
+				ziggeoAPIGetVideo(media_token,
+				                 function(data) { // success callback
+				                 	ziggeoDownloadsGetOptions(curr_elem, data);
+				                 },
+				                 function(err) { // error callback
+				                 	curr_elem.innerHTML = '';
+				                 	var opt = document.createElement('option');
+				                 	opt.innerText = 'Download Unavailable';
+				                 	opt.value = '';
+				                 	ziggeoDevReport(err);
+				                 }
+				);
+			});
+
+			var opt_def = document.createElement('option');
+			opt_def.value = '';
+			opt_def.disabled = true;
+			opt_def.selected = true;
+			opt_def.innerText = 'Select Download Option';
+
+			var opt_more = document.createElement('option');
+			opt_more.value = 'getmore';
+			opt_more.innerText = 'Loading Available Options';
+
+			down.appendChild(opt_def);
+			down.appendChild(opt_more);
+
+			if(use_token === true) {
+				down.setAttribute('token', m_token);
+
+				return down;
+			}
+			else {
+				var search_for = 'ziggeoShowDownloadVideo(';
+				var token = current.innerText.slice(
+					current.innerText.indexOf(search_for) + search_for.length + 1,
+					current.innerText.indexOf(')', search_for.length) - 1
+				);
+				down.setAttribute('token', token);
+
+				current.parentElement.insertBefore(down, current);
+				current.className = 'ziggeo_download_template_done';
+			}
+		}
+	}
+
+	// function that checks the given video to see info about the available streams and offer them as downloads
+	function ziggeoDownloadsGetOptions(ref, data) {
+		var i,c;
+
+		if(ref.tagName === 'SELECT' && ref) {
+
+			ref.removeChild(ref.children[1]);
+
+			// Get Default Stream
+			var opt_def = document.createElement('option');
+			url_start = 'https://video-cdn.ziggeo.com/v1/applications/' +
+			      ziggeoGetApplicationOptions().token +
+			      '/videos/' + data.token + '/streams/';
+			url_end = '/video.mp4?download=true';
+
+			opt_def.value = url_start + data.default_stream.token + url_end;
+			opt_def.innerHTML = 'Default Stream [' +
+			                    data.default_stream.video_width + 'x' + data.default_stream.video_height +
+			                    ']';
+
+			ref.appendChild(opt_def);
+
+			// Get Original Stream
+			var opt_org = document.createElement('option');
+			opt_org.value = url_start + data.original_stream.token + url_end;
+			opt_org.innerHTML = 'Original Stream [' +
+			                    data.original_stream.video_width + 'x' + data.original_stream.video_height +
+			                    ']';
+
+			ref.appendChild(opt_org);
+
+			for(i = 2, c = data.streams.length; i < c; i++) {
+				if(data.streams[i].token !== data.default_stream.token &&
+				   data.streams[i].token !== data.original_stream.token) {
+					var opt = document.createElement('option');
+					opt.value = url_start + data.streams[i].token + url_end;
+					opt.innerHTML = 'Additional Stream [' +
+			                    data.streams[i].video_width + 'x' + data.streams[i].video_height +
+			                    ']';
+
+					ref.appendChild(opt);
+				}
+			}
+
+			ref.setAttribute('d_linked', true);
+		}
+
+		// Get Default Stream
+		// Get Original Stream
+		// Get additional streams if available
+	}
 
 
 
