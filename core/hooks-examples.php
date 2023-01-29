@@ -216,6 +216,7 @@ add_action('ziggeo_toolbar_button', function($ajax) {
 				<?php
 				if($templates) {
 					foreach($templates as $template_name => $template_code) {
+						$template_code = (is_array($template_code)) ? $template_code['shortcode'] : $template_code;
 						?>
 							<li>
 								<span class="ziggeo_template_name"><?php echo $template_name; ?></span>

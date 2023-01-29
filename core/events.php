@@ -40,27 +40,45 @@ add_shortcode('ziggeo_event', function($attrs) {
 		}
 	}
 
+	$f_n = 'ziggeoRNDEvents_' . str_replace([' ', '.'], '', microtime()) . rand(5000, 4000);
+
 	if($type === 'alert') {
 		$code = '<script>';
-			$code .= 'ziggeo_app.embed_events.on("' . $event . '", function (embedding, attr1, attr2, attr3, attr4) {';
-				$code .= 'alert("' . $msg . '")'; // We do not escape the strings at this time
-			$code .= '});';
+			$code .= 'function ' . $f_n . '() {';
+				$code .= 'if(typeof ziggeo_app === "undefined") {';
+					$code .= 'setTimeout(' . $f_n . ', 1000);';
+					$code .= 'return false;';
+				$code .= '}';
+				$code .= 'ziggeo_app.embed_events.on("' . $event . '", ' .
+				         'function (embedding, attr1, attr2, attr3, attr4) {';
+					$code .= 'alert("' . $msg . '")';
+				$code .= '});';
+			$code .= '}';
+			$code .= $f_n . '();';
 		$code .= '</script>';
 	}
 	elseif($type === 'template') {
 		if($inject_type === 'on_fire') {
 			$code = '<script>';
-			$code .= 'ziggeo_app.embed_events.on("' . $event . '", function (embedding, attr1, attr2, attr3, attr4) {';
-				$code .= $extra_code;
-			$code .= '});';
+				$code .= 'function ' . $f_n . '() {';
+					$code .= 'if(typeof ziggeo_app === "undefined") {';
+						$code .= 'setTimeout(' . $f_n . ', 1000);';
+						$code .= 'return false;';
+					$code .= '}';
+					$code .= 'ziggeo_app.embed_events.on("' . $event . '", function (embedding, attr1, attr2, attr3, attr4) {';
+						$code .= $extra_code;
+					$code .= '});';
+				$code .= '}';
+				$code .= $f_n . '();';
 			$code .= '</script>';
 		}
 		else {
 			$code = $extra_code;
 		}
-	}
 
+	}
 	return $code;
+
 });
 
 ?>

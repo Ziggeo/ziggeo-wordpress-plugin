@@ -277,6 +277,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Added Ziggeo's Audio embedding support. You can now use `[ziggeoaudiorecorder]` and `[ziggeoaudioplayer]` on your pages to see and use the audio recorder or player.
 * New shortcode was created to allow you to easily add option for downloading of the video in various resolutions. You can do that by using `[ziggeodownloads {video_token}]`. Resolutions available depend on the streams you have set up.
 * Added mini(fied) version of plugin scrips and styles to load on the website if the WordPress website is in production mode. If the development mode is on ("Ziggeo Development Mode" set as "Yes" under "Expert Settings" tab), it will use the non minified versions to allow you to have an easier time working with it.
+* Events editor codes are now working with the lazy load implementation
 
 == Changelog ==
 

@@ -88,8 +88,10 @@ function ziggeo_a_s_g_text() {
 			'zh-cn'	=> 'Chinese (China)',
 			'zh-tw'	=> 'Chinese (Taiwan)',
 			'hr'	=> 'Croatian',
+			'cs'	=> 'Czech',
 			'da'	=> 'Danish',
 			'nl'	=> 'Dutch',
+			'en'	=> 'English',
 			'fi'	=> 'Finnish',
 			'fr'	=> 'French',
 			'de'	=> 'German',
@@ -98,6 +100,8 @@ function ziggeo_a_s_g_text() {
 			'hu'	=> 'Hungarian',
 			'id'	=> 'Indonesian',
 			'it'	=> 'Italian',
+			'ja'	=> 'Japanese',
+			'mk'	=> 'Macedonian',
 			'no'	=> 'Norwegian',
 			'pl'	=> 'Polish',
 			'pt'	=> 'Portuguese',
@@ -110,7 +114,8 @@ function ziggeo_a_s_g_text() {
 			'es'	=> 'Spanish',
 			'sv'	=> 'Swedish',
 			'tl'	=> 'Tagalog',
-			'tr'	=> 'Turkish'
+			'tr'	=> 'Turkish',
+			'uk'	=> 'Ukranian'
 		);
 
 		?>

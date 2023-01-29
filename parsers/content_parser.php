@@ -450,12 +450,14 @@ function ziggeo_p_content_parse_templates($matches) {
 				//Was the comment made by admin
 				$comment = get_comment();
 
-				if ( $comment->user_id && $user = get_userdata( $comment->user_id ) ) {
-					if(isset($user->caps['administrator']) && $user->caps['administrator'] === true) {
-						$tmp = $matches[0];
-					}
-					else {
-						$tmp = '';
+				if($comment && isset($comment->user_id)) {
+					if( $comment->user_id && $user = get_userdata( $comment->user_id ) ) {
+						if(isset($user->caps['administrator']) && $user->caps['administrator'] === true) {
+							$tmp = $matches[0];
+						}
+						else {
+							$tmp = '';
+						}
 					}
 				}
 				else {
