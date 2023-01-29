@@ -775,9 +775,38 @@
 /////////////////////////////////////////////////
 
 	jQuery(document).ready( function() {
+		ziggeoOnVerified();
+	});
+
+	// Used to detect that the verified event had fired
+	function ziggeoOnVerified() {
 		if(typeof ziggeo_app !== 'undefined') {
 			ziggeo_app.embed_events.on("verified", function (embedding) {
+				// Updates backend about the new video
 				ziggeoDAPIRegisterVideos(embedding.get('video'));
+
+				// Updates the video file with title
+				if(embedding.activeElement().getAttribute('ziggeo-wpzc_title_from_filename')) {
+					var title = embedding.get('video_data.video_file_name');
+
+					if(title) {
+						// removes extension
+						// changes the -,_ and %20 into space
+						title = title.substr(0, title.lastIndexOf('.')).replaceAll('_', ' ').replaceAll('-', ' ').replaceAll('%20', '').trim();
+
+						// And another check to make sure it is not empty string
+						if(title !== '') {
+							if(embedding.getMediaType() === 'video') {
+								ziggeo_app.videos.update(embedding.get('video'), {'title': title});
+							}
+						}
+					}
+				}
 			});
+			return true;
 		}
-	});
+		else {
+			setTimeout(ziggeoOnVerified, 1000);
+			return false;
+		}
+	}

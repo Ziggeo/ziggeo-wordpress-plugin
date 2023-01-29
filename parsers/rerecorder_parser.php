@@ -40,8 +40,9 @@ function ziggeo_p_template_is_rerecorder($template) {
 		'perms[forceoverwrite]',
 		'hide_rerecord_on_snapshots',
 		'early_rerecord',
+
 		//v2
-		'skipinitialonrerecord',
+		'skipinitialonrerecord', // video and audio
 		'early-rerecord',
 		'rerecordable',
 		'rerecordableifexists',

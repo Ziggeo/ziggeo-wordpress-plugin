@@ -34,5 +34,7 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
 		return update_option('ziggeo_events', $saves);
 	}
+
+	return $rez;
 }, 10, 2);
 ?>

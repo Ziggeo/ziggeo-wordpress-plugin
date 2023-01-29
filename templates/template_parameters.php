@@ -190,7 +190,7 @@ function ziggeo_template_write_advanced_parameters_list($paged = true, $per_page
 			if(isset($params['custom_used_by'])) {
 				// This allows us to add custom used_by values when needed
 				if(is_array($params['custom_used_by'])) {
-					foreach($params['custom_used_by'] as $t_param => $t_val) {
+					foreach($params['custom_used_by'] as $t_param) {
 						$default_class .= ' for_' . $t_param;
 					}
 				}
@@ -232,7 +232,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video'
 		),
 		'width' => array(
 			'type'					=> 'integer',
@@ -241,7 +242,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> 640
+			'default_value'			=> 640,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
 		),
 		'height' => array(
 			'type'					=> 'integer',
@@ -250,7 +253,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> 480
+			'default_value'			=> 480,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
 		),
 		'recordingwidth' => array(
 			'type'					=> 'integer',
@@ -259,7 +264,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> 640
+			'default_value'			=> 640,
+			'media_type'			=> 'video'
 		),
 		'recordingheight' => array(
 			'type'					=> 'integer',
@@ -268,7 +274,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> 480
+			'default_value'			=> 480,
+			'media_type'			=> 'video'
 		),
 		'popup' => array(
 			'type'					=> 'bool', //data-equal=""
@@ -277,7 +284,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video'
 		),
 		'popup-width' => array(
 			'type'					=> 'integer',
@@ -286,7 +294,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'popup-height' => array(
 			'type'					=> 'integer', //data-equal="="
@@ -295,7 +304,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'video' => array(
 			'type'					=> 'string', //data-equal="=''"
@@ -304,7 +314,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'faceoutline' => array(
 			'type'					=> 'bool',
@@ -313,7 +324,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video'
 		),
 		'stream' => array(
 			'type'					=> 'string',
@@ -322,7 +334,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudioplayer'
 		),
 		'tags' => array(
 			'type'					=> 'array',//data-equal="=''"
@@ -331,7 +345,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'effect-profile' => array(
 			'type'					=> 'array',
@@ -340,7 +356,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'custom-data' => array(
 			'type'					=> 'json',
@@ -349,7 +366,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'skipinitial' => array(
 			'type'					=> 'bool',
@@ -358,7 +377,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
 		),
 		'audio-test-mandatory' => array(
 			'type'					=> 'bool',
@@ -367,7 +388,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'display-timer' => array(
 			'type'					=> 'bool',
@@ -376,7 +399,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> true
+			'default_value'			=> true,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'picksnapshots' => array(
 			'type'					=> 'bool',
@@ -385,7 +410,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> true
+			'default_value'			=> true,
+			'media_type'			=> 'video'
 		),
 		'early-rerecord' => array(
 			'type'					=> 'bool',
@@ -394,7 +420,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'auto-crop' => array(
 			'type'					=> 'bool',
@@ -403,7 +431,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'auto-pad' => array(
 			'type'					=> 'bool',
@@ -412,7 +441,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'key' => array(
 			'type'					=> 'string',
@@ -421,7 +451,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'timelimit' => array(
 			'type'					=> 'integer',
@@ -430,7 +462,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> 0 //Equal to unlimited
+			'default_value'			=> 0, //Equal to unlimited
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'countdown' => array(
 			'type'					=> 'integer',
@@ -439,7 +473,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> 3
+			'default_value'			=> 3,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'input-bind' => array(
 			'type'					=> 'string',
@@ -448,7 +484,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'form-accept' => array(
 			'type'					=> 'string',
@@ -457,7 +495,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'localplayback' => array(
 			'type'					=> 'bool',
@@ -467,7 +507,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
 			'v1_only'				=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'autoplay' => array(
 			'type'					=> 'bool',
@@ -476,7 +518,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudioplayer'
 		),
 		'loop' => array(
 			'type'					=> 'bool',
@@ -485,7 +529,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudioplayer'
 		),
 		'server-auth' => array(
 			'type'					=> 'string',
@@ -494,7 +540,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
 		),
 		'client-auth' => array(
 			'type'					=> 'string',
@@ -503,7 +551,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
 		),
 		'recordings' => array(
 			'type'					=> 'integer',
@@ -512,7 +562,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> 0 //equal to unlimited
+			'default_value'			=> 0, //equal to unlimited
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'expiration-days' => array(
 			'type'					=> 'integer',
@@ -521,7 +573,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> 0 //same as no expiration
+			'default_value'			=> 0, //same as no expiration
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'video-profile' => array(
 			'type'					=> 'string',
@@ -530,7 +584,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'meta-profile' => array(
 			'type'					=> 'string',
@@ -539,7 +594,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'stream-width' => array(
 			'type'					=> 'integer',
@@ -548,7 +605,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'stream-height' => array(
 			'type'					=> 'integer',
@@ -557,7 +615,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> false,
 			'used_by_rerecorder'	=> false,
 			'used_by_uploader'		=> false,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video'
 		),
 		'title' => array(
 			'type'					=> 'string',
@@ -566,7 +625,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'description' => array(
 			'type'					=> 'string',
@@ -575,7 +636,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'allowedextensions' => array(
 			'type'					=> 'string',
@@ -584,7 +647,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> ''
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'enforce-duration' => array(
 			'type'					=> 'bool',
@@ -593,7 +658,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'filesizelimit' => array(
 			'type'					=> 'integer',
@@ -602,7 +669,9 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> 0 //no limit
+			'default_value'			=> 0, //no limit
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
 		),
 		'framerate-warning' => array(
 			'type'					=> 'bool',
@@ -611,7 +680,8 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video'
 		),
 		'nofullscreen' => array(
 			'type'					=> 'bool',
@@ -620,8 +690,10 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
-			'default_value'			=> false
+			'default_value'			=> false,
+			'media_type'			=> 'video'
 		),
+		/* // Deprecated, available only in older revisions you should upgrade from
 		'stretch' => array(
 			'type'					=> 'bool',
 			'description'			=> __('Boolean value to set the player to play video in full width (regardless if hight gets cut or not).', 'ziggeo'),
@@ -630,7 +702,7 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> false,
 			'default_value'			=> false
-		),
+		),*/
 		'theme' => array(
 			'type'					=> 'string',
 			'description'			=> __('String value of the name of the theme that you wish to have applied to your player.', 'ziggeo'),
@@ -638,7 +710,77 @@ function ziggeo_get_template_parameters_list() {
 			'used_by_recorder'		=> true,
 			'used_by_rerecorder'	=> true,
 			'used_by_uploader'		=> true,
-			'default_value'			=> 'modern'
+			'default_value'			=> 'modern',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
+		),
+		'audiobitrate' => array(
+			'type'					=> 'string',
+			'description'			=> __('String value of the name of the theme that you wish to have applied to your player.', 'ziggeo'),
+			'used_by_player'		=> false,
+			'used_by_recorder'		=> true,
+			'used_by_rerecorder'	=> true,
+			'used_by_uploader'		=> true,
+			'default_value'			=> '',
+			'media_type'			=> 'video,audio',
+			'custom_used_by'		=> 'ziggeoaudiorecorder'
+		),
+
+		// Audio parameters
+		'visualeffectheight' => array(
+			'type'					=> 'integer',
+			'description'			=> __('Height of the visual effects in player and recorder.', 'ziggeo'),
+			'used_by_player'		=> false,
+			'used_by_recorder'		=> false,
+			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
+			'default_value'			=> '',
+			'media_type'			=> 'audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
+		),
+		'visualeffectminheight' => array(
+			'type'					=> 'integer',
+			'description'			=> __('Minimal height of the visual effects', 'ziggeo'),
+			'used_by_player'		=> false,
+			'used_by_recorder'		=> false,
+			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
+			'default_value'			=> 120,
+			'media_type'			=> 'audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
+		),
+		'visualeffecttheme' => array(
+			'type'					=> 'string',
+			'description'			=> __('A theme for visual effects. Choose the visual effect of your preference. It can be `balloon` or `red-bars`.', 'ziggeo'),
+			'used_by_player'		=> false,
+			'used_by_recorder'		=> false,
+			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
+			'default_value'			=> 'red-bars',
+			'media_type'			=> 'audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
+		),
+		'visualeffectvisible' => array(
+			'type'					=> 'bool',
+			'description'			=> __('String value of the name of the theme that you wish to have applied to your player.', 'ziggeo'),
+			'used_by_player'		=> false,
+			'used_by_recorder'		=> false,
+			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
+			'default_value'			=> false,
+			'media_type'			=> 'audio',
+			'custom_used_by'		=> array('ziggeoaudiorecorder', 'ziggeoaudioplayer')
+		),
+		'audio' => array(
+			'type'					=> 'string',
+			'description'			=> __('String value of the name of the theme that you wish to have applied to your player.', 'ziggeo'),
+			'used_by_player'		=> false,
+			'used_by_recorder'		=> false,
+			'used_by_rerecorder'	=> false,
+			'used_by_uploader'		=> false,
+			'default_value'			=> '',
+			'media_type'			=> 'audio',
+			'custom_used_by'		=> 'ziggeoaudioplayer'
 		)
 	);
 

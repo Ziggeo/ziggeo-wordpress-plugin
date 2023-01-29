@@ -331,7 +331,6 @@ function ziggeo_p_admin_init() {
 							'ziggeo_a_s_e_support_old_templates',
 							'ziggeo_video',
 							'ziggeo_video_expert');
-
 }
 
 add_action('admin_init', 'ziggeo_p_admin_init');
@@ -431,5 +430,12 @@ function ziggeo_a_ee_page() {
 function ziggeo_a_et_page() {
 	include_once( ZIGGEO_ROOT_PATH . 'admin/page_editor_templates.php');
 }
+
+// Adding the translation panel
+function ziggeo_a_tr_page() {
+	include_once( ZIGGEO_ROOT_PATH . 'admin/page_translations.php');
+}
+
+
 
 ?>

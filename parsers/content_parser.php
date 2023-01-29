@@ -159,6 +159,16 @@ function ziggeo_p_template_parser($template) {
 				                    ziggeo_p_template_prefix_params($template_info['params']) .
 				                 '></ziggeoplayer>';
 				break;
+			case '[ziggeoaudiorecorder':
+				$template_code = '<ziggeoaudiorecorder ' .
+				                    ziggeo_p_template_prefix_params($template_info['params']) .
+				                 '></ziggeoaudiorecorder>';
+				break;
+			case '[ziggeoaudioplayer':
+				$template_code = '<ziggeoaudioplayer ' .
+				                    ziggeo_p_template_prefix_params($template_info['params']) .
+				                 '></ziggeoaudioplayer>';
+				break;
 			default:
 				$template_info['type'] = str_replace('[', '', $template_info['type']);
 				// If we get to this point, it is a non core template (like videowalls template)
@@ -393,7 +403,7 @@ function ziggeo_p_content_parse_templates($matches) {
 	}
 
 	//Is this a template?
-	$existing_template = ziggeo_p_template_exists(str_replace(array('[ziggeo ', '[ziggeorecorder ', '[ziggeoplayer ', '[ziggeorerecorder ', '[ziggeouploader ', ']'), '', trim($matches[0] )));
+	$existing_template = ziggeo_p_template_exists(str_replace(array('[ziggeo ', '[ziggeorecorder ', '[ziggeoplayer ', '[ziggeorerecorder ', '[ziggeouploader ', '[ziggeoaudioplayer ', '[ziggeoaudiorecorder ', ']'), '', trim($matches[0] )));
 
 	//Early template catch
 	if($existing_template) {
@@ -505,10 +515,15 @@ function ziggeo_p_content_parse_templates($matches) {
 					),
 		'ziggeouploader' => array (
 						'tags' => array ('wordpress', $c_user, $location_tag, 'uploader' ),
-						'perms' => array ('allowupload', 'forbidrecord')/*,
-						//allowrecord=false
-						'width' => 320,
-						'height' => 240*/
+						//'perms' => array ('allowupload', 'forbidrecord') - v1
+						'allowrecord' => false,
+						'allowupload' => true
+					),
+		'ziggeoaudioplayer' => array (
+						'audio' => ''
+					),
+		'ziggeoaudiorecorder' => array (
+						'tags' => array ('wordpress', $c_user, $location_tag )
 					)
 	);
 
@@ -559,7 +574,6 @@ function ziggeo_p_content_parse_templates($matches) {
 
 			//Is it base?
 			if( stripos($fullMatch, '[ziggeo ') > -1 ) {
-
 				$parameters = substr($fullMatch, 8, -1);
 				$tag = 'ziggeo';
 				// old template, we should change this or report it in some manner.
@@ -624,12 +638,23 @@ function ziggeo_p_content_parse_templates($matches) {
 					'name'			=> 'ziggeouploader',
 					'func_pre'		=> 'ziggeo_p_prep_parameters_uploader',
 					'func_final'	=> 'ziggeo_content_parse_uploader'
+				),
+				array(
+					'name'			=> 'ziggeoaudioplayer',
+					'func_pre'		=> 'ziggeo_p_prep_parameters_audio_player',
+					'func_final'	=> 'ziggeo_content_parse_audio_player'
+				),
+				array(
+					'name'			=> 'ziggeoaudiorecorder',
+					'func_pre'		=> 'ziggeo_p_prep_parameters_audio_recorder',
+					'func_final'	=> 'ziggeo_content_parse_audio_recorder'
 				)
 			);
 
 			$template_options = apply_filters('ziggeo_manage_template_options_pre', $temp_templates_array);
 
 			for($i = 0, $c = count($template_options); $i < $c; $i++ ) {
+
 				if( stripos($fullMatch, $template_options[$i]['name']) > -1 ) {
 
 					//initial parameters (raw if you will)

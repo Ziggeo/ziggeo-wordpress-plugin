@@ -50,6 +50,53 @@ function ziggeo_a_v_text() {
 			</select>
 		</label>
 		<span class="ziggeo-ctrl-btn">Apply Filter</span>
+		<div class="sub-filter">
+			<div class="info">These filters are applied to the videos you have already retrieved using the above API filtering. Currently you will be filtering <span id="ziggeo-video-list-sub-filtering-count">100</span> videos
+				<ul><li>More videos you have more time the filter might need as you start typing</li></ul></div>
+			<label>
+				<span>Filter Results</span>
+				<input class="filter_string" type="text">
+			</label>
+			<label>
+				<span>In Title?</span>
+				<input class="filter_inc_title" type="checkbox" checked="true">
+			</label>
+			<label>
+				<span>In Description?</span>
+				<input class="filter_inc_desc" type="checkbox" checked="true">
+			</label>
+			<label>
+				<span>In Custom Data?</span>
+				<input class="filter_inc_cus_data" type="checkbox" checked="true">
+			</label>
+			<label>
+				<span>In Moderation Reasons?</span>
+				<input class="filter_inc_mod_reason" type="checkbox" checked="true">
+			</label>
+			<label>
+				<span>In Tags?</span>
+				<input class="filter_inc_in_tags" type="checkbox" checked="true">
+			</label>
+		</div>
+		<div class="sub-filter">
+			<label>
+				<span>Has Tags</span>
+				<input class="filter_inc_tags" type="checkbox" checked="true">
+			</label>
+			<label>
+				<span>HD</span>
+				<input class="filter_inc_hd" type="checkbox" checked="true">
+			</label>
+			<label>
+				<span>SD</span>
+				<input class="filter_inc_sd" type="checkbox" checked="true">
+			</label>
+			<label>
+				<span>With Effects</span>
+				<input class="filter_inc_w_effects" type="checkbox" checked="true">
+			</label>
+			<span id="ziggeo_filter_found"></span>
+		</div>
 	</div>
 	<div class="ziggeo-frame" id="ziggeo-videos"></div>
 	<div class="ziggeo-navigation" id="ziggeo-videos-nav"></div>

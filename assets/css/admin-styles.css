@@ -318,6 +318,33 @@ INDEX:
 
 	#ziggeo-videos-filter {
 		margin: 10px;
+		position: relative;
+	}
+	#ziggeo-videos-filter:hover .sub-filter, #ziggeo-videos-filter:focus-within .sub-filter {
+		height: auto;
+		border-top: 1px dotted lightgray;
+		transition: 0.2s ease-in-out;
+		padding-bottom: 5px;
+	}
+	#ziggeo-videos-filter .sub-filter {
+		margin-top: 10px;
+		height: 0px;
+		overflow: hidden;
+		border-top: 8px solid gray;
+		transition: 0.1s ease-in-out;
+	}
+	#ziggeo-videos-filter ul {
+		list-style: disc inside;
+	}
+	.sub-filter .info {
+		padding-bottom: 6px;
+		text-shadow: 0 0 1px orangered;
+	}
+	#ziggeo_filter_found {
+		position: absolute;
+		right: 20px;
+		font-weight: bold;
+		bottom: -2.5em;
 	}
 	.video_list_item {
 		background-image: linear-gradient(transparent, white);
@@ -492,6 +519,11 @@ INDEX:
 		.ziggeo_videoslist_popup_frame .description {
 			margin-bottom: 20px;
 			margin-left: 20px;
+		}
+		.ziggeo_videoslist_popup_frame .block {
+			display: block;
+			text-align: left;
+			margin: 20px 0px;
 		}
 	.video_list_item .ba-videoplayer-container img {
 		width: auto;
@@ -1264,7 +1296,82 @@ INDEX:
 
 
 /************************************************
-	10. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
+	10. TRANSLATIONS PANEL
+************************************************/
+
+ 	#ziggeo-translation-message {
+		width: 100%;
+		min-height: 400px;
+		background-image: radial-gradient(lightblue, transparent, transparent);
+		box-shadow: 0 0 30px -10px lightblue inset;
+		box-sizing: border-box;
+		position: relative;
+		text-align: center;
+		font-size: 32px;
+		line-height: 400px;
+	}
+	#ziggeo-translation-fields {
+		margin: 20px 0;
+	}
+	.translation_string {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		border-bottom: 1px solid lightgray;
+		min-height: 50px;
+	}
+	.translation_string.filter_no_match {
+		display: none;
+	}
+	.translation_string.filter_match {
+		border-bottom: 1px solid green;
+		background-image: linear-gradient(transparent, lightgreen);
+		background-size: 100% 10px;
+		background-repeat: no-repeat;
+		background-position: 0 bottom;
+	}
+	.translation_strings_group {
+		width: calc(100% - 640px);
+	}
+	.translation_strings_group > label {
+		display: block;
+	}
+	.translation_string > label {
+		padding: 4px 10px;
+		width: 200px;
+		font-weight: bold;
+		border-right: 1px solid gray;
+		margin-right: 10px;
+		word-break: break-all;
+	}
+	.translation_strings_group .show_lang {
+		display: block;
+	}
+	.translation_strings_group .hide_lang {
+		display: none;
+	}
+	.ziggeo_toolbar {
+		padding: 14px;
+		border: 1px solid gray;
+		box-sizing: border-box;
+		width: 90%;
+		border-radius: 4px;
+		margin: 10px auto;
+		box-shadow: 2px 2px 4px 1px lightgray;
+		background-image: linear-gradient(45deg, transparent, white, transparent);
+		transition-property: all;
+		transition-duration: 2s;
+		transition-timing-function: ease-in-out;
+		transition-delay: 0.5s;
+		background-position: -200px 0;
+	}
+	.ziggeo_toolbar:hover {
+		background-position: 1000px 0;
+	}
+
+
+/************************************************
+	11. THIRD PARTY OR MODULES CSS (TO BE REMOVED IN FUTURE VERSIONS)
 ************************************************/
 
 	/* Gravity Forms specific CSS */

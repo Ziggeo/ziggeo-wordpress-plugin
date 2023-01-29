@@ -24,7 +24,7 @@ defined('ABSPATH') or die();
 	                 	'default' => array(),                               // default values
 	                 	'sanitize_callback' => 'ziggeo_a_ee_validation'     // sanitize callback
 	                 )
-     );
+	);
 
 		// add_settings_section( string $id, string $title, callable $callback, string $page )
 		add_settings_section('ziggeo_sct_events_editor',            // id

@@ -2,7 +2,7 @@
 Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, ziggeo
 Requires at least: 3.0.1
-Tested up to: 6.1
+Tested up to: 6.1.1
 Stable tag: 3.0
 License: GPLv2 or later
 Requires PHP: 5.2.4
@@ -272,6 +272,11 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
     1. Removing submission of page on Enter/Return key press
     2. Confirmation of removal before it is done avoiding accidental removals
     3. Improved indexing to allow going over 10 pages
+    4. Filtering through various parts of media data within the retrieved pages
+* Added option `wpzc_title_from_filename` that will automatically update title with the filename when the video is uploaded. See hooks-examples.php for info how you can add your own.
+* Added Ziggeo's Audio embedding support. You can now use `[ziggeoaudiorecorder]` and `[ziggeoaudioplayer]` on your pages to see and use the audio recorder or player.
+* New shortcode was created to allow you to easily add option for downloading of the video in various resolutions. You can do that by using `[ziggeodownloads {video_token}]`. Resolutions available depend on the streams you have set up.
+* Added mini(fied) version of plugin scrips and styles to load on the website if the WordPress website is in production mode. If the development mode is on ("Ziggeo Development Mode" set as "Yes" under "Expert Settings" tab), it will use the non minified versions to allow you to have an easier time working with it.
 
 == Changelog ==
 

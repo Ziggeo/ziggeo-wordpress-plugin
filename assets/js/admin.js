@@ -11,6 +11,8 @@
 //		* ziggeoCommentsToggle()
 //		* ziggeoPValidateEmpty()
 //		* ziggeoScrollTo()
+//		* decodeHTMLEntities()
+//		* encodeHTMLEntities()
 // 2. Onload
 //		* jQuery.ready()
 // 3. Hooks init
@@ -36,7 +38,7 @@
 //			* ziggeoTemplatesUpdate()
 //			* ziggeoTemplatesShortcodeGet()
 //			* ziggeoPUIManageTemplate()
-//			* 						ziggeoPUITemplatesManage()
+//			* ziggeoPUITemplatesManage()
 //			* ziggeoPUITemplatesChange()
 //			* ziggeoPUITemplatesTurnIntoNew()
 //			* ziggeoTemplatesBaseGet()           // <v3.0 ziggeoTemplatesBase()
@@ -55,12 +57,15 @@
 //		* ziggeoPUIVideosInit()
 //		* ziggeoPUIVideosMessage()
 //		* ziggeoPUIVideosFilter()
+//		* ziggeoPUIVideosSubFilter()
 //		* ziggeoVideosFindByTag()
 //		* ziggeoPUIVideosNoVideos()
 //		* ziggeoPUIVideosHasVideos()
 //		* ziggeoPUIVideosHasVideosApproved()
 //		* ziggeoPUIVideosHasVideosPending()
 //		* ziggeoPUIVideosHasVideosRejected()
+//		* ziggeoPUIVideosAddListItem()
+//		* ziggeoPUIVideosListClear()
 //		* ziggeoPUIVideosCreateTools()
 //		* ziggeoPUIVideosCreateInfoSection()
 //		* ziggeoVideosApprove()
@@ -103,6 +108,10 @@
 // 13. Autocomplete Control
 //		* ziggeoPUICAutoCompleteInit()
 //		* ziggeoPUICAutoCompleteFilter()
+// 14. Translations Panel
+//		* ziggeoPUITPInit()
+//		* ziggeoPUITPSelectActiveLanguage()
+//		* ziggeoPUITPFilter()
 
 
 
@@ -309,6 +318,22 @@
 		return false;
 	}
 
+	// Thank you: https://stackoverflow.com/a/7394787
+	function decodeHTMLEntities(html) {
+		var txt = document.createElement("textarea");
+		txt.innerHTML = html;
+		txt = txt.value;
+		return txt;
+	}
+
+	// Thank you: https://stackoverflow.com/a/65592593
+	function encodeHTMLEntities(html) {
+		var txt = document.createElement('textarea');
+		txt.innerText = html;
+		txt = txt.innerHTML;
+		return txt;
+	}
+
 
 
 /////////////////////////////////////////////////
@@ -371,6 +396,9 @@
 		else if(document.getElementById('ziggeo-tab_templates')) {
 			ziggeoTemplatesManageInit();
 		}
+		else if(document.getElementById('ziggeo-translation-fields')) {
+			ziggeoPUITPInit();
+		}
 
 	});
 
@@ -415,11 +443,11 @@
 
 		                   		var i, c;
 		                   		for(i = 0, c = params.length; i < c; i++) {
-		                   			if(params[i].className.indexOf(base) === -1) {
-		                   				params[i].style.display = 'none';
+		                   			if(params[i].className.indexOf(base) > -1) {
+		                   				params[i].style.display = 'block';
 		                   			}
 		                   			else {
-		                   				params[i].style.display = 'block';
+		                   				params[i].style.display = 'none';
 		                   			}
 		                   		}
 		                   },
@@ -768,8 +796,6 @@
 				}
 				else if(start > 0 && end < e.target.value.length) {
 					// double click
-					//console.log(start);
-					//console.log(end);
 				}
 			}
 		} ); 
@@ -805,7 +831,7 @@
 
 		param_list.addEventListener('click', function(e) {
 			var current = e.target;
-			if(current.className.indexOf('param') > -1) {
+			if(current.className.indexOf('param ') > -1) {
 				document.getElementById('parameter-name').value = current.innerText;
 				document.getElementById('parameter-type').value = current.getAttribute('data-type');
 				document.getElementById('parameter-value').focus();
@@ -853,6 +879,7 @@
 		};
 
 		ZiggeoWP.hooks.fire('template_editor_template_edit', hook_values);
+		ZiggeoWP.hooks.fire('template_editor_template_base_change', hook_values);
 	}
 
 	// Helps us to remove the template
@@ -1326,6 +1353,64 @@
 		ziggeoAjax({
 			operation: 'video_verified_seen'
 		});
+
+		jQuery('#ziggeo-videos').on('click', function(event) {
+			var current = event.target;
+
+			if(current.tagName === 'SPAN') {
+				if(current.className === 'tag') {
+					ziggeoVideosFindByTag(current.innerText);
+				}
+				else if(current.className.indexOf('ziggeo-btn-edit') > -1) {
+					ziggeoVideolistInfoEdit(current);
+				}
+			}
+			else if(current.tagName === 'DIV') {
+				if(current.className.indexOf('ziggeo-btn-approve') > -1) {
+					ziggeoVideosApprove(current);
+				}
+				else if(current.className.indexOf('ziggeo-btn-reject') > -1) {
+					ziggeoVideosReject(current);
+				}
+				else if(current.className.indexOf('ziggeo-btn-link') > -1) {
+					ziggeoVideosGetURL(current);
+				}
+				else if(current.className.indexOf('ziggeo-btn-delete') > -1) {
+					ziggeoVideosRemove(current);
+				}
+				else if(current.className.indexOf('ziggeo-btn-custom-data') > -1) {
+					ziggeoVideosEditCustomData(current);
+				}
+				else if(current.className.indexOf('ziggeo-btn-shortcodes') > -1) {
+					ziggeoVideosGrabShortcodes(current);
+				}
+			}
+		});
+
+		jQuery('#ziggeo-videos-filter .sub-filter [type=checkbox]').on('click', function(event) {
+			var filter = document.querySelector('#ziggeo-videos-filter .filter_string').value;
+
+			ziggeoPUIVideosSubFilter(filter, true);
+		});
+
+		jQuery('#ziggeo-videos-filter .filter_string').on('keyup', function(event) {
+
+			var filter = event.target.value;
+
+			// backspace and delete handling, we want to grab fresh data when they are used
+			if(event.originalEvent.keyCode === 8 || event.originalEvent.keyCode === 46) {
+				ziggeoPUIVideosSubFilter(filter, true);
+			}
+			else {
+				ziggeoPUIVideosSubFilter(filter);
+			}
+		});
+
+		ZiggeoWP.hooks.set('videolist_info_edit', 'ziggeoVideolistInfoEditCustomData', ziggeoVideolistInfoEditCustomData);
+
+		ZiggeoWP.hooks.set('videolist_info_edit', 'ziggeoVideolistInfoEditTags', ziggeoVideolistInfoEditTags);
+		ZiggeoWP.hooks.set('videolist_info_edit', 'ziggeoVideolistInfoEditTitle', ziggeoVideolistInfoEditTitle);
+		ZiggeoWP.hooks.set('videolist_info_edit', 'ziggeoVideolistInfoEditDescription', ziggeoVideolistInfoEditDescription);
 	}
 
 	//Handles the "Searching..." screen or "Not Found", etc.
@@ -1333,8 +1418,11 @@
 
 		if(action === 'hide') {
 			var _screen = document.getElementById('ziggeo-videos-screen');
-			_screen.parentElement.removeChild(_screen);
-			return true;
+			if(_screen) {
+				_screen.parentElement.removeChild(_screen);
+				return true;
+			}
+			return false;
 		}
 
 		var _placeholder = document.getElementById('ziggeo-videos');
@@ -1479,6 +1567,120 @@
 		ziggeoPUIVideosPageCounter(query_obj);
 	}
 
+	// Checks all sub-filters and handles the filtering of the loaded videos
+	function ziggeoPUIVideosSubFilter(filter, restart) {
+		var i, c;
+
+		ziggeoPUIVideosMessage('Filtering', 'info', 'show');
+
+		var b_title = document.querySelector('#ziggeo-videos-filter .filter_inc_title').checked;
+		var b_desc = document.querySelector('#ziggeo-videos-filter .filter_inc_desc').checked;
+		var b_cus_data = document.querySelector('#ziggeo-videos-filter .filter_inc_cus_data').checked;
+		var b_mod_reason = document.querySelector('#ziggeo-videos-filter .filter_inc_mod_reason').checked;
+		var b_in_tags = document.querySelector('#ziggeo-videos-filter .filter_inc_in_tags').checked;
+
+		var b_tags = document.querySelector('#ziggeo-videos-filter .filter_inc_tags').checked;
+		var b_hd = document.querySelector('#ziggeo-videos-filter .filter_inc_hd').checked;
+		var b_sd = document.querySelector('#ziggeo-videos-filter .filter_inc_sd').checked;
+		var b_w_effects = document.querySelector('#ziggeo-videos-filter .filter_inc_w_effects').checked;
+
+		if(filter.length > 1 && restart !== true) {
+			var list = ZiggeoWP.video_list_short || ZiggeoWP.video_list;
+		}
+		else {
+			var list = ZiggeoWP.video_list;
+			ZiggeoWP.video_list_short = [];
+		}
+
+		var short_list = [];
+
+		for(i = 0, c = list.length; i < c; i++) {
+
+			var proceed = null;
+
+			// Has Tags
+			if(b_tags === true && proceed === null) {
+				if(list[i].tags !== null && list[i].tags.length > 0) {
+					proceed = true;
+				}
+				else {
+					proceed = false;
+				}
+			}
+
+			// HD
+			if(b_hd === true && proceed === null) {
+				if(list[i].hd === true) {
+					proceed = true;
+				}
+				else {
+					proceed = false;
+				}
+			}
+			// SD
+			if(b_sd === true) {
+				if(list[i].hd !== true) {
+					proceed = true;
+				}
+				else {
+					proceed = false;
+				}
+			}
+
+			//With Effects
+			if(b_w_effects === true) {
+				if(list[i].effect_profile !== null && list[i].effect_profile.length > 0) {
+					proceed = true;
+				}
+				else {
+					proceed = false;
+				}
+			}
+
+			if(proceed === false) {
+				continue;
+			}
+
+			// In Title?
+			if(b_title === true && list[i].title !== null && list[i].title.indexOf(filter) > -1) {
+				short_list.push(list[i]);
+			}
+			// In Description?
+			else if(b_desc === true && list[i].description !== null && list[i].description.indexOf(filter) > -1) {
+				short_list.push(list[i]);
+			}
+			// In Custom Data?
+			else if(b_cus_data === true && list[i].data !== null &&
+				JSON.stringify(list[i].data).indexOf(filter) > -1) {
+				short_list.push(list[i]);
+			}
+			// In Moderation Reasons?
+			else if(b_mod_reason === true && list[i].moderation_reason !== null &&
+				list[i].moderation_reason.indexOf(filter) > -1) {
+				short_list.push(list[i]);
+			}
+			// In Tags
+			else if(b_in_tags === true && list[i].tags !== null && list[i].tags.toString().indexOf(filter) > -1) {
+				short_list.push(list[i]);
+			}
+		}
+
+		ZiggeoWP.video_list_short = short_list;
+		ziggeoPUIVideosListClear();
+		var _placeholder = document.getElementById('ziggeo-videos');
+		var tools = ziggeoPUIVideosCreateTools();
+	
+		for(i = 0, c = short_list.length; i < c && i < 10; i++) {
+			var _item = ziggeoPUIVideosAddListItem(short_list[i], tools, i);
+			_placeholder.appendChild(_item);
+		}
+
+		ziggeoPUIVideosMessage('Filtering', 'info', 'hide');
+		document.getElementById('ziggeo_filter_found').innerText = 'Found ' + short_list.length + ' videos';
+
+		ziggeoPUIVideosPageCreateNavigation(1);
+	}
+
 	function ziggeoVideosFindByTag(tag) {
 
 		var _filter_placeholder = document.getElementById('ziggeo-videos-filter');
@@ -1513,9 +1715,9 @@
 			ZiggeoWP.video_list = ZiggeoWP.video_list.concat(videos);
 		}
 
-		_placeholder.innerHTML = '';
+		ziggeoPUIVideosListClear();
 
-		var _tools = ziggeoPUIVideosCreateTools();
+		var tools = ziggeoPUIVideosCreateTools();
 		//var _v_info = ziggeoPUIVideosCreateInfoSection(); //TODO
 
 		var current = 0;
@@ -1525,203 +1727,50 @@
 		}
 
 		for(i = 0, c = (videos.length > 10) ? 10 : videos.length; i < c; i++) {
-			_item = document.createElement('div');
-			_item.className = 'video_list_item';
-
-			_item.setAttribute('video_ref', current);
-
-			//_item.appendChild(_v_info.cloneNode(true));
-
-			//Set the info
-			//_v_info.querySelector('.video_title').value = videos[i].title;
-			//_v_info.querySelector('.video_desc').value = videos[i].description;
-
-			_p_player = document.createElement('div');
-
-			if(videos[i].approved === true) {
-				_p_player.className = 'player approved';
-			}
-			else if(videos[i].approved === false) {
-				_p_player.className = 'player rejected';
-			}
-			else {
-				_p_player.className = 'player pending';
-			}
-
-			var player = new ZiggeoApi.V2.Player({
-				element: _p_player,
-				attrs: {
-					width: 320,
-					height: 180,
-					theme: "modern",
-					themecolor: "blue",
-					video: videos[i].token,
-					'stretchheight': true
-				}
-			});
-
-			_item.appendChild(_p_player);
-			player.activate();
-
-			var _length = document.createElement('div');
-			_length.className = 'video_length';
-			_length.innerText = videos[i].duration + 's';
-			_p_player.appendChild(_length);
-
-			_item.appendChild(_tools.cloneNode(true));
-
-			//Add video info
-			var _info = document.createElement('div');
-			_info.className = 'info';
-			_info.setAttribute('data-token', videos[i].token);
-
-				var _token = document.createElement('div');
-				_token.innerText = 'Token: ' + videos[i].token;
-				_info.appendChild(_token);
-
-				// add download option
-				_info.appendChild(ziggeoShowDownloadVideo(videos[i].token, true));
-
-				var _tags = document.createElement('div');
-				_tags.className = 'tags-field';
-				if(videos[i].tags) {
-					for(_i = 0, _c = videos[i].tags.length; _i < _c; _i++) {
-						var _tag = document.createElement('span');
-						_tag.className = 'tag';
-						_tag.innerText = videos[i].tags[_i];
-						_tag.title = 'Search for videos with "' + videos[i].tags[_i] + '"';
-						_tags.appendChild(_tag);
-					}
-				}
-
-				var _edit = document.createElement('span');
-				_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
-				_edit.setAttribute('data-action', 'tags');
-				_edit.setAttribute('data-format', 'csv');
-				_edit.innerText = '{edit}';
-
-				_tags.appendChild(_edit);
-
-				_info.appendChild(_tags);
-
-				var _title = document.createElement('div');
-				if(videos[i].title !== null) {
-					_title.innerText = 'Video Title: "' + videos[i].title + '"';
-				}
-				else {
-					_title.innerText = 'Video Title was not set.';
-				}
-
-				var _edit = document.createElement('span');
-				_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
-				_edit.setAttribute('data-action', 'title');
-				_edit.setAttribute('data-format', 'text');
-				_edit.innerText = '{edit}';
-
-				_title.appendChild(_edit);
-
-				_info.appendChild(_title);
-
-				var _description = document.createElement('div');
-				if(videos[i].description !== null) {
-					_description.innerText = 'Video Description: "' + videos[i].description + '"';
-				}
-				else {
-					_description.innerText = 'Video Description was not set.';
-				}
-
-				var _edit = document.createElement('span');
-				_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
-				_edit.setAttribute('data-action', 'description');
-				_edit.setAttribute('data-format', 'text');
-				_edit.innerText = '{edit}';
-
-				_description.appendChild(_edit);
-
-				_info.appendChild(_description);
-
-			_item.appendChild(_info);
-
+			var _item = ziggeoPUIVideosAddListItem(videos[i], tools, current);
 			_placeholder.appendChild(_item);
 			current++;
 		}
 
 		ziggeoPUIVideosPageCreateNavigation(ZiggeoWP.video_list_current);
 
-		//Now attach the events on all tools - @TODO for pagination so only new items are added
-		jQuery('#ziggeo-videos .ziggeo-btn-approve').on('click', function(event){
-			ziggeoVideosApprove(event.currentTarget);
+		// Let's show how many videos will be filtered through using sub-filter
+		document.getElementById('ziggeo-video-list-sub-filtering-count').innerText = ZiggeoWP.video_list.length;
+	}
+
+	// Handles the editing for various video data
+	// Handles editing of tags, title, description
+	function ziggeoVideolistInfoEdit(element_ref) {
+		var token = element_ref.parentElement.parentElement.getAttribute('data-token');
+
+		var request = ziggeo_app.videos.get( token );
+
+		request.success( function(video) {
+
+			var _form = document.createElement('div');
+
+			var _textarea = document.createElement('textarea');
+			var _action = element_ref.getAttribute('data-action');
+			_textarea.value = video[_action];
+
+			_form.appendChild(_textarea)
+
+			ziggeoPUIVideosPopupCreate({
+				id: 'edit_video_meta_' + _action,
+				ok_shown: true,
+				ok_text: 'Update',
+				cancel_text: 'Cancel',
+				custom: {
+					element_ref: element_ref,
+					token:       token
+				}
+				//allowed:        'edit',
+				//data_to_show:   video[element_ref.getAttribute('data-action')],
+				//data_saved:     element_ref.getAttribute('data-action'),
+				//format:         element_ref.getAttribute('data-format'),
+			}, _form);
 		});
 
-		jQuery('#ziggeo-videos .ziggeo-btn-reject').on('click', function(event){
-			ziggeoVideosReject(event.currentTarget);
-		});
-
-		jQuery('#ziggeo-videos .ziggeo-btn-link').on('click', function(event){
-			ziggeoVideosGetURL(event.currentTarget);
-		});
-
-		jQuery('#ziggeo-videos .ziggeo-btn-delete').on('click', function(event){
-			ziggeoVideosRemove(event.currentTarget);
-		});
-
-		jQuery('#ziggeo-videos .ziggeo-btn-custom-data').on('click', function(event){
-			ziggeoVideosEditCustomData(event.currentTarget);
-		});
-
-		jQuery('#ziggeo-videos .ziggeo-btn-shortcodes').on('click', function(event){
-			ziggeoVideosGrabShortcodes(event.currentTarget);
-		});
-
-		jQuery('#ziggeo-videos .info .tag').on('click', function(event){
-			ziggeoVideosFindByTag(event.currentTarget.innerText);
-		});
-
-		jQuery('#ziggeo-videos .ziggeo-btn-edit').on('click', function(event){
-
-			var element_ref = event.currentTarget;
-
-			var media_token = element_ref.parentElement.parentElement.getAttribute('data-token');
-
-			var request = ziggeo_app.videos.get( media_token );
-
-			ZiggeoWP.hooks.set('ziggeo_videolist_info_edit', 'ziggeo_videolist_info_save_on_edit',
-				function(data) {
-					if(data.property === 'title' || data.property === 'description') {
-						//editing textNode not element
-						element_ref.previousSibling.textContent = 'Video ' + data.property + ': "' + data.saved + '"';
-					}
-					else if(data.property === 'tags') {
-						var _tags = element_ref.parentElement;
-						_tags.innerHTML = '';
-
-						if(data.saved.trim() !== '') {
-							var _to_save = data.saved.split(',');
-
-							for(_i = 0, _c = _to_save.length; _i < _c; _i++) {
-								var _tag = document.createElement('span');
-								_tag.className = 'tag';
-								_tag.innerText = _to_save[_i];
-								_tag.title = 'Search for videos with "' + _to_save[_i] + '"';
-								_tags.appendChild(_tag);
-							}
-						}
-						else {
-							_to_save = '';
-						}
-					}
-				});
-
-			request.success( function(video) {
-				ziggeoPUIVideosPopupCreate({
-					data_to_show:   video[element_ref.getAttribute('data-action')],
-					data_saved:     element_ref.getAttribute('data-action'),
-					media_token:    media_token,
-					format:         element_ref.getAttribute('data-format'),
-					allowed:        'edit'
-				});
-			});
-		});
 
 	}
 
@@ -1777,6 +1826,135 @@
 
 		//Show the videos
 		ziggeoPUIVideosHasVideos(moderated_videos);
+	}
+
+	// Function that adds one item into the list
+	function ziggeoPUIVideosAddListItem(video, tools, video_ref) {
+
+		_item = document.createElement('div');
+		_item.className = 'video_list_item';
+
+		_item.setAttribute('video_ref', video_ref);
+
+		//_item.appendChild(_v_info.cloneNode(true));
+
+		//Set the info
+		//_v_info.querySelector('.video_title').value = video.title;
+		//_v_info.querySelector('.video_desc').value = video.description;
+
+		_p_player = document.createElement('div');
+
+		if(video.approved === true) {
+			_p_player.className = 'player approved';
+		}
+		else if(video.approved === false) {
+			_p_player.className = 'player rejected';
+		}
+		else {
+			_p_player.className = 'player pending';
+		}
+
+		var player = new ZiggeoApi.V2.Player({
+			element: _p_player,
+			attrs: {
+				width: 320,
+				height: 180,
+				theme: "modern",
+				themecolor: "blue",
+				video: video.token,
+				'stretchheight': true
+			}
+		});
+
+		_item.appendChild(_p_player);
+		player.activate();
+
+		var _length = document.createElement('div');
+		_length.className = 'video_length';
+		_length.innerText = video.duration + 's';
+		_p_player.appendChild(_length);
+
+		_item.appendChild(tools.cloneNode(true));
+
+		//Add video info
+		var _info = document.createElement('div');
+		_info.className = 'info';
+		_info.setAttribute('data-token', video.token);
+
+			var _token = document.createElement('div');
+			_token.innerText = 'Token: ' + video.token;
+			_info.appendChild(_token);
+
+			// add download option
+			_info.appendChild(ziggeoShowDownloadVideo(video.token, true));
+
+			var _tags = document.createElement('div');
+			_tags.className = 'tags-field';
+			if(video.tags) {
+				for(_i = 0, _c = video.tags.length; _i < _c; _i++) {
+					var _tag = document.createElement('span');
+					_tag.className = 'tag';
+					_tag.innerText = video.tags[_i];
+					_tag.title = 'Search for videos with "' + video.tags[_i] + '"';
+					_tags.appendChild(_tag);
+				}
+			}
+
+			var _edit = document.createElement('span');
+			_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+			_edit.setAttribute('data-action', 'tags');
+			_edit.setAttribute('data-format', 'csv');
+			_edit.innerText = '{edit}';
+
+			_tags.appendChild(_edit);
+
+			_info.appendChild(_tags);
+
+			var _title = document.createElement('div');
+			if(video.title !== null) {
+				_title.innerText = 'Video Title: "' + video.title + '"';
+			}
+			else {
+				_title.innerText = 'Video Title was not set.';
+			}
+
+			var _edit = document.createElement('span');
+			_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+			_edit.setAttribute('data-action', 'title');
+			_edit.setAttribute('data-format', 'text');
+			_edit.innerText = '{edit}';
+
+			_title.appendChild(_edit);
+
+			_info.appendChild(_title);
+
+			var _description = document.createElement('div');
+			if(video.description !== null) {
+				_description.innerText = 'Video Description: "' + video.description + '"';
+			}
+			else {
+				_description.innerText = 'Video Description was not set.';
+			}
+
+			var _edit = document.createElement('span');
+			_edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+			_edit.setAttribute('data-action', 'description');
+			_edit.setAttribute('data-format', 'text');
+			_edit.innerText = '{edit}';
+
+			_description.appendChild(_edit);
+
+			_info.appendChild(_description);
+
+		_item.appendChild(_info);
+
+		return _item;
+	}
+
+	// Clears out all of the videos in the videos list
+	function ziggeoPUIVideosListClear() {
+		var _placeholder = document.getElementById('ziggeo-videos');
+		_placeholder.innerHTML = '';
 	}
 
 	//Function to create the buttons that allow us to handle videos in video listing page
@@ -1847,7 +2025,9 @@
 		function ziggeoVideosApprove(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
-			ziggeo_app.videos.update(ZiggeoWP.video_list[_video_ref].token, { 'approved': true });
+			var token = (ZiggeoWP.video_list_short) ? ZiggeoWP.video_list_short[_video_ref].token : ZiggeoWP.video_list[_video_ref].token;
+
+			ziggeo_app.videos.update(token, { 'approved': true });
 
 			element_ref.parentElement.parentElement.firstElementChild.className = 'player approved';
 		}
@@ -1858,7 +2038,9 @@
 		function ziggeoVideosReject(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
-			ziggeo_app.videos.update(ZiggeoWP.video_list[_video_ref].token, { 'approved': false });
+			var token = (ZiggeoWP.video_list_short) ? ZiggeoWP.video_list_short[_video_ref].token : ZiggeoWP.video_list[_video_ref].token;
+
+			ziggeo_app.videos.update(token, { 'approved': false });
 
 			element_ref.parentElement.parentElement.firstElementChild.className = 'player rejected';
 		}
@@ -1871,9 +2053,11 @@
 
 			if(ZiggeoWP.server_auth && ZiggeoWP.server_auth !== '') {
 
+				var token = (ZiggeoWP.video_list_short) ? ZiggeoWP.video_list_short[_video_ref].token : ZiggeoWP.video_list[_video_ref].token;
+
 				// Let's be safe and confirm first
 				if(confirm('Are you sure you want to remove the video?') === true) {
-					var request = ziggeo_app.videos.destroy( ZiggeoWP.video_list[_video_ref].token,
+					var request = ziggeo_app.videos.destroy( token,
 															{ 'server_auth': ZiggeoWP.server_auth });
 
 					request.success( function() {
@@ -1903,8 +2087,40 @@
 		function ziggeoVideosGetURL(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
+			var token = (ZiggeoWP.video_list_short) ? ZiggeoWP.video_list_short[_video_ref].token : ZiggeoWP.video_list[_video_ref].token;
+
 			//alert('URL for video is: https://' + ZiggeoWP.video_list[_video_ref].embed_video_url);
-			alert('URL for video is: https://ziggeo.io/p/' + ZiggeoWP.video_list[_video_ref].token);
+			//alert('URL for video is: https://ziggeo.io/p/' + token);
+
+			var _form = document.createElement('div');
+			var p = document.createElement('p');
+			p.innerText = 'You can use any of bellow links (depending on your setup):';
+
+			var a1 = document.createElement('a');
+			a1.href = 'https://ziggeo.io/p/' + token;
+			a1.innerText = 'https://ziggeo.io/p/' + token;
+			a1.className = 'block';
+
+			var a2 = document.createElement('a');
+			a2.href = 'https://ziggeo.io/v/' + token;
+			a2.innerText = 'https://ziggeo.io/v/' + token;
+			a2.className = 'block'
+
+			var a3 = document.createElement('a');
+			a3.href = 'https://' + ZiggeoWP.video_list[_video_ref].embed_video_url + '.mp4';
+			a3.innerText = 'https://' + ZiggeoWP.video_list[_video_ref].embed_video_url + '.mp4';
+			a3.className = 'block'
+
+			_form.appendChild(p);
+			_form.appendChild(a1);
+			_form.appendChild(a2);
+			_form.appendChild(a3);
+
+			ziggeoPUIVideosPopupCreate({
+				id: 'get_video_url',
+				ok_shown: false,
+				cancel_text: 'Close',
+			}, _form);
 		}
 	}
 
@@ -1912,16 +2128,35 @@
 		function ziggeoVideosEditCustomData(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
-			var request = ziggeo_app.videos.get( ZiggeoWP.video_list[_video_ref].token );
+			var token = (ZiggeoWP.video_list_short) ? ZiggeoWP.video_list_short[_video_ref].token : ZiggeoWP.video_list[_video_ref].token;
+
+			var request = ziggeo_app.videos.get( token );
 
 			request.success( function(video) {
+
+				var _textarea = document.createElement('textarea');
+				_textarea.id = 'ziggeo_videolist_popup_custom_data_field';
+
+				if(video.data === null) {
+					_textarea.value = '{}';
+				}
+				else {
+					_textarea.value = JSON.stringify(video.data).replace(/{/g, '{\n\t').replace(/\",\"/g, '",\n\t"').replace(/\"}/g, '"\n}');
+				}
+
+				_textarea.setAttribute('data-format', 'json');
+
 				ziggeoPUIVideosPopupCreate({
-					data_to_show:   video.data,
-					data_saved:     'data',
-					media_token:    ZiggeoWP.video_list[_video_ref].token,
-					format:         'json',
-					allowed:        'edit',
-				});
+					id:          'edit_video_custom_data',
+					ok_shown:    true,
+					ok_text:     'Save',
+					cancel_text: 'Cancel',
+					custom: {
+						video_ref:   _video_ref,
+						element_ref: element_ref,
+						token: token
+					}
+				}, _textarea);
 			});
 		}
 	}
@@ -1930,23 +2165,278 @@
 		function ziggeoVideosGrabShortcodes(element_ref) {
 			var _video_ref = element_ref.parentElement.parentElement.getAttribute('video_ref');
 
-			var request = ziggeo_app.videos.get( ZiggeoWP.video_list[_video_ref].token );
+			var token = (ZiggeoWP.video_list_short) ? ZiggeoWP.video_list_short[_video_ref].token : ZiggeoWP.video_list[_video_ref].token;
 
-			request.success( function(video) {
-				ziggeoPUIVideosPopupCreate({
-					//data_to_show:   video.data,
-					//data_saved:     'data',
-					media_token:    ZiggeoWP.video_list[_video_ref].token,
-					shortcodes: true
-					//format:         'json',
-					//allowed:        'edit',
+			var sub = document.createElement('div');
+			sub.className = 'popupinner';
+
+			// We just show different options
+			var info1 = document.createElement('span');
+			info1.innerText = '[ziggeoplayer ' + token + ']';
+
+			var info1desc = document.createElement('p');
+			info1desc.className = 'description';
+			info1desc.innerText = 'Shortcode for default player playing specified video';
+
+			var info2 = document.createElement('span');
+			info2.innerText = '[ziggeoplayer]' + token + '[/ziggeoplayer]';
+
+			var info2desc = document.createElement('p');
+			info2desc.className = 'description';
+			info2desc.innerText = 'Same as first for people preferring closed shortcodes';
+
+			var info3 = document.createElement('span');
+			info3.innerText = '[ziggeoplayer video="' + token + '"]';
+
+			var info3desc = document.createElement('p');
+			info3desc.className = 'description';
+			info3desc.innerText = 'Same as first, useful if you want to add more parameters to shortcode';
+
+			var info4 = document.createElement('span');
+			info4.innerText = '[ziggeotemplate {TEMPLATE_ID} ' + token + ']';
+
+			var info4desc = document.createElement('p');
+			info4desc.className = 'description';
+			info4desc.innerText = 'Allows to set video to be played while using specific template (replace {TEMPLATE_ID} with actual template ID';
+
+			var info5 = document.createElement('span');
+			info5.innerText = '[ziggeodownloads ' + token + ']';
+
+			var info5desc = document.createElement('p');
+			info5desc.className = 'description';
+			info5desc.innerText = 'Shortcode to provide download link for some video (includes all streams)';
+
+			sub.appendChild(info1);
+			sub.appendChild(info1desc);
+			sub.appendChild(info2);
+			sub.appendChild(info2desc);
+			sub.appendChild(info3);
+			sub.appendChild(info3desc);
+			sub.appendChild(info4);
+			sub.appendChild(info4desc);
+			sub.appendChild(info5);
+			sub.appendChild(info5desc);
+
+			ziggeoPUIVideosPopupCreate({
+				id: 'get_video_shortcodes',
+				ok_shown: false,
+				cancel_text: 'Close',
+			}, sub);
+		}
+	}
+
+	function ziggeoVideolistInfoEditCustomData(data) {
+		// We only care if this is about editing the video custom data
+		if(data.id === 'edit_video_custom_data') {
+			// ... and only if this is a save action callback
+			if(data.action_ok === true) {
+
+				var _textarea = document.getElementById('ziggeo_videolist_popup_custom_data_field');
+				var parent = document.getElementsByClassName('ziggeo_videoslist_popup_frame')[0];
+
+				try {
+					var save = JSON.stringify(JSON.parse(_textarea.value));
+				}
+				catch(e) {
+					ziggeoDevReport('error parsing JSON string', 'error');
+
+					// Show error
+					_textarea.style.border = '1px solid red';
+					_textarea.style.boxShadow = '0 0 10px red';
+					alert(e);
+
+					parent.className += ' prevent_close';
+
+					return false;
+				}
+
+				var obj_save = {};
+				obj_save['data'] = save;
+				var result = ziggeo_app.videos.update(data.custom.token, obj_save);
+
+				result.success( function() {
+					_textarea.style.border = '1px solid green';
+					_textarea.style.boxShadow = '0 0 10px green';
+
+					if(!obj_data.save_to) {
+						obj_data.save_to = null;
+					}
+
+					parent.className = parent.className.replace('prevent_close', '');
+
+					// This is here to allow other codes to run before we close the popup
+					setTimeout(function() {
+						ziggeoPUIVideosPopupDestroy();
+					});
 				});
-			});
+
+				result.error( function(error) {
+					_textarea.style.border = '1px solid red';
+					_textarea.style.boxShadow = '0 0 10px red';
+					alert(error);
+
+					parent.className += ' prevent_close';
+				});
+			}
+		}
+	}
+
+	function ziggeoVideolistInfoEditTags(data) {
+		// We only care if this is about editing the video custom data
+		if(data.id === 'edit_video_meta_tags') {
+			// ... and only if this is a save action callback
+			if(data.action_ok === true) {
+
+				var parent = document.getElementsByClassName('ziggeo_videoslist_popup_frame')[0];
+				var _textarea = parent.querySelector('textarea');
+
+				var obj_save = {};
+				obj_save['tags'] = _textarea.value.replace(/ /g, ' ').replace(/\n/g, '').replace(/\t/g,'').replace(/, /g, ',').trim();
+				var result = ziggeo_app.videos.update(data.custom.token, obj_save);
+
+				result.success( function() {
+					_textarea.style.border = '1px solid green';
+					_textarea.style.boxShadow = '0 0 10px green';
+
+					parent.className = parent.className.replace('prevent_close', '');
+
+					var _tags = data.custom.element_ref.parentElement;
+					_tags.innerHTML = '';
+
+					if(obj_save['tags'] !== '') {
+						var _to_save = obj_save['tags'].split(',');
+
+						for(_i = 0, _c = _to_save.length; _i < _c; _i++) {
+							var _tag = document.createElement('span');
+							_tag.className = 'tag';
+							_tag.innerText = _to_save[_i];
+							_tag.title = 'Search for videos with "' + _to_save[_i] + '"';
+							_tags.appendChild(_tag);
+						}
+					}
+
+					// We allways re-add the edit button
+					var edit = document.createElement('span');
+					edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+					edit.setAttribute('data-action', 'tags');
+					edit.setAttribute('data-format', 'csv');
+					edit.innerText = '{edit}';
+					_tags.appendChild(edit);
+
+					// This is here to allow other codes to run before we close the popup
+					setTimeout(function() {
+						ziggeoPUIVideosPopupDestroy();
+					});
+				});
+
+				result.error( function(error) {
+					_textarea.style.border = '1px solid red';
+					_textarea.style.boxShadow = '0 0 10px red';
+					alert(error);
+
+					parent.className += ' prevent_close';
+				});
+			}
+		}
+	}
+
+	function ziggeoVideolistInfoEditTitle(data) {
+		// We only care if this is about editing the video custom data
+		if(data.id === 'edit_video_meta_title') {
+			// ... and only if this is a save action callback
+			if(data.action_ok === true) {
+
+				var parent = document.getElementsByClassName('ziggeo_videoslist_popup_frame')[0];
+				var _textarea = parent.querySelector('textarea');
+
+				var obj_save = {};
+				obj_save['title'] = _textarea.value;
+				var result = ziggeo_app.videos.update(data.custom.token, obj_save);
+
+				result.success( function() {
+					_textarea.style.border = '1px solid green';
+					_textarea.style.boxShadow = '0 0 10px green';
+
+					parent.className = parent.className.replace('prevent_close', '');
+
+					var _placeholder = data.custom.element_ref.parentElement;
+					_placeholder.innerHTML = 'Video Title: "' + obj_save['title'] + '"';
+
+					// We allways re-add the edit button
+					var edit = document.createElement('span');
+					edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+					edit.setAttribute('data-action', 'tags');
+					edit.setAttribute('data-format', 'csv');
+					edit.innerText = '{edit}';
+					_placeholder.appendChild(edit);
+
+					// This is here to allow other codes to run before we close the popup
+					setTimeout(function() {
+						ziggeoPUIVideosPopupDestroy();
+					});
+				});
+
+				result.error( function(error) {
+					_textarea.style.border = '1px solid red';
+					_textarea.style.boxShadow = '0 0 10px red';
+					alert(error);
+
+					parent.className += ' prevent_close';
+				});
+			}
+		}
+	}
+
+	function ziggeoVideolistInfoEditDescription(data) {
+		// We only care if this is about editing the video custom data
+		if(data.id === 'edit_video_meta_description') {
+			// ... and only if this is a save action callback
+			if(data.action_ok === true) {
+
+				var parent = document.getElementsByClassName('ziggeo_videoslist_popup_frame')[0];
+				var _textarea = parent.querySelector('textarea');
+
+				var obj_save = {};
+				obj_save['description'] = _textarea.value;
+				var result = ziggeo_app.videos.update(data.custom.token, obj_save);
+
+				result.success( function() {
+					_textarea.style.border = '1px solid green';
+					_textarea.style.boxShadow = '0 0 10px green';
+
+					parent.className = parent.className.replace('prevent_close', '');
+
+					var _placeholder = data.custom.element_ref.parentElement;
+					_placeholder.innerHTML = 'Video Description: "' + obj_save['description'] + '"';
+
+					// We allways re-add the edit button
+					var edit = document.createElement('span');
+					edit.className = 'ziggeo-ctrl-btn-inline ziggeo-btn-edit';
+					edit.setAttribute('data-action', 'tags');
+					edit.setAttribute('data-format', 'csv');
+					edit.innerText = '{edit}';
+					_placeholder.appendChild(edit);
+
+
+					// This is here to allow other codes to run before we close the popup
+					setTimeout(function() {
+						ziggeoPUIVideosPopupDestroy();
+					});
+				});
+
+				result.error( function(error) {
+					_textarea.style.border = '1px solid red';
+					_textarea.style.boxShadow = '0 0 10px red';
+					alert(error);
+
+					parent.className += ' prevent_close';
+				});
+			}
 		}
 	}
 
 	//Create popup
-	function ziggeoPUIVideosPopupCreate(obj_data) {
+	function ziggeoPUIVideosPopupCreate(obj_data, form) {
 
 		//If it exists, destroy the previous one..
 		if(document.getElementsByClassName('ziggeo_videoslist_cover').length > 0) {
@@ -1959,143 +2449,48 @@
 		var inner = document.createElement('div');
 		inner.className = 'ziggeo_videoslist_popup_frame';
 
-			var btn_save = document.createElement('div');
-			btn_save.className = 'ziggeo-ctrl-btn ziggeo-btn-popup-save';
-			btn_save.innerText = 'Save';
+			// Save button might not allways be available
+			if(obj_data.ok_shown === true) {
+				var btn_ok = document.createElement('div');
+				btn_ok.className = 'ziggeo-ctrl-btn ziggeo-btn-popup-save';
+				btn_ok.innerText = obj_data.ok_text || 'Save';
+			}
 
+			// This is always shown, just might do different things (close, cancel, etc.)
 			var btn_cancel = document.createElement('div');
 			btn_cancel.className = 'ziggeo-ctrl-btn ziggeo-btn-popup-cancel';
-			btn_cancel.innerText = 'Cancel';
+			btn_cancel.innerText = obj_data.cancel_text || 'Cancel';
 
-			if(obj_data.shortcodes && obj_data.shortcodes === true) {
-				btn_cancel.innerText = 'Close';
-				inner.appendChild(btn_cancel);
-
-				var sub = document.createElement('div');
-				sub.className = 'popupinner';
-
-				// We just show different options
-				var info1 = document.createElement('span');
-				info1.innerText = '[ziggeoplayer ' + obj_data.media_token + ']';
-
-				var info1desc = document.createElement('p');
-				info1desc.className = 'description';
-				info1desc.innerText = 'Shortcode for default player playing specified video';
-
-				var info2 = document.createElement('span');
-				info2.innerText = '[ziggeoplayer]' + obj_data.media_token + '[/ziggeoplayer]';
-
-				var info2desc = document.createElement('p');
-				info2desc.className = 'description';
-				info2desc.innerText = 'Same as first for people preferring closed shortcodes';
-
-				var info3 = document.createElement('span');
-				info3.innerText = '[ziggeoplayer video="' + obj_data.media_token + '"]';
-
-				var info3desc = document.createElement('p');
-				info3desc.className = 'description';
-				info3desc.innerText = 'Same as first, useful if you want to add more parameters to shortcode';
-
-				var info4 = document.createElement('span');
-				info4.innerText = '[ziggeotemplate {TEMPLATE_ID} ' + obj_data.media_token + ']';
-
-				var info4desc = document.createElement('p');
-				info4desc.className = 'description';
-				info4desc.innerText = 'Allows to set video to be played while using specific template (replace {TEMPLATE_ID} with actual template ID';
-
-				var info5 = document.createElement('span');
-				info5.innerText = '[ziggeodownloads ' + obj_data.media_token + ']';
-
-				var info5desc = document.createElement('p');
-				info5desc.className = 'description';
-				info5desc.innerText = 'Shortcode to provide download link for some video (includes all streams)';
-
-				sub.appendChild(info1);
-				sub.appendChild(info1desc);
-				sub.appendChild(info2);
-				sub.appendChild(info2desc);
-				sub.appendChild(info3);
-				sub.appendChild(info3desc);
-				sub.appendChild(info4);
-				sub.appendChild(info4desc);
-				sub.appendChild(info5);
-				sub.appendChild(info5desc);
-
-				inner.appendChild(sub);
+			if(btn_ok) {
+				inner.appendChild(btn_ok);
 			}
-			else {
 
-				inner.appendChild(btn_save);
-				inner.appendChild(btn_cancel);
-
-				var _textarea = document.createElement('textarea');
-
-				//We need to handle different types of data differently
-				if(obj_data.format === 'json') {
-					if(obj_data.data_to_show === null) {
-						_textarea.value = '{}';
-					}
-					else {
-						_textarea.value = JSON.stringify(obj_data.data_to_show).replace(/{/g, '{\n\t').replace(/\",\"/g, '",\n\t"').replace(/\"}/g, '"\n}');
-					}
-				}
-				else {
-					_textarea.value = obj_data.data_to_show;
-				}
-
-				_textarea.setAttribute('data-format', obj_data.format);
-
-				if(obj_data.allowed !== 'edit') {
-					_textarea.disabled = 'disabled';
-				}
-
-				inner.appendChild(_textarea);
-			}
+			inner.appendChild(btn_cancel);
+			inner.appendChild(form);
 
 		cover.appendChild(inner);
 		document.body.appendChild(cover);
 
-		jQuery('.ziggeo_videoslist_popup_frame .ziggeo-btn-popup-save').on('click', function(event) {
-
-			//We need to prepare the data:
-			if(obj_data.format === 'json') {
-				var data_to_save = JSON.stringify( JSON.parse(_textarea.value) );
-			}
-			else if(obj_data.format === 'csv') {
-				var data_to_save = _textarea.value.replace(/ /g, ' ').replace(/\n/g, '').replace(/\t/g,'').replace(/, /g, ',');
-			}
-			else {
-				var data_to_save = _textarea.value;
-			}
-
-			var obj_save = {};
-			obj_save[obj_data.data_saved] = data_to_save;
-
-			var result = ziggeo_app.videos.update(obj_data.media_token, obj_save);
-
-			result.success( function() {
-				_textarea.style.border = '1px solid green';
-				_textarea.style.boxShadow = '0 0 10px green';
-
-				ZiggeoWP.hooks.fire('ziggeo_videolist_info_edit', {
-					property:   obj_data.data_saved,
-					saved:      data_to_save,
-					format:     obj_data.format
+		if(btn_ok) {
+			btn_ok.addEventListener('click', function(event) {
+				ZiggeoWP.hooks.fire('videolist_info_edit', {
+					id:         obj_data.id, // for events listening to identify if it is interesting to them or not
+					action_ok:  true,
+					custom:     obj_data.custom || false // custom data reference
 				});
 
-				setTimeout(function() {
+				if(inner.className.indexOf('prevent_close') === -1) {
 					ziggeoPUIVideosPopupDestroy();
-				}, 1000);
+				}
+			});
+		}
+
+		btn_cancel.addEventListener('click', function(event) {
+			ZiggeoWP.hooks.fire('videolist_info_edit', {
+				id: obj_data.id, // for events listening to identify if it is interesting to them or not
+				action_ok: false
 			});
 
-			result.error( function(error) {
-				_textarea.style.border = '1px solid red';
-				_textarea.style.boxShadow = '0 0 10px red';
-				alert(error);
-			});
-		});
-
-		jQuery('.ziggeo_videoslist_popup_frame .ziggeo-btn-popup-cancel').on('click', function(event) {
 			ziggeoPUIVideosPopupDestroy();
 		});
 	}
@@ -2115,6 +2510,24 @@
 		_placeholder.querySelector('.moderation').value = 'all';
 		_placeholder.querySelector('.tags').value = '';
 		_placeholder.querySelector('.sort').value = 'new';
+
+		// We also do this for sub filter
+		_placeholder.querySelector('.filter_inc_title').checked = true;
+		_placeholder.querySelector('.filter_inc_desc').checked = true;
+		_placeholder.querySelector('.filter_inc_cus_data').checked = true;
+		_placeholder.querySelector('.filter_inc_mod_reason').checked = true;
+		_placeholder.querySelector('.filter_inc_in_tags').checked = true;
+		_placeholder.querySelector('.filter_inc_tags').checked = true;
+		_placeholder.querySelector('.filter_inc_hd').checked = true;
+		_placeholder.querySelector('.filter_inc_sd').checked = true;
+		_placeholder.querySelector('.filter_inc_w_effects').checked = true;
+
+		_placeholder.querySelector('.filter_string').value = '';
+		document.getElementById('ziggeo_filter_found').innerText = '';
+
+		if(ZiggeoWP.video_list_short) {
+			delete ZiggeoWP.video_list_short;
+		}
 	}
 
 	//Creates the page navigation buttons
@@ -2125,7 +2538,9 @@
 		//Clear it up
 		_nav.innerText = '';
 
-		for(i = 0, c = Math.floor(ZiggeoWP.video_list.length / 10); i < c; i++) {
+		var list = ZiggeoWP.video_list_short || ZiggeoWP.video_list;
+
+		for(i = 0, c = Math.ceil(list.length / 10); i < c; i++) {
 			var _btn = document.createElement('div');
 			_btn.className = 'ziggeo-ctrl-btn';
 
@@ -2155,13 +2570,16 @@
 
 		ZiggeoWP.video_list_current = page_num;
 
+		var list = (ZiggeoWP.video_list_short) ? ZiggeoWP.video_list_short : ZiggeoWP.video_list;
+
 		//Detect if we have enough of the videos to show page, or if we need to get more.
-		if((page_num+1) * 10 > ZiggeoWP.video_list.length) {
+
+		if((page_num+1) * 10 > list.length && !ZiggeoWP.video_list_short) {
 			ziggeoPUIVideosFilter(false, page_num * 10);
 		}
 		else {
 			page_num--;
-			ziggeoPUIVideosHasVideos(ZiggeoWP.video_list.slice(page_num*10, page_num*10+10), true);
+			ziggeoPUIVideosHasVideos(list.slice(page_num*10, page_num*10+10), true);
 		}
 	}
 
@@ -2203,7 +2621,7 @@
 
 
 /////////////////////////////////////////////////
-// 10. ADDONS PAGE                              //
+// 10. ADDONS PAGE                             //
 /////////////////////////////////////////////////
 
 	function ziggeoPUIAddonsInit() {
@@ -2246,7 +2664,7 @@
 
 
 /////////////////////////////////////////////////
-// 11. SDK PAGE                                 //
+// 11. SDK PAGE                                //
 /////////////////////////////////////////////////
 
 	//Add functionality to the butons on the SDK page
@@ -3831,7 +4249,7 @@
 
 
 /////////////////////////////////////////////////
-// 13. AUTOCOMPLETE CONTROL                     //
+// 13. AUTOCOMPLETE CONTROL                    //
 /////////////////////////////////////////////////
 
 
@@ -3926,6 +4344,256 @@
 					if(hook) {
 						ZiggeoWP.hooks.fire(hook, { 'input': input, 'key': _item, 'data': all_items[_item] });
 					}
+				}
+			}
+		}
+	}
+
+
+
+
+/////////////////////////////////////////////////
+// 14. TRANSLATIONS PANEL                      //
+/////////////////////////////////////////////////
+
+	// Function that helps us initialize the translation panel codes
+	function ziggeoPUITPInit() {
+
+		// Lazyload support
+		if(typeof ZiggeoApi === 'undefined') {
+			setTimeout(function() {
+				return ziggeoPUITPInit();
+			}, 2000);
+
+			return null;
+		}
+
+		var i, c;
+		var languages = {
+			'en': 'English',
+			'ar': 'Arabic',
+			'az': 'Azerbaijani',
+			'bg': 'Bulgarian',
+			'cat': 'Catalan',
+			'cs': 'Czech',
+			'zh-cn': 'Chinese (China)',
+			'zh-cn': 'Chinese (Taiwan)',
+			'hr': 'Croatian',
+			'da': 'Danish',
+			'nl': 'Dutch',
+			'fi': 'Finnish',
+			'fr': 'French',
+			'de': 'German',
+			'el': 'Greek',
+			'hi': 'Hindi',
+			'hu': 'Hungarian',
+			'id': 'Indonesian',
+			'it': 'Italian',
+			'ja': 'Japanese',
+			'mk': 'Macedonian',
+			'no': 'Norwegian',
+			'pl': 'Polish',
+			'pt': 'Portuguese',
+			'pt-br': 'Portuguese (Brazil)',
+			'ro': 'Romanian',
+			'ru': 'Russian',
+			'sr': 'Serbian',
+			'sk': 'Slovak',
+			'sl': 'Slovenian',
+			'es': 'Spanish',
+			'sv': 'Swedish',
+			'tl': 'Tagalog',
+			'tr': 'Turkish',
+			'uk': 'Ukranian'
+		};
+
+		var message = document.getElementById('ziggeo-translation-message');
+		var plc_fields = document.getElementById('ziggeo-translation-fields');
+
+		message.style.display = 'block';
+		plc_fields.style.display = 'none';
+		plc_fields.innerHTML = '';
+
+		// Custom translations
+		var existing = getExistingTranslations();
+
+		// Create Fields
+		//----------------
+
+		function createFields(__strings, plc_fields) {
+			for(var str_key in __strings){
+				var str_row = document.createElement('div');
+				str_row.className = 'translation_string';
+
+				var lbl_key = document.createElement('label');
+				lbl_key.innerText = str_key;
+				str_row.appendChild(lbl_key);
+
+				var plc_strings = document.createElement('div');
+				plc_strings.className = 'translation_strings_group';
+
+				// Object of all languages and their translations
+				for(i = 0, c = __strings[str_key].length; i < c; i++) {
+					var current = __strings[str_key][i];
+
+					var _lang = 'en';
+					if(typeof current.tags[0] !== 'undefined') {
+						_lang = current.tags[0].replace('language:', '');
+					}
+
+					var lbl_value = document.createElement('label');
+					lbl_value.innerText = decodeHTMLEntities(current.value);
+					lbl_value.title = languages[_lang];
+					lbl_value.className = _lang + ' hide_lang';
+
+					// Checking if custom translation exists for it
+					if(typeof existing[_lang] !== 'undefined' &&
+					   typeof existing[_lang][str_key] !== 'undefined') {
+						// We have custom translation for this field
+						lbl_value.setAttribute('custom-translation', existing[_lang][str_key])
+					}
+
+					plc_strings.appendChild(lbl_value);
+				}
+				str_row.appendChild(plc_strings);
+
+				var input_new = document.createElement('input');
+				input_new.className = 'ziggeo_new_translation';
+				str_row.appendChild(input_new);
+
+				plc_fields.appendChild(str_row);
+			}
+		}
+
+		createFields(ZiggeoApi.V2.Locale.mediaLocale.__strings, plc_fields); // BetaJS strings
+		createFields(ZiggeoApi.V2.Locale.mainLocale.__strings, plc_fields);  // Ziggeo strings
+
+		// Update toolbar
+		//-----------------
+
+		// Update languages
+		var select = document.getElementById('ziggeo-languages');
+		select.innerHTML = ''; // to clear all current elements
+
+		for(var lang in languages) {
+			var option = document.createElement('option');
+			option.value = lang;
+			option.innerText = languages[lang];
+
+			select.appendChild(option);
+		}
+
+		// Listens for the change of the current language
+		select.addEventListener('change', function(e){
+			var _value = e.target.value;
+
+			if(ziggeoPUITPSelectActiveLanguage(_value) === false) {
+				e.target.value = e.target.getAttribute('cv');
+				return false;
+			}
+
+			e.target.setAttribute('cv', _value);
+		});
+
+		// Sets the currently active language and its translations
+		ziggeoPUITPSelectActiveLanguage('en');
+
+		// Functionality to save the custom translations
+		document.getElementById('ziggeo-translation-save').addEventListener('click', function() {
+			var strings = [];
+			var i, c;
+
+			var lang = document.getElementById('ziggeo-languages').value;
+			var new_strings = document.getElementsByClassName('ziggeo_new_translation');
+
+			for(i = 0, c = new_strings.length; i < c; i++) {
+				if(new_strings[i].value.trim() !== '') {
+
+					// get key
+					var _key = new_strings[i].parentElement.firstChild.innerText;
+					var _string = encodeHTMLEntities(new_strings[i].value.trim());
+
+					// example:
+					// ZiggeoApi.V2.Locale.mediaLocale.register({ "ba-videorecorder-chooser.record-video": "Enregistrer une vidéo" }, ["language:fr"], 10);
+					strings.push('ZiggeoApi.V2.Locale.' + ((_key.indexOf('ba-') === 0) ? 'mediaLocale':'mainLocale') +
+					            '.register({"' + _key + '":"' + _string + '"},["language:' + lang + '"],10);');
+				}
+			}
+
+			ziggeoAjax({
+				operation: 'translations_panel_save_strings',
+				'lang': lang,
+				'strings': strings
+			});
+		});
+
+		// Triggers the functionality for filtering
+		document.getElementById('ziggeo-strings-filter').addEventListener('keyup', function(e) {
+			ziggeoPUITPFilter(e.target.value);
+		});
+
+		message.style.display = 'none';
+		plc_fields.style.display = 'block';
+	}
+
+	// Sets which language is shown
+	function ziggeoPUITPSelectActiveLanguage(current_lang) {
+		var i, c;
+
+		// Clear out all of the translation boxes
+		var boxes = document.getElementsByClassName('ziggeo_new_translation');
+		var asked = null;
+
+		for(i = 0, c = boxes.length; i < c; i++) {
+			if(boxes[i].value !== '') {
+				if(asked === null) {
+					asked = confirm('You have some translations set. Clicking OK will remove all custom translations and switch language. We recommend Saving them first if not already. Click OK to confirm switch or cancel to allow you to check and save.');
+				}
+
+				if(asked === false) { // cancel
+					return false;
+				}
+
+				// asked === true
+				boxes[i].value = '';
+			}
+		}
+
+		var shown_strings = document.getElementsByClassName('show_lang');
+
+		for(i = shown_strings.length; i > 0; i--) {
+			shown_strings[i-1].className = shown_strings[i-1].className.replace('show_lang', '') + ' hide_lang';
+		}
+
+		var to_show = document.getElementsByClassName(current_lang);
+
+		for(i = to_show.length; i > 0; i--) {
+			to_show[i-1].className = to_show[i-1].className.replace('hide_lang', '') + ' show_lang';
+
+			// Check if there is custom translation
+			var existing_translation = to_show[i-1].getAttribute('custom-translation');
+			if(existing_translation) {
+				to_show[i-1].parentElement.parentElement.lastChild.value = existing_translation;
+			}
+		}
+	}
+
+	// Filtering logic for the strings so that it is easy to find the strings to translate
+	function ziggeoPUITPFilter(str) {
+		var i, c;
+		var string_rows = document.getElementsByClassName('translation_string');
+
+		for(i = 0, c = string_rows.length; i < c; i++) {
+
+			if(str.trim() === '') { // to clear out everything
+				string_rows[i].className = 'translation_string';
+			}
+			else { // filter
+				if(string_rows[i].innerText.toLowerCase().indexOf(str) > -1) {
+					string_rows[i].className = 'translation_string filter_match';
+				}
+				else {
+					string_rows[i].className = 'translation_string filter_no_match';
 				}
 			}
 		}

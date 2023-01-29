@@ -29,7 +29,6 @@ function ziggeo_a_s_validation($input) {
 			'integrations' => true,
 		//experts tab
 			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true, 'use_auth' => true, 'use_version' => true, 'use_revision' => true, 'lazy_load' => true
-
 	);
 
 	//Needed for checkboxes otherwise we would clear them
@@ -183,7 +182,6 @@ function ziggeo_a_s_v_comments_handler($options, $input) {
 	}
 
 	return $options;
-	
 }
 
 //Integrations handling codes
@@ -322,7 +320,10 @@ function ziggeo_a_s_v_templates_handler($options) {
 
 		return $options;
 	}
-
 }
 
+
+function ziggeo_a_tp_validation($input) {
+
+}
 ?>

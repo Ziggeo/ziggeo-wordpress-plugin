@@ -42,6 +42,15 @@ add_action('admin_menu', function() {
 		'callback'		=> 'ziggeo_a_ee_page')                  //function
 	);
 
+	//Translation panel
+	ziggeo_p_add_menu_entry(array(
+		'page_title'	=> 'Ziggeo Translations',               //page title
+		'menu_title'	=> 'Translations Panel',                //menu title
+		'capability'	=> 'manage_options',                    //min capability to view
+		'slug'			=> 'ziggeo_translations',               //menu slug
+		'callback'		=> 'ziggeo_a_tr_page')                  //function
+	);
+
 	// Get notifications count
 	$n_count = ziggeo_notifications_count();
 	$n_title_extra = '';

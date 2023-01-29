@@ -35,15 +35,21 @@ define('ZIGGEO_VERSION', '3.0');
 //Best to state default code in one location, then just call for it when needed.
 
 //player
-define('ZIGGEO_DEFAULTS_PLAYER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="360" ziggeo-height="240"');
+define('ZIGGEO_DEFAULTS_PLAYER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="100%"');
 //recorder
-define('ZIGGEO_DEFAULTS_RECORDER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="360" ziggeo-height="240" ziggeo-limit="120"');
+define('ZIGGEO_DEFAULTS_RECORDER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="100%" ziggeo-limit="120"');
 //uploader
-define('ZIGGEO_DEFAULTS_UPLOADER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="360" ziggeo-height="240" ziggeo-limit="120" ziggeo-allowrecord="false"');
+define('ZIGGEO_DEFAULTS_UPLOADER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="100%" ziggeo-limit="120" ziggeo-allowrecord="false"');
 //rerecorder
-define('ZIGGEO_DEFAULTS_RERECORDER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="360" ziggeo-height="240" ziggeo-limit="120" ziggeo-rerecordable="true"');
+define('ZIGGEO_DEFAULTS_RERECORDER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="100%" ziggeo-limit="120" ziggeo-rerecordable="true"');
 //screen recorder
-define('ZIGGEO_DEFAULTS_SCREEN', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="360" ziggeo-height="240" ziggeo-limit="120" ziggeo-allowscreen="true"');
+define('ZIGGEO_DEFAULTS_SCREEN', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="100%" ziggeo-limit="120" ziggeo-allowscreen="true"');
+//audio recorder
+define('ZIGGEO_DEFAULTS_AUDIO_RECORDER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="100%" ziggeo-limit="120" ziggeo-allowscreen="true" ziggeo-visualeffecttheme="red-bars" ziggeo-visualeffectvisible="true"');
+//audio player
+define('ZIGGEO_DEFAULTS_AUDIO_PLAYER', 'ziggeo-theme="modern" ziggeo-themecolor="red" ziggeo-width="100%" ziggeo-visualeffecttheme="red-bars" ziggeo-visualeffectvisible="true"');
+
+
 //image uploader
 //image player
 //audio only player
@@ -120,6 +126,7 @@ if(is_admin() === true) {
 	}
 
 	include_once(ZIGGEO_ROOT_PATH . 'admin/page_editor_events_ajax.php');
+	include_once(ZIGGEO_ROOT_PATH . 'admin/page_translations_ajax.php');
 }
 
 include_once(ZIGGEO_ROOT_PATH . 'parsers/file_parser.php'); //integrations require file parser..
@@ -139,7 +146,6 @@ include_once(ZIGGEO_ROOT_PATH . 'core/rest.php');
 
 //include the PHP SDK so that we can talk with the Ziggeo servers in the back as well (and receive useful info through webhooks)
 //include_once(ZIGGEO_ROOT_PATH . 'sdk/Ziggeo.php');
-//@ADD - To be added in next version
 
 //Expose functions for integrations and custom codes
 include_once(ZIGGEO_ROOT_PATH . '/templates/defaults_recorder.php');

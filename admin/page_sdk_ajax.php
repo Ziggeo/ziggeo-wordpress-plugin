@@ -7,8 +7,15 @@
 //Admin calls handler for workinjg with Ziggeo SDK
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
+	// Used to differentiate between the calls so that we return the expected value back if the code here
+	// will not do anything with it.
+	$handled = false;
+
 	//settings_manage_template
 	if($operation === 'sdk_applications') {
+
+		$handled = true;
+
 		if(isset($_POST['sdk_action'])) {
 			$action = $_POST['sdk_action'];
 			ziggeo_p_include_sdk();
@@ -67,6 +74,9 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 		}
 	}
 	elseif($operation === 'sdk_analytics') {
+
+		$handled = true;
+
 		if(isset($_POST['sdk_action'])) {
 
 			$action = $_POST['sdk_action'];
@@ -109,9 +119,11 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 				}
 			}
 		}
-
 	}
 	elseif($operation === 'sdk_effect_profiles') {
+
+		$handled = true;
+
 		if(isset($_POST['sdk_action'])) {
 
 			$action = $_POST['sdk_action'];
@@ -152,10 +164,14 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 		}
 	}
 
-	return array(
-		'status' => 'success',
-		'result' => $rez
-	);
+	if($handled === true) {
+		return array(
+			'status' => 'success',
+			'result' => $rez
+		);
+	}
+
+	return $rez;
 
 }, 10, 2);
 

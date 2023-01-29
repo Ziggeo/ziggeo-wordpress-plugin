@@ -6,7 +6,7 @@ defined('ABSPATH') or die();
 
 if(!function_exists('ziggeo_content_parse_player')) {
 
-//@TODO: Lets add few hooks into this
+	//@TODO: Lets add few hooks into this
 	function ziggeo_content_parse_player($code, $post_code = true) {
 
 		$result = '<ziggeoplayer ' . ziggeo_template_v1_to_v2(ziggeo_p_parameter_prep($code)) . '></ziggeoplayer>';
@@ -26,39 +26,72 @@ add_shortcode( 'ziggeoplayer', function($attrs) {
 	return ziggeo_p_shortcode_handler('[ziggeoplayer', $attrs);
 });
 
+// Support for audio player
+if(!function_exists('ziggeo_content_parse_audio_player')) {
+
+	//@TODO: Lets add few hooks into this
+	function ziggeo_content_parse_audio_player($code, $post_code = true) {
+
+		$result = '<ziggeoaudioplayer ' . ziggeo_p_parameter_prep($code) . '></ziggeoaudioplayer>';
+
+		if($post_code === true) {
+			echo $result;
+		}
+		else {
+			//return the HTML code
+			return $result;
+		}
+	}
+}
+
+//Shortcode handling for Ziggeo Audio Player
+add_shortcode( 'ziggeoaudioplayer', function($attrs) {
+	return ziggeo_p_shortcode_handler('[ziggeoaudioplayer', $attrs);
+});
+
 //checks if the given template is player or not..
-function ziggeo_p_template_is_player($template) {
+function ziggeo_p_template_is_player($template, $specific = 'video') {
 
 	$is_v1 = ziggeo_p_check_code_is_v1($template, $template);
 
 	//these should be only the definite parameters that only player can use..
 	$playerParams = array(
 		//v1
-		'popup', // player in v1 both in v2..
+		'popup', // player in v1 and in v2..
 		'nofullscreen',
-		'stream',
+		'stream', // v1 + v2 video and audio
 		'modes[player]',
 		'player',
 		'video',
-		'autoplay',
+		'autoplay', // v1 + v2 video and audio
 		'loop',
-		//v2
-		'stretch',
-		'source',
-		'loop',
-		'initialseek',
+		//v2 - video
+		'stretch', // deprecated
 		'playfullscreenonmobile',
-		'playwhenvisible',
-		'playonclick',
-		'disableseeking',
-		'disablepause',
-		'pauseonplay',
 		'airplay',
 		'chromecast',
-		'preload',
-		'playlist',
 		'stream-width',
-		'stream-height'
+		'stream-height',
+		// video & audio
+		'allowpip',
+		'disablepause',
+		'disableseeking',
+		'forcerefresh',
+		'initialseek',
+		'loop',
+		'loopall',
+		'pauseonplay',
+		'playlist',
+		'playonclick',
+		'playwhenvisible',
+		'visibilityfraction',
+		'preload',
+		'skipseconds',
+		'source',
+		'tracktags',
+		'tracktagsstyled',
+		'volume'
+		//'audio'
 	);
 
 	for($i = 0, $c = count($playerParams); $i < $c; $i++) {
@@ -95,5 +128,13 @@ function ziggeo_p_prep_parameters_player($raw_parameters = null) {
 	return ziggeo_p_parameter_processing( ziggeo_get_parameters_from_template_code(ZIGGEO_DEFAULTS_PLAYER), $raw_parameters );
 }
 
+//handles the raw parameters for the ziggeo audio player..
+function ziggeo_p_prep_parameters_audio_player($raw_parameters = null) {
+	if($raw_parameters === null) {
+		return '';
+	}
+
+	return ziggeo_p_parameter_processing( ziggeo_get_parameters_from_template_code(ZIGGEO_DEFAULTS_AUDIO_PLAYER), $raw_parameters );
+}
 
 ?>

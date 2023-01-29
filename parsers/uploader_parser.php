@@ -37,13 +37,14 @@ function ziggeo_p_template_is_uploader($template) {
 		'perms[forbidrecord]',
 		'allowed_extensions',
 		'limit_upload_size',
+
 		//v2
-		'allowupload',
-		'allowedextensions',
-		'filesizelimit',
 		'allowcustomupload',
+		// video & audio
+		'allowupload',
 		'manualsubmit',
-		'onlyaudio'
+		'allowedextensions',
+		'filesizelimit'
 	);
 
 	for($i = 0, $c = count($uploaderParams); $i < $c; $i++) {

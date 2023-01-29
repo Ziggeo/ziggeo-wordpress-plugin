@@ -472,6 +472,4 @@ function ziggeo_a_s_g_text() {
 		<?php
 	}
 
-
-
 ?>

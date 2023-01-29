@@ -12,6 +12,11 @@ function ziggeo_p_assets_get_raw() {
 	// it needs to return modified $options array.
 	$options = apply_filters('ziggeo_assets_init_raw', $options);
 
+	$__min = '.min';
+	if($options['dev_mode'] === ZIGGEO_YES) {
+		$__min = '';
+	}
+
 	if(isset($options, $options['use_version'], $options['use_revision'])) {
 		$use = $options['use_version'] . '-' . $options['use_revision'];
 	}
@@ -30,8 +35,8 @@ function ziggeo_p_assets_get_raw() {
 			'js'	=> 'https://imasdk.googleapis.com/js/sdkloader/ima3.js' . $ver
 		),
 		array(
-			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js' . $ver,
-			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles.css' . $ver
+			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin' . $__min . '.js' . $ver,
+			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles' . $__min . '.css' . $ver
 		)
 	);
 
@@ -65,6 +70,11 @@ function ziggeo_p_assets_global() {
 	// it needs to return modified $options array.
 	$options = apply_filters('ziggeo_assets_init', $options);
 
+	$__min = '.min';
+	if($options['dev_mode'] === ZIGGEO_YES) {
+		$__min = '';
+	}
+
 	if(isset($options, $options['use_version'], $options['use_revision'])) {
 		$use = $options['use_version'] . '-' . $options['use_revision'];
 	}
@@ -90,9 +100,9 @@ function ziggeo_p_assets_global() {
 	}
 	if(apply_filters('ziggeo_assets_pre_local_load', true)) {
 		//local assets
-		wp_register_script('ziggeo-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin.js' . $ver, array("jquery"));
+		wp_register_script('ziggeo-plugin-js', ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin' . $__min . '.js' . $ver, array("jquery"));
 		wp_enqueue_script('ziggeo-plugin-js');
-		wp_register_style('ziggeo-styles-css', ZIGGEO_ROOT_URL . 'assets/css/styles.css' . $ver, array());
+		wp_register_style('ziggeo-styles-css', ZIGGEO_ROOT_URL . 'assets/css/styles' . $__min . '.css' . $ver, array());
 		wp_enqueue_style('ziggeo-styles-css');
 	}
 
@@ -131,9 +141,9 @@ function ziggeo_p_assets_admin() {
 		'ziggeo-video_page_ziggeo_editor_templates',
 		'ziggeo-video_page_ziggeo_editor_events',
 		'ziggeo-video_page_ziggeo_notifications',
-		'ziggeo-video_page_ziggeo_videoslist',
 		'ziggeo-video_page_ziggeo_sdk',
-		'ziggeo-video_page_ziggeo_addons'
+		'ziggeo-video_page_ziggeo_addons',
+		'ziggeo-video_page_ziggeo_translations'
 	);
 
 	$supported_screens = array(
@@ -178,11 +188,13 @@ function ziggeo_p_get_lazyload_activator() {
 		'if(document.readyState === \'complete\'){' .
 			'ziggeoReInitApp();' .
 			'ziggeoLoadAssets();' .
+			'if(typeof ziggeoSetTranslations === "function") {ziggeoSetTranslations();}' .
 		'}' .
 		'else {' .
 			'window.addEventListener(\'load\', function() {' . 
 				'ziggeoReInitApp();' .
 				'ziggeoLoadAssets();' .
+				'if(typeof ziggeoSetTranslations === "function") {ziggeoSetTranslations();}' .
 			'});' .
 		'}' .
 	'</script>';
@@ -198,6 +210,29 @@ function ziggeo_p_assets_maybeload($content) {
 				// Create the function that will load the scripts after page has been loaded.
 				$content .= ziggeo_p_get_lazyload_activator();
 				define('ZIGGEO_FOUND_POST', true);
+			}
+
+			// Output translations if any are present.
+			$translations = get_option('ziggeo_translations');
+
+			if($translations && count($translations) > 0) {
+				$content .= '<script id="ziggeo_translations">';
+				$content .= 'function ziggeoSetTranslations() {';
+				$content .= 'if(typeof ZiggeoApi === "undefined") {';
+				$content .=     'setTimeout(ziggeoSetTranslations, 1000);';
+				$content .=     'return false;';
+				$content .= '}';
+
+				foreach($translations as $lang => $strings) {
+
+					$strings = $strings['strings'];
+
+					for($i = 0, $c = count($strings); $i < $c; $i++) {
+						$content .= stripslashes($strings[$i]);
+					}
+				}
+
+				$content .= '}</script>';
 			}
 		}
 	}

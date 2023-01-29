@@ -266,6 +266,14 @@ add_filter('ziggeo_setting_available_templates', function($templates) {
 		array(
 			'value' => '[ziggeouploader',
 			'string' => __('Ziggeo Uploader', 'ziggeo')
+		),
+		array(
+			'value' => '[ziggeoaudiorecorder',
+			'string' => __('Ziggeo Audio Recorder', 'ziggeo')
+		),
+		array(
+			'value' => '[ziggeoaudioplayer',
+			'string' => __('Ziggeo Audio Player', 'ziggeo')
 		)
 	);
 
@@ -291,5 +299,33 @@ add_action('ziggeo_add_to_ziggeowp_object', function() {
 	<?php
 	}
 });
+
+// Creating own parameters
+add_filter('ziggeo_template_parameters_list', function($parameters_list) {
+
+	// Add the name of your parameter, we use wpzc as "WP Ziggeo Custom" since this parameter is not
+	// a native Ziggeo parameter
+
+	// The "wp_custom" can be and should be any key. Ideally you want this to be unique to your plugin/theme
+	// Later we use this to tell the Templates Editor how to handle this parameter
+	//$parameters_list['wp_custom'] = $array_of_parameters;
+	// In our case, we want to inject this into the standard options so we use "system"
+
+	$parameters_list['system']['wpzc_title_from_filename'] = array(
+		'type'					=> 'bool', // type of parameter (integer, float, string, enum, bool)
+		'description'			=> __('Makes the recorder update the video title with the filename in case of uploads', 'ziggeo'),
+		'used_by_player'		=> false, // This is not used with player
+		'used_by_recorder'		=> true, // This is used with recorder
+		'used_by_rerecorder'	=> true, // This is used with re-recorder
+		'used_by_uploader'		=> true, // This is used with uploader
+		'default_value'			=> false // What is the default value of this parameter
+	);
+
+	// We always need to return the list or it would remove all parameters 
+	return $parameters_list;
+});
+
+
+
 
 ?>

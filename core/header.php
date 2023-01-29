@@ -179,7 +179,6 @@ function ziggeo_p_page_header() {
 
 			<?php
 			//Language options
-			//@add translations options here
 			if($options['default_lang'] !== "auto") {
 				?>
 				ZiggeoApi.V2.Locale.setLocale("<?php echo $options['default_lang']; ?>");
