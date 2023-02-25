@@ -5,13 +5,21 @@ defined('ABSPATH') or die();
 
 //This file has the codes that are related to processing / parsing of templates, their parameters and / or values.
 
+// Functions in this file
+///////////////////////////
+// 1. ziggeo_get_parameters_from_template_code()
+// 2. ziggeo_p_parameter_processing()
+// 3. ziggeo_p_parameter_prep()
+// 4. ziggeo_content_parse_with_token_only()
+
+
 
 //helper function to turn the default templates (strings) to array for ziggeo_p_parameter_processing function..
 // should also be useful for standard templates to get the array of parameters
-
 if(!function_exists('ziggeo_get_parameters_from_template_code')) {
 
 	function ziggeo_get_parameters_from_template_code($code) {
+
 		$_temp = explode('ziggeo-', $code);
 		$rez = array();
 		foreach($_temp as $key => $value) {
@@ -31,6 +39,7 @@ if(!function_exists('ziggeo_get_parameters_from_template_code')) {
 //Function to process parameters. We send it which ones have to be in and which one are currently set and it sends us back a string that we can use as a template
 //It will also (TODO) check if we are setting same parameters to remove duplicates, while seeing if one should be used over the other..
 function ziggeo_p_parameter_processing($attributes, $process, $replaceDuplicates = false) {
+
 	$processed = $process; //for now
 
 	foreach ($attributes as $key => $value) {
@@ -108,6 +117,7 @@ function ziggeo_p_parameter_prep($data) {
 //parses templates with token by using default values
 //example: [ziggeoplayer]TOKEN[/ziggeoplayer], [ziggeorecorder]TOKEN[/ziggeorecorder]..
 function ziggeo_content_parse_with_token_only($template, $token, $type) {
+
 	// player - just plays back the video (default)
 	// recorder - no playback is shown, it will try to overwrite/rerecord over existing video upon recording
 	// rerecorder - offers playback and to rerecord the video

@@ -375,9 +375,9 @@ function ziggeo_echo_selected($var_to_check, $value_to_have) {
 
 // Helper function for integration detecting our embeddings and then adding the 
 function ziggeo_p_integrations_field_add_custom_tag($field, $code_addition) {
-	$_slice_point = stripos($field, ' ', stripos($field, '<ziggeo'));
+	$t_field = strtolower($field);
+	$_slice_point = strpos($t_field, ' ', strpos($t_field, '<ziggeo'));
 	$field = substr($field, 0, $_slice_point) . ' ' . $code_addition . ' ' . substr($field, $_slice_point);
-
 	return $field;
 }
 
@@ -456,6 +456,18 @@ function ziggeo_p_get_keys($app_token = null) {
 		return $the_list;
 	}
 
+}
+
+// Helper function that checks if the Ziggeo Core WP plugin is lazy loaded (returns true) or not (returns false)
+function ziggeo_p_is_lazyloaded() {
+
+	$option = ziggeo_get_plugin_options('lazy_load');
+
+	if($option === true || $option === ZIGGEO_YES) {
+		return true;
+	}
+
+	return false;
 }
 
 ?>

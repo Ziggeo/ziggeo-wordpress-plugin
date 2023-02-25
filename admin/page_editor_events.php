@@ -108,14 +108,21 @@ defined('ABSPATH') or die();
 			</p>
 
 			<strong>Existing Event Templates</strong>
-			<ol>
+			<ol id="existing_event_templates">
 			<?php
 				$existing = get_option('ziggeo_events');
 				if(!is_array($existing)) {
 					$existing = array();
+					?><li>No events have been saved yet</li><?php
 				}
 				foreach($existing as $id => $template) {
-					?><li title="<?php echo htmlentities($template['code']); ?>"><?php echo $id ?></li><?php
+					?>
+					<li title="<?php echo htmlentities($template['code']); ?>">
+						<span class="event_id"><?php echo $id ?></span>
+						<span class="event_remove" data-id="<?php echo $id; ?>">x</span>
+						<textarea><?php echo $template['code']; ?></textarea>
+					</li>
+					<?php
 				}
 				?>
 			</ol>

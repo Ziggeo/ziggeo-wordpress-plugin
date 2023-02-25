@@ -40,6 +40,14 @@ function ziggeo_a_s_c_text() {
 						<a href="https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin" target="_blank"><?php _ex('WordPress Plugin forum', 'part of email and chat segment on contact us page 6/7', 'ziggeo'); ?></a> <?php _x('where you might find the answers to your questions already being answered.', 'part of email and chat segment on contact us page 7/7', 'ziggeo'); ?>
 					</p>
 				</li>
+
+				<li>
+					<span class="title"><?php _ex('Create your own feature suggestions', 'Contact us page', 'ziggeo'); ?></span>
+					<p class="info">
+						<a href="https://feedback.ziggeo.com/wordpress" target="_blank"><?php _ex('Feedback Pages', 'Contact Us page', 'ziggeo'); ?></a> <?php _x('where you can upvote other suggestions or add your own', 'Contact Us', 'ziggeo'); ?>
+					</p>
+				</li>
+				
 			</ol>
 		</p>
 		<?php

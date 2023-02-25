@@ -8,7 +8,6 @@ if(!function_exists('ziggeo_content_parse_player')) {
 
 	//@TODO: Lets add few hooks into this
 	function ziggeo_content_parse_player($code, $post_code = true) {
-
 		$result = '<ziggeoplayer ' . ziggeo_template_v1_to_v2(ziggeo_p_parameter_prep($code)) . '></ziggeoplayer>';
 
 		if($post_code === true) {
@@ -22,16 +21,17 @@ if(!function_exists('ziggeo_content_parse_player')) {
 }
 
 //Shortcode handling for Ziggeo Player
-add_shortcode( 'ziggeoplayer', function($attrs) {
-	return ziggeo_p_shortcode_handler('[ziggeoplayer', $attrs);
-});
+// Only active if we use older content parsing
+// Note: Removed intentionally as it can cause issues in parsing
+//add_shortcode( 'ziggeoplayer', function($attrs, $content, $tag) {
+//	return ziggeo_p_shortcode_handler('[ziggeoplayer', $attrs);
+//});
 
 // Support for audio player
 if(!function_exists('ziggeo_content_parse_audio_player')) {
 
 	//@TODO: Lets add few hooks into this
 	function ziggeo_content_parse_audio_player($code, $post_code = true) {
-
 		$result = '<ziggeoaudioplayer ' . ziggeo_p_parameter_prep($code) . '></ziggeoaudioplayer>';
 
 		if($post_code === true) {
@@ -121,15 +121,16 @@ function ziggeo_p_prep_parameters_player($raw_parameters = null) {
 	}
 
 	//we are trying to detect video token being present..
-	if( strlen(trim($raw_parameters)) === 32 && stripos($raw_parameters, '=') === false) {
+	if( strlen(trim($raw_parameters)) === 32 && strpos($raw_parameters, '=') === false) {
 		$raw_parameters = ' video="' . trim($raw_parameters) . '" ';
 	}
 
-	return ziggeo_p_parameter_processing( ziggeo_get_parameters_from_template_code(ZIGGEO_DEFAULTS_PLAYER), $raw_parameters );
+	return ziggeo_p_parameter_processing(ziggeo_get_parameters_from_template_code(ZIGGEO_DEFAULTS_PLAYER), $raw_parameters );
 }
 
 //handles the raw parameters for the ziggeo audio player..
 function ziggeo_p_prep_parameters_audio_player($raw_parameters = null) {
+
 	if($raw_parameters === null) {
 		return '';
 	}

@@ -74,72 +74,77 @@ if(!function_exists('ziggeo_comment_vrto_js_code')) {
 
 			elems.textarea = document.getElementById('<?php echo $options['comments_text_id']; ?>');
 			elems.form = document.getElementById('<?php echo $options['comments_form_id']; ?>');
-			elems.btn_submit = elems.form.querySelector('#submit');
-			if(elems.btn_submit) {
-				elems.btn_submit.setAttribute('disabled', 'disabled');
-			}
 
-			elems.comments_container = jQuery(elems.textarea).closest('form >')[0];
+			// If there is no form to be found, we do not do anything
+			if(elems.form) {
+				elems.btn_submit = elems.form.querySelector('#submit');
 
-			elems.comments_container.insertAdjacentHTML('beforebegin', document.getElementById('comment-ziggeo-template').innerHTML);
-
-			function ziggeoCommentsVerifiedListener() {
-
-				// Added to support lazy load option
-				if(typeof ziggeo_app === 'undefined') {
-					setTimeout(function() {
-						ziggeoCommentsVerifiedListener();
-					}, 400);
-					return false;
+				if(elems.btn_submit) {
+					elems.btn_submit.setAttribute('disabled', 'disabled');
 				}
 
-				ziggeo_app.embed_events.on("verified", function (embedding) {
+				elems.comments_container = jQuery(elems.textarea).closest('form >')[0];
 
-					var ziggeo_token = document.getElementById('ziggeo_video_token');
-					<?php
-					if($template_player) {
-						?>
-							//Lets add the default value into the box
-							ziggeo_token.value = '[ziggeoplayer ' + '<?php echo $template_player ?>';
-							//Now we have both the token and the template. We should search the template to see if token="" is present and if so, just insert the video token into quotes, otherwise, we would need to add the token attribute and show it up.
-							if( (index_s = ziggeo_token.value.indexOf(' video') ) > -1 ||
-								(index_s = ziggeo_token.value.indexOf(' ziggeo-video') ) > -1) {
+				elems.comments_container.insertAdjacentHTML('beforebegin', document.getElementById('comment-ziggeo-template').innerHTML);
 
-								//Lets grab the ending as well
-								var index_e = ziggeo_token.value.indexOf(' ', index_s);
-								ziggeo_token.value = ziggeo_token.value.substr(0, index_s) + ' video="' + embedding.get('video') + '"' + ziggeo_token.value.substr(index + index_e + 2)
-							}
-							else {
-								ziggeo_token.value += ' ziggeo-video="' + embedding.get('video') + '" ]';
-							}
-						<?php
-					}
-					//It is not tempalte that we are using, we are just saving it with the parameters..
-					elseif( !empty($template_player) ) {
-						?>
-						ziggeo_token.value = '[ziggeoplayer <?php echo $template_player; ?> video="' + embedding.get('video') + '" ]';
-						<?php
-						//[ziggeo ziggeo-width=480 ziggeo-height=360 video="token" ]
-					}
-					//Fallback to the previous method of embedding. Should not come to it, but just in case it does, we have it here, ready to capture the same.
-					else {
-						?>
-						ziggeo_token.value = '[ziggeoplayer]' + embedding.get('video') + '[/ziggeoplayer]';
-						<?php
-					}
-					?>
-					if(elems.textarea.value === '') {
-						elems.textarea.value = ziggeo_token.value + "\n\n"
-					}
-					else {
-						elems.textarea.value += "\n\n" + ziggeo_token.value;
+				function ziggeoCommentsVerifiedListener() {
+
+					// Added to support lazy load option
+					if(typeof ziggeo_app === 'undefined') {
+						setTimeout(function() {
+							ziggeoCommentsVerifiedListener();
+						}, 400);
+						return false;
 					}
 
-					elems.btn_submit.removeAttribute('disabled');
-				});
+					ziggeo_app.embed_events.on("verified", function (embedding) {
+
+						var ziggeo_token = document.getElementById('ziggeo_video_token');
+						<?php
+						if($template_player) {
+							?>
+								//Lets add the default value into the box
+								ziggeo_token.value = '[ziggeoplayer ' + '<?php echo $template_player ?>';
+								//Now we have both the token and the template. We should search the template to see if token="" is present and if so, just insert the video token into quotes, otherwise, we would need to add the token attribute and show it up.
+								if( (index_s = ziggeo_token.value.indexOf(' video') ) > -1 ||
+									(index_s = ziggeo_token.value.indexOf(' ziggeo-video') ) > -1) {
+
+									//Lets grab the ending as well
+									var index_e = ziggeo_token.value.indexOf(' ', index_s);
+									ziggeo_token.value = ziggeo_token.value.substr(0, index_s) + ' video="' + embedding.get('video') + '"' + ziggeo_token.value.substr(index + index_e + 2)
+								}
+								else {
+									ziggeo_token.value += ' ziggeo-video="' + embedding.get('video') + '" ]';
+								}
+							<?php
+						}
+						//It is not template that we are using, we are just saving it with the parameters..
+						elseif( !empty($template_player) ) {
+							?>
+							ziggeo_token.value = '[ziggeoplayer <?php echo $template_player; ?> video="' + embedding.get('video') + '" ]';
+							<?php
+							//[ziggeo ziggeo-width=480 ziggeo-height=360 video="token" ]
+						}
+						//Fallback to the previous method of embedding. Should not come to it, but just in case it does, we have it here, ready to capture the same.
+						else {
+							?>
+							ziggeo_token.value = '[ziggeoplayer]' + embedding.get('video') + '[/ziggeoplayer]';
+							<?php
+						}
+						?>
+						if(elems.textarea.value === '') {
+							elems.textarea.value = ziggeo_token.value + "\n\n"
+						}
+						else {
+							elems.textarea.value += "\n\n" + ziggeo_token.value;
+						}
+
+						elems.btn_submit.removeAttribute('disabled');
+					});
+				}
+
+				ziggeoCommentsVerifiedListener();
 			}
-
-			ziggeoCommentsVerifiedListener();
 		</script>
 		<?php
 	}

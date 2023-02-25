@@ -41,6 +41,11 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 // This does not handle the parameters, it is just a simple example
 add_filter('ziggeo_content_filter_pre', function ($content) {
 
+	// support for template v2
+	if(is_array($content) && isset($content['shortcode'])) {
+		$content = $content['shortcode'];
+	}
+
 	$_t_pos_pre = stripos($content, '<ziggeo>');
 
 	if($_t_pos_pre > -1) {
@@ -133,14 +138,14 @@ add_filter('ziggeo_template_parsing_tag_set', function($locationTag, $filter) {
 //to change %PAGE_TITLE% into actual title of the current page
 //This one fires every time the content is checked for Ziggeo data, before the Ziggeo info is found and even if Ziggeo is not included. So not the best way to do it (performance wise). Leaving it here in case it helps someone because in some cases you might actually want to do it at this time
 add_filter('ziggeo_content_filter_pre', function ($content) {
-	$content = str_ireplace('%PAGE_TITLE%', get_the_title(), $content);
+	$content = str_replace('%PAGE_TITLE%', get_the_title(), $content);
 
 	return $content;
 });
 
 //Another custom tags support for %CURRENT_ID% for POST ID. 
 add_filter('ziggeo_custom_tags_processing', function($content) {
-	if(stripos($content, '%CURRENT_ID%') > -1 || stripos($content, '%PAGE_ID%') > -1) {
+	if(strpos($content, '%CURRENT_ID%') > -1 || strpos($content, '%PAGE_ID%') > -1) {
 		global $wp_query;
 
 		$post_ID = $wp_query->get_queried_object_id();
@@ -157,14 +162,14 @@ add_filter('ziggeo_custom_tags_processing', function($content) {
 	$user_details = ziggeo_p_get_current_user();
 
 	//IMPORTANT: It will be 0 for all non logged in users
-	$content = str_ireplace('%USER_ID%', $user_details->ID, $content);
-	$content = str_ireplace('%USER_NAME_FIRST%', $user_details->user_firstname, $content);
-	$content = str_ireplace('%USER_NAME_LAST%', $user_details->user_lastname, $content);
-	$content = str_ireplace('%USER_NAME_FULL%', $user_details->user_lastname . ' ' .
+	$content = str_replace('%USER_ID%', $user_details->ID, $content);
+	$content = str_replace('%USER_NAME_FIRST%', $user_details->user_firstname, $content);
+	$content = str_replace('%USER_NAME_LAST%', $user_details->user_lastname, $content);
+	$content = str_replace('%USER_NAME_FULL%', $user_details->user_lastname . ' ' .
 	                                            $user_details->user_firstname, $content);
-	$content = str_ireplace('%USER_NAME_DISPLAY%', $user_details->display_name, $content);  //displayname
-	$content = str_ireplace('%USER_EMAIL%', $user_details->user_email, $content);
-	$content = str_ireplace('%USER_USERNAME%', $user_details->user_login, $content);        //username
+	$content = str_replace('%USER_NAME_DISPLAY%', $user_details->display_name, $content);  //displayname
+	$content = str_replace('%USER_EMAIL%', $user_details->user_email, $content);
+	$content = str_replace('%USER_USERNAME%', $user_details->user_login, $content);        //username
 
 	return $content;
 });

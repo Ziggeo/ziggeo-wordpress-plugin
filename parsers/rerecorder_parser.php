@@ -25,9 +25,10 @@ if(!function_exists('ziggeo_content_parse_rerecorder')) {
 }
 
 //Shortcode handling for Ziggeo Re-Recorder
-add_shortcode( 'ziggeorerecorder', function($attrs) {
-	return ziggeo_p_shortcode_handler('[ziggeorerecorder', $attrs);
-});
+// Intentionally removed as it can cause issues during parsing, new method works better
+//add_shortcode( 'ziggeorerecorder', function($attrs) {
+//	return ziggeo_p_shortcode_handler('[ziggeorerecorder', $attrs);
+//});
 
 function ziggeo_p_template_is_rerecorder($template) {
 
@@ -63,6 +64,7 @@ function ziggeo_p_template_is_rerecorder($template) {
 
 //handles the raw parameters for the ziggeo recorder..
 function ziggeo_p_prep_parameters_rerecorder($raw_parameters = null) {
+
 	if($raw_parameters === null) {
 		return '';
 	}

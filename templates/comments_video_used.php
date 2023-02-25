@@ -83,111 +83,115 @@ if(!function_exists('ziggeo_comment_vat_js_code')) {
 
 			elems.textarea = document.getElementById('<?php echo $options['comments_text_id']; ?>');
 			elems.form = document.getElementById('<?php echo $options['comments_form_id']; ?>');
-			elems.btn_submit = elems.form.querySelector('#submit');
-			if(elems.btn_submit) {
-				elems.btn_submit.setAttribute('disabled', 'disabled');
-			}
 
-			elems.comments_container = jQuery(elems.textarea).closest('form >')[0];
+			// If there is no form to be found, we do not do anything
+			if(elems.form) {
+				elems.btn_submit = elems.form.querySelector('#submit');
+				if(elems.btn_submit) {
+					elems.btn_submit.setAttribute('disabled', 'disabled');
+				}
 
-			elems.comments_container.insertAdjacentHTML('beforebegin', document.getElementById('comment-ziggeo-template').innerHTML);
+				elems.comments_container = jQuery(elems.textarea).closest('form >')[0];
 
-			var tab_btn_text = document.getElementById('comments-text-link');
-			var tab_btn_video = document.getElementById('comments-video-link');
-			var tab_text = elems.comments_container;
-			var tab_video = document.getElementById('comments-video-container');
+				elems.comments_container.insertAdjacentHTML('beforebegin', document.getElementById('comment-ziggeo-template').innerHTML);
 
-			// Insert recorder code
-			tab_video.insertAdjacentHTML('beforeend', document.getElementById('ziggeo-recorder').innerHTML);
+				var tab_btn_text = document.getElementById('comments-text-link');
+				var tab_btn_video = document.getElementById('comments-video-link');
+				var tab_text = elems.comments_container;
+				var tab_video = document.getElementById('comments-video-container');
 
-			if(tab_btn_text) {
-				tab_btn_text.addEventListener('click', function() {
-					tab_video.style.display = 'none';
-					tab_text.style.display = 'block';
+				// Insert recorder code
+				tab_video.insertAdjacentHTML('beforeend', document.getElementById('ziggeo-recorder').innerHTML);
 
-					tab_btn_video.className = tab_btn_video.className.replace('selected');
-					tab_btn_text.className += ' selected';
+				if(tab_btn_text) {
+					tab_btn_text.addEventListener('click', function() {
+						tab_video.style.display = 'none';
+						tab_text.style.display = 'block';
+
+						tab_btn_video.className = tab_btn_video.className.replace('selected');
+						tab_btn_text.className += ' selected';
+					});
+				}
+
+				tab_btn_video.addEventListener('click', function() {
+					tab_video.style.display = 'block';
+					if(tab_text) {
+						tab_text.style.display = 'none';
+					}
+
+					if(tab_btn_text) {
+						tab_btn_text.className = tab_btn_text.className.replace('selected');
+					}
+					tab_btn_video.className += ' selected';
 				});
-			}
 
-			tab_btn_video.addEventListener('click', function() {
-				tab_video.style.display = 'block';
-				if(tab_text) {
+				if(!tab_btn_text) {
 					tab_text.style.display = 'none';
 				}
 
-				if(tab_btn_text) {
-					tab_btn_text.className = tab_btn_text.className.replace('selected');
-				}
-				tab_btn_video.className += ' selected';
-			});
+				//since it is just added now, we need to make some timeout
+				function ziggeoCommentsVerifiedListener() {
 
-			if(!tab_btn_text) {
-				tab_text.style.display = 'none';
-			}
+					// Added to support lazy load option
+					if(typeof ziggeo_app === 'undefined') {
+						setTimeout(function() {
+							ziggeoCommentsVerifiedListener();
+						}, 400);
+						return false;
+					}
 
-			//since it is just added now, we need to make some timeout
-			function ziggeoCommentsVerifiedListener() {
+					var recorder = ZiggeoApi.V2.Recorder.findByElement( document.getElementById('comments_recorder') );
 
-				// Added to support lazy load option
-				if(typeof ziggeo_app === 'undefined') {
-					setTimeout(function() {
-						ziggeoCommentsVerifiedListener();
-					}, 400);
-					return false;
-				}
+					if(recorder) {
+						recorder.on('verified' , function() {
 
-				var recorder = ZiggeoApi.V2.Recorder.findByElement( document.getElementById('comments_recorder') );
+							var tmp_player_code = '';
 
-				if(recorder) {
-					recorder.on('verified' , function() {
+							<?php
+							if($player_code) {
+								?>
+								tmp_player_code = '[ziggeoplayer ' + '<?php echo $player_code ?>';
+								//Now we have both the token and the template. We should search the template to see if token="" is present and if so, just insert the video token into quotes, otherwise, we would need to add the token attribute and show it up.
+								if( (index_s = tmp_player_code.indexOf(' video') ) > -1 ||
+									(index_s = tmp_player_code.indexOf(' ziggeo-video') ) > -1) {
 
-						var tmp_player_code = '';
-
-						<?php
-						if($player_code) {
-							?>
-							tmp_player_code = '[ziggeoplayer ' + '<?php echo $player_code ?>';
-							//Now we have both the token and the template. We should search the template to see if token="" is present and if so, just insert the video token into quotes, otherwise, we would need to add the token attribute and show it up.
-							if( (index_s = tmp_player_code.indexOf(' video') ) > -1 ||
-								(index_s = tmp_player_code.indexOf(' ziggeo-video') ) > -1) {
-
-								//Lets grab the ending as well
-								var index_e = tmp_player_code.indexOf(' ', index_s);
-								tmp_player_code = tmp_player_code.substr(0, index_s) + ' video="' + recorder.get('video') + '"' + tmp_player_code.substr(index + index_e + 2)
+									//Lets grab the ending as well
+									var index_e = tmp_player_code.indexOf(' ', index_s);
+									tmp_player_code = tmp_player_code.substr(0, index_s) + ' video="' + recorder.get('video') + '"' + tmp_player_code.substr(index + index_e + 2)
+								}
+								else {
+									tmp_player_code += ' ziggeo-video="' + recorder.get('video') + '" ]';
+								}
+								<?php
 							}
+							//It is not tempalte that we are using, we are just saving it with the parameters..
+							elseif( !empty($player_code) ) {
+								?>
+								tmp_player_code = '[ziggeoplayer <?php echo $player_code; ?> video="' + recorder.get('video') + '" ]';
+								<?php
+							}
+							//Fallback to the previous method of embedding. Should not come to it, but just in case it does, we have it here, ready to capture the same.
 							else {
-								tmp_player_code += ' ziggeo-video="' + recorder.get('video') + '" ]';
+								?>
+								tmp_player_code = '[ziggeoplayer]' + recorder.get('video') + '[/ziggeoplayer]';
+								<?php
 							}
-							<?php
-						}
-						//It is not tempalte that we are using, we are just saving it with the parameters..
-						elseif( !empty($player_code) ) {
 							?>
-							tmp_player_code = '[ziggeoplayer <?php echo $player_code; ?> video="' + recorder.get('video') + '" ]';
-							<?php
-						}
-						//Fallback to the previous method of embedding. Should not come to it, but just in case it does, we have it here, ready to capture the same.
-						else {
-							?>
-							tmp_player_code = '[ziggeoplayer]' + recorder.get('video') + '[/ziggeoplayer]';
-							<?php
-						}
-						?>
 
-						elems.textarea.value = tmp_player_code;
-						elems.btn_submit.removeAttribute('disabled');
-					});
+							elems.textarea.value = tmp_player_code;
+							elems.btn_submit.removeAttribute('disabled');
+						});
+					}
+					else {
+						setTimeout(function() {
+							ziggeoCommentsVerifiedListener();
+						}, 400);
+						return false;
+					}
 				}
-				else {
-					setTimeout(function() {
-						ziggeoCommentsVerifiedListener();
-					}, 400);
-					return false;
-				}
+
+				ziggeoCommentsVerifiedListener();
 			}
-
-			ziggeoCommentsVerifiedListener();
 		</script>
 		<?php
 	}

@@ -302,6 +302,11 @@ defined('ABSPATH') or die();
 		//Lets get a list of all existing templates
 		$index = ziggeo_p_templates_index('file');
 
+		// To make sure we get the templates if the file is empty
+		if($index === false) {
+			$index = ziggeo_p_templates_index();
+		}
+
 		$id = trim($id);
 
 		if( isset($index, $index[$id]) )
@@ -404,13 +409,40 @@ defined('ABSPATH') or die();
 		$parameters = stripslashes($parameters);
 
 		$result = '';
-		$param_array = explode(' ', $parameters);
 
-		foreach($param_array as $param) {
-			if($param !== '') {
-				$result .= ' ziggeo-' . $param;
+		$processed = false;
+		$start = 0;
+		$parameters = ' ' . trim($parameters); // We do this to help locate the parameters
+
+		while ($processed !== true) {
+
+			$start = strpos($parameters, '=', $start);
+			$param_length = strlen($parameters);
+
+			if($start > -1) {
+				$rev_parameters = strrev($parameters);
+
+				$p_start = strrpos($parameters, ' ', -($param_length - $start));
+				$param = trim(substr($parameters, $p_start, $start - $p_start));
+
+				if(strpos($param, 'ziggeo-') === false) {
+					$param ='ziggeo-' . $param;
+				}
+
+				$parameters = substr($parameters, 0, $p_start) . ' ' . $param . substr($parameters, $start); 
+
+				$start += 8;
+
+				if($start > strlen($parameters)) {
+					$processed = true;
+				}
+			}
+			else {
+				$processed = true;
 			}
 		}
+
+		$result = $parameters;
 
 		return $result;
 	}

@@ -32,13 +32,17 @@ function ziggeo_p_assets_get_raw() {
 			'css'	=> 'https://assets-cdn.ziggeo.com/' . $use . '/ziggeo.css' . $ver
 		),
 		array(
-			'js'	=> 'https://imasdk.googleapis.com/js/sdkloader/ima3.js' . $ver
-		),
-		array(
 			'js'	=> ZIGGEO_ROOT_URL . 'assets/js/ziggeo_plugin' . $__min . '.js' . $ver,
 			'css'	=> ZIGGEO_ROOT_URL . 'assets/css/styles' . $__min . '.css' . $ver
 		)
 	);
+
+	// Making the VAST SDK loaded only when needed
+	if(!empty($options['vast_adserver'])) {
+		$result[] = array(
+			'js'	=> 'https://imasdk.googleapis.com/js/sdkloader/ima3.js' . $ver
+		);
+	}
 
 	//Allowing to add additional URLs
 	$result = apply_filters('ziggeo_assets_init_raw_post', $result);
@@ -165,37 +169,49 @@ add_action('admin_enqueue_scripts', "ziggeo_p_assets_admin");
 
 // Function that helps us with the lazyload assets loading
 function ziggeo_p_get_lazyload_activator() {
-	return '<script>function ziggeoLoadAssets() {' .
-			'var _head = document.getElementsByTagName(\'head\')[0];' .
-			'for(i = 0, c = ZiggeoWP.lazyload.length; i < c; i++) {' .
-				//Check for and create script element
-				'if( typeof ZiggeoWP.lazyload[i].js !== \'undefined\' ){' .
-					'var _script = document.createElement(\'script\');' .
-					'_script.type = "text/javascript";' .
-					'_script.src = ZiggeoWP.lazyload[i].js;' .
-					'_head.appendChild(_script);' .
+
+	if(defined('ZIGGEO_FOUND_POST')) {
+		return false;
+	}
+
+	return '<script>' .
+		'if(typeof ziggeoLoadAssets !== \'function\'){' .
+			'function ziggeoLoadAssets() {' .
+				'if(typeof ZiggeoWP === "undefined") {' .
+					'setTimeout(function() { ziggeoLoadAssets();}, 200);' .
+					'return false;' .
 				'}' .
-				//Check for and create style element
-				'if( typeof ZiggeoWP.lazyload[i].css !== \'undefined\' ){' .
-					'var _style = document.createElement(\'link\');' .
-					'_style.rel = "stylesheet";' .
-					'_style.href = ZiggeoWP.lazyload[i].css;' .
-					'_style.media = \'all\';' .
-					'_head.appendChild(_style);' .
+				'var _head = document.getElementsByTagName(\'head\')[0];' .
+				'for(i = 0, c = ZiggeoWP.lazyload.length; i < c; i++) {' .
+					//Check for and create script element
+					'if( typeof ZiggeoWP.lazyload[i].js !== \'undefined\' ){' .
+						'var _script = document.createElement(\'script\');' .
+						'_script.type = "text/javascript";' .
+						'_script.src = ZiggeoWP.lazyload[i].js;' .
+						'_head.appendChild(_script);' .
+					'}' .
+					//Check for and create style element
+					'if( typeof ZiggeoWP.lazyload[i].css !== \'undefined\' ){' .
+						'var _style = document.createElement(\'link\');' .
+						'_style.rel = "stylesheet";' .
+						'_style.href = ZiggeoWP.lazyload[i].css;' .
+						'_style.media = \'all\';' .
+						'_head.appendChild(_style);' .
+					'}' .
 				'}' .
 			'}' .
-		'}' .
-		'if(document.readyState === \'complete\'){' .
-			'ziggeoReInitApp();' .
-			'ziggeoLoadAssets();' .
-			'if(typeof ziggeoSetTranslations === "function") {ziggeoSetTranslations();}' .
-		'}' .
-		'else {' .
-			'window.addEventListener(\'load\', function() {' . 
+			'if(document.readyState === \'complete\'){' .
 				'ziggeoReInitApp();' .
 				'ziggeoLoadAssets();' .
 				'if(typeof ziggeoSetTranslations === "function") {ziggeoSetTranslations();}' .
-			'});' .
+			'}' .
+			'else {' .
+				'window.addEventListener(\'load\', function() {' . 
+					'ziggeoReInitApp();' .
+					'ziggeoLoadAssets();' .
+					'if(typeof ziggeoSetTranslations === "function") {ziggeoSetTranslations();}' .
+				'});' .
+			'}' .
 		'}' .
 	'</script>';
 }

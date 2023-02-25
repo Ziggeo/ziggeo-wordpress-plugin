@@ -31,6 +31,7 @@ define('ZIGGEO_DATA_ROOT_URL', ZIGGEO_ROOT_URL . '/cache/');
 
 //plugin version - this way other plugins can get it as well and we will be updating this file for each version change as is
 define('ZIGGEO_VERSION', '3.0');
+define('ZIGGEO_PARSER', 1);
 
 //Best to state default code in one location, then just call for it when needed.
 

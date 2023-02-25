@@ -88,10 +88,12 @@ function ziggeo_p_page_header() {
 				},
 
 				//will check all of the hooks and fire them one after another
-				fire: function(hook_name, __data) {
+				fire: function(hook_name, __data, pass_back) {
 					if( typeof(ZiggeoWP.hooks._hooks[hook_name]) != 'undefined') {
 
 						var i, c; //leave this or "i" will be broken
+						var fired = false;
+						var results = null;
 
 						for(priority in ZiggeoWP.hooks._hooks[hook_name]) {
 
@@ -100,10 +102,16 @@ function ziggeo_p_page_header() {
 								//final sanity if the function is still available..
 								if( typeof(ZiggeoWP.hooks._hooks[hook_name][priority][i]) != 'undefined') {
 									try {
+										fired = true;
 										//__data is passed by reference. This allows you to modify it in one of the hooks
 										// It also means that you should not use __data or it will clear entire object.
 										//ZiggeoWP.hooks._hooks[hook_name][i].func(__data);
-										ZiggeoWP.hooks._hooks[hook_name][priority][i].func(__data);
+										if(pass_back === true) {
+											results = ZiggeoWP.hooks._hooks[hook_name][priority][i].func(__data, results);
+										}
+										else {
+											ZiggeoWP.hooks._hooks[hook_name][priority][i].func(__data);
+										}
 									}
 									catch(error) {
 										ziggeoDevReport(error, 'error');
@@ -111,12 +119,19 @@ function ziggeo_p_page_header() {
 								}
 							}
 						}
+
+						if(fired === false) {
+							return null;
+						}
+
+						if(typeof pass_back !== 'undefined') {
+							return results;
+						}
 					}
 				},
 
 				//remove the specific hook and function
 				remove: function(hook_name, function_name) {
-
 				}
 			}
 		};
@@ -233,7 +248,8 @@ function ziggeo_p_page_header() {
 		}
 		else {
 			//Fallback for strange cases when the ziggeo.js does not get loaded yet the above is executed.
-			jQuery(document).ready( function() {
+			//jQuery(document).ready( function() {
+			window.addEventListener('load', function() {
 				//Final check in case it was blocked (like some plugins do)
 				ziggeoReInitApp();				
 			});

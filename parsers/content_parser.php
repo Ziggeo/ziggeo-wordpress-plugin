@@ -116,7 +116,6 @@ function ziggeo_p_content_ziggeotemplate_parser($content) {
 // used by: templates v2
 // returns array with error or success status
 function ziggeo_p_template_parser($template) {
-
 	// Cleanup
 	$template = str_replace('[ziggeotemplate', '', $template);
 	$template = str_replace(']', '', $template);
@@ -203,7 +202,6 @@ function ziggeo_p_template_parser($template) {
 // Function that searches the content for the [ziggeodownloads shortcode
 // Needed because add_shortcode would not work as long as v1 support is turned on
 function ziggeo_p_content_ziggeodownloads_parser($content) {
-
 	$start = strpos($content, '[ziggeodownloads');
 
 	if($start > -1) {
@@ -281,7 +279,6 @@ function ziggeo_p_content_ziggeodownloads_parser($content) {
 
 //Add support for the shortcodes
 function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
-
 	if(!defined('ZIGGEO_SHORTCODE_RUN')) {
 		define('ZIGGEO_SHORTCODE_RUN', true);
 	}
@@ -294,7 +291,12 @@ function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
 	else {
 		//We have to combine the attrs array into key + value
 		foreach($attrs as $key => $value) {
-			$attrs_str .= ' ' . $key . "='" . $value . "'";
+			if(is_numeric($key)) {
+				$attrs_str .= ' ' . $value;
+			}
+			else {
+				$attrs_str .= ' ' . $key . "='" . $value . "'";
+			}
 		}
 	}
 
@@ -303,7 +305,6 @@ function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
 
 //General Ziggeo shortcode support
 add_shortcode( 'ziggeo', function($attrs) {
-
 	if($attrs === '') {
 		// it could be
 		// [ziggeo]video_token[/ziggeo] - legacy code
@@ -316,30 +317,156 @@ add_shortcode( 'ziggeo', function($attrs) {
 
 //We are updating this in such a way that we will keep the old calls, so that we have backwards compatibility, but in the same time, we are adding another call that will check for us if there are any tags matching new templates. We must do it like this, since using regex we will be able to find this in all locations that we want, while if we use shortcode, it will only work (out of the box) if the shortcode is within the section covered by 'the_content' filter.
 function ziggeo_p_content_filter($content) {
-
 	//This way we are making it work fine with WPv5 saving where we would parse the content while we should not (like saving the post)
 	if(is_rest()) {
 		return $content;
 	}
 
 	//use add_filter('ziggeo_content_filter_pre', 'your-function-name') to change the content on fly before any checks
-	// for your Ziggeo templates
-	// it needs to return modified $content.
+	// for your own templates if it needs to return modified $content.
 	if(!defined('ZIGGEO_SHORTCODE_RUN')) {
 		$content = apply_filters('ziggeo_content_filter_pre', $content);
 	}
 
-	//matching new templates with old way of calling them in case someone does the same..
-	//handles [ziggeo]token[/ziggeo]
-	$content = preg_replace_callback("|\\[ziggeo(.*)\\](.*)\\[/ziggeo(.*)\\]|", 'ziggeo_p_content_parse_templates', $content);
+	if(ZIGGEO_PARSER === 0) {
+		// uses ziggeo_p_content_parse_templates() function for parsing
+		// example found with the regex bellow
+		// array(2) { [0]=> string(29) "[ziggeorecorder width='100%']" [1]=> string(21) "recorder width='100%'" } 
 
-	//finally we do a check for the latest way of doing it only.
-	// fallback so some specific cases
-	$content = preg_replace_callback("|\\[ziggeo(.*)\\]|", 'ziggeo_p_content_parse_templates', $content);
+		//matching new templates with old way of calling them in case someone does the same..
+		//handles [ziggeo]token[/ziggeo]
+		$content = preg_replace_callback("|\\[ziggeo(.*)\\](.*)\\[/ziggeo(.*)\\]|", 'ziggeo_p_content_parse_templates', $content);
 
-	//check to make sure that we get even [ziggeo calls without end bracket and show the embedding matching the call as much as possible instead of an error on a page
-	// fallback so some specific cases
-	$content = preg_replace_callback("|\\[ziggeo*([^\s\<]+)|", 'ziggeo_p_content_parse_templates', $content);
+		//finally we do a check for the latest way of doing it only.
+		// fallback so some specific cases
+		$content = preg_replace_callback("|\\[ziggeo(.*)\\]|", 'ziggeo_p_content_parse_templates', $content);
+
+		//check to make sure that we get even [ziggeo calls without end bracket and show the embedding matching the call as much as possible instead of an error on a page
+		// fallback so some specific cases
+		$content = preg_replace_callback("|\\[ziggeo*([^\s\<]+)|", 'ziggeo_p_content_parse_templates', $content);
+	}
+	elseif(ZIGGEO_PARSER === 1) {
+		// Uses ziggeo_p_shortcode_parser() for parsing
+
+		//'[ziggeotemplate',      // [ziggeotemplate templateID]
+		//  * Handled by ziggeo_p_content_ziggeotemplate_parser()
+		//'[ziggeo_event'       // [ziggeo_event eventsTemplateID]
+		// * Handled by ziggeo_event shortcode handler (see core/events.php file)
+
+		$double_sided = array(
+			'ziggeoplayer',       // [ziggeoplayer]videoToken[/ziggeoplayer]
+			'ziggeorerecorder',   // [ziggeorerecorder]videoToken[/ziggeorerecorder]
+			'ziggeo',             // [ziggeo]videotoken[/ziggeo]
+		);
+
+		$supported = array(
+			'ziggeorecorder',      // [ziggeorecorder templateID]      || [ziggeorecorder parameters]
+			'ziggeoplayer',        // [ziggeoplayer templateID]        || [ziggeoplayer parameters]
+			'ziggeorerecorder',    // [ziggeorerecorder templateID]    || [ziggeorerecorder parameters]
+			'ziggeouploader',      // [ziggeouploader templateID]      || [ziggeouploader parameters]
+			'ziggeoaudiorecorder', // [ziggeoaudiorecorder templateID] || [ziggeoaudiorecorder parameters]
+			'ziggeoaudioplayer'    // [ziggeoaudioplayer templateID]   || [ziggeoaudioplayer parameters]
+		);
+
+		// The following filter allows you to add your own parsing info, which is useful if your solution is
+		// built around Ziggeo, however it is not requirement
+		// Add what is being looked for like [custom]token[/custom]
+		$double_sided = apply_filters('ziggeo_content_filter_supported_codes_double', $double_sided);
+		// Add what is being looked for like [custom params]
+		$supported = apply_filters('ziggeo_content_filter_supported_codes_single', $supported);
+
+		// We add this last since anything else starting with [ziggeo would be captured
+		$supported[] = 'ziggeo';               // [ziggeo videoToken]
+
+		// doubled shortcodes
+		for($i = 0, $c = count($double_sided); $i < $c; $i++) {
+
+			$l_content = strtolower($content);
+			$found = strpos($l_content, '[' . $double_sided[$i] . ']');
+			$sup_size = strlen('[' . $double_sided[$i] . ']');
+
+			while($found !== false) {
+
+				$error = false;
+
+				// the end is in this case just the end of first shortcode "element", we need the closer
+				$end = strpos($l_content, '[/' . $double_sided[$i] . ']', $found);
+
+				if($end === false) {
+					// To help us debug why something is not shown
+					$error = '<!--
+								ziggeo-error: Shortcode does not seem to have all expected elements
+								reason: Missing ' . $double_sided[$i] . ' close tag
+								solution: Please see: https://ziggeo.com/docs/integrations/wordpress/ for more info.
+							-->';
+				}
+
+				// content pre-shortcode
+				$c1 = substr($content, 0, $found);
+
+				if($error !== false) {
+					// Looking for space as separator for shortcode since it does not have end tag
+					// so space is safe bet
+					// and we also add error
+					$c2 = substr($content, strpos($content, ' ', $found));
+					$content = $c1 . $error . $c2;
+				}
+				else {
+					// The shortcode in its entire format
+					$shortcode = substr($content, $found, $end - $found + $sup_size+1);
+
+					// Token only
+					$token = str_replace(array('[' . $double_sided[$i] . ']','[/' . $double_sided[$i] . ']'), '', $shortcode);
+
+					// Embedding codes
+					$codes = ziggeo_p_shortcode_parser( '[' . $double_sided[$i] . ']', $token);
+
+					// The reminder of the content
+					$c2 = substr($content, $end + $sup_size + 1);
+
+					$content = $c1 . $codes . $c2;
+				}
+
+				$l_content = strtolower($content);
+
+				$found = strpos($l_content, '[' . $double_sided[$i], $found);
+
+			}
+		}
+
+		// standard shortcodes handling
+		for($i = 0, $c = count($supported); $i < $c; $i++) {
+
+			$found = strpos($l_content, '[' . $supported[$i]);
+			$sup_size = strlen('[' . $supported[$i]);
+
+			while($found !== false) {
+
+				$end = strpos($content, ']', $found);
+				$shortcode = trim(substr($content, $found + $sup_size, $end - $found - $sup_size));
+
+				$codes = ziggeo_p_shortcode_parser($supported[$i], $shortcode);
+
+				$p1 = substr($content, 0, $found);
+				$p2 = false;
+
+				if($end !== false) {
+					$p2 = substr($content, $end+1);
+				}
+
+				if($p2 !== '' && $p2 !== false) { // to support pre8 and 8+ PHP
+					$content = $p1 . $codes . $p2;
+				}
+				else {
+					$content = $p1 . $codes;
+				}
+
+				$l_content = strtolower($content);
+
+				$found = strpos($l_content, '[' . $supported[$i], $found);
+			}
+		}
+	}
 
 	//use add_filter('ziggeo_content_filter_post', 'your-function-name') to change the content on fly after checking it
 	// for your Ziggeo templates
@@ -353,8 +480,205 @@ function ziggeo_p_content_filter($content) {
 	return $content;
 }
 
-//This works like shortcode functions do, allowing us to capture the codes through various filters and parse them as needed.
-//TODO: This needs to be broken up and simplified.
+
+// New way of processing Ziggeo codes (shortcodes and templates)
+// It replaces the ziggeo_p_content_parse_templates($matches) functionality
+function ziggeo_p_shortcode_parser($type, $code) {
+
+	if(!defined('ZIGGEO_FOUND')) {
+		define('ZIGGEO_FOUND', true);
+	}
+
+	// Prepare User Info
+	/////////////////////
+
+	$current_user = ziggeo_p_get_current_user();
+
+	//Lets check what we are filtering through at this time..
+	$filter = current_filter();
+
+	// veru crude location, we could extend this to show if page or post, or maybe even more info
+	if( $filter === 'comment_text' || $filter === 'thesis_comment_text' ) {
+		$location_tag = 'comment';
+	}
+	else {
+		$location_tag = 'post';
+	}
+
+	$location_tag = apply_filters('ziggeo_template_parsing_tag_set', $location_tag, $filter);
+
+	$c_user = ( $current_user->user_login == "" ) ? 'Guest' : $current_user->user_login;
+
+	// Prepare Templates info
+	///////////////////////////
+
+	$template_options_index = 0;
+
+	// this allows you to add your own functions for handling the templates
+	// for example we use this for the videowall plugin to "reach out" into the Templates editor
+	// and to be able to have the core plugin recognize it - to some extent
+	$temp_templates_array = array(
+		array(
+			'name'			=> 'ziggeoplayer',
+			'func_pre'		=> 'ziggeo_p_prep_parameters_player',
+			'func_final'	=> 'ziggeo_content_parse_player'
+		),
+		array(
+			'name'			=> 'ziggeorecorder',
+			'func_pre'		=> 'ziggeo_p_prep_parameters_recorder',
+			'func_final'	=> 'ziggeo_content_parse_recorder'
+		),
+		array(
+			'name'			=> 'ziggeorerecorder',
+			'func_pre'		=> 'ziggeo_p_prep_parameters_rerecorder',
+			'func_final'	=> 'ziggeo_content_parse_rerecorder'
+		),
+		array(
+			'name'			=> 'ziggeouploader',
+			'func_pre'		=> 'ziggeo_p_prep_parameters_uploader',
+			'func_final'	=> 'ziggeo_content_parse_uploader'
+		),
+		array(
+			'name'			=> 'ziggeoaudioplayer',
+			'func_pre'		=> 'ziggeo_p_prep_parameters_audio_player',
+			'func_final'	=> 'ziggeo_content_parse_audio_player'
+		),
+		array(
+			'name'			=> 'ziggeoaudiorecorder',
+			'func_pre'		=> 'ziggeo_p_prep_parameters_audio_recorder',
+			'func_final'	=> 'ziggeo_content_parse_audio_recorder'
+		)
+	);
+
+	// You should use this filter to add your own info as per above template
+	$template_options = apply_filters('ziggeo_manage_template_options_pre', $temp_templates_array);
+
+	for($i = 0, $c = count($template_options); $i < $c; $i++) {
+
+		if($template_options[$i]['name'] === $type) {
+			$template_options_index = $i;
+
+			//properly handled parameters
+			$code = $template_options[$i]['func_pre']($code);
+		}
+	}
+
+	// Parameters we want to add by default, however they will be used only if the template does not have
+	// the same parameters mentioned as well. This one is added to all types
+	$must_haves = array(
+		'width' => '100%'
+	);
+
+	if($type === 'ziggeorecorder') {
+		$must_haves['tags'] = array ('wordpress', $c_user, $location_tag );
+
+		$template = ziggeo_p_template_exists($code);
+
+		if($template) {
+			$code = str_replace(array('[ziggeorecorder ', ']'), '', $template);
+		}
+
+		$code = ziggeo_p_parameter_processing($must_haves, $code);
+
+		return '<ziggeorecorder ' . ziggeo_p_template_prefix_params($code) . '></ziggeorecorder>';
+	}
+	elseif($type === 'ziggeoplayer' || $type === '[ziggeoplayer]') {
+
+		$must_haves['video'] = '';
+
+		if($type === '[ziggeoplayer]') {
+			$code = ' ziggeo-video="' . $code . '" ';
+		}
+		else {
+			$template = ziggeo_p_template_exists($code);
+
+			if($template) {
+				$code = str_replace(array('[ziggeoplayer ', ']'), '', $template);
+			}
+		}
+
+		$code = ziggeo_p_parameter_processing($must_haves, $code);
+
+
+		return '<ziggeoplayer ' . ziggeo_p_template_prefix_params($code) . '></ziggeoplayer>';
+	}
+	elseif($type === 'ziggeoaudiorecorder') {
+
+		$template = ziggeo_p_template_exists($code);
+		$must_haves['tags'] = array ('wordpress', $c_user, $location_tag );
+
+		$code = ziggeo_p_parameter_processing($must_haves, $code);
+
+		if($template) {
+			$code = str_replace(array('[ziggeoaudiorecorder ', ']'), '', $template);
+		}
+
+		return '<ziggeoaudiorecorder ' . ziggeo_p_template_prefix_params($code) . '></ziggeoaudiorecorder>';
+	}
+	elseif($type === 'ziggeoaudioplayer') {
+		$template = ziggeo_p_template_exists($code);
+		$must_haves['audio'] = '';
+
+		$code = ziggeo_p_parameter_processing($must_haves, $code);
+
+		if($template) {
+			$code = str_replace(array('[ziggeoaudioplayer ', ']'), '', $template);
+		}
+
+		return '<ziggeoaudioplayer ' . ziggeo_p_template_prefix_params($code) . '></ziggeoaudioplayer>';
+	}
+	elseif($type === 'ziggeorerecorder' || $type === '[ziggeorerecorder]') {
+
+		$must_haves['tags'] = array ('wordpress', $c_user, $location_tag, 're-recorder' );
+		$must_haves['rerecordable'] = true;
+		$must_haves['rerecordableifexists'] = true;
+		$must_haves['video'] = '';
+
+		if($type === '[ziggeorerecorder]') {
+			$code = 'ziggeo-video="' . $code . '" ';
+		}
+		else {
+			$template = ziggeo_p_template_exists($code);
+
+			if($template) {
+				$code = str_replace(array('[ziggeorerecorder ', ']'), '', $template);
+			}
+
+		}
+
+		$code = ziggeo_p_parameter_processing($must_haves, $code);
+
+		return '<ziggeoplayer ' . ziggeo_p_template_prefix_params($code) . '></ziggeoplayer>';
+	}
+	elseif($type === 'ziggeouploader') {
+
+		$template = ziggeo_p_template_exists($code);
+		$must_haves['tags'] = array ('wordpress', $c_user, $location_tag, 'uploader' );
+		$must_haves['allowrecord'] = false;
+		$must_haves['allowupload'] = true;
+
+		$code = ziggeo_p_parameter_processing($must_haves, $code);
+
+		if($template) {
+			$code = str_replace(array('[ziggeorecorder ', ']'), '', $template);
+		}
+
+		return '<ziggeorecorder ' . ziggeo_p_template_prefix_params($code) . '></ziggeorecorder>';
+	}
+	elseif($type === 'ziggeo') {
+		// todo
+	}
+	else {
+		//videowalls or otherwise
+		$code = $template_options[$template_options_index]['func_final']($code);
+	}
+
+	return $code;
+
+}
+
+// This works like shortcode functions do, allowing us to capture the codes through various filters and parse them as needed.
+// Improved with ziggeo_p_shortcode_parser() please use instead if calling from your own codes
 function ziggeo_p_content_parse_templates($matches) {
 
 	// To not parse the ziggeo events

@@ -833,7 +833,14 @@
 			var current = e.target;
 			if(current.className.indexOf('param ') > -1) {
 				document.getElementById('parameter-name').value = current.innerText;
-				document.getElementById('parameter-type').value = current.getAttribute('data-type');
+
+				if(current.getAttribute('data-type') === 'enum') {
+					document.getElementById('parameter-type').value = 'string';
+				}
+				else {
+					document.getElementById('parameter-type').value = current.getAttribute('data-type');
+				}
+
 				document.getElementById('parameter-value').focus();
 			}
 		});
@@ -4285,6 +4292,9 @@
 			use_children = false;
 		}
 
+		// Get the current base
+		var base = document.getElementById('ziggeo_shorttags_list').value.replace('[', '');
+
 		// grab selection cursor position
 		var start = input.selectionStart;
 
@@ -4301,48 +4311,95 @@
 		// We only do the rest of processing if there is data to be processed
 		if(items) {
 
-			var i, c;
-			var all_items = {};
-
-			if(use_children) {
-				for(var _item in items) {
-					if(!items.hasOwnProperty(_item)) {
-						continue;
-					}
-
-					all_items = Object.assign(all_items, items[_item]);
-				}
-			}
-			else {
-				all_items = items;
-			}
-
 			_item = null;
 
-			// Now we want to go through entire list we have prepared, and filter out possible values
-			// (first match found only) by default
+			// (sub)function that helps us go through the items, matching the item properties as well as the
+			// template base, suggesting only relevant parameters
+			function checkItems(item_object, base) {
+				if(base === 'ziggeoplayer') {
 
-			for(var _item in all_items) {
-				var t_found = false;
+					if(item_object.used_by_player === true) {
+						return true;
+					}
 
-				if(exact_match === true && value === _item) {
-					t_found = true;
+					return false;
 				}
-				else if(exact_match !== true && _item.startsWith(value)) {
-					t_found = true;
+				else if(base === 'ziggeorecorder') {
+					if(item_object.used_by_recorder === true) {
+						return true;
+					}
+
+					return false;
+				}
+				else if(base === 'ziggeorerecorder') {
+					if(item_object.used_by_rerecorder === true) {
+						return true;
+					}
+
+					return false;
+				}
+				else if(base === 'ziggeouploader') {
+					if(item_object.used_by_uploader === true) {
+						return true;
+					}
+
+					return false;
+				}
+				else if(base === 'ziggeoaudioplayer') {
+					if(typeof item_object.custom_used_by !== 'undefined' && 
+					   item_object.custom_used_by.indexOf('ziggeoaudioplayer') > -1) {
+						return true;
+					}
+
+					return false;
+				}
+				else if(base === 'ziggeoaudiorecorder') {
+					if(typeof item_object.custom_used_by !== 'undefined' && 
+					   item_object.custom_used_by.indexOf('ziggeoaudiorecorder') > -1) {
+						return true;
+					}
+
+					return false;
 				}
 
-				if(t_found === true) {
-					// Set the value
-					input.value = _item;
-					input.selectionStart = value.length;
-					input.selectionEnd = _item.length;
+				// when listening to this return true or false
+				return ZiggeoWP.hooks.fire('autocomplete-custom-base', { 'template_base': base, 'item': item_object }, true);
+			}
 
-					// Call hook if any is registered
-					var hook = input.getAttribute('field-hook');
+			for(section in items) {
 
-					if(hook) {
-						ZiggeoWP.hooks.fire(hook, { 'input': input, 'key': _item, 'data': all_items[_item] });
+				var current = items[section];
+
+				if(!items.hasOwnProperty(section)) {
+					continue;
+				}
+
+				// Now we want to go through entire list we have prepared, and filter out possible values
+				// (first match found only) by default
+				for(var _item in current) {
+					var t_found = false;
+
+					if(exact_match === true && _item === value) {
+						t_found = checkItems(current[_item], base);
+					}
+					else if(exact_match !== true && _item.startsWith(value)) {
+						t_found = checkItems(current[_item], base);
+					}
+					if(t_found === true) {
+
+						// Set the value
+						input.value = _item;
+						input.selectionStart = value.length;
+						input.selectionEnd = _item.length;
+
+						// Call hook if any is registered
+						var hook = input.getAttribute('field-hook');
+
+						if(hook) {
+							ZiggeoWP.hooks.fire(hook, { 'input': input, 'key': _item, 'data': current[_item] });
+						}
+
+						return true;
 					}
 				}
 			}

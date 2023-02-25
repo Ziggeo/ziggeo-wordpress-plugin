@@ -843,6 +843,11 @@ INDEX:
 		flex-wrap: wrap;
 	}
 
+	#ziggeo_addons_store {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
 	.ziggeo_integrations_card {
 		width: 48%;
 		overflow: hidden;
@@ -851,8 +856,6 @@ INDEX:
 		padding: 10px;
 		box-sizing: border-box;
 		margin: 10px 0.8%;
-		display: inline-block;
-		position: relative;
 	}
 
 	.ziggeo_integrations_card h3 {
@@ -919,6 +922,43 @@ INDEX:
 	#ziggeo-ee-shortcode {
 		margin-top: 20px;
 		width: 90%;
+	}
+
+	#existing_event_templates li {
+		position: relative;
+		list-style-position: inside;
+		padding-left: 20px;
+	}
+
+	#existing_event_templates textarea {
+		width: 90%;
+		background-color: #333;
+		color: lightgreen;
+		padding: 4px;
+		box-sizing: border-box;
+		max-height: 0px;
+		height: 0px;
+		transition: 0.4s all ease-in;
+		visibility: hidden;
+	}
+	#existing_event_templates .event_remove {
+		position: absolute;
+		left: 4px;
+		top: 0px;
+		color: red;
+		font-size: 14px;
+		line-height: 16px;
+		font-weight: bold;
+		cursor: pointer;
+		display: none;
+	}
+	/*#existing_event_templates li:hover .event_remove,*/
+	#existing_event_templates li:hover textarea {
+		display: block;
+		transition: 2s all ease-out;
+		max-height: 140px;
+		height: auto;
+		visibility: visible;
 	}
 
 
@@ -1163,26 +1203,6 @@ INDEX:
 		box-sizing: border-box;
 		font-size: 0.9em;
 		line-height: 1.2em;
-	}
-	li.ziggeo_addons {
-		transition-duration: 4s;
-		transition-delay: 2s;
-	}
-	li.ziggeo_addons:hover {
-		transition-delay: 0.1s;
-	}
-	li.ziggeo_addons ~ li {
-		height: 20px;
-		overflow: hidden;
-		transition-property: height;
-		transition-duration: 4s;
-		transition-delay: 2s;
-	}
-	.toplevel_page_ziggeo_video:focus-within li.ziggeo_addons ~ li,
-	li.ziggeo_addons:hover ~ li, li.ziggeo_addons ~ li:hover {
-		height: 40px;
-		transition-duration: 0.2s;
-		transition-delay: 0.1s;
 	}
 
 	.ziggeo-ctrl-btn.btn-warning {
