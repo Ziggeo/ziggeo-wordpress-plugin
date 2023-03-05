@@ -126,7 +126,7 @@ defined('ABSPATH') or die();
 										<div class="template_code"
 										     template-json="<?php echo ($is_old_format === true) ? ziggeo_p_template_code_to_object($template_code, true) : str_replace('"', "'", $template_code['json']) ; ?>"><?php echo ($is_old_format === true) ?  stripslashes($template_code) : stripslashes($template_code['shortcode']); ?></div>
 										<div class="actions">
-											<div class="use">Use</div>
+											<div class="use"><?php _e('Use', 'ziggeo'); ?></div>
 											<div class="edit"><?php _e('Edit', 'ziggeo'); ?></div>
 											<div class="delete"><?php _e('Remove', 'ziggeo'); ?></div>
 										</div>

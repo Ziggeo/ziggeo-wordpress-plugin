@@ -987,6 +987,8 @@ INDEX:
 		position: relative;
 		min-height: 260px;
 		box-shadow: 4px 4px 4px 2px lightgray;
+		display: flex;
+		flex-flow: column;
 	}
 	.ziggeo_templates .template:hover {
 		box-shadow: -4px -4px 4px 2px lightgray;
@@ -998,6 +1000,15 @@ INDEX:
 		overflow: hidden;
 		width: 90%;
 		margin: 0 auto;
+	}
+	.ziggeo_templates .template .extra_info {
+		text-align: center;
+		display: flex;
+		border-top: 2px dotted gray;
+		margin: 4px 0;
+	}
+	.ziggeo_templates .template .extra_info span {
+		width: 100%;
 	}
 	.ziggeo_templates .template .template_code {
 		font-family: Consolas, "Liberation Mono", Menlo, "Bitstream Vera Sans Mono", Courier, monospace;

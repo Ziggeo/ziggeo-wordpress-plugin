@@ -20,6 +20,8 @@ function ziggeo_a_s_validation($input) {
 			'version' => true,
 		// Templates Editor page
 			'templates_id' => true, 'templates_editor' => true, 'templates_manager' => true, 'feedback' => true,
+		// Events Editor page
+			'events_manager' => true,
 		// General tab
 			'token' => true,
 			'recorder_config' => true, 'player_config' => true, 'disable_video_comments' => true, 'disable_text_comments' => true,

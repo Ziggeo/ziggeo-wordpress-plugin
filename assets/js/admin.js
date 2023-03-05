@@ -103,7 +103,7 @@
 // 12. Events Editor
 //		* ziggeoPUIEEInit()
 //		* ziggeoPUIEEDefauts()
-//		* ziggeoPUIEESaveTemplate()
+//		* ziggeoPUIEEManageTemplate()
 //		* ziggeoPUIEEGenerateShortcode()
 // 13. Autocomplete Control
 //		* ziggeoPUICAutoCompleteInit()
@@ -4122,6 +4122,7 @@
 				event_alert_message.parentElement.parentElement.style.display = 'table-row';
 				event_template_code.parentElement.parentElement.style.display = 'none';
 				event_code_inject_onload.parentElement.parentElement.style.display = 'none';
+				btn_save.style.display = 'none';
 			}
 		});
 
@@ -4138,10 +4139,38 @@
 		})
 
 		btn_generate.addEventListener('click', ziggeoPUIEEGenerateShortcode);
-		btn_save.addEventListener('click', ziggeoPUIEESaveTemplate);
+		btn_save.addEventListener('click', ziggeoPUIEEManageTemplate);
 
 		// Set default UI
 		ziggeoPUIEEDefauts();
+
+		// Setup the event templates section editing
+		var i,c;
+
+		var use = document.querySelectorAll('.ziggeo_templates .use');
+
+		for(i = 0, c = use.length; i < c; i++) {
+			use[i].addEventListener('click', function(e) {
+				ziggeoEventTemplatesShortcodeGet(e.target);
+			});
+		}
+
+		var edits = document.querySelectorAll('.ziggeo_templates .edit');
+
+		for(i = 0, c = edits.length; i < c; i++) {
+			edits[i].addEventListener('click', function(e) {
+				ziggeoEventTemplatesEdit(e.target);
+			});
+		}
+
+		var removals = document.querySelectorAll('.ziggeo_templates .delete');
+
+		for(i = 0, c = removals.length; i < c; i++) {
+			removals[i].addEventListener('click', function(e) {
+				ziggeoEventTemplatesRemove(e.target);
+			});
+		}
+
 
 	}
 
@@ -4178,6 +4207,8 @@
 		event_alert_message.parentElement.parentElement.style.display = 'table-row';
 		event_template_code.parentElement.parentElement.style.display = 'none';
 		event_code_inject_onload.parentElement.parentElement.style.display = 'none';
+		btn_save.innerText = 'Save Template';
+		btn_save.setAttribute('action', 'save');
 
 		btn_save.style.display = 'none';
 
@@ -4191,7 +4222,7 @@
 
 	// This function captures the data and then sends it to the server through AJAX to save it.
 	// Once done, it resets the values
-	function ziggeoPUIEESaveTemplate() {
+	function ziggeoPUIEEManageTemplate(operation, given_data, root_elem) {
 
 		var event_id = document.getElementById('ziggeo-ee-event-id');
 		var event_to_listen_to = document.getElementById('ziggeo-ee-event'); // select
@@ -4199,21 +4230,43 @@
 		var event_code_inject_onload = document.getElementById('ziggeo-ee-onload');
 		var event_code_inject_onfire = document.getElementById('ziggeo-ee-onfire');
 
-		// Save the same
-
 		var data = {
 			id: event_id.value,
-			event: event_to_listen_to.value,
-			code: event_template_code.value, //JSON.stringify(event_template_code.value),
-			inject_type: (event_code_inject_onload.checked) ? 'on_load' : 'on_fire',
-			operation: 'event_editor_save_template'
+		}
+
+		// detecting if this is event object and not a string
+		if(typeof operation.currentTarget !== 'undefined') {
+			operation = operation.currentTarget.getAttribute('action');
+		}
+
+		if(operation === 'update') {
+			data.old_id = document.getElementById('ziggeo_events_manager').value;
+			data.event = event_to_listen_to.value;
+			data.code = event_template_code.value; //JSON.stringify(event_template_code.value),
+			data.inject_type = (event_code_inject_onload.checked) ? 'on_load' : 'on_fire';
+			data.operation = 'event_editor_update_template';
+		}
+		else if(operation === 'remove') {
+			data.id = given_data.id;
+			data.operation = 'event_editor_remove_template';
+		}
+		else { // Save the same
+			data.event = event_to_listen_to.value;
+			data.code = event_template_code.value; //JSON.stringify(event_template_code.value),
+			data.inject_type = (event_code_inject_onload.checked) ? 'on_load' : 'on_fire';
+			data.operation = 'event_editor_save_template';
 		}
 
 		ziggeoAjax(data, function(result) {
 
-			console.log(result);
-
-			//ziggeoPUIEEDefauts();
+			if(result === true || result === "true") {
+				if(operation === 'remove') {
+					root_elem.parentElement.removeChild(root_elem);
+				}
+				else {
+					ziggeoPUIEEDefauts();
+				}
+			}
 		});
 
 	}
@@ -4251,6 +4304,68 @@
 		elem_shortcode.value = shortcode;
 		elem_shortcode.style.display = 'block';
 	}
+
+	// Used to show an alert popup with the shortcode to copy and paste
+	function ziggeoEventTemplatesShortcodeGet(field) {
+		var root = field.parentElement.parentElement;
+
+		var id = root.getElementsByClassName('template_id')[0].innerText;
+
+		alert('Please use:' + "\n" + '[ziggeo_event ' + id + ']');
+	}
+
+	// Populates the fields with existing values and shows it to allow editing
+	function ziggeoEventTemplatesEdit(field) {
+		var root = field.parentElement.parentElement;
+
+		var id = root.getElementsByClassName('template_id')[0].innerText;
+		var event_react = root.getElementsByClassName('event_name')[0].innerText;
+		var event_inject = root.getElementsByClassName('inject_type')[0].innerText;
+		var btn_save = document.getElementById('ziggeo-ee-btn-save');
+
+		document.getElementById('ziggeo_events_manager').value = id;
+		document.getElementById('ziggeo-ee-event-id').value = id;
+		document.getElementById('ziggeo-ee-event').value = event_react;
+		document.getElementById('ziggeo-ee-event-type').value = 'template';
+
+		document.getElementById('ziggeo-ee-custom-code').value = root.getElementsByClassName('template_code')[0].innerText;
+
+		if(event_inject === 'on_fire') {
+			document.getElementById('ziggeo-ee-onfire').checked = true;
+			document.getElementById('ziggeo-ee-onfire').click();
+		}
+		else { //on_load
+			document.getElementById('ziggeo-ee-onload').checked = true;
+			document.getElementById('ziggeo-ee-onload').click();
+		}
+
+		// Make it like we have changed the dropdown ourselves
+		document.getElementById('ziggeo-ee-event-type').dispatchEvent(new Event('change'));
+
+		btn_save.innerText = 'Update Template';
+		btn_save.setAttribute('action', 'update');
+	}
+
+	// Remove the event template
+	function ziggeoEventTemplatesRemove(field) {
+		var root = field.parentElement.parentElement;
+		var id = root.getElementsByClassName('template_id')[0].innerText;
+
+		ZiggeoWP.hooks.fire('dashboard_event_templates_pre_removal', {id: id});
+
+		if(confirm('Are you sure that you want to remove this event template? It is not possible to undo the same action!')) {
+			document.getElementById('ziggeo_events_manager').value = id;
+
+			//Just about to remove the event template
+			ZiggeoWP.hooks.fire('dashboard_event_templates_post_removal', {id: id});
+
+			//submit the form
+			ziggeoPUIEEManageTemplate('remove', { id:id }, root);
+		}
+
+		return false;
+	}
+
 
 
 

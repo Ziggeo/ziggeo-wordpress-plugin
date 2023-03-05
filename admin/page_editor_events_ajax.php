@@ -12,27 +12,62 @@ defined('ABSPATH') or die();
 
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
-	//settings_manage_template
-	if($operation === 'event_editor_save_template') {
+	if($operation === 'event_editor_save_template'   ||
+	   $operation === 'event_editor_update_template' ||
+	   $operation === 'event_editor_remove_template') {
 
-		$id = $_POST['id'];
-		$event = $_POST['event'];
-		$code = stripcslashes($_POST['code']);
-		$inject_type = $_POST['inject_type'];
+		$existing_event_templates = get_option('ziggeo_events');
 
-		$saves = get_option('ziggeo_events');
-
-		if(!is_array($saves)) {
-			$saves = array();
+		if(!is_array($existing_event_templates)) {
+			$existing_event_templates = array();
 		}
 
-		$saves[$id] = array(
+		$id = isset($_POST['id']) ? $_POST['id'] : false;
+
+		if($id === false) {
+			return false;
+		}
+	}
+
+	if($operation === 'event_editor_save_template' || $operation === 'event_editor_update_template') {
+
+		if($operation === 'event_editor_update_template') {
+			$old_id = isset($_POST['old_id']) ? $_POST['old_id'] : false;
+
+			// old ID should always be set in this call
+			if($old_id === false) {
+				return false;
+			}
+
+			if(isset($existing_event_templates[$old_id])) {
+				unset($existing_event_templates[$old_id]);
+			}
+			else {
+				return false;
+			}
+		}
+
+		$event = isset($_POST['event']) ? $_POST['event'] : '';
+		$code = isset($_POST['code']) ? stripcslashes($_POST['code']) : '';
+		$inject_type = isset($_POST['inject_type']) ? $_POST['inject_type'] : '';
+
+		$existing_event_templates[$id] = array(
 			'event'         => $event,
 			'code'          => $code,
 			'inject_type'   => $inject_type
 		);
 
-		return update_option('ziggeo_events', $saves);
+		return update_option('ziggeo_events', $existing_event_templates);
+	}
+	elseif($operation === 'event_editor_remove_template') {
+
+		if(isset($existing_event_templates[$id])) {
+			unset($existing_event_templates[$id]);
+			return update_option('ziggeo_events', $existing_event_templates);
+		}
+		else {
+			return false;
+		}
 	}
 
 	return $rez;

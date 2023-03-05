@@ -34,6 +34,12 @@ defined('ABSPATH') or die();
 		);
 
 		// add_settings_field( string $id, string $title, callable $callback, string $page, string $section = 'default', array $args = array() )
+		add_settings_field('ziggeo_ee_events_manager',              // id
+							__('Events Manager', 'ziggeo'),         // title
+							'ziggeo_a_ee_events_manager_field',     // callback
+							'ziggeo_editor_events',                 // page
+							'ziggeo_sct_events_editor');            // section
+
 		add_settings_field('ziggeo_ee_events_id',                   // id
 							__('Event ID', 'ziggeo'),               // title
 							'ziggeo_a_ee_id_field',                 // callback
@@ -106,26 +112,42 @@ defined('ABSPATH') or die();
 					<li>There is always <code>embedding</code> variable available for your custom code</li>
 				</ul>
 			</p>
+			<?php
+		}
 
-			<strong>Existing Event Templates</strong>
-			<ol id="existing_event_templates">
+		function ziggeo_a_ee_events_manager_field() {
+			?>
+			<div class="ziggeo_templates">
 			<?php
 				$existing = get_option('ziggeo_events');
-				if(!is_array($existing)) {
-					$existing = array();
-					?><li>No events have been saved yet</li><?php
+
+				if($existing) {
+					foreach($existing as $event_id => $template) {
+						?>
+						<div class="template">
+							<div class="template_id"><?php echo $event_id; ?></div>
+							<div class="extra_info">
+								<span class="event_name"><?php echo $template['event']; ?></span> ||
+								<span class="inject_type"><?php echo $template['inject_type']; ?></span>
+							</div>
+							<div class="template_code"><?php echo htmlentities($template['code']); ?></div>
+							<div class="actions">
+								<div class="use"><?php _e('Use', 'ziggeo'); ?></div>
+								<div class="edit"><?php _e('Edit', 'ziggeo'); ?></div>
+								<div class="delete"><?php _e('Remove', 'ziggeo'); ?></div>
+							</div>
+						</div><?php
+					}
 				}
-				foreach($existing as $id => $template) {
+				else {
 					?>
-					<li title="<?php echo htmlentities($template['code']); ?>">
-						<span class="event_id"><?php echo $id ?></span>
-						<span class="event_remove" data-id="<?php echo $id; ?>">x</span>
-						<textarea><?php echo $template['code']; ?></textarea>
-					</li>
+					<div class="no-templates"><?php _e('No events have been saved yet, consider create one', 'ziggeo'); ?></div>
 					<?php
 				}
+
 				?>
-			</ol>
+				<input type="hidden" id="ziggeo_events_manager" name="ziggeo_video[events_manager]" value="">
+			</div>
 			<?php
 		}
 
