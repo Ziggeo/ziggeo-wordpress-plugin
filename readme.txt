@@ -336,6 +336,8 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Events editor codes are now working with the lazy load implementation
 * Added better prefixing the parameters so the strings do not end up with a prefix.
 * Fix: Google IMA SDK for VAST is loaded only if VAST is set up
+* Events Editor now shows the same interface we use for Templates Editor, allowing ease of use and managing the events.
+* Fix: Added a fix for the issue reported by Alfredo (thank you): https://github.com/Ziggeo/ziggeo-wordpress-plugin/issues/13
 
 == Changelog ==
 

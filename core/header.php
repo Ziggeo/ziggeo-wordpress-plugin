@@ -166,6 +166,9 @@ function ziggeo_p_page_header() {
 			}
 		?>
 
+		// Functions we want to have always available
+		///////////////////////////////////////////////
+
 		//function to get app options
 		function ziggeoGetApplicationOptions() {
 
@@ -182,6 +185,73 @@ function ziggeo_p_page_header() {
 				//DO NOT use this for your own options. Instead use ZiggeoWP for that.
 				do_action('ziggeo_echo_application_settings');
 				?>
+			}
+		}
+
+				//Needed in cases of lazy load
+		function ziggeoReInitApp() {
+			if(typeof ZiggeoApi !== 'undefined') {
+				//Set the V2 application
+
+				window.ziggeo_app = ZiggeoApi.V2.Application.instanceByToken( ziggeoGetApplicationOptions().token , ziggeoGetApplicationOptions());
+				ZiggeoApi.V2.Application.undefer();
+				<?php
+				//Language options
+				//@add translations options here
+				if($options['default_lang'] !== "auto") {
+					?>
+					ZiggeoApi.V2.Locale.setLocale("<?php echo $options['default_lang']; ?>");
+					<?php
+				}
+
+				//developer feature
+				if(isset($options['dev_mode'])) {
+					//This allows you to get some additional feedback into the console. Turning off this option is recommended in the production (not needed), since that will hide any info from the browser / dev console.
+					?>
+					var ziggeo_dev = <?php echo ($options['dev_mode'] === ZIGGEO_YES) ? 'true' : 'false'; ?>;
+					<?php
+				}
+
+				//Set up VAST header if we have the info for it
+				if(!empty($options['vast_adserver'])) {
+					?>
+					//Set up VAST
+					var ziggeo_vast = new ZiggeoApi.V2.Ads.AdSenseVideoAdProvider({
+						provider: 'ziggeo_vast',
+						adTagUrl: '<?php echo $options['vast_adserver']; ?>',
+						muted: <?php echo ((int)$options['vast_muted']) === 1 ? 'true' : 'false' ?>,
+						skipAfter: <?php echo $options['vast_skipafter']; ?>,
+						<?php
+						if (!empty($options['vast_ad_title'])) {
+							?>
+							title: '<?php echo $options['vast_ad_title']; ?>',
+							<?php
+						}
+						if (!empty($options['vast_ad_description'])) {
+							?>
+							description: '<?php echo $options['vast_ad_description']; ?>',
+							<?php
+						}
+						if (!empty($options['vast_ad_id'])) {
+							?>
+							id: '<?php echo $options['vast_ad_id']; ?>',
+							<?php
+						}
+						if (!empty($options['vast_ad_advertiser'])) {
+							?>
+							advertiser: '<?php echo $options['vast_ad_advertiser']; ?>',
+							<?php
+						}
+						?>
+					});
+
+					ziggeo_vast.register("ziggeo_vast"); // name_of_provider can be anything
+					<?php
+				}
+				?>
+			}
+			else {
+				setTimeout(function(){ziggeoReInitApp();}, 500);
 			}
 		}
 
@@ -251,75 +321,10 @@ function ziggeo_p_page_header() {
 			//jQuery(document).ready( function() {
 			window.addEventListener('load', function() {
 				//Final check in case it was blocked (like some plugins do)
-				ziggeoReInitApp();				
+				if(typeof ziggeoReInitApp === 'function') {
+					ziggeoReInitApp();				
+				}
 			});
-
-			//Needed in cases of lazy load
-			function ziggeoReInitApp() {
-				if(typeof ZiggeoApi !== 'undefined') {
-					//Set the V2 application
-
-					window.ziggeo_app = ZiggeoApi.V2.Application.instanceByToken( ziggeoGetApplicationOptions().token , ziggeoGetApplicationOptions());
-					ZiggeoApi.V2.Application.undefer();
-					<?php
-					//Language options
-					//@add translations options here
-					if($options['default_lang'] !== "auto") {
-						?>
-						ZiggeoApi.V2.Locale.setLocale("<?php echo $options['default_lang']; ?>");
-						<?php
-					}
-
-					//developer feature
-					if(isset($options['dev_mode'])) {
-						//This allows you to get some additional feedback into the console. Turning off this option is recommended in the production (not needed), since that will hide any info from the browser / dev console.
-						?>
-						var ziggeo_dev = <?php echo ($options['dev_mode'] === ZIGGEO_YES) ? 'true' : 'false'; ?>;
-						<?php
-					}
-
-					//Set up VAST header if we have the info for it
-					if(!empty($options['vast_adserver'])) {
-						?>
-						//Set up VAST
-						var ziggeo_vast = new ZiggeoApi.V2.Ads.AdSenseVideoAdProvider({
-							provider: 'ziggeo_vast',
-							adTagUrl: '<?php echo $options['vast_adserver']; ?>',
-							muted: <?php echo ((int)$options['vast_muted']) === 1 ? 'true' : 'false' ?>,
-							skipAfter: <?php echo $options['vast_skipafter']; ?>,
-							<?php
-							if (!empty($options['vast_ad_title'])) {
-								?>
-								title: '<?php echo $options['vast_ad_title']; ?>',
-								<?php
-							}
-							if (!empty($options['vast_ad_description'])) {
-								?>
-								description: '<?php echo $options['vast_ad_description']; ?>',
-								<?php
-							}
-							if (!empty($options['vast_ad_id'])) {
-								?>
-								id: '<?php echo $options['vast_ad_id']; ?>',
-								<?php
-							}
-							if (!empty($options['vast_ad_advertiser'])) {
-								?>
-								advertiser: '<?php echo $options['vast_ad_advertiser']; ?>',
-								<?php
-							}
-							?>
-						});
-
-						ziggeo_vast.register("ziggeo_vast"); // name_of_provider can be anything
-						<?php
-					}
-					?>
-				}
-				else {
-					setTimeout(function(){ziggeoReInitApp();}, 500);
-				}
-			}
 		}
 	</script>
 	<!-- Ziggeo API code - END -->

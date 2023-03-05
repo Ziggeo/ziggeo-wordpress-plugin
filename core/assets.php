@@ -201,14 +201,14 @@ function ziggeo_p_get_lazyload_activator() {
 				'}' .
 			'}' .
 			'if(document.readyState === \'complete\'){' .
-				'ziggeoReInitApp();' .
-				'ziggeoLoadAssets();' .
+				'if(typeof ziggeoReInitApp === "function") { ziggeoReInitApp(); }' .
+				'if(typeof ziggeoLoadAssets === "function") { ziggeoLoadAssets() };' .
 				'if(typeof ziggeoSetTranslations === "function") {ziggeoSetTranslations();}' .
 			'}' .
 			'else {' .
 				'window.addEventListener(\'load\', function() {' . 
-					'ziggeoReInitApp();' .
-					'ziggeoLoadAssets();' .
+					'if(typeof ziggeoReInitApp === "function") { ziggeoReInitApp(); }' .
+					'if(typeof ziggeoLoadAssets === "function") { ziggeoLoadAssets() };' .
 					'if(typeof ziggeoSetTranslations === "function") {ziggeoSetTranslations();}' .
 				'});' .
 			'}' .
