@@ -20,6 +20,43 @@ function ziggeo_p_page_header() {
 	<!-- Ziggeo API code - START -->
 	<script type="text/javascript">
 
+		function ziggeoDevReport(msg, type) {
+
+			//Only works if the dev mode is on..
+			if( typeof(ziggeo_dev) !== 'undefined' && typeof(console) !== 'undefined') {
+
+				if(ziggeo_dev === true) {
+					if(type === 'error') {
+						if(console.error) {
+							console.error(msg);
+						}
+						else {
+							console.log(msg);
+						}
+						var data = {
+							operation: 'ziggeo_dev_report',
+							type: 'error',
+							message: msg,
+							page: location.href,
+							action: 'ziggeo_ajax',
+							ajax_nonce: ZiggeoWP.ajax_nonce
+						};
+
+						jQuery.post(ZiggeoWP.ajax_url, data, function(response) {
+							console.log(response);
+						});
+					}
+					else if(type === 'log' || type === undefined) {
+						console.log(msg);
+					}
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
 		//Function to just add the main entry in the namespace, so that we keep everything within it, instead of having many things outside of it as we do now.
 		window.ZiggeoDefer = true; // We use this to stop loading of embeddings right away
 		var ZiggeoWP = {

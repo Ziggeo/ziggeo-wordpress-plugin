@@ -122,6 +122,7 @@ function ziggeo_p_template_parser($template) {
 
 	$template_id = trim($template);
 	$token = false;
+	$is_prerendered = false;
 
 	if(strpos($template_id, ' ') > -1) {
 		// We have ID and media token
@@ -135,16 +136,42 @@ function ziggeo_p_template_parser($template) {
 
 	if(is_array($template_info)) {
 
+		// Can we avoid parsing and just spit out the code?
+		if(isset($template_info['type']) && $template_info['type'] === 'pre_rendered') {
+			$params_string = $template_info['params'];
+			$is_prerendered = true;
+		}
+		elseif(isset($template_info['pre_rendered'])) {
+			$params_string = $template_info['pre_rendered'];
+			$is_prerendered = true;
+		}
+
+		if($is_prerendered === false) {
+			$params_string = $template_info['params'];
+		}
+
 		if($token !== false) {
-			if(strpos($template_info['params'], '%ZIGGEO_MEDIA_TOKEN%') > -1) {
-				$template_info['params'] = str_replace('%ZIGGEO_MEDIA_TOKEN%', $token, $template_info['params']);
+			if(strpos($params_string, '%ZIGGEO_MEDIA_TOKEN%') > -1) {
+				$params_string = str_replace('%ZIGGEO_MEDIA_TOKEN%', $token, $params_string);
 			}
 			else {
 				// We need to modify it by adding the video parameter (or audio - later)
-				$template_info['params'] .= ' video=\'' . $token . '\'';
+				$params_string .= ' video=\'' . $token . '\'';
 			}
 		}
 
+		if($is_prerendered) {
+			return array(
+				'status' => 'success',
+				'result' => $params_string
+			);
+		}
+		else {
+			$template_info['params'] = $params_string;
+		}
+
+
+		// We have to do some template parsing
 		switch ($template_info['type']) {
 			case '[ziggeorecorder':
 			case '[ziggeorerecorder':
@@ -316,7 +343,9 @@ add_shortcode( 'ziggeo', function($attrs) {
 });
 
 //We are updating this in such a way that we will keep the old calls, so that we have backwards compatibility, but in the same time, we are adding another call that will check for us if there are any tags matching new templates. We must do it like this, since using regex we will be able to find this in all locations that we want, while if we use shortcode, it will only work (out of the box) if the shortcode is within the section covered by 'the_content' filter.
-function ziggeo_p_content_filter($content) {
+// $content - any content, including text or shortcode
+// $raw - to return raw content - without the maybe load (support for lazyload) or any other such functionality added later
+function ziggeo_p_content_filter($content, $raw = false) {
 	//This way we are making it work fine with WPv5 saving where we would parse the content while we should not (like saving the post)
 	if(is_rest()) {
 		return $content;
@@ -430,7 +459,6 @@ function ziggeo_p_content_filter($content) {
 				$l_content = strtolower($content);
 
 				$found = strpos($l_content, '[' . $double_sided[$i], $found);
-
 			}
 		}
 
@@ -475,7 +503,9 @@ function ziggeo_p_content_filter($content) {
 		$content = apply_filters('ziggeo_content_filter_post', $content);
 	}
 
-	$content = ziggeo_p_assets_maybeload($content);
+	if($raw !== true) {
+		$content = ziggeo_p_assets_maybeload($content);
+	}
 
 	return $content;
 }

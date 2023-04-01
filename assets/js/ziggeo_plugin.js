@@ -265,29 +265,38 @@
 
 	//simplifier to allow us to report in console, however only if the developer mode is turned on.
 	//useful for IE for example to avoid issues when console is not open and non standard methods (log always fires instead)
-	function ziggeoDevReport(msg, type) {
+	// This same code is duplicated into header output, just mini version of it
+	if(typeof ziggeoDevReport !== 'function') {
+		function ziggeoDevReport(msg, type) {
 
-		//Only works if the dev mode is on..
-		if( typeof(ziggeo_dev) !== 'undefined' && typeof(console) !== 'undefined') {
+			//Only works if the dev mode is on..
+			if( typeof(ziggeo_dev) !== 'undefined' && typeof(console) !== 'undefined') {
 
-			if(ziggeo_dev === true) {
-				if(type === 'error') {
-					if(console.error) {
-						console.error(msg);
+				if(ziggeo_dev === true) {
+					if(type === 'error') {
+						if(console.error) {
+							console.error(msg);
+						}
+						else {
+							console.log(msg);
+						}
+						ziggeoAjax({
+							operation: 'ziggeo_dev_report',
+							type: 'error',
+							message: msg,
+							page: location.href
+						});
 					}
-					else {
+					else if(type === 'log' || type === undefined) {
 						console.log(msg);
 					}
 				}
-				else if(type === 'log' || type === undefined) {
-					console.log(msg);
-				}
+
+				return true;
 			}
 
-			return true;
+			return false;
 		}
-
-		return false;
 	}
 
 	//AJAX handler

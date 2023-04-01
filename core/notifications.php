@@ -1,6 +1,7 @@
 <?php
 
 //Handle manage button press on notifications
+// This fires within admin only
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
 	if($operation === 'notification_handler') {
@@ -18,6 +19,35 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
 	return $rez;
 }, 10, 2);
+
+// This fires from the dashboard only (might be admin might be anyone)
+add_filter('ziggeo_ajax_call', 'ziggeo_notification_dev_report', 10, 2);
+// This fires from the frontend (might be admin might be anyone)
+add_filter('ziggeo_ajax_call_client', 'ziggeo_notification_dev_report', 10, 2);
+
+function ziggeo_notification_dev_report($rez, $operation) {
+
+	if($operation === 'ziggeo_dev_report') {
+		if(isset($_POST['type'], $_POST['message'], $_POST['page'])) {
+
+			$type = 'notice';
+			if($_POST['type'] === 'error') { $type = 'error'; }
+			$page = strip_tags($_POST['page']);
+
+			$message = 'There was ' . $type . ' on following page: ' . $page . '.' .
+			           ' Error: ' . strip_tags($_POST['message']);
+
+			ziggeo_notification_create($message, $type);
+
+			$rez = true;
+		}
+		else {
+			$rez = false;
+		}
+	}
+
+	return $rez;
+}
 
 
 // Function to create a notification

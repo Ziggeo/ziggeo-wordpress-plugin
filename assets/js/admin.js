@@ -14,7 +14,7 @@
 //		* decodeHTMLEntities()
 //		* encodeHTMLEntities()
 // 2. Onload
-//		* jQuery.ready()
+//		* onload
 // 3. Hooks init
 //		* ziggeoPUIHooksInit()
 // 4. Fields Support
@@ -38,7 +38,6 @@
 //			* ziggeoTemplatesUpdate()
 //			* ziggeoTemplatesShortcodeGet()
 //			* ziggeoPUIManageTemplate()
-//			* ziggeoPUITemplatesManage()
 //			* ziggeoPUITemplatesChange()
 //			* ziggeoPUITemplatesTurnIntoNew()
 //			* ziggeoTemplatesBaseGet()           // <v3.0 ziggeoTemplatesBase()
@@ -61,6 +60,7 @@
 //		* ziggeoVideosFindByTag()
 //		* ziggeoPUIVideosNoVideos()
 //		* ziggeoPUIVideosHasVideos()
+//		* ziggeoVideolistInfoEdit()
 //		* ziggeoPUIVideosHasVideosApproved()
 //		* ziggeoPUIVideosHasVideosPending()
 //		* ziggeoPUIVideosHasVideosRejected()
@@ -74,6 +74,10 @@
 //		* ziggeoVideosGetURL()
 //		* ziggeoVideosEditCustomData()
 //		* ziggeoVideosGrabShortcodes()
+//		* ziggeoVideolistInfoEditCustomData()
+//		* ziggeoVideolistInfoEditTags()
+//		* ziggeoVideolistInfoEditTitle()
+//		* ziggeoVideolistInfoEditDescription()
 //		* ziggeoPUIVideosPopupCreate()
 //		* ziggeoPUIVideosPopupDestroy()
 //		* ziggeoPUIVideosFilterReset()
@@ -105,6 +109,9 @@
 //		* ziggeoPUIEEDefauts()
 //		* ziggeoPUIEEManageTemplate()
 //		* ziggeoPUIEEGenerateShortcode()
+//		* ziggeoEventTemplatesShortcodeGet()
+//		* ziggeoEventTemplatesEdit()
+//		* ziggeoEventTemplatesRemove()
 // 13. Autocomplete Control
 //		* ziggeoPUICAutoCompleteInit()
 //		* ziggeoPUICAutoCompleteFilter()
@@ -341,7 +348,7 @@
 /////////////////////////////////////////////////
 
 	//Registering onload needed to have everything run smoothly.. :)
-	jQuery(document).ready( function() {
+	window.addEventListener('load', function() {
 
 		//Are we within the post editor
 		if(document.querySelector('.block-editor') !== null) {
@@ -426,10 +433,10 @@
 		ZiggeoWP.hooks.set('template_editor_template_base_change',      // hook name
 		                   'template_editor_template_base_change',      // function key (needed for anonimous functions)
 		                   function(obj_info) {                         // function
-		                   		ziggeoTemplatesEditorSetCode(obj_info.template);
+		                    	ziggeoTemplatesEditorSetCode(obj_info.template);
 
-		                   		// Clear out the template object
-		                   		ziggeoTemplatesTemplateObjectSet({base: obj_info.template, params:{}});
+		                    	// Clear out the template object
+		                   		ziggeoTemplatesTemplateObjectSet({base: obj_info.template, params: {}});
 		                   },
 		                   10);                                         // priority
 
@@ -881,12 +888,13 @@
 
 		document.getElementById('ziggeo_templates_turn_to_new').style.display = 'inline-block';
 
-		var hook_values = {
-			template: document.getElementById('ziggeo_shorttags_list').value,
-		};
 
-		ZiggeoWP.hooks.fire('template_editor_template_edit', hook_values);
-		ZiggeoWP.hooks.fire('template_editor_template_base_change', hook_values);
+		//var hook_values = {
+		//	template: document.getElementById('ziggeo_shorttags_list').value
+		//};
+
+		//ZiggeoWP.hooks.fire('template_editor_template_edit', hook_values);
+		//ZiggeoWP.hooks.fire('template_editor_template_base_change', hook_values);
 	}
 
 	// Helps us to remove the template
@@ -2658,7 +2666,7 @@
 		_store.style.display = 'none';
 
 		_show = document.getElementById(show);
-		_show.style.display = 'block';
+		_show.style.display = 'flex';
 
 		var _nav = document.getElementById('ziggeo-addons-nav')
 

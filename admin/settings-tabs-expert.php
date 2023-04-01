@@ -112,7 +112,7 @@ function ziggeo_a_s_e_text() {
 		$option = ziggeo_get_plugin_options('p_token');
 
 		?>
-		<input id="ziggeo_app_ptoken" name="ziggeo_video[p_token]" size="50" type="text"
+		<input id="ziggeo_app_ptoken" name="ziggeo_video[p_token]" size="50" type="text" class="ziggeo_secret"
 			placeholder="<?php _ex('Your private token goes here', 'placeholder for private token', 'ziggeo'); ?>"
 			value="<?php echo $option; ?>" />
 		<?php
@@ -122,7 +122,7 @@ function ziggeo_a_s_e_text() {
 	function ziggeo_a_s_e_encryption_token_field() {
 		$option = ziggeo_get_plugin_options('e_token');
 		?>
-		<input id="ziggeo_app_etoken" name="ziggeo_video[e_token]" size="50" type="text"
+		<input id="ziggeo_app_etoken" name="ziggeo_video[e_token]" size="50" type="text" class="ziggeo_secret"
 			placeholder="<?php _ex('Your encryption token goes here', 'placeholder for encryption token', 'ziggeo'); ?>"
 			value="<?php echo $option; ?>" />
 		<?php
@@ -140,7 +140,7 @@ function ziggeo_a_s_e_text() {
 		$option = ziggeo_get_plugin_options('sauth_token');
 
 		?>
-		<input id="ziggeo_sauth_token" name="ziggeo_video[sauth_token]" size="50" type="text"
+		<input id="ziggeo_sauth_token" name="ziggeo_video[sauth_token]" size="50" type="text" class="ziggeo_secret"
 			placeholder="<?php _ex('Your server auth token goes here', 'placeholder for server auth token', 'ziggeo'); ?>"
 			value="<?php echo $option; ?>" />
 		<?php

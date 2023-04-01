@@ -843,7 +843,7 @@ INDEX:
 		flex-wrap: wrap;
 	}
 
-	#ziggeo_addons_store {
+	#ziggeo_addons_store, #ziggeo_addons_installed, #ziggeo_addons_update {
 		display: flex;
 		flex-wrap: wrap;
 	}
@@ -856,6 +856,7 @@ INDEX:
 		padding: 10px;
 		box-sizing: border-box;
 		margin: 10px 0.8%;
+		position: relative;
 	}
 
 	.ziggeo_integrations_card h3 {

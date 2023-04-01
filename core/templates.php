@@ -89,7 +89,10 @@ defined('ABSPATH') or die();
 
 				// Go through templates and only use shortcode
 				foreach($existing_templates as $id => $value) {
-					if(isset($value['shortcode'])) {
+					if(isset($value['pre_rendered'])) {
+						$shortcodes[$id] = $value['pre_rendered'];
+					}
+					elseif(isset($value['shortcode'])) {
 						$shortcodes[$id] = $value['shortcode'];
 					}
 				}
@@ -122,7 +125,12 @@ defined('ABSPATH') or die();
 
 				foreach($templates as $id => $value) {
 					if(is_array($value)) {
-						$shortcodes[$id] = $value['shortcode'];
+						if(isset($value['pre_rendered'])) {
+							$shortcodes[$id] = $value['pre_rendered'];
+						}
+						elseif(isset($value['shortcode'])) {
+							$shortcodes[$id] = $value['shortcode'];
+						}
 					}
 					else {
 						$shortcodes[$id] = $value;
@@ -154,14 +162,18 @@ defined('ABSPATH') or die();
 
 		$rez = update_option('ziggeo_templates', $existing_templates);
 
-		if( $rez ) {
+		if($rez) {
 			//path to custom templates file
 			$file = ZIGGEO_DATA_ROOT_PATH . 'custom_templates.php';
 
 			$shortcodes = array();
 			// Go through templates and only use shortcode
 			foreach($existing_templates as $id => $value) {
-				if(isset($value['shortcode'])) {
+				if(isset($value['pre_rendered'])) {
+					// since v3.0
+					$shortcodes[$id] = $value['pre_rendered'];
+				}
+				elseif(isset($value['shortcode'])) {
 					// templates v2
 					$shortcodes[$id] = $value['shortcode'];
 				}
@@ -309,8 +321,7 @@ defined('ABSPATH') or die();
 
 		$id = trim($id);
 
-		if( isset($index, $index[$id]) )
-		{
+		if(isset($index, $index[$id])) {
 			//yey we found it, lets get it sent back for processing :)
 			return $index[$id];
 		}
@@ -371,23 +382,44 @@ defined('ABSPATH') or die();
 			return false;
 		}
 
+		// This will look for it from the file source, so it will only have shortcode or the HTML element as value
 		$rez = ziggeo_p_template_exists($id);
 
 		//OK, template exists, lets parse it
-
 		if($rez) {
 
+			//Can happen if it was read from DB
 			if(is_array($rez)) {
-				$rez = $rez['shortcode'];
+				if(isset($rez['pre_rendered'])) {
+					$rez = $rez['pre_rendered'];
+				}
+				else {
+					$rez = $rez['shortcode'];
+				}
 			}
 
-			$type = substr($rez, 0, strpos($rez, ' '));
-			$params = substr($rez, strpos($rez, ' '), -1);
+			$rez = trim($rez);
 
-			return array(
-				'type'      => $type,
-				'params'    =>  $params
-			);
+			if(strpos($rez, '[') === 0) {
+				$type = substr($rez, 0, strpos($rez, ' '));
+				$params = substr($rez, strpos($rez, ' '), -1);
+
+				return array(
+					'type'      => $type,
+					'params'    =>  $params
+				);
+			}
+			elseif(strpos($rez, '<') === 0) {
+				// We have a pre-rendered code
+				return array(
+					'type'      => 'pre_rendered',
+					'params'    =>  $rez
+				);
+			}
+			else {
+				// Some other type of unknown template code
+				// probably best to raise some error
+			}
 		}
 
 		return false;

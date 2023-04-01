@@ -2,7 +2,7 @@
 Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, screen recorder, audio recorder, audio player, video moderation, ziggeo
 Requires at least: 3.0.1
-Tested up to: 6.1.1
+Tested up to: 6.2
 Stable tag: 3.0
 License: GPLv2 or later
 Requires PHP: 5.2.4
@@ -338,6 +338,7 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 * Fix: Google IMA SDK for VAST is loaded only if VAST is set up
 * Events Editor now shows the same interface we use for Templates Editor, allowing ease of use and managing the events.
 * Fix: Added a fix for the issue reported by Alfredo (thank you): https://github.com/Ziggeo/ziggeo-wordpress-plugin/issues/13
+* Added: our JS function for capturing errors is now communicating with the Notifications screen to show you errors related to Ziggeo embeddings added through the WP plugin.
 
 == Changelog ==
 

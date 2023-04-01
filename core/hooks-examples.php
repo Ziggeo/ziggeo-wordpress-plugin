@@ -17,13 +17,25 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 			$template_id_old = (isset($_POST['template_id_old'])) ? urldecode($_POST['template_id_old']) : '';
 			$activity = (isset($_POST['activity'])) ? urldecode($_POST['activity']) : '';
 
+			$template_base = substr($code_shortcode, 0, strpos($code_shortcode, ' '));
+
+			$should_prerender = apply_filters('ziggeo_template_validation_pre_render', $template_base, false);
+
+			if($should_prerender === true) {
+				$code_rendered = ziggeo_p_content_filter($code_shortcode, true);
+			}
+
 			$data = array(
-				'templates_id'          => $id,
-				'code_shortcode'        => $code_shortcode,
-				'code_json'             => $code_json,
-				'template_id_old'       => $template_id_old,
-				'activity'              => $activity
+				'templates_id'             => $id,
+				'code_shortcode'           => $code_shortcode,
+				'code_json'                => $code_json,
+				'template_id_old'          => $template_id_old,
+				'activity'                 => $activity
 			);
+
+			if($should_prerender === true) {
+				$data['code_pre_rendered'] = $code_rendered;
+			}
 
 			$rez = ziggeo_a_s_v_templates_handler($data);
 
@@ -35,6 +47,22 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 	}
 
 	return $rez;
+}, 10, 2);
+
+add_filter('ziggeo_template_validation_pre_render', function($base, $should_prerender) {
+	switch(strtolower($base)) {
+		case '[ziggeoplayer':
+		case '[ziggeorecorder':
+		case '[ziggeorerecorder':
+		case '[ziggeouploader':
+		case '[ziggeoaudiorecorder':
+		case '[ziggeoaudioplayer':
+			return true;
+			break;
+		default:
+			return $base;
+			break;
+	}
 }, 10, 2);
 
 //add support for finding "<ziggeo></ziggeo>" within content and pass it to right place.

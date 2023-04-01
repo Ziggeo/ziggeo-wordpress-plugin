@@ -29,9 +29,11 @@ function ziggeo_a_addons_text() {
 	//Attempt to get the info about the addons
 	//* I dislike using @ since it hides errors, however best option here to make sure everything works right event when getting a file over URL is not allowed
 	$integrations_store = @file_get_contents('https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/addons.json');
-	$integrations_in_store = array();
+	$integrations_in_store = false;
 
 	if($integrations_store) {
+		$integrations_in_store = array();
+
 		$_t_integrations_in_store = json_decode($integrations_store, true);
 
 		foreach($_t_integrations_in_store as $addon => $info) {

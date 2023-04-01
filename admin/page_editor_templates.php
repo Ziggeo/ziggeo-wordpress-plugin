@@ -227,11 +227,11 @@ defined('ABSPATH') or die();
 					</div>
 					<div class="column">
 						<p>Actions</p>
-						<span class="ziggeo-ctrl-btn ziggeo-of-simple-form"
+						<span class="ziggeo-ctrl-btn ziggeo-of-simple-form" tabindex="0"
 						      data-fields="name:parameter-name,value:parameter-value,type:parameter-type"
 						      data-function="ziggeoTemplatesParametersAdd"
 						      data-post-action="clear">+</span>
-						<span class="ziggeo-ctrl-btn ziggeo-of-simple-form btn-warning"
+						<span class="ziggeo-ctrl-btn ziggeo-of-simple-form btn-warning" tabindex="0"
 						      data-fields="name:parameter-name,value:parameter-value,type:parameter-type"
 						      data-function="ziggeoTemplatesParametersRemove"
 						      data-post-action="clear">-</span>

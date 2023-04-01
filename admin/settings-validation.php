@@ -220,7 +220,7 @@ function ziggeo_a_s_v_templates_handler($options) {
 	$id_given = true;
 
 	if(isset($options['templates_id'])) {
-			$options['templates_id'] = trim($options['templates_id']);
+		$options['templates_id'] = trim($options['templates_id']);
 	}
 	else {
 		$options['templates_id'] = '';
@@ -260,6 +260,10 @@ function ziggeo_a_s_v_templates_handler($options) {
 				'shortcode' => $options['code_shortcode']
 			);
 
+			if(isset($options['code_pre_rendered'])) {
+				$codes['pre_rendered'] = $options['code_pre_rendered'];
+			}
+
 			$template_obj = json_decode($options['code_json'], true);
 
 			// Do we have any parameters set? If not we do not want to save this
@@ -293,6 +297,10 @@ function ziggeo_a_s_v_templates_handler($options) {
 				'shortcode' => $options['code_shortcode']
 			);
 
+			if(isset($options['code_pre_rendered'])) {
+				$codes['pre_rendered'] = $options['code_pre_rendered'];
+			}
+
 			$template_obj = json_decode($options['code_json'], true);
 
 			// Do we have any parameters set? If not we do not want to save this
@@ -319,6 +327,7 @@ function ziggeo_a_s_v_templates_handler($options) {
 		//We are currently showing it up as default, so we should remove it at this point - we do not want it saved
 		unset($options['code_shortcode']);
 		unset($options['code_json']);
+		unset($options['code_pre_rendered']);
 
 		return $options;
 	}
