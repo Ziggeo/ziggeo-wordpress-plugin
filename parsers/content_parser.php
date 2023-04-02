@@ -47,7 +47,6 @@ function ziggeo_p_filters_init() {
 		add_filter('the_excerpt', 'ziggeo_p_content_filter', 90);
 		add_filter('thesis_comment_text', 'ziggeo_p_content_filter', 90);
 	}
-
 }
 
 // Templates v2 support
@@ -311,23 +310,39 @@ function ziggeo_p_shortcode_handler($tag = '[ziggeorecorder', $attrs = '') {
 	}
 
 	$attrs_str = '';
+	$to_parse = $tag;
+	$tmp = null;
 
 	if($attrs === '') {
 		$attrs_str = ZIGGEO_DEFAULTS_RECORDER;
 	}
 	else {
-		//We have to combine the attrs array into key + value
-		foreach($attrs as $key => $value) {
-			if(is_numeric($key)) {
-				$attrs_str .= ' ' . $value;
-			}
-			else {
-				$attrs_str .= ' ' . $key . "='" . $value . "'";
+		// Checking if this is template value that we are sent
+		if(is_array($attrs) && count($attrs) === 1 && isset($attrs[0])) {
+			$tmp = ziggeo_p_template_exists($attrs[0]);
+		}
+
+		if($tmp === null || $tmp === false) {
+			//We have to combine the attrs array into key + value
+			foreach($attrs as $key => $value) {
+				if(is_numeric($key)) {
+					$attrs_str .= ' ' . $value;
+				}
+				else {
+					$attrs_str .= ' ' . $key . "='" . $value . "'";
+				}
 			}
 		}
 	}
 
-	return ziggeo_p_content_filter($tag . $attrs_str . ']');
+	if($tmp === null) {
+		$to_parse .= $attrs_str . ']';
+	}
+	else {
+		$to_parse = $tmp;
+	}
+
+	return ziggeo_p_content_filter($to_parse);
 }
 
 //General Ziggeo shortcode support
