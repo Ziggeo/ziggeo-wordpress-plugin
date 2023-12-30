@@ -41,6 +41,7 @@ if(!function_exists('ziggeo_get_player_code')) {
 				$template_player = true;
 				$template_params = ziggeo_p_template_params($t_player_comment_config);
 			}
+
 		}
 		elseif($location === 'integrations') {
 			//Just so that we know if we are using template or not..
@@ -48,7 +49,7 @@ if(!function_exists('ziggeo_get_player_code')) {
 								!empty($options["integrations_player_template"]) );
 
 			if($template_player) {
-				$template_params = apply_filters('ziggeo_get_template_player_integrations', $options['integrations_player_template']);
+				$template_params = apply_filters('ziggeo_get_template_player_integrations', ziggeo_p_template_params($options['integrations_player_template']));
 			}
 		}
 

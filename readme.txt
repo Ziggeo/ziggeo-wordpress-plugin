@@ -2,10 +2,10 @@
 Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, screen recorder, audio recorder, audio player, video moderation, ziggeo
 Requires at least: 3.0.1
-Tested up to: 6.2
-Stable tag: 3.0
+Tested up to: 6.4.2
+Stable tag: 3.1
 License: GPLv2 or later
-Requires PHP: 5.2.4
+Requires PHP: 5.3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin allows you to bring video to your WordPress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.
@@ -151,7 +151,7 @@ There are several ways to power your WordPress with video recording and video pl
 1. Upload the directory to your plugins folder (by default this is) `/wp-content/plugins/` directory and click on *Ziggeo Video* in the Settings menu.
 
 = Automatically =
-1. Go to Admin panel of your WordPress website and click on Plugins -> Add New
+ 1. Go to Admin panel of your WordPress website and click on Plugins -> Add New
  1. Search for "Ziggeo"
  1. Click *Install* on "Ziggeo Video Posts and Comments"
  1. Activate plugin
@@ -306,40 +306,15 @@ Originally you would have all of them and could enable/disable them through our 
 
 Visit the following page to see all of [our bridge plugins](https://support.ziggeo.com/hc/en-us/community/topics/200753347-WordPress-plugin).
 
-== Upgrade notice ==
-
-= 3.0 =
-
-* This version of plugin is highly optimized for better experience through faster execution
-* Includes Lazyload (optional) - load Ziggeo codes (ziggeo.js and ziggeo.css) only when embedding is detected
-    * This happens for frontend as well as backend, supporting the faster load for logged in scenarios as well
-    * Has support for providing Ziggeo codes on specific pages (see core/assets.php and `ziggeo_p_get_lazyload_activator()`)
-* Better parameters handling:
-    1. Save Pre-rendered templates
-    2. Save template parameters as objects
-    3. Optimized to support parameters without the need to update plugin for latest parameters
-    4. Templates are now saved in database (read and write) and local file (read only) which is re-created on plugin update with the templates from DB
-    5. When error occurs a hidden message is placed within the HTML page as well as within Notifications section of your plugin, making it easy to spot any pages with outdated or templates with any issues.
-    6. Added support for use of template ID with media token
-* Templates are searched for in same locations using PHP functions that are in some cases even 100 times faster than what we used before (milliseconds difference in most cases, can be saving seconds in large contents).
-* Old template and shortcode codes are still supported as they were, all new templates are saved in a new, improved format
-* Added more options for comments allowing you to easily make them work with custom form elements that are using different field identifiers than the default WordPress themes.
-* Improvements made to Videos List page:
-    1. Removing submission of page on Enter/Return key press
-    2. Confirmation of removal before it is done avoiding accidental removals
-    3. Improved indexing to allow going over 10 pages
-    4. Filtering through various parts of media data within the retrieved pages
-* Added option `wpzc_title_from_filename` that will automatically update title with the filename when the video is uploaded. See hooks-examples.php for info how you can add your own.
-* Added Ziggeo's Audio embedding support. You can now use `[ziggeoaudiorecorder]` and `[ziggeoaudioplayer]` on your pages to see and use the audio recorder or player.
-* New shortcode was created to allow you to easily add option for downloading of the video in various resolutions. You can do that by using `[ziggeodownloads {video_token}]`. Resolutions available depend on the streams you have set up.
-* Added mini(fied) version of plugin scrips and styles to load on the website if the WordPress website is in production mode. If the development mode is on ("Ziggeo Development Mode" set as "Yes" under "Expert Settings" tab), it will use the non minified versions to allow you to have an easier time working with it.
-* Events editor codes are now working with the lazy load implementation
-* Added better prefixing the parameters so the strings do not end up with a prefix.
-* Fix: Google IMA SDK for VAST is loaded only if VAST is set up
-* Events Editor now shows the same interface we use for Templates Editor, allowing ease of use and managing the events.
-* Fix: Added a fix for the issue reported by Alfredo (thank you): https://github.com/Ziggeo/ziggeo-wordpress-plugin/issues/13
-* Added: our JS function for capturing errors is now communicating with the Notifications screen to show you errors related to Ziggeo embeddings added through the WP plugin.
 
 == Changelog ==
 
-Please check CHANGELOG.md found in the plugin files. This file contains all of the log entries for past versions.
+= 3.1 =
+
+* Fixed: Tags parameters were not present in some cases when the new version of template processing was used, this version addresses the same.
+* Added: A new filter to help adding Ziggeo scripts into the dashboard pages if the lazy load is turned on. Filter name is `ziggeo_assets_allowed_screens`.
+* Improved: Added support for enum property in the template editor, making it easier to use parameters with pre-set options to choose from.
+* Fixed: Issue where if the prerendered templates are not available the returned output might be unexpected v2 template array instead resulting in error; with this fix it will always return the string as expected instead.
+* Fixed: Issue where you could end up with the template token instead of the set parameters when trying to get the template selected for integrations. Filter hook for `ziggeo_get_template_player_integrations` will also now pass template body instead of the template iD.
+
+For more please check CHANGELOG.md found among the plugin files. This file contains all of the log entries for past versions.

@@ -5,6 +5,7 @@
 //The reason why anonymous functions are used here is because that way they are not polluting the namespace so it is easier to see all functions.
 
 
+
 //Add support to handle management of the templates over AJAX
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
@@ -22,7 +23,13 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 			$should_prerender = apply_filters('ziggeo_template_validation_pre_render', $template_base, false);
 
 			if($should_prerender === true) {
+				global $global_ziggeo_parser_state;
+
+				$global_ziggeo_parser_state = 'pre-rendering';
+
 				$code_rendered = ziggeo_p_content_filter($code_shortcode, true);
+
+				$global_ziggeo_parser_state = null;
 			}
 
 			$data = array(
@@ -154,7 +161,14 @@ add_filter('ziggeo_template_parsing_tag_set', function($locationTag, $filter) {
 	if($locationTag === 'post' || $locationTag === 'comment') {
 		$id = get_the_ID();
 
-		$locationTag .= ',post_' . $id;
+		global $global_ziggeo_parser_state;
+
+		if($global_ziggeo_parser_state === 'pre-rendering') {
+			$locationTag .= ',%PAGE_ID%';
+		}
+		else {
+			$locationTag .= ',post_' . $id;
+		}
 	}
 
 	//NOTE: We might change it in some cases, however we always need to return it.
@@ -177,8 +191,8 @@ add_filter('ziggeo_custom_tags_processing', function($content) {
 		global $wp_query;
 
 		$post_ID = $wp_query->get_queried_object_id();
-		$content = str_replace('%CURRENT_ID%', $post_ID, $content);	
-		$content = str_replace('%PAGE_ID%', $post_ID, $content);	
+		$content = str_replace('%CURRENT_ID%', 'post_' . $post_ID, $content);	
+		$content = str_replace('%PAGE_ID%', 'post_' . $post_ID, $content);	
 	}
 
 	return $content;
@@ -202,6 +216,50 @@ add_filter('ziggeo_custom_tags_processing', function($content) {
 	return $content;
 });
 
+// Support for adding tags into the video or audio (re-)recorder or uploaders
+add_filter('ziggeo_parse_template_add_tags', function($template_code, $template_type) {
+
+	$current_user = ziggeo_p_get_current_user();
+
+	//Lets check what we are filtering through at this time..
+	$filter = current_filter();
+
+	// veru crude location, we could extend this to show if page or post, or maybe even more info
+	if( $filter === 'comment_text' || $filter === 'thesis_comment_text' ) {
+		$location_tag = 'comment';
+	}
+	else {
+		$location_tag = 'post';
+	}
+
+	$location_tag = apply_filters('ziggeo_template_parsing_tag_set', $location_tag, $filter);
+
+	$c_user = ( $current_user->user_login == "" ) ? 'Guest' : $current_user->user_login;
+
+	$tags = array('wordpress', $c_user, $location_tag, $template_type);
+
+	$is_tags_present = strpos($template_code, ' tags=');
+
+	if($is_tags_present > -1) {
+		$str1 = substr($template_code, 0, $is_tags_present);
+		// strlen(' tags=') == 6
+		$quote_used = substr($template_code, $is_tags_present + 6, 1);
+
+		$str2 = substr($template_code, strpos($template_code, $quote_used, $is_tags_present + 7));
+
+		$template_code = $str1 . implode(',', $tags) . ' ' . $str2;
+	}
+	else {
+		$pos = strpos($template_code, '>');
+		$str1 = substr($template_code, 0, $pos);
+		$str2 = substr($template_code, $pos);
+
+		$template_code = $str1 . ' tags="' . implode(',', $tags) . '" ' . $str2;
+	}
+
+	return $template_code;
+	
+}, 10, 2);
 
 //Add Record Video button
 add_action('ziggeo_toolbar_button', function($ajax) {

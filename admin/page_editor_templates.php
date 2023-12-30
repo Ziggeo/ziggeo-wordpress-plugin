@@ -219,6 +219,7 @@ defined('ABSPATH') or die();
 							<option value="string" title="Any text value">String</option>
 							<option value="array" title="Array of values,comma separated values">Array</option>
 							<option value="json" title="uses JSON format">JSON</option>
+							<option value="enum" title="Uses string value by choosing one of the pre-set options">Enum</option>
 						</select>
 					</div>
 					<div class="column">

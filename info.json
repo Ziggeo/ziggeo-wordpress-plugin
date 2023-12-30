@@ -1,20 +1,20 @@
 {
 	"wp": {
 		"required": "3.0.1",
-		"tested": "6.2",
+		"tested": "6.4.2",
 		"repo_url": "https://wordpress.org/plugins/ziggeo/",
 		"alternative_repo_url": "https://github.com/Ziggeo/ziggeo-wordpress-plugin"
 	},
 	"plugin": {
 		"name": "ziggeo-core",
 		"title": "Ziggeo Video Posts and Comments",
-		"version": "3.0",
+		"version": "3.1",
 		"author": "Ziggeo",
 		"logo": "https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/assets/images/logo.png",
 		"contributors": "oliverfriedmann, baned, carloscsz409",
 		"tags": "video, video service, record video, video playback, gallery, ziggeo",
 		"description": "This plugin allows you to bring video to your Wordpress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.",
-		"highlight": "Ziggeo Events Editor has been added to our Wordpress plugin",
+		"highlight": "Version 3.0 has been released with lazyload support, new template processing and more",
 		"info_url": "https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/info.json",
 		"addon_url": "https://ziggeo.com/integrations/wordpress",
 		"docs_url": "https://ziggeo.com/docs/integrations/wordpress/"
@@ -26,7 +26,7 @@
 		"license_url": "http://www.gnu.org/licenses/gpl-2.0.html"
 	},
 	"php": {
-		"min": "5.2.4",
+		"min": "5.3",
 		"php5_support": true,
 		"php7_support": true
 	}

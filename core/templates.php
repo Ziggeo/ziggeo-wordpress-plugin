@@ -333,9 +333,19 @@ defined('ABSPATH') or die();
 	//Function that tries to deliver the string of a template in a safe manner. On fail it returns empty string
 	function ziggeo_p_get_template_code_safe($id = '') {
 		$code = ziggeo_p_template_exists($id);
+		$not_found = '';
 
 		if($code === false) {
-			return '';
+			return $not_found;
+		}
+
+		if(is_array($code)) {
+			if(isset($code['shortcode'])) {
+				$code = $code['shortcode'];
+			}
+			else {
+				return $not_found;
+			}
 		}
 
 		//We first escape any single quotes

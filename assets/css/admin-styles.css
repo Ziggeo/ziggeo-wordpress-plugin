@@ -1137,6 +1137,45 @@ INDEX:
 		margin-top: 10px;
 	}
 
+	.template_creator #parameter-options {
+		position: relative;
+		border: 1px solid gray;
+		top: -34px;
+		margin-bottom: -100%;
+	}
+	.template_creator .options-arrow {
+		width: 100%;
+		height: 30px;
+		background-color: transparent;
+		pointer-events: none;
+	}
+	.template_creator .options-arrow.arrow-up::before {
+		border-bottom: none;
+		border-right: none;
+		border-top: 4px solid #333;
+		border-left: 4px solid #333;
+		top: 10px;
+	}
+	.template_creator .options-arrow.arrow-up ~ .option {
+		display: none;
+	}
+	.template_creator .options-arrow::before {
+		content: "";
+		width: 10px;
+		height: 10px;
+		position: absolute;
+		right: 10px;
+		top: 4px;
+		transform: rotateZ(45deg);
+		border-right: 4px solid #333;
+		border-bottom: 4px solid #333;
+	}
+	.template_creator #parameter-options .option {
+		background-color: white;
+		cursor: pointer;
+		padding: 4px;
+		z-index: 1000;
+	}
 
 
 

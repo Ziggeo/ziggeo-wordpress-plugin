@@ -159,6 +159,10 @@ function ziggeo_p_template_parser($template) {
 			}
 		}
 
+		// We will be doing processing of custom tags in order to have the same experience for pre-processing
+		// and when directly processing the templates
+		$params_string = apply_filters('ziggeo_custom_tags_processing', $params_string);
+
 		if($is_prerendered) {
 			return array(
 				'status' => 'success',
@@ -207,6 +211,15 @@ function ziggeo_p_template_parser($template) {
 					);
 				}
 				break;
+		}
+
+		// Add tags and other parsing support
+		$template_code = apply_filters('ziggeo_custom_tags_processing', $template_code);
+
+		if(in_array($template_info['type'], array('[ziggeorecorder', '[ziggeorerecorder', '[ziggeouploader', '[ziggeoaudiorecorder'))) {
+			$type = str_replace('[ziggeo', '', $template_info['type']);
+			// Parse the tags
+			$template_code = apply_filters('ziggeo_parse_template_add_tags', $template_code, $type);
 		}
 
 		return array(

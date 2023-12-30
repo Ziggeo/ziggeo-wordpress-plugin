@@ -40,6 +40,8 @@
 //			* ziggeoPUIManageTemplate()
 //			* ziggeoPUITemplatesChange()
 //			* ziggeoPUITemplatesTurnIntoNew()
+//			* ziggeoPUITemplatesShowOptions()
+//			* ziggeoPUITemplatesRemoveOptions()
 //			* ziggeoTemplatesBaseGet()           // <v3.0 ziggeoTemplatesBase()
 //			* ziggeoTemplatesBaseSet()
 // 6. Integrations
@@ -422,9 +424,15 @@
 		ZiggeoWP.hooks.set('template_editor_autocomplete_param_name',   // hook name
 		                   'template_editor_autocomplete_param_name',   // function key (needed for anonimous functions)
 		                   function(obj_info) {                         // function
+		                   		// Set type of the field
 		                   		var type = document.getElementById('parameter-type');
-
 		                   		type.value = obj_info.data.type;
+
+		                   		// Set value with default and allow additional options
+		                   		var value = document.getElementById('parameter-value');
+		                   		value.value = obj_info.data.default_value;
+
+		                   		ziggeoPUITemplatesShowOptions(obj_info.data.options);
 		                   },
 		                   10);                                         // priority
 
@@ -437,6 +445,9 @@
 
 		                    	// Clear out the template object
 		                   		ziggeoTemplatesTemplateObjectSet({base: obj_info.template, params: {}});
+
+		                   		// Clear out the parameters dropdown if present
+		                   		ziggeoPUITemplatesRemoveOptions();
 		                   },
 		                   10);                                         // priority
 
@@ -513,6 +524,12 @@
 										t_field = t_fields_array[j];
 
 										document.getElementById(t_field).value = '';
+									}
+
+									// We also search for and remove the enum param support
+									var enum_support = document.getElementById('parameter-options');
+									if(enum_support) {
+										enum_support.parentElement.removeChild(enum_support);
 									}
 								}
 							}
@@ -794,11 +811,18 @@
 							t_type = 'integer';
 						}
 
-						document.getElementById('parameter-name').value = t_param_name;
+						// value field
+						var _field_value = document.getElementById('parameter-name');
+						_field_value.value = t_param_name;
 						document.getElementById('parameter-value').value = t_value;
 						document.getElementById('parameter-type').value = t_type;
 
 						ziggeoScrollTo('ziggeo_shorttags_list');
+
+						// Remove options if present
+						ziggeoPUITemplatesRemoveOptions();
+						// Add options back if the parameter allows it, by using autocomplete
+						_field_value.dispatchEvent(new Event('focusout'));
 					}
 				}
 				else if(start > 0 && end < e.target.value.length) {
@@ -839,6 +863,9 @@
 		param_list.addEventListener('click', function(e) {
 			var current = e.target;
 			if(current.className.indexOf('param ') > -1) {
+				// Remove the options bar (if it exists)
+				ziggeoPUITemplatesRemoveOptions();
+
 				document.getElementById('parameter-name').value = current.innerText;
 
 				if(current.getAttribute('data-type') === 'enum') {
@@ -846,6 +873,12 @@
 				}
 				else {
 					document.getElementById('parameter-type').value = current.getAttribute('data-type');
+				}
+
+				// See if we should add the parameters dropdown or not
+				var _options = current.getAttribute('data-options') || null;
+				if(_options) {
+					ziggeoPUITemplatesShowOptions(_options.split(','));
 				}
 
 				document.getElementById('parameter-value').focus();
@@ -888,6 +921,10 @@
 
 		document.getElementById('ziggeo_templates_turn_to_new').style.display = 'inline-block';
 
+		// clear fields in the editor of any present values
+		document.getElementById('parameter-name').value = '';
+		document.getElementById('parameter-value').value = '';
+		ziggeoPUITemplatesRemoveOptions();
 
 		//var hook_values = {
 		//	template: document.getElementById('ziggeo_shorttags_list').value
@@ -1116,6 +1153,66 @@
 		document.getElementById('ziggeo_templates_turn_to_new').style.display = 'none';
 		document.getElementById('ziggeo_templates_update').style.display = 'none';
 		document.getElementById('ziggeo_templates_save').style.display = 'block';
+	}
+
+	// Shows a simple dropdown menu for template options that are available for some parameter
+	// accepts array of options
+	function ziggeoPUITemplatesShowOptions(options) {
+
+		ziggeoPUITemplatesRemoveOptions();
+
+		var value = document.getElementById('parameter-value');
+
+		var inline_select = document.createElement('div');
+		inline_select.id = 'parameter-options';
+
+		var arrow = document.createElement('div');
+		arrow.className = 'options-arrow';
+		inline_select.appendChild(arrow);
+
+		var i,c;
+
+		for(i = 0, c = options.length; i < c; i++) {
+			var option = document.createElement('div');
+			option.className = 'option';
+			option.setAttribute('data-value', options[i]);
+			option.innerText = options[i].replaceAll('_', ' ');
+
+			inline_select.appendChild(option);
+		}
+
+		value.parentElement.appendChild(inline_select);
+
+		inline_select.addEventListener('click', function(e) {
+			// Set the value in the value box
+			var elm_value = document.getElementById('parameter-value');
+
+			elm_value.value = e.target.getAttribute('data-value');
+
+			if(e.target.id === 'parameter-options') {
+				var arrow_element = e.target.children[0];
+			}
+			else {
+				var arrow_element = e.target.parentElement.children[0];
+			}
+
+			if(arrow_element.className.indexOf('arrow-up') > -1) {
+				// we should open it
+				arrow_element.className = arrow_element.className.replaceAll('arrow-up', '');
+			}
+			else {
+				arrow_element.className += ' arrow-up';
+			}
+		});
+	}
+
+	// Removes the dropdown menu for template options if it is present
+	function ziggeoPUITemplatesRemoveOptions() {
+		var options = document.getElementById('parameter-options');
+
+		if(options) {
+			options.parentElement.removeChild(options);
+		}
 	}
 
 	//Gets the parameter base that we should use in editor, or returns the one to use
@@ -4508,6 +4605,7 @@
 					else if(exact_match !== true && _item.startsWith(value)) {
 						t_found = checkItems(current[_item], base);
 					}
+
 					if(t_found === true) {
 
 						// Set the value

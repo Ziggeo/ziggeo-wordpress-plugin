@@ -155,6 +155,9 @@ function ziggeo_p_assets_admin() {
 		'page'
 	);
 
+	// Filter to allow everyone to add Ziggeo to their own dashboard page even if it is not Ziggeo dashboard
+	$supported_screens =  apply_filters('ziggeo_assets_allowed_screens', $supported_screens);
+
 	if(in_array(get_current_screen()->id, $ziggeo_plugin_pages) || in_array(get_current_screen()->id, $supported_screens)) {
 		wp_enqueue_script('ziggeo-admin-js');
 		echo ziggeo_p_get_lazyload_activator();

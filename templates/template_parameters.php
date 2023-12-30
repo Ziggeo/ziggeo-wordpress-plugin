@@ -202,7 +202,9 @@ function ziggeo_template_write_advanced_parameters_list($paged = true, $per_page
 			//Parameter fields code
 			if($params['type'] === 'enum') {
 				?>
-					<div class="<?php echo $default_class; ?>" data-type="<?php echo $params['type']; ?>"><?php echo $field; ?></div>
+					<div class="<?php echo $default_class; ?>"
+					     data-type="<?php echo $params['type']; ?>"
+					     data-options="<?php echo join(',', $params['options']); ?>"><?php echo $field; ?></div>
 					<div class="param_description"><?php echo $params['description']; ?><br>
 						Possible options are: `<?php echo join('`, `', $params['options']); ?>`
 					</div>
