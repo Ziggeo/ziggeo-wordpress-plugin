@@ -1,5 +1,5 @@
 === Ziggeo ===
-Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
+Contributors: oliverfriedmann, baned
 Tags: video, video service, record video, video playback, gallery, screen recorder, audio recorder, audio player, video moderation, ziggeo
 Requires at least: 3.0.1
 Tested up to: 6.4.2
