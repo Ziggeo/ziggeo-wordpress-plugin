@@ -30,7 +30,7 @@ function ziggeo_a_s_validation($input) {
 		// Integrations tab
 			'integrations' => true,
 		//experts tab
-			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true, 'use_auth' => true, 'use_version' => true, 'use_revision' => true, 'lazy_load' => true
+			'dev_mode' => true, 'p_token' => true, 'e_token' => true, 'templates_clear' => true, 'webrtc_for_mobile' => true, 'webrtc_streaming' => true, 'webrtc_streaming_needed' => true, 'sauth_token' => true, 'use_auth' => true, 'use_version' => true, 'use_revision' => true, 'lazy_load' => true, 'support_templates_v1' => true
 	);
 
 	//Needed for checkboxes otherwise we would clear them
@@ -41,7 +41,8 @@ function ziggeo_a_s_validation($input) {
 		'video_and_text'            => true,
 		'use_auth'                  => true,
 		'vast_muted'                => true,
-		'lazy_load'                 => true
+		'lazy_load'                 => true,
+		'support_templates_v1'      => true
 	);
 
 	//DEVS: Should we add any hooks here to add your own options into the main settings? Let us know.
@@ -68,7 +69,7 @@ function ziggeo_a_s_validation($input) {
 		}
 	}
 	else {
-			$options = array ();
+		$options = array ();
 	}
 
 	//Now we check if there are any new options that are passed to us and that we allow them

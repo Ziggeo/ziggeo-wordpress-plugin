@@ -3,7 +3,7 @@ Contributors: oliverfriedmann, baned, carloscsz409, natashacalleia
 Tags: video, video service, record video, video playback, gallery, screen recorder, audio recorder, audio player, video moderation, ziggeo
 Requires at least: 3.0.1
 Tested up to: 6.4.2
-Stable tag: 3.1
+Stable tag: 3.1.1
 License: GPLv2 or later
 Requires PHP: 5.3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -309,12 +309,17 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Changelog ==
 
-= 3.1 =
-
-* Fixed: Tags parameters were not present in some cases when the new version of template processing was used, this version addresses the same.
-* Added: A new filter to help adding Ziggeo scripts into the dashboard pages if the lazy load is turned on. Filter name is `ziggeo_assets_allowed_screens`.
-* Improved: Added support for enum property in the template editor, making it easier to use parameters with pre-set options to choose from.
-* Fixed: Issue where if the prerendered templates are not available the returned output might be unexpected v2 template array instead resulting in error; with this fix it will always return the string as expected instead.
-* Fixed: Issue where you could end up with the template token instead of the set parameters when trying to get the template selected for integrations. Filter hook for `ziggeo_get_template_player_integrations` will also now pass template body instead of the template iD.
-
-For more please check CHANGELOG.md found among the plugin files. This file contains all of the log entries for past versions.
+= 3.1.1 =
+* Fixed: Support for v1 templates option was hardcoded, now it respects the decision you make within the admin panel.
+* Security Update: fix for report made by Peter Thaleikis (CVE-2024-12452) and brought to us by WordFence.
+SUMMARY:    While marked as Stored XSS attack, the reality is that it required Contributor or higher access.
+            With such access there are many other ways (outside of scope of our plugin) that one could create
+            surface for a future attack.
+            That said, the update is made to eliminate accidentally providing wrong values and opening your website
+            to a possible attack.
+            Please note that this also disables the setup of new events until the plugin is updated.
+            We support [WordPress Groups plugin](https://wordpress.org/plugins/groups/) and our plugin works with
+            many other security related plugins that we would suggest you to use if your website offers log-in to the
+            untrusted (end users) to your system.
+            Generally we also suggest using professional made users/community plugin instead of using the WordPress user levels any times you are sharing access to WP backend.
+* Removed: Zendesk script for assistance from within the plugin as we switched to using a new support platform instead.

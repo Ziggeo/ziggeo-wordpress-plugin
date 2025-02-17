@@ -219,20 +219,6 @@ function ziggeo_p_admin_init() {
 							'ziggeo_video',
 							'ziggeo_video_contact');
 
-		//wp support pages
-		add_settings_field('ziggeo_contact_wp',
-							__('Contact us on WordPress', 'ziggeo'),
-							'ziggeo_a_s_c_wp_forum_field',
-							'ziggeo_video',
-							'ziggeo_video_contact');
-
-		//Zendesk (Zopim) chat pages
-		add_settings_field('ziggeo_contact_chat',
-							__('Lets chat', 'ziggeo'),
-							'ziggeo_a_s_c_zchat_field',
-							'ziggeo_video',
-							'ziggeo_video_contact');
-
 		//-Expert section-
 
 		//Is this development location (and you want things to pop up in console)?

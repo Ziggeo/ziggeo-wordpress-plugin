@@ -41,7 +41,7 @@ function ziggeo_p_filters_init() {
 	// This is additional level of support
 	// It means additional processing, however it offers support for legacy template codes, which is needed
 	// at the start of this introduction to new template structure
-	if($option === true) {
+	if($option === ZIGGEO_YES) {
 		add_filter('the_content', 'ziggeo_p_content_filter', 90);
 		add_filter('comment_text', 'ziggeo_p_content_filter', 90);
 		add_filter('the_excerpt', 'ziggeo_p_content_filter', 90);

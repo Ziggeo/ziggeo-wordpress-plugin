@@ -192,9 +192,8 @@ function ziggeo_a_s_e_text() {
 	// Ziggeo before to still support them until they switch to new templates.
 	function ziggeo_a_s_e_support_old_templates() {
 		$option = ziggeo_get_plugin_options('support_templates_v1');
-
 		?>
-		<input id="ziggeo_support_templates_v1" name="ziggeo_video[support_templates_v1]" type="checkbox"value="1" <?php echo checked( ZIGGEO_YES, $option, false ); ?> />
+		<input id="ziggeo_support_templates_v1" name="ziggeo_video[support_templates_v1]" type="checkbox" value="1" <?php echo checked( ZIGGEO_YES, $option, false ); ?> />
 		<label for="ziggeo_support_templates_v1"><?php _e('Check to support old version of templates. We suggest new version unless you have already used templates before and have not switched them to new version.', 'ziggeo'); ?></label>
 		<?php
 	}

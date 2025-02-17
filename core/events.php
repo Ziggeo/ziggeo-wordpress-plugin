@@ -40,6 +40,24 @@ add_shortcode('ziggeo_event', function($attrs) {
 		}
 	}
 
+	// Fix: Making the $event more secure
+	$allowed_events = ['ended', 'invoke-skip', 'loaded', 'paused', 'playing', 'recording', 'rerecord', 'seek',
+	                   'select-image', 'uploading', 'attached', 'countdown', 'processed', 'processing',
+	                   'recording_progress', 'upload_progress', 'uploaded', 'access_forbidden', 'access_granted',
+	                   'camera_nosignal', 'camera_unresponsive', 'error', 'no_camera', 'no_microphone', 'bound',
+	                   'camera_signal', 'camerahealth', 'change-google-cast-volume', 'has_camera', 'has_microphone',
+	                   'mainvideostreamended', 'manually_submitted', 'microphonehealth', 'pause-google-cast',
+	                   'play-google-cast', 'ready_to_play', 'ready_to_record', 'ready-to-trim', 'recording_stopped',
+	                   'stopped', 'upload_selected', 'verified', 'video-trimmed'];
+
+	if(!in_array($event, $allowed_events)) {
+		// This will make it show up in the notifications panel of the plugin (Settings > Notifications)
+		$post_id = get_queried_object_id();
+		ziggeo_notification_create('Ziggeo Event failed on post with ID: ' . $post_id);
+		// If it is not one of the allowed, just pass empty string, which should also correct any old entries
+		return '';
+	}
+
 	$f_n = 'ziggeoRNDEvents_' . str_replace([' ', '.'], '', microtime()) . rand(5000, 4000);
 
 	if($type === 'alert') {

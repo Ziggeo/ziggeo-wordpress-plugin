@@ -1,7 +1,16 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
-
 =======
+
+= 3.1 =
+
+* Fixed: Tags parameters were not present in some cases when the new version of template processing was used, this version addresses the same.
+* Added: A new filter to help adding Ziggeo scripts into the dashboard pages if the lazy load is turned on. Filter name is `ziggeo_assets_allowed_screens`.
+* Improved: Added support for enum property in the template editor, making it easier to use parameters with pre-set options to choose from.
+* Fixed: Issue where if the prerendered templates are not available the returned output might be unexpected v2 template array instead resulting in error; with this fix it will always return the string as expected instead.
+* Fixed: Issue where you could end up with the template token instead of the set parameters when trying to get the template selected for integrations. Filter hook for `ziggeo_get_template_player_integrations` will also now pass template body instead of the template iD.
+
+For more please check CHANGELOG.md found among the plugin files. This file contains all of the log entries for past versions.
 
 = 3.0 =
 
@@ -35,8 +44,7 @@ This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 * Fix: Added a fix for the issue reported by Alfredo (thank you): https://github.com/Ziggeo/ziggeo-wordpress-plugin/issues/13
 * Added: our JS function for capturing errors is now communicating with the Notifications screen to show you errors related to Ziggeo embeddings added through the WP plugin.
 
-
-==========
+=======================================
 
 
 = 2.14.1 =
@@ -173,6 +181,9 @@ This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 * Overhaul bringing new possibilities
 * Hooks and examples of how to use them
 * Support for very latest of Ziggeo
+
+=======================================
+
 
 = 1.15 =
 * Added option to have integrations to other plugins
