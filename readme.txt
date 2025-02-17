@@ -2,7 +2,7 @@
 Contributors: oliverfriedmann, baned
 Tags: video, video service, record video, video playback, gallery, screen recorder, audio recorder, audio player, video moderation, ziggeo
 Requires at least: 3.0.1
-Tested up to: 6.4.2
+Tested up to: 6.7.2
 Stable tag: 3.1.1
 License: GPLv2 or later
 Requires PHP: 5.3
