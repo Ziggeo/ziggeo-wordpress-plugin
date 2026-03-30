@@ -1,6 +1,20 @@
 This file contains the change log info for the `Ziggeo` (Ziggeo Core) plugin.
 
 =======
+= 3.1.1 =
+* Fixed: Support for v1 templates option was hardcoded, now it respects the decision you make within the admin panel.
+* Security Update: fix for report made by Peter Thaleikis (CVE-2024-12452) and brought to us by WordFence.
+SUMMARY:    While marked as Stored XSS attack, the reality is that it required Contributor or higher access.
+            With such access there are many other ways (outside of scope of our plugin) that one could create
+            surface for a future attack.
+            That said, the update is made to eliminate accidentally providing wrong values and opening your website
+            to a possible attack.
+            Please note that this also disables the setup of new events until the plugin is updated.
+            We support [WordPress Groups plugin](https://wordpress.org/plugins/groups/) and our plugin works with
+            many other security related plugins that we would suggest you to use if your website offers log-in to the
+            untrusted (end users) to your system.
+            Generally we also suggest using professional made users/community plugin instead of using the WordPress user levels any times you are sharing access to WP backend.
+* Removed: Zendesk script for assistance from within the plugin as we switched to using a new support platform instead.
 
 = 3.1 =
 

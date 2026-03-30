@@ -43,7 +43,7 @@ function ziggeo_integration_present_me($data = null) {
 				?>
 			</div>
 			<div>
-				<?php 
+				<?php
 				if($data['status'] === true || $data['status'] === 'ON') {
 					?>
 					<button class="integration_button active" disabled="disabled">Active</button>

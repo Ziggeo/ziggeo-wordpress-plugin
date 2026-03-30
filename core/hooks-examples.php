@@ -10,6 +10,11 @@
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
 	if($operation === 'settings_manage_template') {
+
+		if(!current_user_can('manage_options')) {
+			return $rez;
+		}
+
 		if(isset($_POST['template_id'])) {
 
 			$id = urldecode($_POST['template_id']);

@@ -1,14 +1,14 @@
 {
 	"wp": {
-		"required": "3.1.1",
-		"tested": "6.7.2",
+		"required": "6.9",
+		"tested": "6.9.4",
 		"repo_url": "https://wordpress.org/plugins/ziggeo/",
 		"alternative_repo_url": "https://github.com/Ziggeo/ziggeo-wordpress-plugin"
 	},
 	"plugin": {
 		"name": "ziggeo-core",
 		"title": "Ziggeo Video Posts and Comments",
-		"version": "3.1.1",
+		"version": "3.1.2",
 		"author": "Ziggeo",
 		"logo": "https://raw.githubusercontent.com/Ziggeo/ziggeo-wordpress-plugin/master/assets/images/logo.png",
 		"contributors": "oliverfriedmann, baned, carloscsz409",
@@ -26,8 +26,8 @@
 		"license_url": "http://www.gnu.org/licenses/gpl-2.0.html"
 	},
 	"php": {
-		"min": "5.3",
-		"php5_support": true,
+		"min": "8.4",
+		"php5_support": false,
 		"php7_support": true
 	}
 }

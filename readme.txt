@@ -1,11 +1,11 @@
 === Ziggeo ===
 Contributors: oliverfriedmann, baned
 Tags: video, video service, record video, video playback, gallery, screen recorder, audio recorder, audio player, video moderation, ziggeo
-Requires at least: 3.0.1
-Tested up to: 6.7.2
-Stable tag: 3.1.1
+Requires at least: 6.9
+Tested up to: 6.9.4
+Stable tag: 3.1.2
 License: GPLv2 or later
-Requires PHP: 5.3
+Requires PHP: 8.4
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin allows you to bring video to your WordPress website or blog, through use of powerful Ziggeo API. Since we all know that video is future, make sure you are part of it.
@@ -309,17 +309,5 @@ Visit the following page to see all of [our bridge plugins](https://support.zigg
 
 == Changelog ==
 
-= 3.1.1 =
-* Fixed: Support for v1 templates option was hardcoded, now it respects the decision you make within the admin panel.
-* Security Update: fix for report made by Peter Thaleikis (CVE-2024-12452) and brought to us by WordFence.
-SUMMARY:    While marked as Stored XSS attack, the reality is that it required Contributor or higher access.
-            With such access there are many other ways (outside of scope of our plugin) that one could create
-            surface for a future attack.
-            That said, the update is made to eliminate accidentally providing wrong values and opening your website
-            to a possible attack.
-            Please note that this also disables the setup of new events until the plugin is updated.
-            We support [WordPress Groups plugin](https://wordpress.org/plugins/groups/) and our plugin works with
-            many other security related plugins that we would suggest you to use if your website offers log-in to the
-            untrusted (end users) to your system.
-            Generally we also suggest using professional made users/community plugin instead of using the WordPress user levels any times you are sharing access to WP backend.
-* Removed: Zendesk script for assistance from within the plugin as we switched to using a new support platform instead.
+= 3.1.2 =
+* Security Update: Please update to latest if possible. The hot fix was provided for the 2.12 (older version) as well in case you do not want to upgrade higher, you should upgrade to that. The fix is added for a security issue where user with low privileges could update the plugin settings. Report is made by Nabil Irawan (CVE-2026-4124) and brought to us by WordFence. 

@@ -12,6 +12,19 @@ defined('ABSPATH') or die();
 
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
+	// Sanity check
+	$allowed_ops = array(
+		'event_editor_save_template'   => true,
+		'event_editor_update_template' => true,
+		'event_editor_remove_template' => true
+	);
+
+	if(isset($allowed_ops[$operation])) {
+		if(!current_user_can('manage_options')) {
+			return $rez;
+		}
+	}
+
 	if($operation === 'event_editor_save_template'   ||
 	   $operation === 'event_editor_update_template' ||
 	   $operation === 'event_editor_remove_template') {

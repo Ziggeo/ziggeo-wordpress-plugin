@@ -11,6 +11,19 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 	// will not do anything with it.
 	$handled = false;
 
+	// Sanity check
+	$allowed_ops = array(
+		'sdk_applications'    => true,
+		'sdk_analytics'       => true,
+		'sdk_effect_profiles' => true
+	);
+
+	if(isset($allowed_ops[$operation])) {
+		if(!current_user_can('manage_options')) {
+			return $rez;
+		}
+	}
+
 	//settings_manage_template
 	if($operation === 'sdk_applications') {
 

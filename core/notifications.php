@@ -1,10 +1,11 @@
 <?php
 
-//Handle manage button press on notifications
+// Handle manage button press on notifications
 // This fires within admin only
 add_filter('ziggeo_ajax_call', function($rez, $operation) {
 
 	if($operation === 'notification_handler') {
+
 		if(isset($_POST['id'], $_POST['status'])) {
 
 			$id = (int)($_POST['id']);

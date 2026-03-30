@@ -194,12 +194,11 @@ function ziggeo_a_s_v_integrations_handler($options, $input) {
 		$details = explode('=', $input['integration_change']);
 
 		if(isset($options['integrations'], $options['integrations'][$details[0]])) {
-
-			$options['integrations'][$details[0]]['active'] = true;//($details[1] === 'disable') ? false : true;
+			$options['integrations'][$details[0]]['active'] = ($details[1] === 'disable') ? false : true;
 		}
 		else {
 			//seems that it was not set up so far, lets set it up..
-			if(!isset($options['integrations'])) {
+			if(!isset($options['integrations']) || !is_array($options['integrations'])) {
 				$options['integrations'] = array();
 			}
 			//lets add integration..
@@ -217,6 +216,10 @@ function ziggeo_a_s_v_templates_handler($options) {
 		'message'	=> false,
 		'status'	=> false
 	);
+
+	if(!current_user_can('manage_options')) {
+		return $ajax_status;
+	}
 
 	$id_given = true;
 

@@ -15,6 +15,10 @@ add_filter('ziggeo_ajax_call', function($rez, $operation) {
 	//settings_manage_template
 	if($operation === 'translations_panel_save_strings') {
 
+		if(!current_user_can('manage_options')) {
+			return $rez;
+		}
+
 		$language = $_POST['lang'];
 		$strings = $_POST['strings'];
 
