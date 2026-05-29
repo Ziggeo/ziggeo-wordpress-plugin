@@ -96,7 +96,7 @@ function ziggeo_a_addons_text() {
 	</ul>
 
 	<ul id="ziggeo_addons_installed" class="ziggeo_integrations_cards" style="display:none;">
-		<p><?php __('Showing you all of the integrations that you have installed.', 'ziggeo'); ?></p>
+		<p><?php echo __('Showing you all of the integrations that you have installed.', 'ziggeo'); ?></p>
 		<?php
 			for($i = 0, $c = count($integrations_installed); $i < $c; $i++) {
 				ziggeo_integration_present_me_cards($integrations_installed[$i]);
@@ -105,7 +105,7 @@ function ziggeo_a_addons_text() {
 	</ul>
 
 	<ul id="ziggeo_addons_update" style="display:none;">
-		<p><?php __('Only the plugins that you have installed and new version is available will be shown here.', 'ziggeo'); ?></p>
+		<p><?php echo __('Only the plugins that you have installed and new version is available will be shown here.', 'ziggeo'); ?></p>
 		<?php
 			$found = 0;
 			for($i = 0, $c = count($integrations_installed); $i < $c; $i++) {
